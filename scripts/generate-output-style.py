@@ -36,10 +36,11 @@ def strip_frontmatter(text):
     if not text.startswith("---\n"):
         raise ValueError("SKILL.md has no frontmatter block")
     end = text.index("\n---\n", 4)
-    return text[end + 5 :]
+    return text[end + 5:]
 
 
 def drop_h1(text):
+    text = text.lstrip("\n")
     return re.sub(r"^# .+\n\n", "", text, count=1)
 
 
