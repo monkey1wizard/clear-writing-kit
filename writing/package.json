@@ -1,0 +1,21 @@
+{
+  "name": "accurate-answer-writing-checks",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "lint": "node generate-profiles.cjs --check && node lint-docs.cjs && markdownlint-cli2 --config .markdownlint-cli2.jsonc",
+    "test": "node --test test/*.test.cjs"
+  },
+  "engines": {
+    "node": ">=20.18.0"
+  },
+  "devDependencies": {
+    "textlint-rule-ja-document-style": "file:rules/ja-document-style",
+    "textlint-rule-prose-punctuation": "file:rules/prose-punctuation",
+    "textlint": "15.8.0",
+    "textlint-rule-preset-ja-technical-writing": "12.0.2",
+    "textlint-rule-no-zero-width-spaces": "1.0.1",
+    "textlint-rule-write-good": "2.0.0",
+    "markdownlint-cli2": "0.18.1"
+  }
+}

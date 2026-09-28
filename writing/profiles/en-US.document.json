@@ -1,0 +1,17 @@
+{
+  "rules": {
+    "no-zero-width-spaces": true,
+    "prose-punctuation": true,
+    "write-good": {
+      "severity": "warning",
+      "passive": false,
+      "illusion": false,
+      "so": false,
+      "thereIs": false,
+      "weasel": false,
+      "adverb": false,
+      "tooWordy": true,
+      "cliches": true
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "rules": {
+    "no-zero-width-spaces": true,
+    "prose-punctuation": true,
+    "preset-ja-technical-writing": {
+      "sentence-length": {
+        "max": 100,
+        "severity": "warning"
+      },
+      "max-ten": {
+        "max": 3,
+        "severity": "warning"
+      },
+      "max-comma": {
+        "max": 3,
+        "severity": "warning"
+      },
+      "max-kanji-continuous-len": {
+        "max": 6,
+        "severity": "warning"
+      },
+      "no-mix-dearu-desumasu": {
+        "preferInHeader": "である",
+        "preferInBody": "ですます",
+        "preferInList": "ですます",
+        "strict": true
+      }
+    }
+  }
+}
