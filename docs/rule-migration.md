@@ -1,4 +1,4 @@
-# Rule migration
+# Clear Writing Kit migration
 
 Baseline: Git commit `f136386`, skill version 1.1.0.
 
@@ -29,6 +29,8 @@ The new skill explicitly routes readers to the appropriate references. The Web p
 
 The persistent-instruction excerpt in accuracy.md is the single source for both generated account texts. The surrounding platform text is maintained in `scripts/templates/`. The Gemini source retains the user's original three instructions.
 
-The source folder changes from `skills/accurate-answer/` to `skills/coding-agent-writing/`. Update the installed skill through its existing manager. The generator keeps the Claude output-style name `accurate-answer`. Global settings and online accounts are not modified.
+The source folder changes from `skills/accurate-answer/` to `skills/coding-agent-writing/`. Update the installed skill through its existing manager. The new repository name is `clear-writing-kit`. The skill names remain `coding-agent-writing` and `web-answer-writing` so their audiences remain clear.
+
+The Claude output-style name changes from `accurate-answer` to `clear-writing-kit`. The default generated path becomes `~/.claude/output-styles/clear-writing-kit.md`. Existing style files and selection settings are not migrated automatically. Generate and select the new style before retiring the old one. Global settings, local checkout paths, Git remote URLs, and online accounts are not modified by the generators.
 
 The original files remain recoverable from Git. This record documents content migration, not proof that every host loaded the replacement.

@@ -1,10 +1,19 @@
 ---
-name: coding-agent-writing
-description: Apply writing rules in a coding-agent workspace to replies, progress updates, reviews, documentation, and commit messages. Discover and run available local textlint and zh-TW MCP checks before delivery. Use this installed skill in coding agents, not as a ChatGPT or Gemini Web upload.
-metadata:
-  toolkit: clear-writing-kit
-  version: 2.0.0
-  replaces: accurate-answer
+type: Playbook
+title: Writing in coding agents
+description: Use local writing rules and available tools for coding-agent output.
+tags:
+  - skills
+  - coding-agent
+language: en-US
+audience:
+  - coding-agent
+sources:
+  - resource: 'Clear Writing Kit repository file: skills/coding-agent-writing/SKILL.md'
+generated:
+  by: process:clear-writing-kit-okf
+source_path: skills/coding-agent-writing/SKILL.md
+source_sha256: 413f48a291aa4f697cc0dd917a29dd6a1d4b0ad520221089cf4bf1159bd567b8
 ---
 
 # Clear Writing Kit for Coding Agents
@@ -13,15 +22,15 @@ This skill runs inside a coding-agent workspace. It covers every reader-facing o
 
 ## Read the rules
 
-Read [accuracy.md](references/accuracy.md) whenever this skill is activated. Select each output language that the task needs:
+Read [accuracy.md](../rules/accuracy.md) whenever this skill is activated. Select each output language that the task needs:
 
-- For en-US, read [en-US.md](references/en-US.md).
-- For zh-TW, read [zh-TW.md](references/zh-TW.md).
-- For ja-JP, read [ja-JP.md](references/ja-JP.md).
+- For en-US, read [en-US.md](../rules/en-US.md).
+- For zh-TW, read [zh-TW.md](../rules/zh-TW.md).
+- For ja-JP, read [ja-JP.md](../rules/ja-JP.md).
 
 For a multilingual document, check each language section with its own rules. A filename does not select a textlint profile.
 
-Read [local-checks.md](references/local-checks.md) before using writing tools. For zh-TW, also read [zhtw-checks.md](references/zhtw-checks.md). The latter preserves the original Chinese tool procedure.
+Read [local-checks.md](../checks/local-checks.md) before using writing tools. For zh-TW, also read [zhtw-checks.md](../checks/zhtw-checks.md). The latter preserves the original Chinese tool procedure.
 
 ## Before each delivery
 

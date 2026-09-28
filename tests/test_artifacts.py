@@ -1,6 +1,7 @@
 import contextlib
 import importlib
 import io
+import json
 import re
 import shutil
 import subprocess
@@ -9,6 +10,7 @@ import tempfile
 import unittest
 import zipfile
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -19,8 +21,53 @@ spec = importlib.util.spec_from_file_location("web_generator", ROOT / "scripts/g
 web_generator = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(web_generator)
 
+style_spec = importlib.util.spec_from_file_location("style_generator", ROOT / "scripts/generate-output-style.py")
+style_generator = importlib.util.module_from_spec(style_spec)
+style_spec.loader.exec_module(style_generator)
+
 
 class Artifacts(unittest.TestCase):
+    def test_repository_branding_preserves_distinct_skill_names(self):
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertTrue(readme.startswith("# clear-writing-kit\n\nWriting rules, skills, and checks for en-US, zh-TW, and ja-JP.\n"))
+        package = json.loads((ROOT / "writing/package.json").read_text(encoding="utf-8"))
+        lock = json.loads((ROOT / "writing/package-lock.json").read_text(encoding="utf-8"))
+        self.assertEqual(package["name"], "clear-writing-kit-checks")
+        self.assertEqual(lock["name"], package["name"])
+        self.assertEqual(lock["packages"][""]["name"], package["name"])
+        core = (ROOT / CORE / "SKILL.md").read_text(encoding="utf-8")
+        outputs = render_web()
+        self.assertIn("\nname: coding-agent-writing\n", core)
+        self.assertIn("\nname: web-answer-writing\n", outputs[WEB_SKILL / "SKILL.md"])
+        for text in (core, outputs[WEB_SKILL / "SKILL.md"]):
+            self.assertIn("toolkit: clear-writing-kit", text)
+        for text in (*outputs.values(), render_claude()):
+            self.assertNotIn("accurate-answer", text)
+
+    def test_default_style_name_changes_without_deleting_existing_style(self):
+        self.assertEqual(style_generator.DEFAULT_OUTPUT.name, "clear-writing-kit.md")
+        self.assertEqual(style_generator.DEFAULT_OUTPUT.parent.name, "output-styles")
+        with tempfile.TemporaryDirectory() as d, contextlib.redirect_stdout(io.StringIO()):
+            root = Path(d)
+            old = root / "accurate-answer.md"
+            old.write_text("existing user style", encoding="utf-8")
+            target = root / style_generator.DEFAULT_OUTPUT.name
+            with patch.object(style_generator, "DEFAULT_OUTPUT", target):
+                with patch.object(sys, "argv", ["generate-output-style.py"]):
+                    self.assertEqual(style_generator.main(), 0)
+                with patch.object(sys, "argv", ["generate-output-style.py", "--check"]):
+                    self.assertEqual(style_generator.main(), 0)
+            self.assertIn("\nname: clear-writing-kit\n", target.read_text(encoding="utf-8"))
+            self.assertEqual(old.read_text(encoding="utf-8"), "existing user style")
+
+    def test_default_web_preview_uses_new_name(self):
+        with tempfile.TemporaryDirectory() as d, contextlib.redirect_stdout(io.StringIO()):
+            with patch.object(web_generator.tempfile, "mkdtemp", return_value=d) as make_temp:
+                with patch.object(sys, "argv", ["generate-web-artifacts.py"]):
+                    self.assertEqual(web_generator.main(), 0)
+                make_temp.assert_called_once_with(prefix="clear-writing-kit-web-")
+            self.assertTrue(web_generator.check(Path(d), render_web()))
+
     def test_web_scope_and_self_contained_links(self):
         outputs = render_web()
         self.assertEqual(len(outputs), 7)

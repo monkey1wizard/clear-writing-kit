@@ -1,9 +1,20 @@
 ---
-name: web-answer-writing
-description: Write or revise answers in ChatGPT Web or Gemini Web using the bundled en-US, zh-TW, and ja-JP guidance. Use this package when uploaded to a supported Web skill interface. This Web workflow does not run local coding-agent checks.
-metadata:
-  toolkit: clear-writing-kit
-  version: 2.0.0
+type: Playbook
+title: Writing in Web assistants
+description: Use bundled writing guidance in ChatGPT Web and Gemini Web sessions.
+tags:
+  - skills
+  - ChatGPT
+  - Gemini
+language: en-US
+audience:
+  - web
+sources:
+  - resource: 'Clear Writing Kit repository file: scripts/templates/web-skill.md'
+generated:
+  by: process:clear-writing-kit-okf
+source_path: scripts/templates/web-skill.md
+source_sha256: 563ddf3ef6748f4e17cb2654dba4e1fba076d9df91a05ce2e4339b84099e61f7
 ---
 
 # Clear Writing Kit for ChatGPT Web and Gemini Web
@@ -12,11 +23,11 @@ Use this package in a Web assistant that supports uploaded skills. Choose the pl
 
 ## Use the bundled references
 
-Read [accuracy.md](references/accuracy.md) before drafting. Read each language reference needed for the requested output:
+Read [accuracy.md](../rules/accuracy.md) before drafting. Read each language reference needed for the requested output:
 
-- [en-US.md](references/en-US.md) for United States English.
-- [zh-TW.md](references/zh-TW.md) for Traditional Chinese used in Taiwan.
-- [ja-JP.md](references/ja-JP.md) for Japanese.
+- [en-US.md](../rules/en-US.md) for United States English.
+- [zh-TW.md](../rules/zh-TW.md) for Traditional Chinese used in Taiwan.
+- [ja-JP.md](../rules/ja-JP.md) for Japanese.
 
 These references are included in the package. Do not try to read another local skill or repository.
 

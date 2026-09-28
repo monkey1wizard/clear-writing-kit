@@ -5,6 +5,9 @@
     "MD024": {
       "siblings_only": true
     },
+    "MD025": {
+      "front_matter_title": ""
+    },
     "MD033": false,
     "MD036": false,
     "MD040": true
@@ -15,6 +18,7 @@
     "../web-skills/**/*.md",
     "../web-instructions/**/*.md",
     "../docs/**/*.md",
+    "../knowledge/**/*.md",
     "../scripts/templates/**/*.md"
   ]
 }

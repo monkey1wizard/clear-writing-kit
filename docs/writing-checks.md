@@ -1,4 +1,4 @@
-# Writing checks
+# Clear Writing Kit checks
 
 ## Run the checks
 

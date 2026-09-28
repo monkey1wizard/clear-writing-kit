@@ -8,7 +8,7 @@ import tempfile
 import zipfile
 from pathlib import Path
 
-from artifacts import ROOT, WEB_SKILL, render_web
+from artifacts import PROJECT_NAME, ROOT, WEB_SKILL, render_web
 
 
 def check(root: Path, outputs: dict[Path, str]) -> bool:
@@ -41,7 +41,7 @@ def main() -> int:
             return 1
         print(f"checked {len(outputs)} Web artifacts")
         return 0
-    destination = ROOT if args.update else args.output_dir or Path(tempfile.mkdtemp(prefix="accurate-answer-web-"))
+    destination = ROOT if args.update else args.output_dir or Path(tempfile.mkdtemp(prefix=PROJECT_NAME + "-web-"))
     for relative, content in outputs.items():
         target = destination / relative
         target.parent.mkdir(parents=True, exist_ok=True)

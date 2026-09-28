@@ -1,4 +1,6 @@
-# accurate-answer
+# clear-writing-kit
+
+Writing rules, skills, and checks for en-US, zh-TW, and ja-JP.
 
 [English](#english) | [繁體中文](#繁體中文) | [日本語](#日本語)
 
@@ -6,7 +8,7 @@
 
 ### Purpose and language support
 
-This repository provides writing rules for coding agents and Web assistants. Accuracy comes first, clarity second, and plain language third. The rules cover en-US, zh-TW, and ja-JP.
+Clear Writing Kit provides writing rules for coding agents and Web assistants. Accuracy comes first, clarity second, and plain language third. The rules cover en-US, zh-TW, and ja-JP.
 
 The guidance applies the reader outcomes of ISO 24495-1. English also uses selected structural principles associated with ASD-STE100. This repository does not claim full compliance with either standard.
 
@@ -56,11 +58,11 @@ The Gemini text preserves your request for date checks and search, direct tone, 
 Generate and check a Claude output-style preview:
 
 ```powershell
-python scripts/generate-output-style.py --output build/accurate-answer.md
-python scripts/generate-output-style.py --output build/accurate-answer.md --check
+python scripts/generate-output-style.py --output build/clear-writing-kit.md
+python scripts/generate-output-style.py --output build/clear-writing-kit.md --check
 ```
 
-Without `--output`, the generator writes `~/.claude/output-styles/accurate-answer.md`. It does not select the output style in a conversation.
+Without `--output`, the generator writes `~/.claude/output-styles/clear-writing-kit.md`. It does not select the output style in a conversation.
 
 ### Verify changes
 
@@ -76,9 +78,15 @@ The text checker selects each README language section separately. It also checks
 
 Tests check generation, routing, failure handling, and protected content. They do not prove that an online account loaded the skill or that every future answer follows it. Japanese naturalness still needs review by a proficient reader.
 
-### Migrate the original skill
+### OKF knowledge for AI retrieval
 
-The original `skills/accurate-answer/` becomes `skills/coding-agent-writing/`. Update the selected skill in your installation manager, including ccync if it manages the installation. Do not install both names. Keep the existing Claude output-style name `accurate-answer`.
+Start at the [knowledge index](knowledge/index.md) to find writing rules by language, platform, and task. The generated `knowledge/` directory targets OKF v0.2. This retrieval bundle is not an installable skill package. The existing skill formats remain unchanged. Read the [OKF guide](docs/okf.md) for generation, validation, scope, and limitations. Search quality has not been benchmarked.
+
+### Migrate from accurate-answer
+
+The repository name changes from `accurate-answer` to `clear-writing-kit`. The skill names remain `coding-agent-writing` and `web-answer-writing` to identify their audiences. The original `skills/accurate-answer/` was replaced by `skills/coding-agent-writing/`. Update the selected skill through its existing installation manager, including ccync if applicable. Do not install both the original and replacement coding-agent skills.
+
+The Claude output-style name and generated filename also change to `clear-writing-kit`. Existing installations are not migrated automatically. Generate the new file, then select the new style in Claude Code. After confirming the replacement works, remove the old output style. This change does not rename your local checkout folder or the remote repository.
 
 This repository does not edit global agent settings. The [rule migration record](docs/rule-migration.md) explains where the original requirements now live. The [checker reference](docs/writing-checks.md) documents rule scope and examples.
 
@@ -86,7 +94,7 @@ This repository does not edit global agent settings. The [rule migration record]
 
 ### 用途與語言支援
 
-本儲存庫提供 coding agents 與 Web 助理使用的寫作規則。優先順序是準確、清楚、淺白。支援語言為 en-US、zh-TW 與 ja-JP。
+Clear Writing Kit 提供 coding agents 與 Web 助理使用的寫作規則。優先順序是準確、清楚、淺白。支援語言為 en-US、zh-TW 與 ja-JP。
 
 規則採用 ISO 24495-1 的讀者成果原則。英文另採部分 ASD-STE100 結構原則。本儲存庫不宣稱完全符合這兩項標準。
 
@@ -136,11 +144,11 @@ Gemini 文字保留你要求的日期與搜尋流程、直接語氣、不主動�
 產生並檢查 Claude 輸出樣式預覽：
 
 ```powershell
-python scripts/generate-output-style.py --output build/accurate-answer.md
-python scripts/generate-output-style.py --output build/accurate-answer.md --check
+python scripts/generate-output-style.py --output build/clear-writing-kit.md
+python scripts/generate-output-style.py --output build/clear-writing-kit.md --check
 ```
 
-若未指定 `--output`，產生器會寫入 `~/.claude/output-styles/accurate-answer.md`。產生器不會替對話選取輸出樣式。
+若未指定 `--output`，產生器會寫入 `~/.claude/output-styles/clear-writing-kit.md`。產生器不會替對話選取輸出樣式。
 
 ### 驗證變更
 
@@ -156,9 +164,15 @@ python -m unittest discover -s tests -v
 
 測試涵蓋產生、規則選擇、失敗處理與內容保護。測試不能證明線上帳號已載入技能，也不能保證未來每則回答都遵守規則。日文自然度仍需熟練讀者評閱。
 
-### 遷移原有技能
+### 供 AI 檢索的 OKF 知識包
 
-原本的 `skills/accurate-answer/` 改為 `skills/coding-agent-writing/`。請在安裝管理工具更新選用的技能。若由 ccync 管理，請使用 ccync 調整。不要同時安裝新舊兩個名稱。Claude 輸出樣式維持原本的 `accurate-answer` 名稱。
+從[知識索引](knowledge/index.md)依語言、平台與任務查找寫作規則。產生的 `knowledge/` 目錄採用 OKF v0.2，供檢索使用，不是可安裝的技能套件。既有技能格式維持不變。[OKF 說明](docs/okf.md)涵蓋產生方式、驗證、範圍與限制。目前尚未測量搜尋品質是否改善。
+
+### 從 accurate-answer 遷移
+
+儲存庫名稱由 `accurate-answer` 改為 `clear-writing-kit`。技能名稱維持 `coding-agent-writing` 與 `web-answer-writing`，用來區分適用對象。原本的 `skills/accurate-answer/` 已由 `skills/coding-agent-writing/` 取代。請在原有的安裝管理工具中更新技能選擇。若由 ccync 管理，請使用 ccync 調整。不要同時安裝新舊 coding-agent 技能。
+
+Claude 輸出樣式名稱與產生的檔名也改為 `clear-writing-kit`。既有安裝不會自動遷移。請先產生新檔案，再於 Claude Code 選取新樣式。確認新樣式正常後，才移除舊樣式。本次變更不會重新命名本機工作目錄或遠端儲存庫。
 
 本儲存庫不會修改全域代理程式設定。[規則遷移紀錄](docs/rule-migration.md)說明原本要求的新位置。[檢查器說明](docs/writing-checks.md)列出規則範圍與範例。
 
@@ -166,7 +180,7 @@ python -m unittest discover -s tests -v
 
 ### 目的と対応言語
 
-このリポジトリは、コーディングエージェントとWebアシスタント向けの文章規則を提供する。正確性、明確さ、平易さの順に優先する。対応言語はen-US、zh-TW、ja-JPである。
+Clear Writing Kitは、コーディングエージェントとWebアシスタント向けの文章規則を提供する。正確性、明確さ、平易さの順に優先する。対応言語はen-US、zh-TW、ja-JPである。
 
 ISO 24495-1の読者中心の原則を採用している。英語には、ASD-STE100の一部の構成原則も適用する。いずれの規格についても、完全準拠を表明するものではない。
 
@@ -216,11 +230,11 @@ Gemini用の文章は、日付確認と検索、簡潔な回答、不要な質�
 Claudeの出力スタイルを生成し、プレビューを確認する。
 
 ```powershell
-python scripts/generate-output-style.py --output build/accurate-answer.md
-python scripts/generate-output-style.py --output build/accurate-answer.md --check
+python scripts/generate-output-style.py --output build/clear-writing-kit.md
+python scripts/generate-output-style.py --output build/clear-writing-kit.md --check
 ```
 
-`--output` を省略すると、生成先は `~/.claude/output-styles/accurate-answer.md` になる。生成処理は、会話で使う出力スタイルを選択しない。
+`--output` を省略すると、生成先は `~/.claude/output-styles/clear-writing-kit.md` になる。生成処理は、会話で使う出力スタイルを選択しない。
 
 ### 変更内容の検証
 
@@ -236,8 +250,14 @@ python -m unittest discover -s tests -v
 
 テストでは、生成、規則の選択、失敗時の処理、内容の保護を確認する。オンラインアカウントでの読み込みや、将来の回答すべてが規則に従うことは証明しない。日本語の自然さは、習熟した読者による確認も必要である。
 
-### 既存スキルの移行
+### AI検索向けのOKF知識バンドル
 
-従来の `skills/accurate-answer/` は、`skills/coding-agent-writing/` に変わる。インストール管理ツールで、使用するスキルを更新する。ccyncで管理している場合は、ccync側で変更する。新旧のスキルを同時にインストールしない。Claudeの出力スタイル名は `accurate-answer` のままである。
+[知識索引](knowledge/index.md)から、言語、プラットフォーム、用途に応じた文章規則を探せる。生成される `knowledge/` はOKF v0.2形式の検索用バンドルである。インストール用のスキルパッケージではない。既存のスキル形式は変更しない。生成方法、検証、対象範囲、制限は[OKFの説明](docs/okf.md)を参照する。検索品質の改善は未測定である。
+
+### accurate-answerからの移行
+
+リポジトリ名は `accurate-answer` から `clear-writing-kit` に変わる。対象を区別するため、スキル名は `coding-agent-writing` と `web-answer-writing` のままとする。従来の `skills/accurate-answer/` は、`skills/coding-agent-writing/` に置き換わっている。既存のインストール管理ツールで、使用するスキルを更新する。ccyncで管理している場合は、ccync側で変更する。新旧のコーディングエージェント用スキルを同時にインストールしない。
+
+Claudeの出力スタイル名と生成ファイル名も `clear-writing-kit` に変わる。既存のインストールは自動移行されない。新しいファイルを生成し、Claude Codeで新しいスタイルを選択する。新しいスタイルの動作を確認してから、古いスタイルを削除する。この変更では、ローカルの作業フォルダーやリモートリポジトリの名前を変更しない。
 
 このリポジトリは、エージェントのグローバル設定を変更しない。[規則の移行記録](docs/rule-migration.md)に、元の要件の移行先を記載する。[検査ツールの説明](docs/writing-checks.md)には、規則の範囲と例を記載する。

@@ -3,9 +3,9 @@
 import argparse
 import sys
 from pathlib import Path
-from artifacts import render_claude
+from artifacts import PROJECT_NAME, render_claude
 
-DEFAULT_OUTPUT = Path.home() / ".claude" / "output-styles" / "accurate-answer.md"
+DEFAULT_OUTPUT = Path.home() / ".claude" / "output-styles" / (PROJECT_NAME + ".md")
 
 
 def main() -> int:

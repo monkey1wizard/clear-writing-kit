@@ -22,13 +22,20 @@ async function main() {
   const targets = [];
   const readme = path.join(root, "README.md");
   for (const section of readmeSections(fs.readFileSync(readme, "utf8"))) targets.push({ file: readme, ...section });
-  for (const folder of ["skills", "web-skills", "web-instructions", "docs", "scripts/templates", "writing/rules"]) {
+  for (const folder of ["skills", "web-skills", "web-instructions", "knowledge", "docs", "scripts/templates", "writing/rules"]) {
     const base = path.join(root, folder);
     if (!fs.existsSync(base)) continue;
     for (const file of filesUnder(base)) {
       const language = /(?:zh-TW|zhtw-checks)\.md$/.test(file) ? "zh-TW" : /ja-JP\.md$/.test(file) ? "ja-JP" : "en-US";
       const text = fs.readFileSync(file, "utf8");
-      const block = file.includes("web-instructions") ? text.match(/```text\n([\s\S]*?)\n```/) : null;
+      const block = /(?:web-instructions|knowledge[\\/]usage)/.test(file) ? text.match(/```text\n([\s\S]*?)\n```/) : null;
+      // Generated indexes mix locales. Check each non-English entry with its own profile.
+      if (folder === "knowledge" && path.basename(file) === "index.md") {
+        text.split("\n").forEach((line, lineOffset) => {
+          const locale = /\]\([^)]*ja-JP\.md\)/.test(line) ? "ja-JP" : /\]\([^)]*(?:zh-TW|zhtw-checks)\.md\)/.test(line) ? "zh-TW" : null;
+          if (locale) targets.push({ file, language: locale, text: line, lineOffset });
+        });
+      }
       targets.push({ file, language, text, lineOffset: 0 });
       if (block) targets.push({ file, language, text: block[1], lineOffset: text.slice(0, block.index + "```text\n".length).split("\n").length - 1 });
     }

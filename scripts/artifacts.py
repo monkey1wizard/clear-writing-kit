@@ -6,6 +6,8 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+PROJECT_NAME = "clear-writing-kit"
+PROJECT_TITLE = "Clear Writing Kit"
 CORE = Path("skills/coding-agent-writing")
 TEMPLATES = Path("scripts/templates")
 SHARED = ("accuracy", "en-US", "zh-TW", "ja-JP")
@@ -52,7 +54,7 @@ def render_web(root: Path = ROOT) -> dict[Path, str]:
         if platform == "chatgpt" and len(body) > 1500:
             raise ValueError(f"ChatGPT block exceeds the 1,500-character packaging budget: {len(body)}")
         outputs[Path("web-instructions") / (platform + ".md")] = (
-            "# " + ("ChatGPT Custom Instructions" if platform == "chatgpt" else "Instructions for Gemini")
+            "# " + PROJECT_TITLE + ": " + ("ChatGPT Custom Instructions" if platform == "chatgpt" else "Instructions for Gemini")
             + "\n\n" + stamp + "\nCopy only the text inside the block.\n\n"
             + f"Block length: {len(body)} characters. Check the limit shown by your account.\n\n"
             + "```text\n" + body + "\n```\n"
@@ -76,6 +78,6 @@ def render_claude(root: Path = ROOT) -> str:
     for name in (*SHARED, *LOCAL):
         body = re.sub(r"\[([^\]]+)\]\((?:references/)?" + re.escape(name) + r"\.md\)", r"[\1](#embedded-" + name.lower() + ")", body)
     return (
-        "---\nname: accurate-answer\ndescription: Coding-agent writing with local checks and en-US, zh-TW, and ja-JP guidance.\nkeep-coding-instructions: true\n---\n\n"
-        + "<!-- Source SHA-256: " + digest(root, paths) + " -->\n\n# Accurate Answer for Claude Code\n\n" + body
+        "---\nname: " + PROJECT_NAME + "\ndescription: Coding-agent writing with local checks and en-US, zh-TW, and ja-JP guidance.\nkeep-coding-instructions: true\n---\n\n"
+        + "<!-- Source SHA-256: " + digest(root, paths) + " -->\n\n# " + PROJECT_TITLE + " for Claude Code\n\n" + body
     )
