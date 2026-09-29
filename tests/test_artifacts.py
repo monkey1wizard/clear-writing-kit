@@ -14,7 +14,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from artifacts import CORE, WEB_SKILL, render_claude, render_web
+from artifacts import CORE, GEMINI_BLOCK_BUDGET, WEB_SKILL, persistent_core, render_claude, render_web, split_gemini_instructions
 
 import importlib.util
 spec = importlib.util.spec_from_file_location("web_generator", ROOT / "scripts/generate-web-artifacts.py")
@@ -141,6 +141,11 @@ class Artifacts(unittest.TestCase):
         self.assertIn("Do not proactively ask follow-up questions.", text)
         self.assertIn("Always reply in Traditional Chinese when I ask in Chinese.", text)
         self.assertIn("Never use `;` or `；`", text)
+        blocks = re.findall(r"```text\n(.*?)\n```", text, re.S)
+        self.assertGreater(len(blocks), 1)
+        self.assertTrue(all(len(block) <= GEMINI_BLOCK_BUDGET for block in blocks))
+        original = (ROOT / "scripts/templates/gemini.txt").read_text(encoding="utf-8").replace("{{core}}", persistent_core(ROOT)).strip()
+        self.assertEqual(" ".join(" ".join(blocks).split()), " ".join(original.split()))
         block = outputs[Path("web-instructions/chatgpt.md")].split("```text\n")[1].split("\n```")[0]
         self.assertLessEqual(len(block), 1500)
         for platform in ("chatgpt", "gemini"):
@@ -149,6 +154,10 @@ class Artifacts(unittest.TestCase):
             self.assertIn("For ja-JP documents, use plain forms", instructions)
             self.assertIn("Apply document style to documents drafted in chat.", instructions)
             self.assertIn("For ja-JP conversations, use polite text and lists.", instructions)
+
+    def test_gemini_split_rejects_oversized_sentence(self):
+        with self.assertRaisesRegex(ValueError, "exceeds packaging budget"):
+            split_gemini_instructions("A" * (GEMINI_BLOCK_BUDGET + 1))
 
     def test_readme_languages_have_equal_commands_and_local_links(self):
         text = (ROOT / "README.md").read_text(encoding="utf-8")

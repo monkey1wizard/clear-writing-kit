@@ -19,7 +19,7 @@ The guidance applies the reader outcomes of ISO 24495-1. English also uses selec
 | Coding-agent replies and documents | [coding-agent-writing](skills/coding-agent-writing/SKILL.md) | Install this folder through your agent's skill manager |
 | ChatGPT Web or Gemini Web skills | [web-answer-writing](web-skills/web-answer-writing/SKILL.md) | Upload the generated ZIP in a supported skill interface |
 | ChatGPT Custom Instructions | [chatgpt.md](web-instructions/chatgpt.md) | Paste only the text inside the block |
-| Instructions for Gemini | [gemini.md](web-instructions/gemini.md) | Paste only the text inside the block |
+| Instructions for Gemini | [gemini.md](web-instructions/gemini.md) | Add each numbered block as a separate instruction |
 | Claude Code output style | [generate-output-style.py](scripts/generate-output-style.py) | Generate the file, then select it in Claude Code |
 
 Only the coding-agent skill belongs in the local skill search path. The Web skill uses browser-session tools and bundled language references. The instruction files are account preferences, not another installed skill.
@@ -51,7 +51,7 @@ python scripts/generate-web-artifacts.py --update
 python scripts/generate-web-artifacts.py --output-dir build/web --archive-dir build/packages
 ```
 
-Upload `build/packages/web-answer-writing.zip`. Its root contains `SKILL.md`. For account instructions, copy the relevant block from `web-instructions/`. Read the limits displayed by your account. The ChatGPT block uses a conservative packaging budget of 1,500 characters.
+Upload `build/packages/web-answer-writing.zip`. Its root contains `SKILL.md`. For account instructions, copy the relevant text from `web-instructions/`. Add each numbered Gemini block as a separate instruction. Read the limits displayed by your account. The ChatGPT block uses a conservative packaging budget of 1,500 characters.
 
 The Gemini text preserves your request for date checks and search, direct tone, no-follow-up preference, and Taiwan-specific Chinese wording. It also requires an honest statement when search or date verification is unavailable. These files do not change online accounts.
 
@@ -105,7 +105,7 @@ Clear Writing Kit 提供 coding agents 與 Web 助理使用的寫作規則。優
 | coding-agent 回答與文件 | [coding-agent-writing](skills/coding-agent-writing/SKILL.md) | 使用代理程式的技能管理工具安裝此資料夾 |
 | ChatGPT Web 或 Gemini Web 技能 | [web-answer-writing](web-skills/web-answer-writing/SKILL.md) | 在支援技能的介面上傳產生的 ZIP |
 | ChatGPT 自訂指示 | [chatgpt.md](web-instructions/chatgpt.md) | 只貼上文字區塊內容 |
-| 給 Gemini 的指令 | [gemini.md](web-instructions/gemini.md) | 只貼上文字區塊內容 |
+| 給 Gemini 的指令 | [gemini.md](web-instructions/gemini.md) | 每個編號區塊各新增為一則指令 |
 | Claude Code 輸出樣式 | [generate-output-style.py](scripts/generate-output-style.py) | 產生檔案後，在 Claude Code 選取樣式 |
 
 本機技能搜尋路徑只放 coding-agent skill。Web skill 會讀取隨附的語言參考，並使用網站對話提供的工具。自訂指示是帳號偏好設定，不是另一個需要安裝的技能。
@@ -137,7 +137,7 @@ python scripts/generate-web-artifacts.py --update
 python scripts/generate-web-artifacts.py --output-dir build/web --archive-dir build/packages
 ```
 
-上傳 `build/packages/web-answer-writing.zip`。ZIP 根目錄包含 `SKILL.md`。設定帳號指示時，請複製 `web-instructions/` 中對應檔案的文字區塊。請以帳號介面顯示的限制為準。ChatGPT 文字採 1,500 字元的保守封裝上限。
+上傳 `build/packages/web-answer-writing.zip`。ZIP 根目錄包含 `SKILL.md`。設定帳號指示時，請複製 `web-instructions/` 中對應檔案的文字區塊。Gemini 的每個編號區塊須各新增為一則指令。請以帳號介面顯示的限制為準。ChatGPT 文字採 1,500 字元的保守封裝上限。
 
 Gemini 文字保留你要求的日期與搜尋流程、直接語氣、不主動追問，以及臺灣繁體中文用詞。若搜尋或日期查證不可用，指示會要求如實說明。這些檔案不會修改線上帳號。
 
@@ -191,7 +191,7 @@ ISO 24495-1の読者中心の原則を採用している。英語には、ASD-ST
 | コーディングエージェントの回答と文書 | [coding-agent-writing](skills/coding-agent-writing/SKILL.md) | エージェントのスキル管理ツールでフォルダーをインストールする |
 | ChatGPT WebとGemini Webのスキル | [web-answer-writing](web-skills/web-answer-writing/SKILL.md) | 対応するスキル画面で生成済みZIPをアップロードする |
 | ChatGPTのカスタム指示 | [chatgpt.md](web-instructions/chatgpt.md) | テキストブロックの内容だけを貼り付ける |
-| Geminiへの指示 | [gemini.md](web-instructions/gemini.md) | テキストブロックの内容だけを貼り付ける |
+| Geminiへの指示 | [gemini.md](web-instructions/gemini.md) | 番号付きブロックをそれぞれ別の指示として追加する |
 | Claude Codeの出力スタイル | [generate-output-style.py](scripts/generate-output-style.py) | ファイルを生成し、Claude Codeで選択する |
 
 ローカルのスキル検索先には、コーディングエージェント用のスキルだけを配置する。Web用スキルは、会話で使えるツールと同梱の言語資料を使用する。アカウントへの指示は、設定用の文章である。インストールするスキルではない。
@@ -223,7 +223,7 @@ python scripts/generate-web-artifacts.py --update
 python scripts/generate-web-artifacts.py --output-dir build/web --archive-dir build/packages
 ```
 
-`build/packages/web-answer-writing.zip` をアップロードする。ZIPのルートには `SKILL.md` がある。アカウントへの指示には、`web-instructions/` 内の対応するテキストブロックを使う。文字数の制限は、アカウントの画面で確認する。ChatGPT用の文章は、余裕を持たせて1,500文字以内に収める。
+`build/packages/web-answer-writing.zip` をアップロードする。ZIPのルートには `SKILL.md` がある。アカウントへの指示には、`web-instructions/` 内の対応するテキストブロックを使う。Geminiの番号付きブロックは、それぞれ別の指示として追加する。文字数の制限は、アカウントの画面で確認する。ChatGPT用の文章は、余裕を持たせて1,500文字以内に収める。
 
 Gemini用の文章は、日付確認と検索、簡潔な回答、不要な質問の省略、台湾の繁体字中国語という利用者の要件を維持する。検索や日付確認ができない場合は、その制限を明示する。これらのファイルは、オンラインアカウントを変更しない。
 
