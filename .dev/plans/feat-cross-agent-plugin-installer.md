@@ -406,7 +406,8 @@ Step 與任務的對應：Step 1 → T-01 到 T-03，Step 2 → T-04，Step 3 �
   - Acceptance: MCP client 只看到一個工具，並從它取得 zh-TW 結果。
   - Evidence: E + TP-03, TP-05.
 
-- [ ] T-03 — 讓 payload 能在 Node、Deno、Bun 上執行
+- [x] T-03 — 讓 payload 能在 Node、Deno、Bun 上執行 *(88e0fc9)*
+  - Commit: 88e0fc90b838af21f4b1c01f13ea57f2395b5fef
   - Targets: `writing/package.json`, `dist/`, `.dev/research/payload-spike.md`
   - Depends on: T-02
   - Change: 把建置擴充成依序嘗試、取第一個通過的配置：(1) 打包檔加同層的 `dist/dict/`（從 kuromoji 字典複製）。先找出並記錄已安裝的 kuromojin 版本，能用哪個選項或環境變數讓規則把字典路徑指向那裡；沒有這種機制時，配置 (1) 失敗。(2) 打包檔加只含正式相依套件的精簡 `dist/node_modules`。配置通過的條件是：TP-01 的一致性在 Node、Deno、Bun 上都成立，且三者的冷啟動都在 3 秒內。兩者都通過時，取較小的。commit `dist/`，並寫報告記錄配置、大小、冷啟動時間和執行環境版本。兩者都不通過時，不 commit 配置變更，寫報告並停止。

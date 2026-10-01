@@ -189,12 +189,12 @@ None
 ## Status
 
 Workflow: IMPLEMENT
-Step: 0 of 7
-Last activity: 2026-10-02 — T-02 converged; T-03 task-quality check passed against ordered payload layouts, parity, size, cold-start, and stop criteria.
-Next step: Fix T-03 standalone dictionary/payload layout, complete full runtime parity, and replace unverified STOP with reproducible timings. T-05 onward remain gated.
-Current Task: T-03
+Step: 1 of 7
+Last activity: 2026-10-02 — T-03 passed implement/test/audit. Layout 1 is selected; report records independent parity and timings.
+Next step: Converge T-03, then execute T-04 host capability survey.
+Current Task: —
 Task Base Commit: 95b1e25a5e1873c9108f9809977498b2db1a4aba
-Task Final Commit: 988eb41e4169c2e9adb7670c8f7ea2ce0db617bc
+Task Final Commit: 88e0fc90b838af21f4b1c01f13ea57f2395b5fef
 Test Retry Count: 1
 Review Retry Count: 0
 
@@ -259,7 +259,7 @@ T-03 evidence limit: layout 1 Deno cold start exceeded 3 s. Layout 2 was not bui
 
 #### Retry Handoff — T-03 / TEST
 
-- Status: OPEN
+- Status: RESOLVED
 - Problem: TP-04 failed. No standalone payload was delivered; isolated ja-JP crashes without repo node_modules. Layout 2 and full parity were untested. Independent Deno measurement did not reproduce the reported >3 s startup.
 - Evidence:
   - Test Results: T-03 2026-10-02 FAIL. TP-04 failed; TP-05 passed. Deno 2.9.7 uncached 948 ms, warm 230–252 ms.
@@ -270,9 +270,17 @@ T-03 evidence limit: layout 1 Deno cold start exceeded 3 s. Layout 2 was not bui
      - Result: Isolated Japanese check cannot find kuromoji. No full parity evidence. STOP conclusion not supported by independent timings.
      - Validation: T-03-test.receipt.md; completed test session ee6defa3-dffb-477f-a132-dfe734e3220a.
      - Commit: 988eb41e4169c2e9adb7670c8f7ea2ce0db617bc
-- Next human step: No human action required below retry ceiling. Implement the first passing standalone layout in the existing ordered contract. Set KUROMOJIN_DIC_PATH for sibling dict if supported, remove clone-dependent runtime paths, and run all parity fixtures on all three runtimes from an isolated payload directory. Measure fresh runtime processes consistently without counting orchestrator shell startup. Build layout 2 if layout 1 fails. Preserve failed-attempt observations in the report and distinguish them from corrected measurements.
+- Next human step: Resolved by fix 88e0fc9 and independent retest: 198/198 isolated payload parity checks passed across Node, Deno, and Bun. All measured startup runs were below 3 s; build reproducibility passed. Layout 1 satisfies the gate, so layout 2 is unnecessary under the ordered selection contract.
 
 Dispatch: phase=test task=T-03 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=ee6defa3-dffb-477f-a132-dfe734e3220a log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-03/1790877850-188486700-000000-T-03-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
+
+Dispatch: phase=implement task=T-03 role=CODER executor=codex model=gpt-6-luna state=completed session_id=01a0f8a9-2fb6-7330-aff7-22267c2beb22 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-03/1790878232-041216700-000000-T-03-implement-codex.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+Fix commit 88e0fc9 delivers sibling dict with KUROMOJIN_DIC_PATH resolved from the bundle URL, no clone-dependent runtime paths, and corrected timings. Node 225 ms, Deno 216 ms, Bun 250 ms for representative finding samples. Full fixture parity remains for independent testing. Pre-commit and committed-range boundaries pass; worktree was clean before this test cursor update.
+
+Dispatch: phase=test task=T-03 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=8b2e6306-5725-45dc-b0f8-21b71296413c log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-03/1790878706-871314800-000000-T-03-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
+
+Dispatch: phase=audit task=T-03 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=770ccbdb-e8f7-4be7-be2d-e25626ddc290 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-03/1790879626-787744300-000000-T-03-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
 
 ## Tasks
 
@@ -309,7 +317,8 @@ Steps map to tasks as follows: Step 1 → T-01 to T-03, Step 2 → T-04, Step 3 
   - Acceptance: An MCP client lists one tool and gets zh-TW findings from it.
   - Evidence: E + TP-03, TP-05.
 
-- [ ] T-03 — Make the payload run on Node, Deno, and Bun
+- [x] T-03 — Make the payload run on Node, Deno, and Bun *(88e0fc9)*
+  - Commit: 88e0fc90b838af21f4b1c01f13ea57f2395b5fef
   - Targets: `writing/package.json`, `dist/`, `.dev/research/payload-spike.md`
   - Depends on: T-02
   - Change: Extend the build to the first layout that passes, in this order: (1) bundle plus a sibling `dist/dict/` copied from the kuromoji dictionary, after finding and recording how the installed kuromojin version lets the rules point their dictionary path there through an option or environment variable; layout (1) fails if no such mechanism exists; (2) bundle plus a pruned production-only `dist/node_modules`. A layout passes when TP-01 parity holds on Node, Deno, and Bun and cold start is under 3 s on each. If both pass, take the smaller. Commit `dist/` and write the report with layout, size, cold-start times, and runtime versions. If neither passes, commit no layout change, write the report, and stop.
@@ -536,6 +545,30 @@ Evidence: npm --prefix writing run build matches dist/ (TP-05: 0 diff). TP-04 fa
 
 - Layout 2 was not tested because the implementer did not build the pruned vendored `node_modules` layout.
 - Standalone multi-runtime parity on an isolated payload was not tested because no self-contained dictionary or dependency layout was committed to `dist/`.
+
+### [T-03] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 2 | Passed: 2 | Failed: 0 | Skipped: 0
+Verdict: PASS
+Evidence: npm --prefix writing run build matches committed dist/ (TP-05: 0 diff); multi-runtime test suite on isolated payload confirms full TP-01 parity across Node 25.2.1, Deno 2.9.7, and Bun 1.3.12 (198/198 passed: 66/66 per runtime) with cold starts under 500 ms (Node avg 228 ms / 424 ms JA, Deno avg 225 ms / 494 ms JA, Bun 257 ms / 486 ms JA), and .dev/research/payload-spike.md records layout evaluation, size, timings, and runtime versions (TP-04).
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-04: Multi-runtime payload parity on Node, Deno, Bun with cold start < 3 s and complete spike report | Yes | PASS | 198/198 checks passed across Node 25.2.1, Deno 2.9.7, and Bun 1.3.12 (66 checks per runtime) executing standalone payload from isolated directory outside repo. Cold start measured across 5 runs each: sample text Node avg 228 ms (222–236 ms), Deno avg 225 ms (219–235 ms), Bun avg 257 ms (251–264 ms); Japanese dictionary load Node avg 424 ms (414–448 ms), Deno avg 494 ms (487–502 ms), Bun avg 486 ms (476–495 ms), all well within 3 s budget. Spike report verified for layout order, size (25,149,965 bytes total), runtime versions, timings, and kuromojin mechanism. |
+| TP-05: Committed `dist/` equals fresh `npm --prefix writing run build` | Yes | PASS | Clean build executed; `git status --porcelain dist/` produced 0 diff against committed payload |
+
+#### Failed Tests
+
+- None. All covering tests passed.
+
+#### Not Tested
+
+- None. All covering test plan rows for T-03 (TP-04, TP-05) were directly tested.
 ## Review Results
 
 ### Architecture Review
@@ -620,6 +653,27 @@ The audit reviewed T-01 changes covering bundled `cwk check` implementation acro
 #### Summary
 
 The audit evaluated T-02 changes implementing the stdio MCP server in `src/mcp.ts`, CLI entrypoint in `src/cli.ts`, and the compiled bundle in `dist/cwk.mjs`. The server registers exactly one tool named `lintText` using `@modelcontextprotocol/server`. Input parameters are strictly validated with a Zod schema covering `text`, `language`, `genre`, and optional `filename`. No file system reading, file writing, shell execution, or auto-fix tools are exposed. Tool errors are captured safely within a try-catch block and returned as structured MCP errors without crashing the server. Profile instances remain cached in process memory and avoid redundant re-initialization. No deep performance bottlenecks, OWASP Top 10 vulnerabilities, or STRIDE security risks were identified.
+
+#### Open Findings
+
+- None.
+
+#### Remediation Tracking
+
+| Finding | Severity | Status |
+| --- | --- | --- |
+| None | None | CLEAR |
+
+<!-- AUDIT_REVIEW: CLEAR -->
+
+### [T-03] 2026-10-02
+
+**Date:** 2026-10-02
+**Findings:** 0 total — 0 critical, 0 high, 0 medium, 0 low
+
+#### Summary
+
+The audit evaluated T-03 changes covering runtime portability, dictionary bundling, and build configuration across writing/package.json, dist/cwk.mjs, dist/dict/, and .dev/research/payload-spike.md. The build configuration pins esbuild and @modelcontextprotocol/server as exact dependencies. The bundle banner sets KUROMOJIN_DIC_PATH to a sibling dictionary path via import.meta.url. This path resolution eliminates runtime dependencies on the repository node_modules directory. The banner executes pure URL path resolution in memory with no hot-path synchronous file system I/O. The dictionary files contain static gzipped binary data copied directly from kuromoji. The payload introduces no dynamic code evaluation, network calls, or privilege boundary crossings. The review identified no deep performance bottlenecks, OWASP Top 10 vulnerabilities, or STRIDE security risks.
 
 #### Open Findings
 
