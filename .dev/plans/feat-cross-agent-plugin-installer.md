@@ -430,7 +430,8 @@ Step 與任務的對應：Step 1 → T-01 到 T-03，Step 2 → T-04，Step 3 �
   - Acceptance: 產生器只寫入 repo 內的檔案，Python 測試通過。
   - Evidence: E + TP-07, TP-10.
 
-- [ ] T-06 — 交付產生出來的指令區塊
+- [x] T-06 — 交付產生出來的指令區塊 *(c6e86b3)*
+  - Commit: c6e86b3c5572f364ef47c5a465b59d036ffa1da7
   - Targets: `scripts/artifacts.py`, `scripts/generate-agents-block.py`, `install/agents-block.md`, `tests/test_artifacts.py`
   - Depends on: T-03
   - Change: 在 `artifacts.py` 新增 `render_agents_block()`。它從 `skills/coding-agent-writing/SKILL.md` 的 metadata 讀取 skill 版本，輸出開始和結束標記、`persistent_core()` 的核心規則、skill 名稱、`lintText` 工具，以及備用指令 `<runtime command> <home>/.clear-writing-kit/cwk.mjs check`。備用指令要列出 `node`、`deno run -A`、`bun` 三種形式，並要求把 `<home>` 換成實際路徑。仿照 `generate-output-style.py` 新增 `generate-agents-block.py`，預設輸出 `install/agents-block.md`，支援 `--check`。區塊達到 2,048 位元組時丟出錯誤。新增測試。

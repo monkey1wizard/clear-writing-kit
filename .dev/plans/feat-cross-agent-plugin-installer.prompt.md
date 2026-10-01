@@ -188,13 +188,13 @@ None
 
 ## Status
 
-Workflow: TEST
-Step: 2 of 7
-Last activity: 2026-10-02 — T-05 converged. T-06 task-quality check passed: source version, core rules, markers, runtime/home placeholders, generator check, and strict byte-size limit are specified.
-Next step: Independently retest TP-08 marker, template, generation parity, and size after fix 9dad332. TP-09 remains mandatory at T-09.
-Current Task: T-06
+Workflow: IMPLEMENT
+Step: 3 of 7
+Last activity: 2026-10-02 — T-06 committed generator tests and audit passed. TP-09 remains pending the T-09 apply prerequisite.
+Next step: Converge T-06, then execute T-07 plugin manifests.
+Current Task: —
 Task Base Commit: 1a9bdc3663c36f525184cdd145539c63de301739
-Task Final Commit: 9dad33216260a24d14bdf2cda591034027e410dc
+Task Final Commit: c6e86b3c5572f364ef47c5a465b59d036ffa1da7
 Test Retry Count: 1
 Review Retry Count: 0
 
@@ -329,7 +329,7 @@ Dispatch: phase=implement task=T-06 role=CODER executor=codex model=gpt-6-luna s
 
 #### Retry Handoff — T-06 / TEST
 
-- Status: OPEN
+- Status: RESOLVED
 - Problem: TP-08 failed. Begin marker omits v=2.0.0 and fallback instructions omit <runtime command>.
 - Evidence:
   - Test Results: T-06 2026-10-02 FAIL. Generator check, 1,504-byte size, oversize error, source-version drift, and other content checks passed. TP-09 NotRun pending T-09.
@@ -340,11 +340,19 @@ Dispatch: phase=implement task=T-06 role=CODER executor=codex model=gpt-6-luna s
      - Result: Wrong begin marker and absent required runtime placeholder.
      - Validation: T-06-test.receipt.md, completed session 5e1fa40d-5699-4d8e-8baf-496ee998da6b.
      - Commit: 3fa88ec1141e50b46160955b96a2b7f0f323e566
-- Next human step: No human action required below retry ceiling. Render the exact marker <!-- clear-writing-kit:begin v=<version> --> from source skill metadata. Include the exact fallback template <runtime command> <home>/.clear-writing-kit/cwk.mjs check and retain all three runtime command forms and home-resolution instruction. Regenerate the committed block and strengthen the focused tests to assert those source requirements.
+- Next human step: Resolved by fix 9dad332, committed independent tests c6e86b3, and independent TP-08 PASS on that commit. TP-09 remains pending the T-09 apply prerequisite.
 
 Dispatch: phase=test task=T-06 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=5e1fa40d-5699-4d8e-8baf-496ee998da6b log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-06/1790882023-118497700-000000-T-06-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
 
 Dispatch: phase=implement task=T-06 role=CODER executor=codex model=gpt-6-luna state=completed session_id=01a0f8e6-0280-72b1-9209-1d6073ee9c7a log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-06/1790882218-248806100-000000-T-06-implement-codex.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+Dispatch: phase=test task=T-06 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=a2efe5ad-fb42-43d1-b06e-e84f224a390c log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-06/1790882318-231297100-000000-T-06-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
+
+Independent test code from the passing retest was committed as c6e86b3. Runtime/generator implementation remains 9dad332. Recheck the committed test suite and existing TP-08 probes without unnecessary new test changes. TP-09 remains pending T-09.
+
+Dispatch: phase=test task=T-06 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=bb4c8238-e5cb-4a0b-9548-9fb63921fd68 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-06/1790882520-803870800-000000-T-06-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
+
+Dispatch: phase=audit task=T-06 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=999fa6c6-d633-4218-ba4e-6f200f3b261a log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-06/1790882661-460499100-000000-T-06-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
 
 ## Tasks
 
@@ -405,7 +413,8 @@ Steps map to tasks as follows: Step 1 → T-01 to T-03, Step 2 → T-04, Step 3 
   - Acceptance: The generator writes only the repository file, and Python tests pass.
   - Evidence: E + TP-07, TP-10.
 
-- [ ] T-06 — Ship the generated instruction block
+- [x] T-06 — Ship the generated instruction block *(c6e86b3)*
+  - Commit: c6e86b3c5572f364ef47c5a465b59d036ffa1da7
   - Targets: `scripts/artifacts.py`, `scripts/generate-agents-block.py`, `install/agents-block.md`, `tests/test_artifacts.py`
   - Depends on: T-03
   - Change: Add `render_agents_block()` to `artifacts.py`. It reads the skill version from `skills/coding-agent-writing/SKILL.md` metadata and emits the begin and end markers, the core rules from `persistent_core()`, the skill name, the `lintText` tool, and the fallback command `<runtime command> <home>/.clear-writing-kit/cwk.mjs check`, listing the forms `node`, `deno run -A`, and `bun`, with an instruction to resolve `<home>`. Add `generate-agents-block.py` following the `generate-output-style.py` pattern, with default output `install/agents-block.md` and `--check`. Raise an error at 2,048 bytes or more. Add tests.
@@ -788,6 +797,30 @@ Evidence: Python test suite and CLI checks verify python scripts/generate-agents
 #### Not Tested
 
 - `TP-09: Fallback command execution after install apply` — Not run during T-06 because `cwk install apply` has not yet been implemented (scheduled for T-09). The dependency limit is preserved as mandatory at T-09.
+
+### [T-06] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 2 | Passed: 1 | Failed: 0 | Skipped: 1
+Verdict: PASS
+Evidence: python scripts/generate-agents-block.py --check passes on committed install/agents-block.md (1,504 bytes < 2,048 budget), python -m unittest discover -s tests -v passes all 16 tests, and TP-08 assertions hold on committed HEAD c6e86b3.
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-08: Instruction block generation, check mode, marker bounds, and size limit | Yes | PASS | `python scripts/generate-agents-block.py --check` passes on `install/agents-block.md` (1,504 bytes < 2,048 limit); markers `<!-- clear-writing-kit:begin v=2.0.0 -->` and `<!-- clear-writing-kit:end -->` verified; required tokens (`coding-agent-writing`, `lintText`, `node`, `deno run -A`, `bun`, `<runtime command> <home>/.clear-writing-kit/cwk.mjs check`, `Resolve <home>`, persistent core) present; no drive letters or host user paths; check fails on stale content and version drift |
+| TP-09: Fallback command execution in cmd.exe and PowerShell on fixture home | No | Skipped | NotRun pending T-09 (`cwk install apply`); plan dependency limit: fallback execution requires applied launcher on fixture home |
+
+#### Failed Tests
+
+- None. All covering executable tests for T-06 passed.
+
+#### Not Tested
+
+- `TP-09`: Deferred to T-09 in accordance with plan dependency limit ("T-06 dependency limit: TP-09 exercises fallback commands after apply and also covers T-09. Preserve it as mandatory at T-09 if install apply is unavailable during T-06. Do not claim it ran before its prerequisite exists.").
 ## Review Results
 
 ### Architecture Review
@@ -935,6 +968,27 @@ The audit evaluated T-04 changes recording surveyed host capabilities across `sr
 #### Summary
 
 The audit evaluated T-05 changes scoping Claude Code output style generation to the repository workspace across `scripts/generate-output-style.py`, `output-styles/clear-writing-kit.md`, and `tests/test_artifacts.py`. Updating `DEFAULT_OUTPUT` to `ROOT / "output-styles" / (PROJECT_NAME + ".md")` eliminates unexpected side effects against the host user's home directory (`~/.claude`), ensuring generator executions without arguments remain strictly confined to repository boundaries. The committed output style matches `render_claude()` byte-for-byte, verified deterministically via `--check` and unit tests. Path resolution uses standard `pathlib.Path` operations without shell execution or dynamic evaluation. No unbounded data loading, hot-path sync I/O, OWASP Top 10 vulnerabilities, or STRIDE security threats were identified.
+
+#### Open Findings
+
+- None.
+
+#### Remediation Tracking
+
+| Finding | Severity | Status |
+| --- | --- | --- |
+| None | None | CLEAR |
+
+<!-- AUDIT_REVIEW: CLEAR -->
+
+### [T-06] 2026-10-02
+
+**Date:** 2026-10-02
+**Findings:** 0 total — 0 critical, 0 high, 0 medium, 0 low
+
+#### Summary
+
+The audit evaluated T-06 changes implementing the agent instruction block generator across `scripts/artifacts.py`, `scripts/generate-agents-block.py`, `install/agents-block.md`, and `tests/test_artifacts.py`. Function `render_agents_block()` extracts the version from `skills/coding-agent-writing/SKILL.md` frontmatter, verifies the byte budget under 2,048 bytes, and formats markers with persistent core rules. The generated block uses the portable placeholder `<home>` to prevent leaking local environment paths. Script `generate-agents-block.py` defaults safely to `install/agents-block.md` inside the repository and supports deterministic integrity verification via `--check`. The generator runs offline without dynamic code evaluation or remote network access. The review identified no deep performance bottlenecks, OWASP Top 10 vulnerabilities, or STRIDE security risks.
 
 #### Open Findings
 

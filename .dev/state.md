@@ -37,7 +37,7 @@
 
 | Plan | Source Plan | Last Session | Stopped At | Next Step | Context |
 | --- | --- | --- | --- | --- | --- |
-| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-05 generator/test/audit passed, f2ce410 | T-05 convergence, then T-06 | TP-07 PASS, Python 12/12; AUDIT_REVIEW: CLEAR; TP-10 NotRun pending T-07 manifests; no plugin-install success claimed |
+| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-06 generator/test/audit passed, c6e86b3 | T-06 convergence, then T-07 | TP-08 PASS, Python 16/16; AUDIT_REVIEW: CLEAR; TP-09 pending T-09 apply; TP-10 pending T-07 manifests |
 
 ## Session Execution Context
 
