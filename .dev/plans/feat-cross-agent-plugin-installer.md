@@ -398,7 +398,8 @@ Step 與任務的對應：Step 1 → T-01 到 T-03，Step 2 → T-04，Step 3 �
   - Acceptance: 在 Node 上，`dist/cwk.mjs check` 對現有測試案例的結果與 `writing/check.cjs` 相同，每個 profile 只載入一次。
   - Evidence: E + TP-01, TP-02, TP-05, TP-31.
 
-- [ ] T-02 — 交付只有一個 `lintText` 工具的 `cwk mcp` server
+- [x] T-02 — 交付只有一個 `lintText` 工具的 `cwk mcp` server *(46216a1)*
+  - Commit: 46216a1ba9bdae1ce262ba77c6f2c2acf400d177
   - Targets: `src/mcp.ts`, `src/cli.ts`, `dist/`
   - Depends on: T-01
   - Change: 在 `@modelcontextprotocol/server` 上建立 stdio MCP server，只有一個工具 `lintText`。輸入 schema 有 `text`、`language` 和 `genre` 列舉，以及選填的 `filename`。它呼叫 `src/check.ts` 的 `lintText`，以結構化內容回傳結果。驗證錯誤轉成 MCP 錯誤。新增 `mcp` 子指令。不提供讀檔或修正工具。重新建置 `dist/`。

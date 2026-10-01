@@ -191,10 +191,10 @@ None
 Workflow: IMPLEMENT
 Step: 0 of 7
 Last activity: 2026-10-02 — T-01 converged; T-02 task-quality check passed against its single-tool MCP contract.
-Next step: Implement T-02 single-tool stdio MCP server.
-Current Task: T-02
+Next step: Converge T-02, then execute T-03 runtime payload feasibility gate.
+Current Task: —
 Task Base Commit: 1028e0356c4d9f398c000346d53fa4d053ec3e96
-Task Final Commit: —
+Task Final Commit: 46216a1ba9bdae1ce262ba77c6f2c2acf400d177
 Test Retry Count: 0
 Review Retry Count: 0
 
@@ -247,6 +247,12 @@ Dispatch: phase=test task=T-01 role=TESTER executor=agy model=gemini-3.8-flash s
 
 Dispatch: phase=audit task=T-01 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=1dea1239-e64d-4f8c-9fb6-d99be6bd3b8c log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-01/1790876586-925505000-000000-T-01-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
 
+Dispatch: phase=implement task=T-02 role=CODER executor=codex model=gpt-6-luna state=completed session_id=01a0f894-2123-7430-b5ec-6117f5fd0a04 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-02/1790876852-046196000-000000-T-02-implement-codex.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+Dispatch: phase=test task=T-02 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=60695da4-d4a9-4130-b5f4-02bb8498d80e log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-02/1790877039-795457400-000000-T-02-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
+
+Dispatch: phase=audit task=T-02 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=666f9914-9c10-4ad9-9237-f7fbd96f0d62 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-02/1790877245-545652200-000000-T-02-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
+
 ## Tasks
 
 Each task is one deliverable behavior that the owner can review as one commit. Tasks are not split by file or by language, and no task only runs checks. This follows the owner's refining rules, which take precedence over GAL's single-file preference. Blast radius per task is listed in Targets.
@@ -274,7 +280,8 @@ Steps map to tasks as follows: Step 1 → T-01 to T-03, Step 2 → T-04, Step 3 
   - Acceptance: `dist/cwk.mjs check` matches `writing/check.cjs` on Node for the existing test cases, and each profile loads once.
   - Evidence: E + TP-01, TP-02, TP-05, TP-31.
 
-- [ ] T-02 — Ship the `cwk mcp` server with one `lintText` tool
+- [x] T-02 — Ship the `cwk mcp` server with one `lintText` tool *(46216a1)*
+  - Commit: 46216a1ba9bdae1ce262ba77c6f2c2acf400d177
   - Targets: `src/mcp.ts`, `src/cli.ts`, `dist/`
   - Depends on: T-01
   - Change: Build an stdio MCP server on `@modelcontextprotocol/server` with one tool, `lintText`. Its input schema has `text`, the `language` and `genre` enums, and optional `filename`. It calls `lintText` from `src/check.ts` and returns findings as structured content. Validation errors become MCP errors. Add the `mcp` subcommand. Expose no file-reading or fix tools. Rebuild `dist/`.
@@ -459,6 +466,30 @@ Evidence: npm --prefix writing run build matches dist/ (TP-05: 0 diff), node pro
 #### Not Tested
 
 - None. All covering test plan rows for T-01 (TP-01, TP-02, TP-05, TP-31) were directly tested.
+
+### [T-02] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 2 | Passed: 2 | Failed: 0 | Skipped: 0
+Verdict: PASS
+Evidence: npm --prefix writing run build matches dist/ (TP-05: 0 diff); stdio JSON-RPC probes against dist/cwk.mjs mcp verify single tool lintText with required (text, language, genre) and optional filename, zh-TW findings in structuredContent, MCP errors on invalid enum options, and absence of file-reading or fix tools (TP-03).
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-03: MCP client against `dist/cwk.mjs mcp` lists single tool `lintText`, gets zh-TW findings, and returns MCP errors on invalid enums | Yes | PASS | 11/11 probes passed: single tool exposed, inputSchema verified, no file-reading/fix tools, zh-TW returns structured findings, invalid language/genre enums return `isError: true` validation errors, optional filename accepted |
+| TP-05: Committed `dist/` equals fresh `npm --prefix writing run build` | Yes | PASS | Clean build; `git status --porcelain dist/` produced 0 diff |
+
+#### Failed Tests
+
+- None. All 2 covering tests passed.
+
+#### Not Tested
+
+- None. All covering test plan rows for T-02 (TP-03, TP-05) were directly tested.
 ## Review Results
 
 ### Architecture Review
@@ -522,6 +553,27 @@ Verdict: CLEAR (STAGE 3.5, golem-architect, 2026-10-02).
 #### Summary
 
 The audit reviewed T-01 changes covering bundled `cwk check` implementation across `src/rules.ts`, `src/check.ts`, `src/cli.ts`, `writing/package.json`, and `dist/cwk.mjs`. Profile compilation and caching are bounded to 6 static profiles in process memory with no dynamic module resolution or code evaluation. CLI input handling rejects all configuration and rule overrides to prevent profile tampering. The rejected flags include `--config`, `--rule`, `--rulesdir`, and `-c`. File reading and stdin handling execute asynchronously with proper exit codes of 0, 1, and 2. The execution path contains no privileged operations and leaks no credentials. The review identified no deep performance bottlenecks and no OWASP Top 10 or STRIDE security vulnerabilities.
+
+#### Open Findings
+
+- None.
+
+#### Remediation Tracking
+
+| Finding | Severity | Status |
+| --- | --- | --- |
+| None | None | CLEAR |
+
+<!-- AUDIT_REVIEW: CLEAR -->
+
+### [T-02] 2026-10-02
+
+**Date:** 2026-10-02
+**Findings:** 0 total — 0 critical, 0 high, 0 medium, 0 low
+
+#### Summary
+
+The audit evaluated T-02 changes implementing the stdio MCP server in `src/mcp.ts`, CLI entrypoint in `src/cli.ts`, and the compiled bundle in `dist/cwk.mjs`. The server registers exactly one tool named `lintText` using `@modelcontextprotocol/server`. Input parameters are strictly validated with a Zod schema covering `text`, `language`, `genre`, and optional `filename`. No file system reading, file writing, shell execution, or auto-fix tools are exposed. Tool errors are captured safely within a try-catch block and returned as structured MCP errors without crashing the server. Profile instances remain cached in process memory and avoid redundant re-initialization. No deep performance bottlenecks, OWASP Top 10 vulnerabilities, or STRIDE security risks were identified.
 
 #### Open Findings
 

@@ -37,7 +37,7 @@
 
 | Plan | Source Plan | Last Session | Stopped At | Next Step | Context |
 | --- | --- | --- | --- | --- | --- |
-| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-01 implement/test/audit passed, dd7f4ff | T-01 convergence, then T-02 | Test 4/4 PASS, parity 76/76, AUDIT_REVIEW: CLEAR; owner .gitignore retained; generated evidence uses local exclude |
+| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-02 implement/test/audit passed, 46216a1 | T-02 convergence, then T-03 | MCP probes 11/11 PASS; tests 2/2 PASS; AUDIT_REVIEW: CLEAR; owner .gitignore retained; generated evidence uses local exclude |
 
 ## Session Execution Context
 
