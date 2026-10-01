@@ -33,14 +33,15 @@ agents_spec.loader.exec_module(agents_generator)
 class Artifacts(unittest.TestCase):
     def test_agents_block_has_required_content_and_byte_limit(self):
         block = render_agents_block()
-        self.assertTrue(block.startswith("<!-- clear-writing-kit:begin -->\n"))
+        skill = (ROOT / CORE / "SKILL.md").read_text(encoding="utf-8")
+        version = re.search(r"^  version:\s*([^\s]+)\s*$", skill, re.M).group(1)
+        self.assertTrue(block.startswith(f"<!-- clear-writing-kit:begin v={version} -->\n"))
         self.assertTrue(block.endswith("<!-- clear-writing-kit:end -->\n"))
         self.assertLess(len(block.encode("utf-8")), AGENTS_BLOCK_BUDGET)
         for expected in (
             "2.0.0", "coding-agent-writing", "lintText",
-            "node <home>/.clear-writing-kit/cwk.mjs check",
-            "deno run -A <home>/.clear-writing-kit/cwk.mjs check",
-            "bun <home>/.clear-writing-kit/cwk.mjs check",
+            "`node`", "`deno run -A`", "`bun`",
+            "`<runtime command> <home>/.clear-writing-kit/cwk.mjs check`",
             "Resolve `<home>`", persistent_core(ROOT),
         ):
             self.assertIn(expected, block)

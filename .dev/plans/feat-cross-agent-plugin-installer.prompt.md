@@ -191,11 +191,11 @@ None
 Workflow: IMPLEMENT
 Step: 2 of 7
 Last activity: 2026-10-02 — T-05 converged. T-06 task-quality check passed: source version, core rules, markers, runtime/home placeholders, generator check, and strict byte-size limit are specified.
-Next step: Implement T-06 generated instruction block.
+Next step: Fix T-06 begin-marker version and runtime-command placeholder, then independently retest TP-08. TP-09 remains mandatory at T-09.
 Current Task: T-06
 Task Base Commit: 1a9bdc3663c36f525184cdd145539c63de301739
-Task Final Commit: —
-Test Retry Count: 0
+Task Final Commit: 3fa88ec1141e50b46160955b96a2b7f0f323e566
+Test Retry Count: 1
 Review Retry Count: 0
 
 ### Deviations
@@ -324,6 +324,25 @@ T-05 independent test: TP-07 PASS, 12/12 Python artifact tests. TP-10 NotRun unt
 Dispatch: phase=audit task=T-05 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=077760cf-ae58-4ffe-9dc7-f2cce13ab170 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-05/1790881692-693388100-000000-T-05-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
 
 T-06 dependency limit: TP-09 exercises fallback commands after apply and also covers T-09. Preserve it as mandatory at T-09 if install apply is unavailable during T-06. Do not claim it ran before its prerequisite exists.
+
+Dispatch: phase=implement task=T-06 role=CODER executor=codex model=gpt-6-luna state=completed session_id=01a0f8e0-b19d-77e2-b76d-c2286d08a028 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-06/1790881869-838343300-000000-T-06-implement-codex.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+#### Retry Handoff — T-06 / TEST
+
+- Status: OPEN
+- Problem: TP-08 failed. Begin marker omits v=2.0.0 and fallback instructions omit <runtime command>.
+- Evidence:
+  - Test Results: T-06 2026-10-02 FAIL. Generator check, 1,504-byte size, oversize error, source-version drift, and other content checks passed. TP-09 NotRun pending T-09.
+  - Review Results: not-applicable
+  - Security Review: not-applicable
+- Attempts:
+  1. 2026-10-02 — Tested implementation commit 3fa88ec.
+     - Result: Wrong begin marker and absent required runtime placeholder.
+     - Validation: T-06-test.receipt.md, completed session 5e1fa40d-5699-4d8e-8baf-496ee998da6b.
+     - Commit: 3fa88ec1141e50b46160955b96a2b7f0f323e566
+- Next human step: No human action required below retry ceiling. Render the exact marker <!-- clear-writing-kit:begin v=<version> --> from source skill metadata. Include the exact fallback template <runtime command> <home>/.clear-writing-kit/cwk.mjs check and retain all three runtime command forms and home-resolution instruction. Regenerate the committed block and strengthen the focused tests to assert those source requirements.
+
+Dispatch: phase=test task=T-06 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=5e1fa40d-5699-4d8e-8baf-496ee998da6b log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-06/1790882023-118497700-000000-T-06-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
 
 ## Tasks
 
@@ -718,6 +737,31 @@ Evidence: Python probes and unit test suite confirm scripts/generate-output-styl
 #### Not Tested
 
 - `TP-10: Multi-host plugin installation and listing` — Not tested during T-05 because plugin manifests (.claude-plugin/plugin.json, .codex-plugin/plugin.json) are scheduled for implementation and test in T-07.
+
+### [T-06] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 2 | Passed: 0 | Failed: 1 | Skipped: 1
+Verdict: FAIL
+Evidence: Python probes verify generator --check, size budget (<2048 bytes), skill version drift detection, and home instruction, but TP-08 fails because the begin marker in install/agents-block.md omits v=2.0.0 and the block text omits the fallback placeholder <runtime command>; TP-09 is skipped pending T-09 install apply.
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-08: `python scripts/generate-agents-block.py --check` passes on committed `install/agents-block.md`. Block starts with `<!-- clear-writing-kit:begin v=2.0.0 -->`, ends with `<!-- clear-writing-kit:end -->`, under 2,048 bytes, names `coding-agent-writing`, `lintText`, fallback command with `<runtime command>` and `<home>`, no drive/user paths. Changed skill version fails `--check`. | Yes | FAIL | Generator `--check` passes on clean repo; 1,504 bytes is under 2,048 budget; oversize raises ValueError; version drift fails `--check`; ends with end marker; names skill, `lintText`, `<home>`, and runtime forms without machine paths. Fails because begin marker is `<!-- clear-writing-kit:begin -->` without `v=2.0.0` (violating R-11, R-18, Task Goal, TP-08), and fallback command text omits `<runtime command>`. |
+| TP-09: Fallback command from `install/agents-block.md`, with `<home>` resolved and each runtime command form (`node`, `deno run -A`, `bun`), prints findings when run from cmd.exe and from PowerShell after `apply` on a fixture home. | No | Skipped | Skipped on T-06 per plan instructions ("T-06 dependency limit: TP-09 exercises fallback commands after apply and also covers T-09. Preserve it as mandatory at T-09 if install apply is unavailable during T-06. Do not claim it ran before its prerequisite exists."). Scheduled for T-09 when `cwk install apply` is implemented. |
+
+#### Failed Tests
+
+- `TP-08: Begin marker omits version attribute v=2.0.0` — Task Goal, R-11, R-18, and TP-08 require the instruction block to start with `<!-- clear-writing-kit:begin v=<version> -->` (specifically `<!-- clear-writing-kit:begin v=2.0.0 -->` matching `skills/coding-agent-writing/SKILL.md` metadata). The emitted and committed block in `install/agents-block.md` begins with `<!-- clear-writing-kit:begin -->` lacking the version parameter. R-18 relies on the `v=` marker during upgrades to replace existing instruction blocks.
+- `TP-08: Instruction block omits <runtime command> placeholder` — Task Goal requires emitting "the fallback command `<runtime command> <home>/.clear-writing-kit/cwk.mjs check`, listing the forms `node`, `deno run -A`, and `bun`" and TP-08 requires naming "the fallback command with `<runtime command>` and `<home>`". The block lists the three specific runtime forms and explains `<home>`, but omits the `<runtime command>` placeholder.
+
+#### Not Tested
+
+- `TP-09: Fallback command verification after install apply` — Not run on T-06 because `cwk install apply` has not yet been implemented (scheduled for T-09). The dependency limit is recorded honestly per plan instructions and preserved as mandatory at T-09.
 ## Review Results
 
 ### Architecture Review

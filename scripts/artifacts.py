@@ -49,13 +49,14 @@ def render_agents_block(root: Path = ROOT) -> str:
     if not match:
         raise ValueError("Missing coding-agent-writing skill version metadata")
     text = (
-        "<!-- clear-writing-kit:begin -->\n"
+        f"<!-- clear-writing-kit:begin v={match.group(1)} -->\n"
         f"# Clear Writing Kit ({match.group(1)})\n\n"
         "Use the `coding-agent-writing` skill for reader-facing writing.\n\n"
-        "Use the `lintText` tool when it is available. If it is unavailable, run one of these commands:\n\n"
-        "- `node <home>/.clear-writing-kit/cwk.mjs check`\n"
-        "- `deno run -A <home>/.clear-writing-kit/cwk.mjs check`\n"
-        "- `bun <home>/.clear-writing-kit/cwk.mjs check`\n\n"
+        "Use the `lintText` tool when it is available. If it is unavailable, run the check with one of these runtime commands:\n\n"
+        "- `node`\n"
+        "- `deno run -A`\n"
+        "- `bun`\n\n"
+        "Use this command template: `<runtime command> <home>/.clear-writing-kit/cwk.mjs check`.\n\n"
         "Resolve `<home>` to the user's home directory before running a command.\n\n"
         + persistent_core(root)
         + "\n<!-- clear-writing-kit:end -->\n"

@@ -1,13 +1,15 @@
-<!-- clear-writing-kit:begin -->
+<!-- clear-writing-kit:begin v=2.0.0 -->
 # Clear Writing Kit (2.0.0)
 
 Use the `coding-agent-writing` skill for reader-facing writing.
 
-Use the `lintText` tool when it is available. If it is unavailable, run one of these commands:
+Use the `lintText` tool when it is available. If it is unavailable, run the check with one of these runtime commands:
 
-- `node <home>/.clear-writing-kit/cwk.mjs check`
-- `deno run -A <home>/.clear-writing-kit/cwk.mjs check`
-- `bun <home>/.clear-writing-kit/cwk.mjs check`
+- `node`
+- `deno run -A`
+- `bun`
+
+Use this command template: `<runtime command> <home>/.clear-writing-kit/cwk.mjs check`.
 
 Resolve `<home>` to the user's home directory before running a command.
 
