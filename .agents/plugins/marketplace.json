@@ -1,0 +1,12 @@
+{
+  "name": "clear-writing-kit",
+  "plugins": [
+    {
+      "name": "clear-writing-kit",
+      "source": {
+        "source": "local",
+        "path": "../.."
+      }
+    }
+  ]
+}

@@ -192,10 +192,10 @@ Workflow: IMPLEMENT
 Step: 3 of 7
 Last activity: 2026-10-02 — T-06 committed generator tests and audit passed. TP-09 remains pending the T-09 apply prerequisite.
 Next step: Converge T-06, then execute T-07 plugin manifests.
-Current Task: —
-Task Base Commit: 1a9bdc3663c36f525184cdd145539c63de301739
-Task Final Commit: c6e86b3c5572f364ef47c5a465b59d036ffa1da7
-Test Retry Count: 1
+Current Task: T-07
+Task Base Commit: ee542298ea85b242a6abab95e625dad29197af9c
+Task Final Commit: —
+Test Retry Count: 0
 Review Retry Count: 0
 
 ### Deviations
@@ -422,7 +422,7 @@ Steps map to tasks as follows: Step 1 → T-01 to T-03, Step 2 → T-04, Step 3 
   - Evidence: E + TP-08, TP-09.
 
 - [ ] T-07 — Ship plugin manifests for every verified host
-  - Targets: `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `.codex-plugin/plugin.json`, the Codex marketplace file, and one manifest per other verified host with plugin skills, at the paths in the survey
+  - Targets: `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `.codex-plugin/plugin.json`, `.agents/plugins/marketplace.json`, and one manifest per other verified host with plugin skills, at the paths in the survey
   - Depends on: T-04, T-05
   - Change: Declare `clear-writing-kit` for each verified host with plugin skill support, using the field names recorded in the survey. Every manifest ships only `skills/coding-agent-writing/`. The Claude manifest also ships `output-styles/`. Add the marketplace entries that point at the repository root. Declare no MCP server and never reference `web-skills/`. A verified host without plugin skills gets no manifest, because `skillCopyDir` in `src/hosts.ts` covers it.
   - Acceptance: Each manifest installs on an isolated fixture home and lists the skill.

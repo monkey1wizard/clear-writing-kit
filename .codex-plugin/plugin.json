@@ -1,0 +1,6 @@
+{
+  "name": "clear-writing-kit",
+  "version": "2.0.0",
+  "description": "Clear writing guidance for coding agents.",
+  "skills": "./skills/"
+}
