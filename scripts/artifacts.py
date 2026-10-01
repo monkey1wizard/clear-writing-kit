@@ -14,6 +14,7 @@ SHARED = ("accuracy", "en-US", "zh-TW", "ja-JP")
 LOCAL = ("local-checks", "zhtw-checks")
 WEB_SKILL = Path("web-skills/web-answer-writing")
 GEMINI_BLOCK_BUDGET = 900
+AGENTS_BLOCK_BUDGET = 2048
 
 
 def read(root: Path, path: Path) -> str:
@@ -38,6 +39,31 @@ def persistent_core(root: Path) -> str:
     if not match:
         raise ValueError("Missing canonical persistent instruction excerpt")
     return match.group(1).strip()
+
+
+def render_agents_block(root: Path = ROOT) -> str:
+    """Render the compact, self-contained block for agent instruction files."""
+    skill_path = CORE / "SKILL.md"
+    skill = read(root, skill_path)
+    match = re.search(r"^\s*version:\s*([^\s]+)\s*$", skill.split("---", 2)[1], re.M)
+    if not match:
+        raise ValueError("Missing coding-agent-writing skill version metadata")
+    text = (
+        "<!-- clear-writing-kit:begin -->\n"
+        f"# Clear Writing Kit ({match.group(1)})\n\n"
+        "Use the `coding-agent-writing` skill for reader-facing writing.\n\n"
+        "Use the `lintText` tool when it is available. If it is unavailable, run one of these commands:\n\n"
+        "- `node <home>/.clear-writing-kit/cwk.mjs check`\n"
+        "- `deno run -A <home>/.clear-writing-kit/cwk.mjs check`\n"
+        "- `bun <home>/.clear-writing-kit/cwk.mjs check`\n\n"
+        "Resolve `<home>` to the user's home directory before running a command.\n\n"
+        + persistent_core(root)
+        + "\n<!-- clear-writing-kit:end -->\n"
+    )
+    size = len(text.encode("utf-8"))
+    if size >= AGENTS_BLOCK_BUDGET:
+        raise ValueError(f"Agents instruction block must be smaller than {AGENTS_BLOCK_BUDGET} bytes: {size}")
+    return text
 
 
 def split_gemini_instructions(body: str, limit: int = GEMINI_BLOCK_BUDGET) -> list[str]:

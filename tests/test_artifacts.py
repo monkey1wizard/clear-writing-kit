@@ -14,7 +14,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from artifacts import CORE, GEMINI_BLOCK_BUDGET, WEB_SKILL, persistent_core, render_claude, render_web, split_gemini_instructions
+from artifacts import AGENTS_BLOCK_BUDGET, CORE, GEMINI_BLOCK_BUDGET, WEB_SKILL, persistent_core, render_agents_block, render_claude, render_web, split_gemini_instructions
 
 import importlib.util
 spec = importlib.util.spec_from_file_location("web_generator", ROOT / "scripts/generate-web-artifacts.py")
@@ -25,8 +25,41 @@ style_spec = importlib.util.spec_from_file_location("style_generator", ROOT / "s
 style_generator = importlib.util.module_from_spec(style_spec)
 style_spec.loader.exec_module(style_generator)
 
+agents_spec = importlib.util.spec_from_file_location("agents_generator", ROOT / "scripts/generate-agents-block.py")
+agents_generator = importlib.util.module_from_spec(agents_spec)
+agents_spec.loader.exec_module(agents_generator)
+
 
 class Artifacts(unittest.TestCase):
+    def test_agents_block_has_required_content_and_byte_limit(self):
+        block = render_agents_block()
+        self.assertTrue(block.startswith("<!-- clear-writing-kit:begin -->\n"))
+        self.assertTrue(block.endswith("<!-- clear-writing-kit:end -->\n"))
+        self.assertLess(len(block.encode("utf-8")), AGENTS_BLOCK_BUDGET)
+        for expected in (
+            "2.0.0", "coding-agent-writing", "lintText",
+            "node <home>/.clear-writing-kit/cwk.mjs check",
+            "deno run -A <home>/.clear-writing-kit/cwk.mjs check",
+            "bun <home>/.clear-writing-kit/cwk.mjs check",
+            "Resolve `<home>`", persistent_core(ROOT),
+        ):
+            self.assertIn(expected, block)
+
+    def test_agents_block_rejects_size_at_or_above_limit(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            source = root / CORE / "references/accuracy.md"
+            source.parent.mkdir(parents=True)
+            source.write_text("<!-- instructions:begin -->\n" + "x" * AGENTS_BLOCK_BUDGET + "\n<!-- instructions:end -->", encoding="utf-8")
+            skill = root / CORE / "SKILL.md"
+            skill.parent.mkdir(parents=True, exist_ok=True)
+            skill.write_text("---\nmetadata:\n  version: 1.2.3\n---\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "smaller than 2048 bytes"):
+                render_agents_block(root)
+
+    def test_committed_agents_block_matches_generated_content(self):
+        self.assertEqual((ROOT / "install/agents-block.md").read_text(encoding="utf-8"), render_agents_block())
+
     def test_repository_branding_preserves_distinct_skill_names(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         self.assertTrue(readme.startswith("# clear-writing-kit\n\nWriting rules, skills, and checks for en-US, zh-TW, and ja-JP.\n"))

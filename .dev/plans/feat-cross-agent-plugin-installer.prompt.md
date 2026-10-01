@@ -190,11 +190,11 @@ None
 
 Workflow: IMPLEMENT
 Step: 2 of 7
-Last activity: 2026-10-02 — T-05 generator validation and audit passed; TP-10 remains pending at T-07.
-Next step: Converge T-05, then execute T-06 generated instruction block.
-Current Task: —
-Task Base Commit: bb218530a46103baeea5ffbd8174ea5a94d9b115
-Task Final Commit: f2ce4107a21f593cb39249287bae30ef04d28e9e
+Last activity: 2026-10-02 — T-05 converged. T-06 task-quality check passed: source version, core rules, markers, runtime/home placeholders, generator check, and strict byte-size limit are specified.
+Next step: Implement T-06 generated instruction block.
+Current Task: T-06
+Task Base Commit: 1a9bdc3663c36f525184cdd145539c63de301739
+Task Final Commit: —
 Test Retry Count: 0
 Review Retry Count: 0
 
@@ -322,6 +322,8 @@ Dispatch: phase=test task=T-05 role=TESTER executor=agy model=gemini-3.8-flash s
 T-05 independent test: TP-07 PASS, 12/12 Python artifact tests. TP-10 NotRun until T-07 creates plugin manifests. This records a dependency limit, not plugin installation success, and does not waive TP-10.
 
 Dispatch: phase=audit task=T-05 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=077760cf-ae58-4ffe-9dc7-f2cce13ab170 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-05/1790881692-693388100-000000-T-05-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
+
+T-06 dependency limit: TP-09 exercises fallback commands after apply and also covers T-09. Preserve it as mandatory at T-09 if install apply is unavailable during T-06. Do not claim it ran before its prerequisite exists.
 
 ## Tasks
 
