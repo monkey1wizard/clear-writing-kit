@@ -188,13 +188,13 @@ None
 
 ## Status
 
-Workflow: IMPLEMENT
+Workflow: TEST
 Step: 2 of 7
 Last activity: 2026-10-02 — T-05 converged. T-06 task-quality check passed: source version, core rules, markers, runtime/home placeholders, generator check, and strict byte-size limit are specified.
-Next step: Fix T-06 begin-marker version and runtime-command placeholder, then independently retest TP-08. TP-09 remains mandatory at T-09.
+Next step: Independently retest TP-08 marker, template, generation parity, and size after fix 9dad332. TP-09 remains mandatory at T-09.
 Current Task: T-06
 Task Base Commit: 1a9bdc3663c36f525184cdd145539c63de301739
-Task Final Commit: 3fa88ec1141e50b46160955b96a2b7f0f323e566
+Task Final Commit: 9dad33216260a24d14bdf2cda591034027e410dc
 Test Retry Count: 1
 Review Retry Count: 0
 
@@ -343,6 +343,8 @@ Dispatch: phase=implement task=T-06 role=CODER executor=codex model=gpt-6-luna s
 - Next human step: No human action required below retry ceiling. Render the exact marker <!-- clear-writing-kit:begin v=<version> --> from source skill metadata. Include the exact fallback template <runtime command> <home>/.clear-writing-kit/cwk.mjs check and retain all three runtime command forms and home-resolution instruction. Regenerate the committed block and strengthen the focused tests to assert those source requirements.
 
 Dispatch: phase=test task=T-06 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=5e1fa40d-5699-4d8e-8baf-496ee998da6b log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-06/1790882023-118497700-000000-T-06-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
+
+Dispatch: phase=implement task=T-06 role=CODER executor=codex model=gpt-6-luna state=completed session_id=01a0f8e6-0280-72b1-9209-1d6073ee9c7a log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-06/1790882218-248806100-000000-T-06-implement-codex.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
 
 ## Tasks
 
@@ -762,6 +764,30 @@ Evidence: Python probes verify generator --check, size budget (<2048 bytes), ski
 #### Not Tested
 
 - `TP-09: Fallback command verification after install apply` — Not run on T-06 because `cwk install apply` has not yet been implemented (scheduled for T-09). The dependency limit is recorded honestly per plan instructions and preserved as mandatory at T-09.
+
+### [T-06] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 2 | Passed: 1 | Failed: 0 | Skipped: 1
+Verdict: PASS
+Evidence: Python test suite and CLI checks verify python scripts/generate-agents-block.py --check passes on install/agents-block.md, exact begin/end markers with v=2.0.0, 1,504-byte size under 2,048 budget, required tokens (coding-agent-writing, lintText, node, deno run -A, bun, <runtime command> <home>/.clear-writing-kit/cwk.mjs check, home resolution), no drive or user paths, version drift detection, and 16/16 passing unit tests in tests/test_artifacts.py (TP-08). TP-09 is skipped pending T-09 install apply.
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-08: `python scripts/generate-agents-block.py --check` passes on committed `install/agents-block.md`. Block starts with `<!-- clear-writing-kit:begin v=2.0.0 -->`, ends with `<!-- clear-writing-kit:end -->`, under 2,048 bytes, names `coding-agent-writing`, `lintText`, fallback command with `<runtime command>` and `<home>`, no drive/user paths. Changed skill version fails `--check`. | Yes | PASS | `generate-agents-block.py --check` passes on clean repo. Block starts with `<!-- clear-writing-kit:begin v=2.0.0 -->` and ends with `<!-- clear-writing-kit:end -->\n`. Byte size (1,504 bytes) is within 2,048 budget. Oversize content raises ValueError. Required tokens present (`coding-agent-writing`, `lintText`, `node`, `deno run -A`, `bun`, `<runtime command> <home>/.clear-writing-kit/cwk.mjs check`, `Resolve <home>`). No drive letters or machine paths. Version drift and stale content fail `--check`. All 16 tests in `tests/test_artifacts.py` pass. |
+| TP-09: Fallback command from `install/agents-block.md`, with `<home>` resolved and each runtime command form (`node`, `deno run -A`, `bun`), prints findings when run from cmd.exe and from PowerShell after `apply` on a fixture home. | No | Skipped | Skipped on T-06 per plan instructions ("T-06 dependency limit: TP-09 exercises fallback commands after apply and also covers T-09. Preserve it as mandatory at T-09 if install apply is unavailable during T-06. Do not claim it ran before its prerequisite exists."). Scheduled for T-09 when `cwk install apply` is implemented. |
+
+#### Failed Tests
+
+- None. All covering tests for T-06 passed.
+
+#### Not Tested
+
+- `TP-09: Fallback command execution after install apply` — Not run during T-06 because `cwk install apply` has not yet been implemented (scheduled for T-09). The dependency limit is preserved as mandatory at T-09.
 ## Review Results
 
 ### Architecture Review

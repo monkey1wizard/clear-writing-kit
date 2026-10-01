@@ -45,6 +45,9 @@ class Artifacts(unittest.TestCase):
             "Resolve `<home>`", persistent_core(ROOT),
         ):
             self.assertIn(expected, block)
+        self.assertNotRegex(block, r"[A-Za-z]:[/\\]")
+        self.assertNotIn("/Users/", block)
+        self.assertNotIn("/home/", block.replace("<home>", ""))
 
     def test_agents_block_rejects_size_at_or_above_limit(self):
         with tempfile.TemporaryDirectory() as d:
@@ -57,6 +60,27 @@ class Artifacts(unittest.TestCase):
             skill.write_text("---\nmetadata:\n  version: 1.2.3\n---\n", encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "smaller than 2048 bytes"):
                 render_agents_block(root)
+
+    def test_agents_block_cli_check_and_version_drift(self):
+        with tempfile.TemporaryDirectory() as d:
+            target = Path(d) / "agents-block.md"
+            cmd = [sys.executable, str(ROOT / "scripts/generate-agents-block.py"), "--output", str(target)]
+            self.assertNotEqual(subprocess.run(cmd + ["--check"], capture_output=True).returncode, 0)
+            subprocess.run(cmd, check=True, capture_output=True)
+            subprocess.run(cmd + ["--check"], check=True, capture_output=True)
+            target.write_text("stale", encoding="utf-8")
+            self.assertNotEqual(subprocess.run(cmd + ["--check"], capture_output=True).returncode, 0)
+
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            shutil.copytree(ROOT / CORE, root / CORE)
+            shutil.copytree(ROOT / "scripts", root / "scripts")
+            skill_file = root / CORE / "SKILL.md"
+            content = skill_file.read_text(encoding="utf-8")
+            skill_file.write_text(content.replace("version: 2.0.0", "version: 2.0.1"), encoding="utf-8")
+            drifted_block = render_agents_block(root)
+            self.assertTrue(drifted_block.startswith("<!-- clear-writing-kit:begin v=2.0.1 -->\n"))
+            self.assertNotEqual(drifted_block, (ROOT / "install/agents-block.md").read_text(encoding="utf-8"))
 
     def test_committed_agents_block_matches_generated_content(self):
         self.assertEqual((ROOT / "install/agents-block.md").read_text(encoding="utf-8"), render_agents_block())
