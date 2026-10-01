@@ -188,12 +188,12 @@ None
 
 ## Status
 
-Workflow: DRAFT
+Workflow: IMPLEMENT
 Step: 0 of 7
-Last activity: 2026-10-02 — prompt generated from source plan
-Next step: Execute the approved implementation contract, starting with T-01.
-Current Task: —
-Task Base Commit: —
+Last activity: 2026-10-02 — T-01 implementation dispatch completed; boundary check failed on generated GAL evidence.
+Next step: Re-run the T-01 boundary gate, commit implementation, and dispatch independent testing.
+Current Task: T-01
+Task Base Commit: 5d5a47621a0139e4f60043f870926f555435d6df
 Task Final Commit: —
 Test Retry Count: 0
 Review Retry Count: 0
@@ -203,9 +203,24 @@ Review Retry Count: 0
 | Date | Task | Deviation | Reason |
 | --- | --- | --- | --- |
 
+| 2026-10-02 | T-01 | Owner authorized ignoring generated .dev/pipeline records. Administrative commit 5d5a476 precedes the implementation commit; task base advanced to it without discarding implementation output. | Generated receipts and loop-log were outside the implementation allowlist. Already tracked evidence remains tracked. |
+
 ### Handoff Notes
 
-New prompt. Source approval and planning reviews are carried forward. T-03 is the payload gate. If it returns stop, T-05 onward cannot start. Human review occurs once after all automated tasks and goal-backward verification. No implementation has run.
+New prompt. Source approval and planning reviews are carried forward. T-03 is the payload gate. If it returns stop, T-05 onward cannot start. Human review occurs once after all automated tasks and goal-backward verification. T-01 implementation dispatch completed. Boundary verification is blocked, and independent testing and audit have not run.
+
+Dispatch: phase=implement task=T-01 role=CODER executor=codex model=gpt-6-luna state=completed session_id=01a0f873-64f3-78d2-82e3-dcf2f87828f2 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-01/1790874706-710513300-000000-T-01-implement-codex.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+#### Human Handback — boundary-scope-decision
+
+Status: RESOLVED
+Reason: boundary-scope-decision
+Task: T-01
+Phase: BOUNDARY
+Producer: BOUNDARY
+Producer state: fail. Generated evidence is outside the task allowlist: .dev/pipeline/20261001/loop-log.ndjson, .dev/pipeline/feat-cross-agent-plugin-installer/T-01/T-01-implement.receipt.md, .dev/pipeline/feat-cross-agent-plugin-installer/preflight.receipt.md. Implementation changes remain uncommitted. No test or audit dispatch has run.
+Git HEAD: cc8bae0aec01707f5b83722349e0be9341f61098
+Next human step: Resolved by owner authorization "allow". Generated .dev/pipeline records are ignored through administrative commit 5d5a476. Implementation and evidence are retained.
 
 ## Tasks
 

@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "lint": "node generate-profiles.cjs --check && node okf.cjs --check && node lint-docs.cjs && markdownlint-cli2 --config .markdownlint-cli2.jsonc",
+    "build": "node -e \"require('esbuild').buildSync({entryPoints:['../src/cli.ts'],bundle:true,platform:'node',format:'esm',nodePaths:[require('node:path').resolve('node_modules')],banner:{js:\\\"import { createRequire } from 'node:module'; const require = createRequire(new URL('../writing/package.json', import.meta.url));\\\"},outfile:'../dist/cwk.mjs'})\"",
     "okf:generate": "node okf.cjs --generate",
     "okf:check": "node okf.cjs --check",
     "test": "node --test test/*.test.cjs"
@@ -12,6 +13,8 @@
     "node": ">=20.18.0"
   },
   "devDependencies": {
+    "@modelcontextprotocol/server": "2.1.0",
+    "esbuild": "0.25.12",
     "js-yaml": "4.1.0",
     "markdownlint-cli2": "0.18.1",
     "textlint": "15.8.0",
