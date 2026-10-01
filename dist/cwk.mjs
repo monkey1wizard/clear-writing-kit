@@ -148596,7 +148596,7 @@ async function lintText({ text, language, genre, filename = "input.md" }) {
         return Object.entries(options).map(([child, childOptions]) => {
           const childRule = rule.rules?.[child];
           if (!childRule) throw new Error(`Unmapped rule: ${name}/${child}`);
-          return { ruleId: child, rule: childRule, options: childOptions };
+          return { ruleId: `ja-technical-writing/${child}`, rule: childRule, options: childOptions };
         });
       }
       return { ruleId: name, rule, options };
@@ -148620,7 +148620,7 @@ async function main() {
   const args = process.argv.slice(2);
   const command = args.shift();
   if (command !== "check") throw new Error("Usage: cwk check --language <language> --genre <genre> [--stdin [--stdin-filename <name>] | files...]");
-  if (args.some((a) => ["--config", "--rule", "--rulesdir", "--no-textlintrc", "-c"].includes(a) || a.startsWith("--config=") || a.startsWith("--rule=") || a.startsWith("--rulesdir="))) throw new Error("Profile overrides are not supported by this launcher");
+  if (args.some((a) => ["--config", "--rule", "--rulesdir", "--no-textlintrc", "-c"].includes(a) || a.startsWith("-c") || a.startsWith("--config=") || a.startsWith("--rule=") || a.startsWith("--rulesdir="))) throw new Error("Profile overrides are not supported by this launcher");
   function take(flag) {
     const i = args.indexOf(flag);
     if (i < 0 || !args[i + 1]) throw new Error(`Required: ${flag}`);

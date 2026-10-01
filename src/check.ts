@@ -32,7 +32,7 @@ export async function lintText({ text, language, genre, filename = "input.md" }:
         return Object.entries(options as Record<string, unknown>).map(([child, childOptions]) => {
           const childRule = rule.rules?.[child];
           if (!childRule) throw new Error(`Unmapped rule: ${name}/${child}`);
-          return { ruleId: child, rule: childRule, options: childOptions as any };
+          return { ruleId: `ja-technical-writing/${child}`, rule: childRule, options: childOptions as any };
         });
       }
       return { ruleId: name, rule, options: options as any };

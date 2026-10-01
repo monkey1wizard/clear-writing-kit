@@ -190,12 +190,12 @@ None
 
 Workflow: IMPLEMENT
 Step: 0 of 7
-Last activity: 2026-10-02 — T-01 implementation dispatch completed; boundary check failed on generated GAL evidence.
-Next step: Re-run the T-01 boundary gate, commit implementation, and dispatch independent testing.
+Last activity: 2026-10-02 — T-01 implementation committed as dfe8fa1; boundary gate passed after owner ignore-rule update b4700fa.
+Next step: Fix TP-01 preset rule ID prefixes and attached -c override rejection, then independently retest T-01.
 Current Task: T-01
 Task Base Commit: 5d5a47621a0139e4f60043f870926f555435d6df
-Task Final Commit: —
-Test Retry Count: 0
+Task Final Commit: b4700fa692cf97e3da6b7fd96de45c48ae9ebfe7
+Test Retry Count: 1
 Review Retry Count: 0
 
 ### Deviations
@@ -203,11 +203,11 @@ Review Retry Count: 0
 | Date | Task | Deviation | Reason |
 | --- | --- | --- | --- |
 
-| 2026-10-02 | T-01 | Owner authorized ignoring generated .dev/pipeline records. Administrative commit 5d5a476 precedes the implementation commit; task base advanced to it without discarding implementation output. | Generated receipts and loop-log were outside the implementation allowlist. Already tracked evidence remains tracked. |
+| 2026-10-02 | T-01 | Owner authorized ignoring generated .dev/pipeline records. Administrative commit 5d5a476 precedes implementation dfe8fa1; task base advanced to it without discarding output. Owner replaced the shared ignore rule in b4700fa, so generated records now use local .git/info/exclude. Tested HEAD is b4700fa, with implementation unchanged. | Generated receipts and loop-log were outside the implementation allowlist. Owner .gitignore is authoritative. Already tracked evidence remains tracked. |
 
 ### Handoff Notes
 
-New prompt. Source approval and planning reviews are carried forward. T-03 is the payload gate. If it returns stop, T-05 onward cannot start. Human review occurs once after all automated tasks and goal-backward verification. T-01 implementation dispatch completed. Boundary verification is blocked, and independent testing and audit have not run.
+New prompt. Source approval and planning reviews are carried forward. T-03 is the payload gate. If it returns stop, T-05 onward cannot start. Human review occurs once after all automated tasks and goal-backward verification. T-01 implementation dispatch completed and was committed. Working tree was clean at b4700fa before this test cursor update. Boundary verification passed. Independent testing and audit have not run. Generated bundle whitespace warnings come from embedded dependency strings and remain unchanged to preserve build reproducibility.
 
 Dispatch: phase=implement task=T-01 role=CODER executor=codex model=gpt-6-luna state=completed session_id=01a0f873-64f3-78d2-82e3-dcf2f87828f2 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-01/1790874706-710513300-000000-T-01-implement-codex.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
 
@@ -220,7 +220,24 @@ Phase: BOUNDARY
 Producer: BOUNDARY
 Producer state: fail. Generated evidence is outside the task allowlist: .dev/pipeline/20261001/loop-log.ndjson, .dev/pipeline/feat-cross-agent-plugin-installer/T-01/T-01-implement.receipt.md, .dev/pipeline/feat-cross-agent-plugin-installer/preflight.receipt.md. Implementation changes remain uncommitted. No test or audit dispatch has run.
 Git HEAD: cc8bae0aec01707f5b83722349e0be9341f61098
-Next human step: Resolved by owner authorization "allow". Generated .dev/pipeline records are ignored through administrative commit 5d5a476. Implementation and evidence are retained.
+Next human step: Resolved by owner authorization "allow". The owner's .gitignore version is committed as b4700fa. Generated .dev/pipeline records are locally ignored via .git/info/exclude. Implementation and evidence are retained.
+
+#### Retry Handoff — T-01 / TEST
+
+- Status: OPEN
+- Problem: TP-01 failed: Japanese preset rule IDs omit ja-technical-writing/; attached -c<file> is treated as a path instead of rejected.
+- Evidence:
+  - Test Results: T-01 2026-10-02, FAIL, 3 passed and 1 failed. TP-02, TP-05, and TP-31 passed.
+  - Review Results: not-applicable
+  - Security Review: not-applicable
+- Attempts:
+  1. 2026-10-02 — Independent test after implementation dfe8fa1, tested HEAD b4700fa.
+     - Result: TP-01 rule ID parity and attached override rejection failed.
+     - Validation: T-01-test.receipt.md; completed agy test dispatch b77d1191-051a-409d-bd14-9387b2afd3a4.
+     - Commit: b4700fa692cf97e3da6b7fd96de45c48ae9ebfe7
+- Next human step: No human action required below retry ceiling. Implementer fixes the two observed failures without changing scope, rebuilds dist, then tester retests all four T-01 rows.
+
+Dispatch: phase=test task=T-01 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=b77d1191-051a-409d-bd14-9387b2afd3a4 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-01/1790875719-841095900-000000-T-01-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
 
 ## Tasks
 
@@ -381,6 +398,32 @@ Each row checks one behavior and may cover several tasks. An agent runs every ro
 
 Not run. No execution tests have been performed.
 
+### [T-01] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 4 | Passed: 3 | Failed: 1 | Skipped: 0
+Verdict: FAIL
+Evidence: node scratch probes testing TP-01, TP-02, TP-05, TP-31: TP-01 failed on preset rule ID prefix divergence and unhandled -c<file> override flag.
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-01: `dist/cwk.mjs check` matches `writing/check.cjs` on Node for test cases and exit codes | Yes | FAIL | Preset rules omit `ja-technical-writing/` prefix in ruleId; `-c<file>` (e.g. `-cabsent.json`) is parsed as file path instead of rejected override |
+| TP-02: Profile caching loads each profile once per process | Yes | PASS | `loadCounter` initialized to 0, rose to 6 after loading all 6 profiles, remained at 6 across repeated calls |
+| TP-05: Committed `dist/` equals fresh `npm --prefix writing run build` | Yes | PASS | Clean build; `git status --porcelain dist/` produced 0 diff |
+| TP-31: `lintText` throws on unknown language or genre | Yes | PASS | Throws on unknown language, unknown genre, or empty fields; loadCounter remains 0 |
+
+#### Failed Tests
+
+- `TP-01: preset ruleId prefix parity` — When checking Japanese text triggering rules in `preset-ja-technical-writing` (e.g. `no-mix-dearu-desumasu` or `max-kanji-continuous-len`), `writing/check.cjs` outputs `ja-technical-writing/no-mix-dearu-desumasu` and `ja-technical-writing/max-kanji-continuous-len`, whereas `dist/cwk.mjs check` outputs `no-mix-dearu-desumasu` and `max-kanji-continuous-len`. TP-01 requires reporting the exact same rule IDs.
+- `TP-01: -c<file> override flag rejection` — `node dist/cwk.mjs check --language en-US --genre document -cabsent.json` treats `-cabsent.json` as a file argument (`ENOENT: no such file or directory, open '.../-cabsent'`) instead of rejecting it as an unsupported override flag (`Profile overrides are not supported by this launcher`).
+
+#### Not Tested
+
+- None. All covering test plan rows for T-01 (TP-01, TP-02, TP-05, TP-31) were directly tested.
 ## Review Results
 
 ### Architecture Review
