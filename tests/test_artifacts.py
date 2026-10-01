@@ -45,6 +45,7 @@ class Artifacts(unittest.TestCase):
             self.assertNotIn("accurate-answer", text)
 
     def test_default_style_name_changes_without_deleting_existing_style(self):
+        self.assertEqual(style_generator.DEFAULT_OUTPUT, ROOT / "output-styles" / "clear-writing-kit.md")
         self.assertEqual(style_generator.DEFAULT_OUTPUT.name, "clear-writing-kit.md")
         self.assertEqual(style_generator.DEFAULT_OUTPUT.parent.name, "output-styles")
         with tempfile.TemporaryDirectory() as d, contextlib.redirect_stdout(io.StringIO()):
@@ -59,6 +60,10 @@ class Artifacts(unittest.TestCase):
                     self.assertEqual(style_generator.main(), 0)
             self.assertIn("\nname: clear-writing-kit\n", target.read_text(encoding="utf-8"))
             self.assertEqual(old.read_text(encoding="utf-8"), "existing user style")
+
+    def test_committed_style_matches_generated_content(self):
+        committed_style = ROOT / "output-styles" / "clear-writing-kit.md"
+        self.assertEqual(committed_style.read_text(encoding="utf-8"), render_claude())
 
     def test_default_web_preview_uses_new_name(self):
         with tempfile.TemporaryDirectory() as d, contextlib.redirect_stdout(io.StringIO()):
