@@ -191,11 +191,11 @@ None
 Workflow: IMPLEMENT
 Step: 0 of 7
 Last activity: 2026-10-02 — T-02 converged; T-03 task-quality check passed against ordered payload layouts, parity, size, cold-start, and stop criteria.
-Next step: Execute T-03 payload feasibility gate on Node, Deno, and Bun.
+Next step: Fix T-03 standalone dictionary/payload layout, complete full runtime parity, and replace unverified STOP with reproducible timings. T-05 onward remain gated.
 Current Task: T-03
 Task Base Commit: 95b1e25a5e1873c9108f9809977498b2db1a4aba
-Task Final Commit: —
-Test Retry Count: 0
+Task Final Commit: 988eb41e4169c2e9adb7670c8f7ea2ce0db617bc
+Test Retry Count: 1
 Review Retry Count: 0
 
 ### Deviations
@@ -252,6 +252,27 @@ Dispatch: phase=implement task=T-02 role=CODER executor=codex model=gpt-6-luna s
 Dispatch: phase=test task=T-02 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=60695da4-d4a9-4130-b5f4-02bb8498d80e log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-02/1790877039-795457400-000000-T-02-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
 
 Dispatch: phase=audit task=T-02 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=666f9914-9c10-4ad9-9237-f7fbd96f0d62 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-02/1790877245-545652200-000000-T-02-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
+
+Dispatch: phase=implement task=T-03 role=CODER executor=codex model=gpt-6-luna state=completed session_id=01a0f89d-23d4-70c0-bc98-b2c733d2b559 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-03/1790877442-568274100-000000-T-03-implement-codex.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+T-03 evidence limit: layout 1 Deno cold start exceeded 3 s. Layout 2 was not built, and full TP-01 parity was not run. The report's claim that neither layout passes remains unverified. No payload layout changes were retained. Independent testing must distinguish measured failure from untested alternatives.
+
+#### Retry Handoff — T-03 / TEST
+
+- Status: OPEN
+- Problem: TP-04 failed. No standalone payload was delivered; isolated ja-JP crashes without repo node_modules. Layout 2 and full parity were untested. Independent Deno measurement did not reproduce the reported >3 s startup.
+- Evidence:
+  - Test Results: T-03 2026-10-02 FAIL. TP-04 failed; TP-05 passed. Deno 2.9.7 uncached 948 ms, warm 230–252 ms.
+  - Review Results: not-applicable
+  - Security Review: not-applicable
+- Attempts:
+  1. 2026-10-02 — Tested report-only spike commit 988eb41.
+     - Result: Isolated Japanese check cannot find kuromoji. No full parity evidence. STOP conclusion not supported by independent timings.
+     - Validation: T-03-test.receipt.md; completed test session ee6defa3-dffb-477f-a132-dfe734e3220a.
+     - Commit: 988eb41e4169c2e9adb7670c8f7ea2ce0db617bc
+- Next human step: No human action required below retry ceiling. Implement the first passing standalone layout in the existing ordered contract. Set KUROMOJIN_DIC_PATH for sibling dict if supported, remove clone-dependent runtime paths, and run all parity fixtures on all three runtimes from an isolated payload directory. Measure fresh runtime processes consistently without counting orchestrator shell startup. Build layout 2 if layout 1 fails. Preserve failed-attempt observations in the report and distinguish them from corrected measurements.
+
+Dispatch: phase=test task=T-03 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=ee6defa3-dffb-477f-a132-dfe734e3220a log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-03/1790877850-188486700-000000-T-03-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
 
 ## Tasks
 
@@ -490,6 +511,31 @@ Evidence: npm --prefix writing run build matches dist/ (TP-05: 0 diff); stdio JS
 #### Not Tested
 
 - None. All covering test plan rows for T-02 (TP-03, TP-05) were directly tested.
+
+### [T-03] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 2 | Passed: 1 | Failed: 1 | Skipped: 0
+Verdict: FAIL
+Evidence: npm --prefix writing run build matches dist/ (TP-05: 0 diff). TP-04 failed because no standalone payload layout was committed to dist/, isolated execution crashes on ja-JP without repo node_modules (Cannot find module 'kuromoji'), Layout 2 was never built, full TP-01 parity was unrun, and independent benchmarks disproved the Deno > 3 s cold-start failure (uncached 948 ms, warm 230-252 ms on Deno 2.9.7).
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-04: Multi-runtime payload parity on Node, Deno, Bun with cold start < 3 s and complete spike report | Yes | FAIL | No standalone layout committed to `dist/`; isolated execution fails ja-JP (`Cannot find module 'kuromoji'`); Layout 2 was unbuilt; full TP-01 parity was not run; independent Deno cold start is 948 ms (uncached) and 230–252 ms (warm), refuting the report's > 3 s failure claim |
+| TP-05: Committed `dist/` equals fresh `npm --prefix writing run build` | Yes | PASS | Clean build; `git status --porcelain dist/` produced 0 diff |
+
+#### Failed Tests
+
+- `TP-04: Multi-runtime payload layout and spike verification` — The task requires extending the build to the first layout passing parity on Node, Deno, and Bun with cold start under 3 s, or committing no layout change and stopping only if neither candidate passes. The committed `dist/` retains the unbundled state and fails in isolated environments without `writing/node_modules` (`Cannot find module 'kuromoji'` on `check --language ja-JP`). Furthermore, `.dev/research/payload-spike.md` recorded an unverified STOP conclusion: Layout 2 was never built, full TP-01 parity was explicitly skipped, and the recorded Deno cold start of 3,240 ms was disproved by independent measurement (948 ms uncached, 230–252 ms warm on Deno 2.9.7).
+
+#### Not Tested
+
+- Layout 2 was not tested because the implementer did not build the pruned vendored `node_modules` layout.
+- Standalone multi-runtime parity on an isolated payload was not tested because no self-contained dictionary or dependency layout was committed to `dist/`.
 ## Review Results
 
 ### Architecture Review

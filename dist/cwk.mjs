@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { createRequire } from 'node:module'; const require = createRequire(new URL('../writing/package.json', import.meta.url));
+import { createRequire } from 'node:module'; import { fileURLToPath as cwkFileURLToPath } from 'node:url'; const require = createRequire(new URL('../writing/package.json', import.meta.url)); process.env.KUROMOJIN_DIC_PATH = cwkFileURLToPath(new URL('./dict/', import.meta.url));
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;

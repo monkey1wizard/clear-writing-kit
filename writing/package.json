@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "lint": "node generate-profiles.cjs --check && node okf.cjs --check && node lint-docs.cjs && markdownlint-cli2 --config .markdownlint-cli2.jsonc",
-    "build": "node -e \"require('esbuild').buildSync({entryPoints:['../src/cli.ts'],bundle:true,platform:'node',format:'esm',nodePaths:[require('node:path').resolve('node_modules')],banner:{js:\\\"import { createRequire } from 'node:module'; const require = createRequire(new URL('../writing/package.json', import.meta.url));\\\"},outfile:'../dist/cwk.mjs'})\"",
+    "build": "node -e \"const fs=require('node:fs');const path=require('node:path');require('esbuild').buildSync({entryPoints:['../src/cli.ts'],bundle:true,platform:'node',format:'esm',nodePaths:[path.resolve('node_modules')],banner:{js:\\\"import { createRequire } from 'node:module'; import { fileURLToPath as cwkFileURLToPath } from 'node:url'; const require = createRequire(new URL('../writing/package.json', import.meta.url)); process.env.KUROMOJIN_DIC_PATH = cwkFileURLToPath(new URL('./dict/', import.meta.url));\\\"},outfile:'../dist/cwk.mjs'});fs.rmSync('../dist/dict',{recursive:true,force:true});fs.cpSync(path.resolve('node_modules/kuromoji/dict'),'../dist/dict',{recursive:true})\"",
     "okf:generate": "node okf.cjs --generate",
     "okf:check": "node okf.cjs --check",
     "test": "node --test test/*.test.cjs"
@@ -12,9 +12,11 @@
   "engines": {
     "node": ">=20.18.0"
   },
-  "devDependencies": {
+  "dependencies": {
     "@modelcontextprotocol/server": "2.1.0",
-    "esbuild": "0.25.12",
+    "esbuild": "0.25.12"
+  },
+  "devDependencies": {
     "js-yaml": "4.1.0",
     "markdownlint-cli2": "0.18.1",
     "textlint": "15.8.0",
