@@ -190,12 +190,12 @@ None
 
 Workflow: IMPLEMENT
 Step: 1 of 7
-Last activity: 2026-10-02 — T-03 passed implement/test/audit. Layout 1 is selected; report records independent parity and timings.
-Next step: Converge T-03, then execute T-04 host capability survey.
-Current Task: —
-Task Base Commit: 95b1e25a5e1873c9108f9809977498b2db1a4aba
-Task Final Commit: 88e0fc90b838af21f4b1c01f13ea57f2395b5fef
-Test Retry Count: 1
+Last activity: 2026-10-02 — T-03 converged. T-04 task-quality check passed: survey fields, evidence provenance, typed host records, and injected home paths are specified.
+Next step: Implement T-04 host capability survey and typed table.
+Current Task: T-04
+Task Base Commit: ec859ffc06899d00f37997967688c10844045325
+Task Final Commit: —
+Test Retry Count: 0
 Review Retry Count: 0
 
 ### Deviations
