@@ -6,7 +6,7 @@
 
 | Plan | File | Plan Phase | Last Activity |
 | --- | --- | --- | --- |
-| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | refining | 2026-10-02 |
+| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.prompt.md` | prompt-ready | 2026-10-02 |
 
 <!-- When more than one plan is active, table order is priority order. `/gal whats-next` and `/gal wrap-up` use the first non-terminal row; if all rows are terminal, they fall back to the first row. -->
 
@@ -37,7 +37,7 @@
 
 | Plan | Source Plan | Last Session | Stopped At | Next Step | Context |
 | --- | --- | --- | --- | --- | --- |
-| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | refining done, ENG_REVIEW: CLEAR | owner records Human approval | then /plan-to-prompt |
+| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | prompt generated, prompt-check: pass, EQUIVALENT | execute approved T-01 contract | Human approval recorded; 12 tasks and 37 test-plan rows preserved; no implementation run |
 
 ## Session Execution Context
 

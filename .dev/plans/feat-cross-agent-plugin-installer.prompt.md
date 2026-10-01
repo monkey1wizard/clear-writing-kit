@@ -1,37 +1,14 @@
-# Plan: Cross-agent plugin installer for clear-writing-kit
+# Plan Prompt: Cross-agent plugin installer for clear-writing-kit
 
-## Approval
-
-- Human approval: [pending]
-- Architect review: [clear]
-- Design review: [not-requested]
-- Business review: [not-requested]
+<!--
+Generated from .dev/plans/feat-cross-agent-plugin-installer.md.
+Output path: C:/Code/clear-writing-kit/.dev/plans/feat-cross-agent-plugin-installer.prompt.md
+This is the shared mutable execution work file consumed by control-plane chat, /gal status, /gal whats-next, /gal pipeline, and specialist write-back flows.
+-->
 
 ## Goal
 
-Any supported coding agent can install the complete clear-writing-kit for itself by reading one prompt file and running one TypeScript installer. After installation, the host has the `coding-agent-writing` skill, a working textlint MCP server, and a short marked block in its global instruction file. Claude Code also has the `clear-writing-kit` output style selected. The installer works the same with or without a configuration manager such as ccync.
-
-### Why
-
-Codex cannot use the kit fully today. Evidence collected on 2026-10-01 on the owner's machine:
-
-| Observation | Location |
-| --- | --- |
-| The writing block in Codex's global instructions is a ccync-managed block that names the old `accurate-answer` skill and has no textlint procedure | `~/.codex/AGENTS.md` (2,669 bytes) |
-| ccync still registers the source `C:/Code/accurate-answer`, which no longer exists after the repository rename | `~/.ccync/plugins.json` |
-| `~/.agents/skills/accurate-answer` links to the old single-file skill. `coding-agent-writing` is not installed for Codex | `~/.agents/skills/` |
-| No host has a textlint MCP server. `zhtw-mcp` is registered | `~/.codex/config.toml` |
-| Claude Code still selects the old style | `~/.claude/settings.json` `outputStyle: accurate-answer` |
-| The README states that the repository does not edit global agent settings | `README.md` |
-
-### Decisions already made by the owner
-
-- The installer and the bundled checker are written in TypeScript.
-- The installer does not special-case ccync or any other manager. It appends its own marked block and replaces only that block on rerun. Pruning and optimizing instruction files is the manager's job.
-- The kit is packaged as a plugin for each host that supports plugins. The installer also edits each host's global instruction file, because plugins cannot do that.
-- When the installer runs inside Claude Code, it installs and selects the output style automatically. It overwrites any previous `outputStyle` value after a backup, and the `plan` diff shows the old value.
-- The checker must run on Node, Deno, or Bun. Version 1 ships no compiled binary. On a machine with none of the three runtimes, `INSTALL.md` stops and tells the user to install one first.
-- The agent reports its own host identity. Environment variables are only a cross-check.
+Install the complete clear-writing-kit through one agent-readable INSTALL.md and one TypeScript installer. Provide coding-agent-writing, a functional textlint MCP server, and a marked global instruction block. Claude Code also selects clear-writing-kit output style. Behavior is independent of ccync or other managers.
 
 ## Requirements
 
@@ -70,70 +47,59 @@ Codex cannot use the kit fully today. Evidence collected on 2026-10-01 on the ow
 - [ ] R-19 `INSTALL.md` first tells the agent to check for `node`, `deno`, and `bun`. If none is found, the agent stops, tells the user to install one, and gives the official install page URLs. It does not install a runtime itself. Otherwise `INSTALL.md` tells the agent to run `plan`, show the result to the user, wait for confirmation, run `apply` with the plan hash, run `verify`, and report passed and failed steps separately. It forbids direct edits to host configuration files.
 - [ ] R-20 The README and docs describe the installer and no longer say that the repository does not edit global agent settings.
 
-## Diagrams
+## Approach
 
-```text
-User: "install clear-writing-kit"
-  │
-  ▼
-Agent reads INSTALL.md
-  │
-  ├─ no node, deno, or bun ──► stop, user installs one
-  ▼
-cwk install plan --agent <host>          (read-only; selects runtime node → deno → bun)
-  ├─ --agent and environment disagree ──► stop, report
-  ├─ host unverified ──► list manual steps, no plan hash
-  └─ verified ──► diffs + conflicts + plan hash
-                    │
-                    ▼
-             agent shows result ──► user confirms?
-                                      ├─ no ──► stop
-                                      └─ yes
-                                           │
-                                           ▼
-                      cwk install apply --agent <host> --plan-hash <h>
-                        ├─ recomputed hash differs ──► stop, no writes
-                        ├─ a step fails ──► stop, report; rerun plan covers remaining steps
-                        └─ steps:
-                             ├─ 1 copy payload to ~/.clear-writing-kit/<version>/, rewrite launcher
-                             ├─ 2 install plugin via host CLI (copy skill only if host lacks plugin skills)
-                             ├─ 3 register clear-writing-kit-textlint via host CLI with the planned runtime
-                             ├─ 4 replace or append own block (atomic, EOL and BOM kept)
-                             └─ 5 Claude only: settings.outputStyle
-                             (each completed step is recorded in the manifest immediately:
-                              file hashes, CLI fingerprints)
-                                  │
-                                  ▼
-                      cwk install verify
-                        ├─ start MCP, lintText per language, expect findings
-                        ├─ re-read outputStyle, block size, conflicts
-                        └─ any miss ──► "incomplete"
-```
+### Step 1: Feasibility spike for the payload
 
-```text
-Repository layout after the change (new items marked +)
+- **Files**: `src/check.ts`, `src/mcp.ts`, `dist/`, `.dev/research/payload-spike.md`
+- **What**: Run textlint in-process with cached profiles and build the single-tool MCP server. Try payload layouts in this order: (1) one bundle plus a sibling `dict/` directory, (2) a bundle plus a pruned vendored `node_modules` with production dependencies only. If neither passes, stop and return the plan to deep-planning. Choose the first layout that reaches parity on Node, Deno, and Bun. If more than one passes, choose the smaller payload. Cold start must stay under 3 seconds.
+- **Verify**: Findings equal the current checker for all six profiles on `writing/test` fixtures on all three runtimes. The report records the layout, payload size, and cold-start time per runtime.
 
-clear-writing-kit/
-├─ + INSTALL.md
-├─ + .claude-plugin/plugin.json, marketplace.json   skill + output style
-├─ + .codex-plugin/plugin.json (+ local marketplace entry)
-├─ + <manifests for other hosts that pass Step 2>
-├─ + output-styles/clear-writing-kit.md        generated, committed
-├─ + install/agents-block.md                   generated, committed
-├─ + src/ (TypeScript: cli, install/*, hosts.ts, rules.ts, check, mcp)
-├─ + dist/cwk.mjs (+ dict/ or vendored modules per Step 1)   built, committed
-├─   writing/profiles/, writing/rules/         unchanged rule sources
-├─   skills/coding-agent-writing/              unchanged source of truth
-└─   web-skills/                               never installed
+### Step 2: Host capability survey
 
-Installed on a machine
+- **Files**: `src/hosts.ts`, `.dev/research/host-capabilities.md`
+- **What**: For Claude Code, Codex, Copilot CLI, opencode, and Antigravity CLI, record the installed version, plugin format, plugin skill support, plugin list command, MCP add, remove, and list or get commands, the configuration-directory variable for fixture isolation, global instruction file, and output-style support. Cite command output or an official document URL for each item.
+- **Verify**: Every host record has a verified flag and an evidence source. Claude Code and Codex are surveyed on the owner's machine.
 
-~/.clear-writing-kit/
-├─ <version>/  copy of dist/
-├─ cwk.mjs     launcher that imports the active version
-├─ install-manifest.json
-└─ backups/<timestamp>/
-```
+### Step 3: Generated artifacts
+
+- **Depends on**: Step 1, for the fallback command form in the block.
+- **Files**: `scripts/generate-output-style.py`, `scripts/artifacts.py`, `scripts/generate-agents-block.py`, `install/agents-block.md`, `output-styles/clear-writing-kit.md`, `tests/`
+- **What**: Generate the instruction block from `skills/coding-agent-writing/` and commit it. Change the output-style generator's default target to `output-styles/`. Add `--check` coverage.
+- **Verify**: The generator checks and Python tests pass. The block is under 2 KB and contains no machine-specific absolute paths.
+
+### Step 4: Plugin manifests
+
+- **Depends on**: Step 2.
+- **Files**: `.claude-plugin/`, `.codex-plugin/`, manifests for other hosts that pass Step 2
+- **What**: Point each manifest at `skills/coding-agent-writing/` only. Ship the output style in the Claude manifest. Declare no MCP server.
+- **Verify**: Each host CLI installs the plugin from a local path on a fixture home and lists the skill.
+
+### Step 5: Installer
+
+- **Depends on**: Steps 1 to 4.
+- **Files**: `src/cli.ts`, `src/install/*.ts`, `dist/`
+- **What**: Implement `plan`, `apply`, `verify`, and `uninstall` from `src/hosts.ts`, following R-01 to R-18.
+- **Verify**: All test cases pass on fixture homes under Node, Deno, and Bun.
+
+### Step 6: Agent prompt and docs
+
+- **Files**: `INSTALL.md`, `README.md`, `docs/verification.md`
+- **What**: Write the agent procedure and update the docs.
+- **Verify**: `npm --prefix writing run lint` passes on the changed docs.
+
+### Step 7: Human review
+
+- **Files**: none
+- **What**: The owner reviews once, after every task and the goal-backward verification pass. The agent runs the commands, and the owner reads the results. The checklist:
+  1. From Claude Code, follow `INSTALL.md` to `plan`. The diff changes only the kit block, the plugin, `clear-writing-kit-textlint`, and `outputStyle`.
+  2. After `apply`, `verify` shows "pass", or "incomplete" only because of the old ccync `accurate-answer` block or skill.
+  3. Repeat items 1 and 2 from Codex.
+  4. A new Claude Code session uses the `clear-writing-kit` output style.
+  5. A new Codex session answers this prompt by naming `coding-agent-writing` and calling `lintText`: the zh-TW acceptance prompt and sentence recorded in Step 7 of the source plan
+- **Verify**: The owner marks each item yes or no.
+
+Scope: TypeScript installer/checker; committed runtime payload; verified host plugins, global instruction block, Claude output style, CLI-only MCP registration. No web-skills, compiled binaries, manager-specific behavior, runtime auto-installation, legacy-item deletion, runtime generation of artifacts, or changes to SKILL.md/knowledge sources.
 
 ## Files to Create or Modify
 
@@ -211,156 +177,35 @@ Installed on a machine
 
 None
 
-## Approach
+## Approval
 
-### Step 1: Feasibility spike for the payload
+- Human approval: [approved]
+- Architect review: [clear]
+- Design review: [not-requested]
+- Business review: [not-requested]
 
-- **Files**: `src/check.ts`, `src/mcp.ts`, `dist/`, `.dev/research/payload-spike.md`
-- **What**: Run textlint in-process with cached profiles and build the single-tool MCP server. Try payload layouts in this order: (1) one bundle plus a sibling `dict/` directory, (2) a bundle plus a pruned vendored `node_modules` with production dependencies only. If neither passes, stop and return the plan to deep-planning. Choose the first layout that reaches parity on Node, Deno, and Bun. If more than one passes, choose the smaller payload. Cold start must stay under 3 seconds.
-- **Verify**: Findings equal the current checker for all six profiles on `writing/test` fixtures on all three runtimes. The report records the layout, payload size, and cold-start time per runtime.
+---
 
-### Step 2: Host capability survey
+## Status
 
-- **Files**: `src/hosts.ts`, `.dev/research/host-capabilities.md`
-- **What**: For Claude Code, Codex, Copilot CLI, opencode, and Antigravity CLI, record the installed version, plugin format, plugin skill support, plugin list command, MCP add, remove, and list or get commands, the configuration-directory variable for fixture isolation, global instruction file, and output-style support. Cite command output or an official document URL for each item.
-- **Verify**: Every host record has a verified flag and an evidence source. Claude Code and Codex are surveyed on the owner's machine.
+Workflow: DRAFT
+Step: 0 of 7
+Last activity: 2026-10-02 — prompt generated from source plan
+Next step: Execute the approved implementation contract, starting with T-01.
+Current Task: —
+Task Base Commit: —
+Task Final Commit: —
+Test Retry Count: 0
+Review Retry Count: 0
 
-### Step 3: Generated artifacts
+### Deviations
 
-- **Depends on**: Step 1, for the fallback command form in the block.
-- **Files**: `scripts/generate-output-style.py`, `scripts/artifacts.py`, `scripts/generate-agents-block.py`, `install/agents-block.md`, `output-styles/clear-writing-kit.md`, `tests/`
-- **What**: Generate the instruction block from `skills/coding-agent-writing/` and commit it. Change the output-style generator's default target to `output-styles/`. Add `--check` coverage.
-- **Verify**: The generator checks and Python tests pass. The block is under 2 KB and contains no machine-specific absolute paths.
-
-### Step 4: Plugin manifests
-
-- **Depends on**: Step 2.
-- **Files**: `.claude-plugin/`, `.codex-plugin/`, manifests for other hosts that pass Step 2
-- **What**: Point each manifest at `skills/coding-agent-writing/` only. Ship the output style in the Claude manifest. Declare no MCP server.
-- **Verify**: Each host CLI installs the plugin from a local path on a fixture home and lists the skill.
-
-### Step 5: Installer
-
-- **Depends on**: Steps 1 to 4.
-- **Files**: `src/cli.ts`, `src/install/*.ts`, `dist/`
-- **What**: Implement `plan`, `apply`, `verify`, and `uninstall` from `src/hosts.ts`, following R-01 to R-18.
-- **Verify**: All test cases pass on fixture homes under Node, Deno, and Bun.
-
-### Step 6: Agent prompt and docs
-
-- **Files**: `INSTALL.md`, `README.md`, `docs/verification.md`
-- **What**: Write the agent procedure and update the docs.
-- **Verify**: `npm --prefix writing run lint` passes on the changed docs.
-
-### Step 7: Human review
-
-- **Files**: none
-- **What**: The owner reviews once, after every task and the goal-backward verification pass. The agent runs the commands, and the owner reads the results. The checklist:
-  1. From Claude Code, follow `INSTALL.md` to `plan`. The diff changes only the kit block, the plugin, `clear-writing-kit-textlint`, and `outputStyle`.
-  2. After `apply`, `verify` shows "pass", or "incomplete" only because of the old ccync `accurate-answer` block or skill.
-  3. Repeat items 1 and 2 from Codex.
-  4. A new Claude Code session uses the `clear-writing-kit` output style.
-  5. A new Codex session answers this prompt by naming `coding-agent-writing` and calling `lintText`: 「說出你目前使用的寫作 skill 名稱，並用 lintText 檢查這句：這個功能可以讓使用者更方便的進行設定。」
-- **Verify**: The owner marks each item yes or no.
-
-## Review Results
-
-### Architecture Review
-
-Verdict: APPROVE (golem-architect, 2026-10-02, second pass). First pass returned REVISE with four blocking findings, all resolved in this revision:
-
-- B1 presence-only verification → R-14 functional `lintText` calls per language and `outputStyle` re-read.
-- B2 undefined payload location and upgrade path → R-07 versioned payload with launcher, R-18 upgrade.
-- B3 CLI-created entries cannot be hashed → R-16 and R-17 command fingerprints, namespaced server name.
-- B4 non-atomic, format-changing writes → R-05 and the CRLF, BOM, lock, and space-in-path tests.
-
-Non-blocking items folded in: Windows `.cmd` spawning (risk and test), block fallback for hosts without MCP (R-11), deterministic plan hash (R-03), output-style generator default target (Step 3), launcher instead of a symlink (R-07), and home-directory resolution in the fallback command (R-11).
-
-Accepted deviation: the MCP server is registered only through host CLIs, not through plugin manifests. The runtime is chosen per machine during `apply`, which a static plugin manifest cannot express, and one registration path rules out duplicates. Installing the plugin alone therefore gives no MCP server, and `verify` reports that gap.
-
-Minimalism: two bundles merged into `dist/cwk.mjs`; host JSON replaced by `src/hosts.ts`; MCP reduced to `lintText`; `.claude.json` reading removed; resume reduced to an idempotent `plan`; skill copying limited to verified hosts without plugin skills; no compiled binaries in version 1.
-
-Open question closures (class A):
-
-- OQ-01 closed. A host is supported only after the Step 2 survey and a full fixture cycle (R-13). `apply` refuses unverified hosts. Trade-off: fewer hosts in v1, but no unproven support claim.
-- OQ-02 closed. Step 1 is a gated spike with a fixed fallback order and a parity, size, and 3-second cold-start criterion. kuromoji loads its 17 MB dictionary from a directory, so the payload is a directory (R-07).
-- OQ-04 closed. One MCP server with one `lintText` tool and per-process profile caching (R-10). textlint's own server fixes one configuration at startup. About 80 lines on `@modelcontextprotocol/server`, which textlint 15.8.0 already depends on, replace six registrations.
-- OQ-06 closed. Generators stay in Python because their outputs are committed and the installer never generates at runtime. Python stays a development-only dependency, and `--check` blocks drift.
-
-Owner closures (class H, 2026-10-02):
-
-- OQ-03 closed by the owner: version 1 ships no compiled binary. The payload is the committed JavaScript bundle and dictionary, which needs Node, Deno, or Bun but no package install and no network. `INSTALL.md` checks for a runtime first. This corrects an earlier rationale: R-09 never reaches a "no runtime" state, because the installer itself needs a runtime.
-- OQ-05 closed by the owner: the installer overwrites any previous `outputStyle` after a backup, and the `plan` diff shows the old value (R-12).
-
-<!-- ARCH_REVIEW: CLEAR -->
-
-### Business Review
-
-Not requested. The plan has no business rules, pricing, permissions, notifications, onboarding, or eligibility.
-
-### Design Review
-
-Not requested. The plan has no customer-facing interface.
-
-### Documentation Structure Review (steward)
-
-Result: no issues. The plan is at `.dev/plans/feat-cross-agent-plugin-installer.md` with a `feat-` slug and an EN semantic draft beside it. It is the only plan in `.dev/plans/`. All template sections are present. Both diagrams match R-01 to R-18 and the Files list, including the launcher and the CLI-only MCP registration. The name `accurate-answer` appears only as the legacy item that the installer detects. It is not residue.
-
-### Engineering Review
-
-Verdict: CLEAR (STAGE 3.5, golem-architect, 2026-10-02).
-
-- Owner rules applied: one task per deliverable behavior, reviewable as one commit; no split by file or language; no verification-only tasks; one behavior per TP, all agent-run; one human review as a checklist after all automated tasks and goal-backward verification (Step 7). These rules take precedence over GAL's single-file preference. The largest tasks are T-08 (8 source files plus `dist/`) and T-09 (6 source files plus `dist/`), each one behavior.
-- Lens 1, structural atomicity: APPROVE. 12 tasks in a valid dependency order. Earlier rounds fixed bundle-safe rule loading (`src/rules.ts`), queries of current CLI-managed state, removal of `--all`, a shared `which()`, explicit retry and hash definitions, and specs lost during the regrouping (`saveManifest`, identity mismatch rule, runtime error value, R-15 conflict list, missing `settings.json`, exit-code rule). The last blocking item was a dependency-order defect: `plan` needs `upsertBlock` before T-09 exists. The orchestrator moved the pure `upsertBlock` into T-08 exactly as the architect specified and checked the result. No further architect pass ran on that single move.
-- Lens 2, minimum observable probe: APPROVE. 37 TPs, each one behavior with evidence beyond exit 0. `INSTALL.md` conformance requires quoted anchor lines (TP-26). No human check appears in the Test Plan.
-- Diagram and file list: in sync.
-- Gate: T-03 decides the payload layout. If it ends in "stop", T-05 onward do not start, and the plan returns to deep-planning.
-
-<!-- ENG_REVIEW: CLEAR -->
-
-## Test Plan
-
-Each row checks one behavior and may cover several tasks. An agent runs every row. Checks that need a person are in the human review checklist under Step 7, not here. The tester writes the test code during the pipeline from these rows and the public interfaces. Evidence E is defined under Tasks.
-
-| ID | Type | Description | Covers |
+| Date | Task | Deviation | Reason |
 | --- | --- | --- | --- |
-| TP-01 | integration | `dist/cwk.mjs check --language <l> --genre <g> --stdin` and `writing/check.cjs` report the same rule IDs, lines, and columns for every case in `writing/test/checkers.test.cjs`, on Node. Exit codes match for clean and finding cases. Launcher errors such as an unknown language exit 2 from `dist/cwk.mjs` (the reference exits 1). E. | T-01 |
-| TP-02 | unit | After repeated `lintText` calls on all six profiles, the exported load counter shows exactly one load per profile. E. | T-01 |
-| TP-03 | integration | An MCP client started against `dist/cwk.mjs mcp` lists exactly one tool, `lintText`, with `text`, `language`, `genre`, and optional `filename`. A zh-TW call returns findings. An invalid enum returns an MCP error. No tool reads files or applies fixes. E. | T-02 |
-| TP-04 | integration | With the committed `dist/` layout, TP-01 parity holds on Node, Deno (`deno run -A`), and Bun, and cold start is under 3 s on each. `.dev/research/payload-spike.md` records the layouts tried in order, payload size, cold-start times, and runtime versions. If no layout passes, the result is "stop: return to deep-planning", not pass. E. | T-03 |
-| TP-05 | integration | The committed `dist/` equals a fresh `npm --prefix writing run build`. E. | T-01, T-02, T-03, T-08, T-09, T-10, T-11 |
-| TP-06 | unit | Every record in `src/hosts.ts` matches a row of `.dev/research/host-capabilities.md`, field by field. Every `verified: true` record cites captured output or an official URL in that row. No path in `src/hosts.ts` uses `os.homedir()`. E. | T-04 |
-| TP-07 | unit | `python scripts/generate-output-style.py` with no arguments writes only `output-styles/clear-writing-kit.md` in the repository, never under `~/.claude`. `--check` fails on a stale file. `python -m unittest discover -s tests -v` passes. E. | T-05 |
-| TP-08 | unit | `python scripts/generate-agents-block.py --check` passes on the committed `install/agents-block.md`. The block starts with `<!-- clear-writing-kit:begin v=2.0.0 -->`, ends with `<!-- clear-writing-kit:end -->`, is under 2,048 bytes, names `coding-agent-writing`, `lintText`, and the fallback command with `<runtime command>` and `<home>`, and has no drive letter or user path. A changed skill version makes `--check` fail. E. | T-06 |
-| TP-09 | integration | The fallback command from `install/agents-block.md`, with `<home>` resolved and each runtime command form (`node`, `deno run -A`, `bun`), prints findings when run from cmd.exe and from PowerShell after `apply` on a fixture home. E. | T-06, T-09 |
-| TP-10 | integration | For each host marked verified, its plugin installs from the local repository path on a fixture home isolated through the configuration-directory variable recorded in the survey, and the installed plugin lists `coding-agent-writing`. The Claude plugin also lists the `clear-writing-kit` output style. No manifest declares an MCP server or references `web-skills/`. E. | T-05, T-07 |
-| TP-11 | unit | `--agent claude` with `CLAUDECODE` and `CODEX_COMPANION_SESSION_ID` set resolves to `claude`. `--agent codex` with only `CLAUDECODE` set is a mismatch error with no plan hash. A missing `--agent` is an error. E. | T-08 |
-| TP-12 | unit | With PATH fixtures, runtime selection picks Node >= 20.18 first, then Deno >= 2, then Bun, skips Node 18, and returns the absolute path. On Windows, `which()` honors PATHEXT. E. | T-08 |
-| TP-13 | integration | `plan` on a fixture home leaves every file hash unchanged, and its diffs show only the kit's own block and entries. E. | T-08 |
-| TP-14 | integration | Two `plan` runs on unchanged state give the same hash. `apply` with a hash taken before a target changed writes nothing and names the changed target. E. | T-08, T-09 |
-| TP-15 | integration | On a host marked unverified, `plan` lists manual steps without a hash, and `apply` refuses to run. E. | T-08, T-09 |
-| TP-16 | integration | `plan` and `verify` report each legacy conflict planted in a fixture home: an `accurate-answer` skill directory, a block that names `accurate-answer`, and an `outputStyle` other than `clear-writing-kit`. None of them is deleted. E. | T-08, T-10 |
-| TP-17 | integration | No output line of `plan`, `apply`, `verify`, or `uninstall` contains a token planted in a fixture host configuration file. E. | T-08, T-09, T-10, T-11 |
-| TP-18 | integration | `apply` on a fixture home with host CLI stubs installs the plugin, registers `clear-writing-kit-textlint` with the launcher path and the planned runtime, writes one kit block, sets `outputStyle` for Claude, and records each step in the manifest. A second `apply` changes nothing. E. | T-09 |
-| TP-19 | integration | `apply` on a CRLF `AGENTS.md` with a BOM keeps CRLF and the BOM. A home path with a space works. E. | T-09 |
-| TP-20 | integration | A host CLI stub that fails at the MCP step stops `apply`, the manifest lists the completed steps, and the next `plan` shows only the remaining steps. E. | T-09 |
-| TP-21 | integration | `apply` on a fixture `settings.json` with unrelated keys changes only `outputStyle`, keeps key order and indentation, backs up the file, and the `plan` diff showed the old value. E. | T-09 |
-| TP-37 | integration | `apply` for Claude Code with an invalid `settings.json` stops before writing any file. E. | T-09 |
-| TP-22 | integration | A `.cmd` host CLI stub receives an argument containing a space and `&` unchanged when the installer runs on Node, Deno, and Bun on Windows. E. | T-08, T-09 |
-| TP-23 | integration | `apply` copies `dist/` to `<home>/.clear-writing-kit/<version>/` and writes the launcher. Upgrading from version A to B rewrites the launcher to B, keeps A, and the MCP entry still answers through the launcher. E. | T-09 |
-| TP-24 | integration | After `apply`, `verify` reads the registered MCP command, starts it, and gets at least one finding per language. It returns "incomplete" when the payload dictionary is removed, when `outputStyle` is reset, when a legacy writing skill exists, and when an MCP stub never answers within the 30 s per-call timeout. The cases pass with a home path that contains a space. E. | T-10 |
-| TP-25 | integration | `uninstall` after `apply` returns the fixture home to its pre-install bytes, except the backup folder. A hand-edited block, a re-pointed `clear-writing-kit-textlint` entry, and a changed payload file are each kept and reported. After an upgrade from A to B, it removes A only when its hash matches. E. | T-11 |
-| TP-26 | integration | An agent checks `INSTALL.md` against R-19 item by item and quotes the anchoring `INSTALL.md` line for each item: runtime preflight with official install URLs and no automatic install, work from a repository clone with committed `dist/`, `plan` → show → wait → `apply --plan-hash` → `verify`, separate pass and fail reporting, a ban on direct configuration edits, and a new session for the behavior check. An item without a quotable line fails. E. | T-12 |
-| TP-27 | integration | README sections in all three languages show the same installer commands, `test_readme_languages_have_equal_commands_and_local_links` passes, and the statement that the repository does not edit global agent settings is gone. `npm --prefix writing run lint` and `npm --prefix writing run okf:check` pass. E. | T-12 |
-| TP-28 | integration | `install --help` on Node, Deno, and Bun lists `plan`, `apply`, `verify`, and `uninstall`. E. | T-08, T-09, T-10, T-11 |
-| TP-29 | integration | A target locked during rename on Windows makes `apply` retry 5 times 100 ms apart, then fail with the path, and the original bytes are unchanged. E. | T-09 |
-| TP-30 | integration | After `apply` on a fixture file that holds a ccync block and a codebase-memory block, both blocks are byte-identical to before. E. | T-09 |
-| TP-31 | unit | `lintText` with an unknown language or genre throws and never returns an empty report. E. | T-01 |
-| TP-32 | integration | A corrupted manifest makes `plan` and `apply` fail with an error, never treat it as empty. E. | T-08, T-09 |
-| TP-33 | integration | A target file that already holds two kit blocks makes `apply` fail without writing any file. E. | T-09 |
-| TP-34 | integration | With no qualifying runtime on PATH, `plan` reports an error and gives no plan hash. E. | T-08 |
-| TP-35 | integration | `apply` for Claude Code with no `settings.json` creates the file containing only `outputStyle`. E. | T-09 |
-| TP-36 | integration | Each `install` subcommand exits non-zero on a host mismatch, a refused unverified host, a failed step, or an "incomplete" result, and exits 0 otherwise. E. | T-08, T-09, T-10, T-11 |
+
+### Handoff Notes
+
+New prompt. Source approval and planning reviews are carried forward. T-03 is the payload gate. If it returns stop, T-05 onward cannot start. Human review occurs once after all automated tasks and goal-backward verification. No implementation has run.
 
 ## Tasks
 
@@ -464,3 +309,118 @@ Steps map to tasks as follows: Step 1 → T-01 to T-03, Step 2 → T-04, Step 3 
   - Change: Write `INSTALL.md` with the R-19 procedure. The agent works from a repository clone, and `dist/` is committed, so no `npm install` is needed. It checks for `node`, `deno`, and `bun` and stops with official install URLs when none exists, without installing a runtime. It runs `install plan --agent <self>`, shows the result, waits for explicit confirmation, runs `install apply` with the plan hash, runs `install verify`, reports passed and failed steps separately, never edits host configuration files directly, and asks for a new session for the behavior check. In all three README language sections, add the same installer commands, replace the statement that the repository does not edit global agent settings with what the installer changes and how to uninstall, and update the output-style generator description. Document `verify` in `docs/verification.md`. Do not hand-edit `knowledge/`.
   - Acceptance: `INSTALL.md` covers every R-19 item, and the README and docs checks pass.
   - Evidence: E + TP-26, TP-27.
+
+## Deferred Follow-up
+
+None.
+
+## Analyze
+
+Pending execution analysis. Use the approved task dependencies and T-03 gate.
+
+## Test Plan
+
+Each row checks one behavior and may cover several tasks. An agent runs every row. Checks that need a person are in the human review checklist under Step 7, not here. The tester writes the test code during the pipeline from these rows and the public interfaces. Evidence E is defined under Tasks.
+
+| ID | Type | Description | Covers |
+| --- | --- | --- | --- |
+| TP-01 | integration | `dist/cwk.mjs check --language <l> --genre <g> --stdin` and `writing/check.cjs` report the same rule IDs, lines, and columns for every case in `writing/test/checkers.test.cjs`, on Node. Exit codes match for clean and finding cases. Launcher errors such as an unknown language exit 2 from `dist/cwk.mjs` (the reference exits 1). E. | T-01 |
+| TP-02 | unit | After repeated `lintText` calls on all six profiles, the exported load counter shows exactly one load per profile. E. | T-01 |
+| TP-03 | integration | An MCP client started against `dist/cwk.mjs mcp` lists exactly one tool, `lintText`, with `text`, `language`, `genre`, and optional `filename`. A zh-TW call returns findings. An invalid enum returns an MCP error. No tool reads files or applies fixes. E. | T-02 |
+| TP-04 | integration | With the committed `dist/` layout, TP-01 parity holds on Node, Deno (`deno run -A`), and Bun, and cold start is under 3 s on each. `.dev/research/payload-spike.md` records the layouts tried in order, payload size, cold-start times, and runtime versions. If no layout passes, the result is "stop: return to deep-planning", not pass. E. | T-03 |
+| TP-05 | integration | The committed `dist/` equals a fresh `npm --prefix writing run build`. E. | T-01, T-02, T-03, T-08, T-09, T-10, T-11 |
+| TP-06 | unit | Every record in `src/hosts.ts` matches a row of `.dev/research/host-capabilities.md`, field by field. Every `verified: true` record cites captured output or an official URL in that row. No path in `src/hosts.ts` uses `os.homedir()`. E. | T-04 |
+| TP-07 | unit | `python scripts/generate-output-style.py` with no arguments writes only `output-styles/clear-writing-kit.md` in the repository, never under `~/.claude`. `--check` fails on a stale file. `python -m unittest discover -s tests -v` passes. E. | T-05 |
+| TP-08 | unit | `python scripts/generate-agents-block.py --check` passes on the committed `install/agents-block.md`. The block starts with `<!-- clear-writing-kit:begin v=2.0.0 -->`, ends with `<!-- clear-writing-kit:end -->`, is under 2,048 bytes, names `coding-agent-writing`, `lintText`, and the fallback command with `<runtime command>` and `<home>`, and has no drive letter or user path. A changed skill version makes `--check` fail. E. | T-06 |
+| TP-09 | integration | The fallback command from `install/agents-block.md`, with `<home>` resolved and each runtime command form (`node`, `deno run -A`, `bun`), prints findings when run from cmd.exe and from PowerShell after `apply` on a fixture home. E. | T-06, T-09 |
+| TP-10 | integration | For each host marked verified, its plugin installs from the local repository path on a fixture home isolated through the configuration-directory variable recorded in the survey, and the installed plugin lists `coding-agent-writing`. The Claude plugin also lists the `clear-writing-kit` output style. No manifest declares an MCP server or references `web-skills/`. E. | T-05, T-07 |
+| TP-11 | unit | `--agent claude` with `CLAUDECODE` and `CODEX_COMPANION_SESSION_ID` set resolves to `claude`. `--agent codex` with only `CLAUDECODE` set is a mismatch error with no plan hash. A missing `--agent` is an error. E. | T-08 |
+| TP-12 | unit | With PATH fixtures, runtime selection picks Node >= 20.18 first, then Deno >= 2, then Bun, skips Node 18, and returns the absolute path. On Windows, `which()` honors PATHEXT. E. | T-08 |
+| TP-13 | integration | `plan` on a fixture home leaves every file hash unchanged, and its diffs show only the kit's own block and entries. E. | T-08 |
+| TP-14 | integration | Two `plan` runs on unchanged state give the same hash. `apply` with a hash taken before a target changed writes nothing and names the changed target. E. | T-08, T-09 |
+| TP-15 | integration | On a host marked unverified, `plan` lists manual steps without a hash, and `apply` refuses to run. E. | T-08, T-09 |
+| TP-16 | integration | `plan` and `verify` report each legacy conflict planted in a fixture home: an `accurate-answer` skill directory, a block that names `accurate-answer`, and an `outputStyle` other than `clear-writing-kit`. None of them is deleted. E. | T-08, T-10 |
+| TP-17 | integration | No output line of `plan`, `apply`, `verify`, or `uninstall` contains a token planted in a fixture host configuration file. E. | T-08, T-09, T-10, T-11 |
+| TP-18 | integration | `apply` on a fixture home with host CLI stubs installs the plugin, registers `clear-writing-kit-textlint` with the launcher path and the planned runtime, writes one kit block, sets `outputStyle` for Claude, and records each step in the manifest. A second `apply` changes nothing. E. | T-09 |
+| TP-19 | integration | `apply` on a CRLF `AGENTS.md` with a BOM keeps CRLF and the BOM. A home path with a space works. E. | T-09 |
+| TP-20 | integration | A host CLI stub that fails at the MCP step stops `apply`, the manifest lists the completed steps, and the next `plan` shows only the remaining steps. E. | T-09 |
+| TP-21 | integration | `apply` on a fixture `settings.json` with unrelated keys changes only `outputStyle`, keeps key order and indentation, backs up the file, and the `plan` diff showed the old value. E. | T-09 |
+| TP-37 | integration | `apply` for Claude Code with an invalid `settings.json` stops before writing any file. E. | T-09 |
+| TP-22 | integration | A `.cmd` host CLI stub receives an argument containing a space and `&` unchanged when the installer runs on Node, Deno, and Bun on Windows. E. | T-08, T-09 |
+| TP-23 | integration | `apply` copies `dist/` to `<home>/.clear-writing-kit/<version>/` and writes the launcher. Upgrading from version A to B rewrites the launcher to B, keeps A, and the MCP entry still answers through the launcher. E. | T-09 |
+| TP-24 | integration | After `apply`, `verify` reads the registered MCP command, starts it, and gets at least one finding per language. It returns "incomplete" when the payload dictionary is removed, when `outputStyle` is reset, when a legacy writing skill exists, and when an MCP stub never answers within the 30 s per-call timeout. The cases pass with a home path that contains a space. E. | T-10 |
+| TP-25 | integration | `uninstall` after `apply` returns the fixture home to its pre-install bytes, except the backup folder. A hand-edited block, a re-pointed `clear-writing-kit-textlint` entry, and a changed payload file are each kept and reported. After an upgrade from A to B, it removes A only when its hash matches. E. | T-11 |
+| TP-26 | integration | An agent checks `INSTALL.md` against R-19 item by item and quotes the anchoring `INSTALL.md` line for each item: runtime preflight with official install URLs and no automatic install, work from a repository clone with committed `dist/`, `plan` → show → wait → `apply --plan-hash` → `verify`, separate pass and fail reporting, a ban on direct configuration edits, and a new session for the behavior check. An item without a quotable line fails. E. | T-12 |
+| TP-27 | integration | README sections in all three languages show the same installer commands, `test_readme_languages_have_equal_commands_and_local_links` passes, and the statement that the repository does not edit global agent settings is gone. `npm --prefix writing run lint` and `npm --prefix writing run okf:check` pass. E. | T-12 |
+| TP-28 | integration | `install --help` on Node, Deno, and Bun lists `plan`, `apply`, `verify`, and `uninstall`. E. | T-08, T-09, T-10, T-11 |
+| TP-29 | integration | A target locked during rename on Windows makes `apply` retry 5 times 100 ms apart, then fail with the path, and the original bytes are unchanged. E. | T-09 |
+| TP-30 | integration | After `apply` on a fixture file that holds a ccync block and a codebase-memory block, both blocks are byte-identical to before. E. | T-09 |
+| TP-31 | unit | `lintText` with an unknown language or genre throws and never returns an empty report. E. | T-01 |
+| TP-32 | integration | A corrupted manifest makes `plan` and `apply` fail with an error, never treat it as empty. E. | T-08, T-09 |
+| TP-33 | integration | A target file that already holds two kit blocks makes `apply` fail without writing any file. E. | T-09 |
+| TP-34 | integration | With no qualifying runtime on PATH, `plan` reports an error and gives no plan hash. E. | T-08 |
+| TP-35 | integration | `apply` for Claude Code with no `settings.json` creates the file containing only `outputStyle`. E. | T-09 |
+| TP-36 | integration | Each `install` subcommand exits non-zero on a host mismatch, a refused unverified host, a failed step, or an "incomplete" result, and exits 0 otherwise. E. | T-08, T-09, T-10, T-11 |
+
+## Test Results
+
+Not run. No execution tests have been performed.
+
+## Review Results
+
+### Architecture Review
+
+Verdict: APPROVE (golem-architect, 2026-10-02, second pass). First pass returned REVISE with four blocking findings, all resolved in this revision:
+
+- B1 presence-only verification → R-14 functional `lintText` calls per language and `outputStyle` re-read.
+- B2 undefined payload location and upgrade path → R-07 versioned payload with launcher, R-18 upgrade.
+- B3 CLI-created entries cannot be hashed → R-16 and R-17 command fingerprints, namespaced server name.
+- B4 non-atomic, format-changing writes → R-05 and the CRLF, BOM, lock, and space-in-path tests.
+
+Non-blocking items folded in: Windows `.cmd` spawning (risk and test), block fallback for hosts without MCP (R-11), deterministic plan hash (R-03), output-style generator default target (Step 3), launcher instead of a symlink (R-07), and home-directory resolution in the fallback command (R-11).
+
+Accepted deviation: the MCP server is registered only through host CLIs, not through plugin manifests. The runtime is chosen per machine during `apply`, which a static plugin manifest cannot express, and one registration path rules out duplicates. Installing the plugin alone therefore gives no MCP server, and `verify` reports that gap.
+
+Minimalism: two bundles merged into `dist/cwk.mjs`; host JSON replaced by `src/hosts.ts`; MCP reduced to `lintText`; `.claude.json` reading removed; resume reduced to an idempotent `plan`; skill copying limited to verified hosts without plugin skills; no compiled binaries in version 1.
+
+Open question closures (class A):
+
+- OQ-01 closed. A host is supported only after the Step 2 survey and a full fixture cycle (R-13). `apply` refuses unverified hosts. Trade-off: fewer hosts in v1, but no unproven support claim.
+- OQ-02 closed. Step 1 is a gated spike with a fixed fallback order and a parity, size, and 3-second cold-start criterion. kuromoji loads its 17 MB dictionary from a directory, so the payload is a directory (R-07).
+- OQ-04 closed. One MCP server with one `lintText` tool and per-process profile caching (R-10). textlint's own server fixes one configuration at startup. About 80 lines on `@modelcontextprotocol/server`, which textlint 15.8.0 already depends on, replace six registrations.
+- OQ-06 closed. Generators stay in Python because their outputs are committed and the installer never generates at runtime. Python stays a development-only dependency, and `--check` blocks drift.
+
+Owner closures (class H, 2026-10-02):
+
+- OQ-03 closed by the owner: version 1 ships no compiled binary. The payload is the committed JavaScript bundle and dictionary, which needs Node, Deno, or Bun but no package install and no network. `INSTALL.md` checks for a runtime first. This corrects an earlier rationale: R-09 never reaches a "no runtime" state, because the installer itself needs a runtime.
+- OQ-05 closed by the owner: the installer overwrites any previous `outputStyle` after a backup, and the `plan` diff shows the old value (R-12).
+
+<!-- ARCH_REVIEW: CLEAR -->
+
+### Business Review
+
+Not requested. The plan has no business rules, pricing, permissions, notifications, onboarding, or eligibility.
+
+### Design Review
+
+Not requested. The plan has no customer-facing interface.
+
+**Documentation Structure Review (steward)**
+
+Result: no issues. The plan is at `.dev/plans/feat-cross-agent-plugin-installer.md` with a `feat-` slug and an EN semantic draft beside it. It is the only plan in `.dev/plans/`. All template sections are present. Both diagrams match R-01 to R-18 and the Files list, including the launcher and the CLI-only MCP registration. The name `accurate-answer` appears only as the legacy item that the installer detects. It is not residue.
+
+### Engineering Review
+
+Verdict: CLEAR (STAGE 3.5, golem-architect, 2026-10-02).
+
+- Owner rules applied: one task per deliverable behavior, reviewable as one commit; no split by file or language; no verification-only tasks; one behavior per TP, all agent-run; one human review as a checklist after all automated tasks and goal-backward verification (Step 7). These rules take precedence over GAL's single-file preference. The largest tasks are T-08 (8 source files plus `dist/`) and T-09 (6 source files plus `dist/`), each one behavior.
+- Lens 1, structural atomicity: APPROVE. 12 tasks in a valid dependency order. Earlier rounds fixed bundle-safe rule loading (`src/rules.ts`), queries of current CLI-managed state, removal of `--all`, a shared `which()`, explicit retry and hash definitions, and specs lost during the regrouping (`saveManifest`, identity mismatch rule, runtime error value, R-15 conflict list, missing `settings.json`, exit-code rule). The last blocking item was a dependency-order defect: `plan` needs `upsertBlock` before T-09 exists. The orchestrator moved the pure `upsertBlock` into T-08 exactly as the architect specified and checked the result. No further architect pass ran on that single move.
+- Lens 2, minimum observable probe: APPROVE. 37 TPs, each one behavior with evidence beyond exit 0. `INSTALL.md` conformance requires quoted anchor lines (TP-26). No human check appears in the Test Plan.
+- Diagram and file list: in sync.
+- Gate: T-03 decides the payload layout. If it ends in "stop", T-05 onward do not start, and the plan returns to deep-planning.
+
+<!-- ENG_REVIEW: CLEAR -->
+
+## Debug Log
+
+None.
