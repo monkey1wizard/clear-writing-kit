@@ -422,7 +422,8 @@ Step 與任務的對應：Step 1 → T-01 到 T-03，Step 2 → T-04，Step 3 �
   - Acceptance: 工具表和調查逐列一致，每筆已驗證紀錄都有證據。
   - Evidence: E + TP-06.
 
-- [ ] T-05 — 從 repo 提供 output style
+- [x] T-05 — 從 repo 提供 output style *(f2ce410)*
+  - Commit: f2ce4107a21f593cb39249287bae30ef04d28e9e
   - Targets: `scripts/generate-output-style.py`, `output-styles/clear-writing-kit.md`, `tests/test_artifacts.py`
   - Depends on: T-03（只是關卡，沒有技術上的相依）
   - Change: 把 `DEFAULT_OUTPUT` 改為 `ROOT / "output-styles" / (PROJECT_NAME + ".md")`，使用 `artifacts.py` 的 repo 根目錄。產生並 commit 檔案。把 `test_default_style_name_changes_without_deleting_existing_style` 改成新的預設位置，並新增檢查：commit 的檔案與 `render_claude()` 相同。

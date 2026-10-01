@@ -190,11 +190,11 @@ None
 
 Workflow: IMPLEMENT
 Step: 2 of 7
-Last activity: 2026-10-02 — T-04 converged. T-05 task-quality check passed: repository default path, unchanged explicit output support, committed generation parity, and Python tests are specified.
-Next step: Implement T-05 repository-owned generated output style.
-Current Task: T-05
+Last activity: 2026-10-02 — T-05 generator validation and audit passed; TP-10 remains pending at T-07.
+Next step: Converge T-05, then execute T-06 generated instruction block.
+Current Task: —
 Task Base Commit: bb218530a46103baeea5ffbd8174ea5a94d9b115
-Task Final Commit: —
+Task Final Commit: f2ce4107a21f593cb39249287bae30ef04d28e9e
 Test Retry Count: 0
 Review Retry Count: 0
 
@@ -315,6 +315,14 @@ Dispatch: phase=test task=T-04 role=TESTER executor=agy model=gemini-3.8-flash s
 
 Dispatch: phase=audit task=T-04 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=9e3aa209-173d-4cd8-9c3e-d5226c40d3eb log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-04/1790881167-893958400-000000-T-04-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
 
+Dispatch: phase=implement task=T-05 role=CODER executor=codex model=gpt-6-luna state=completed session_id=01a0f8d9-8c55-7421-a1c6-ea23546c6f94 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-05/1790881401-497529500-000000-T-05-implement-codex.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+Dispatch: phase=test task=T-05 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=61803ed4-ba46-47dc-a128-c4c310e04ef2 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-05/1790881523-737593800-000000-T-05-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
+
+T-05 independent test: TP-07 PASS, 12/12 Python artifact tests. TP-10 NotRun until T-07 creates plugin manifests. This records a dependency limit, not plugin installation success, and does not waive TP-10.
+
+Dispatch: phase=audit task=T-05 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=077760cf-ae58-4ffe-9dc7-f2cce13ab170 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-05/1790881692-693388100-000000-T-05-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
+
 ## Tasks
 
 Each task is one deliverable behavior that the owner can review as one commit. Tasks are not split by file or by language, and no task only runs checks. This follows the owner's refining rules, which take precedence over GAL's single-file preference. Blast radius per task is listed in Targets.
@@ -366,7 +374,8 @@ Steps map to tasks as follows: Step 1 → T-01 to T-03, Step 2 → T-04, Step 3 
   - Acceptance: The table and the survey agree row by row, and every verified record has evidence.
   - Evidence: E + TP-06.
 
-- [ ] T-05 — Ship the output style from the repository
+- [x] T-05 — Ship the output style from the repository *(f2ce410)*
+  - Commit: f2ce4107a21f593cb39249287bae30ef04d28e9e
   - Targets: `scripts/generate-output-style.py`, `output-styles/clear-writing-kit.md`, `tests/test_artifacts.py`
   - Depends on: T-03 (gate only, no technical dependency)
   - Change: Change `DEFAULT_OUTPUT` to `ROOT / "output-styles" / (PROJECT_NAME + ".md")`, using the repository root from `artifacts.py`. Generate and commit the file. Update `test_default_style_name_changes_without_deleting_existing_style` to the new default, and add a check that the committed file matches `render_claude()`.
@@ -683,6 +692,30 @@ Evidence: Node unit probes against `src/hosts.ts` and `.dev/research/host-capabi
 #### Not Tested
 
 - None. All covering test plan rows for T-04 (TP-06) were directly tested.
+
+### [T-05] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 2 | Passed: 1 | Failed: 0 | Skipped: 1
+Verdict: PASS
+Evidence: Python probes and unit test suite confirm scripts/generate-output-style.py defaults to output-styles/clear-writing-kit.md in the repo without writing to ~/.claude, --check catches missing and stale files, committed output style matches render_claude(), and all 12 test_artifacts.py tests pass (TP-07). TP-10 is skipped on T-05 because plugin manifests are introduced in T-07.
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-07: `python scripts/generate-output-style.py` with no arguments writes only `output-styles/clear-writing-kit.md` in the repository, never under `~/.claude`. `--check` fails on a stale file. `python -m unittest discover -s tests -v` passes. | Yes | PASS | Running `scripts/generate-output-style.py` without arguments writes `ROOT / "output-styles" / "clear-writing-kit.md"` and leaves `~/.claude` untouched. `--check` succeeds on clean repository file and exits 1 on stale or deleted file. `python -m unittest discover -s tests -v` ran 12 tests with 12 passed (0 failures). |
+| TP-10: For each host marked verified, its plugin installs from the local repository path on a fixture home isolated through the configuration-directory variable recorded in the survey, and the installed plugin lists `coding-agent-writing`. The Claude plugin also lists the `clear-writing-kit` output style. No manifest declares an MCP server or references `web-skills/`. | No | Skipped | Skipped on T-05 per plan instructions ("Report TP-10 dependency on T-07 honestly; do not claim plugin installation before manifests exist"). T-05 ships the output style file in the repository; plugin manifests are built and shipped in T-07. |
+
+#### Failed Tests
+
+- None. All covering tests for T-05 passed.
+
+#### Not Tested
+
+- `TP-10: Multi-host plugin installation and listing` — Not tested during T-05 because plugin manifests (.claude-plugin/plugin.json, .codex-plugin/plugin.json) are scheduled for implementation and test in T-07.
 ## Review Results
 
 ### Architecture Review
@@ -809,6 +842,27 @@ The audit evaluated T-03 changes covering runtime portability, dictionary bundli
 #### Summary
 
 The audit evaluated T-04 changes recording surveyed host capabilities across `src/hosts.ts` and `.dev/research/host-capabilities.md`. The implementation defines a strict, readonly typed structure (`HostCapability`) and constant array (`hosts`) with pure functions for path resolution under an injected home directory, avoiding unisolated `os.homedir()` calls or hardcoded user paths. Capability fields, CLI command templates, and verification statuses align row by row and field by field between the TypeScript constant and the research documentation. Claude Code and Codex CLI are verified with captured local command executions and official documentation URLs, while GitHub Copilot CLI, opencode, and Antigravity CLI remain explicitly unverified due to unestablished identity or configuration relocation environment variables. Path functions perform pure string interpolation without shell execution or dynamic evaluation. The exact-match environment variable definitions mitigate host identity spoofing. No deep performance bottlenecks, OWASP Top 10 vulnerabilities, or STRIDE security risks were identified.
+
+#### Open Findings
+
+- None.
+
+#### Remediation Tracking
+
+| Finding | Severity | Status |
+| --- | --- | --- |
+| None | None | CLEAR |
+
+<!-- AUDIT_REVIEW: CLEAR -->
+
+### [T-05] 2026-10-02
+
+**Date:** 2026-10-02
+**Findings:** 0 total — 0 critical, 0 high, 0 medium, 0 low
+
+#### Summary
+
+The audit evaluated T-05 changes scoping Claude Code output style generation to the repository workspace across `scripts/generate-output-style.py`, `output-styles/clear-writing-kit.md`, and `tests/test_artifacts.py`. Updating `DEFAULT_OUTPUT` to `ROOT / "output-styles" / (PROJECT_NAME + ".md")` eliminates unexpected side effects against the host user's home directory (`~/.claude`), ensuring generator executions without arguments remain strictly confined to repository boundaries. The committed output style matches `render_claude()` byte-for-byte, verified deterministically via `--check` and unit tests. Path resolution uses standard `pathlib.Path` operations without shell execution or dynamic evaluation. No unbounded data loading, hot-path sync I/O, OWASP Top 10 vulnerabilities, or STRIDE security threats were identified.
 
 #### Open Findings
 

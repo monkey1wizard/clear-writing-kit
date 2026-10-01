@@ -37,7 +37,7 @@
 
 | Plan | Source Plan | Last Session | Stopped At | Next Step | Context |
 | --- | --- | --- | --- | --- | --- |
-| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-04 implement/test/audit passed, 8255e54 | T-04 convergence, then T-05 | All 5 records match; Claude/Codex capabilities verified; other hosts unverified; full installation cycles pending; AUDIT_REVIEW: CLEAR |
+| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-05 generator/test/audit passed, f2ce410 | T-05 convergence, then T-06 | TP-07 PASS, Python 12/12; AUDIT_REVIEW: CLEAR; TP-10 NotRun pending T-07 manifests; no plugin-install success claimed |
 
 ## Session Execution Context
 
