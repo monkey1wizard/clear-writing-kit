@@ -191,11 +191,11 @@ None
 Workflow: IMPLEMENT
 Step: 1 of 7
 Last activity: 2026-10-02 — T-03 converged. T-04 task-quality check passed: survey fields, evidence provenance, typed host records, and injected home paths are specified.
-Next step: Implement T-04 host capability survey and typed table.
+Next step: Fix T-04 installed-host discovery and exact survey/table field agreement, then independently retest TP-06.
 Current Task: T-04
 Task Base Commit: ec859ffc06899d00f37997967688c10844045325
-Task Final Commit: —
-Test Retry Count: 0
+Task Final Commit: 5537bfa2584d04eb323fb62d89c11373cb2f38c5
+Test Retry Count: 1
 Review Retry Count: 0
 
 ### Deviations
@@ -281,6 +281,25 @@ Fix commit 88e0fc9 delivers sibling dict with KUROMOJIN_DIC_PATH resolved from t
 Dispatch: phase=test task=T-03 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=8b2e6306-5725-45dc-b0f8-21b71296413c log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-03/1790878706-871314800-000000-T-03-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
 
 Dispatch: phase=audit task=T-03 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=770ccbdb-e8f7-4be7-be2d-e25626ddc290 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-03/1790879626-787744300-000000-T-03-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
+
+Dispatch: phase=implement task=T-04 role=CODER executor=codex model=gpt-6-luna state=completed session_id=01a0f8c1-8da9-7870-b9e8-1a875108c519 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-04/1790879829-017358700-000000-T-04-implement-codex.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+#### Retry Handoff — T-04 / TEST
+
+- Status: OPEN
+- Problem: TP-06 failed. Installed Claude Code, Antigravity CLI, and opencode were incorrectly recorded unavailable; Codex version changed; survey/table field values diverged.
+- Evidence:
+  - Test Results: T-04 2026-10-02 FAIL. Home injection and no os.homedir passed; installed-host survey and field parity failed.
+  - Review Results: not-applicable
+  - Security Review: not-applicable
+- Attempts:
+  1. 2026-10-02 — Independently tested commit 5537bfa.
+     - Result: Claude Code 2.1.286 available at C:/Users/leetz/AppData/Roaming/npm/claude.cmd. Antigravity CLI 1.2.14 available at C:/Users/leetz/AppData/Local/Microsoft/WinGet/Packages/Google.AntigravityCLI_Microsoft.Winget.Source_8wekyb3d8bbwe/agy.exe. opencode 1.18.34 available at C:/Users/leetz/scoop/shims/opencode.exe. Codex now reports 0.159.3. Several MD/TS field strings differ.
+     - Validation: T-04-test.receipt.md, completed session c7db3eba-4636-4b55-b027-fa850bd9469d.
+     - Commit: 5537bfa2584d04eb323fb62d89c11373cb2f38c5
+- Next human step: No human action required below retry ceiling. Re-survey installed hosts from the absolute paths above, retry the opencode transient error, capture installed versions and plugin/MCP install/remove/list/get command forms, config isolation variables, global instruction paths, output style support, and exact identity variables. Use the same canonical field values in the Markdown table and typed records. Do not infer uninstall status from a restricted PATH or transient launch error. Preserve unavailable/unknown limits honestly and verify each true flag with installed-version evidence.
+
+Dispatch: phase=test task=T-04 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=c7db3eba-4636-4b55-b027-fa850bd9469d log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-04/1790880114-187962800-000000-T-04-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
 
 ## Tasks
 
@@ -569,6 +588,40 @@ Evidence: npm --prefix writing run build matches committed dist/ (TP-05: 0 diff)
 #### Not Tested
 
 - None. All covering test plan rows for T-03 (TP-04, TP-05) were directly tested.
+
+### [T-04] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 1 | Passed: 0 | Failed: 1 | Skipped: 0
+Verdict: FAIL
+Evidence: node unit probes against `src/hosts.ts` and `.dev/research/host-capabilities.md`: TP-06 failed because Claude Code is installed on the owner's machine (`claude --version` => `2.1.286 (Claude Code)`) but was surveyed as absent and unverified; field-by-field string divergence exists between markdown rows and TypeScript records.
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-06: Every record in `src/hosts.ts` matches a row of `.dev/research/host-capabilities.md`, field by field; `verified: true` records cite captured output; no path uses `os.homedir()` | Yes | FAIL | `os.homedir()` check passed (0 uses; home injection tested); single-host verification passed for Codex. Failed on mandatory machine survey requirement (Claude Code is installed on owner machine but marked unverified) and field-by-field string agreement. |
+
+#### Failed Tests
+
+- `TP-06: Claude Code surveyed as absent and unverified on owner machine` — Step 2 and T-04 require: "Claude Code and Codex are surveyed on the owner's machine", "Capture command output for installed hosts and cite official URLs otherwise", and "Mark an item verified only with captured output or an official source for the installed version." The survey and `src/hosts.ts` record Claude Code as `not installed (claude not found on PATH)` and `verified: false`. However, Claude Code is installed on this machine at `C:\Users\leetz\AppData\Roaming\npm\claude.cmd`, and `claude --version` outputs `2.1.286 (Claude Code)`. `claude plugin` commands (`install`, `uninstall`, `list`) and `claude mcp` commands (`add`, `remove`, `list`, `get`) are locally executable. Under R-13, unverified hosts are rejected by `cwk install apply`, and under T-07 unverified hosts receive no plugin manifest, which blocks Claude Code installation and Step 7 verification.
+- `TP-06: Installed host detection omissions on owner machine` — In addition to Claude Code:
+  - Antigravity CLI is installed at `C:\Users\leetz\AppData\Local\Microsoft\WinGet\Packages\Google.AntigravityCLI_Microsoft.Winget.Source_8wekyb3d8bbwe\agy.exe`, and `agy --version` outputs `1.2.14` with plugin and mcp subcommands (`install`, `uninstall`, `list`, `add`, `remove`), but was recorded as absent and unverified.
+  - opencode is installed at `C:\Users\leetz\scoop\shims\opencode.exe`, and `opencode --version` outputs `1.18.34` with `opencode mcp` and `opencode plugin`, but was recorded as unavailable due to an unhandled transient EEXIST error.
+  - Codex CLI is currently `codex-cli 0.159.3` (`codex --version`), while the survey recorded `0.159.2`.
+- `TP-06: Field-by-field row agreement between markdown survey and TypeScript table` — T-04 acceptance requires: "The table and the survey agree row by row, and every verified record has evidence." Field values diverge between `.dev/research/host-capabilities.md` and `src/hosts.ts`:
+  - Claude plugin format: MD records `.claude-plugin/plugin.json and marketplace manifest; skills supported` vs TS `.claude-plugin/plugin.json and marketplace.json`.
+  - Claude output style: MD records `Supported` vs TS `outputStyleSupport: "yes"`.
+  - Codex installed version: MD records `codex-cli 0.159.2` vs TS `0.159.2`.
+  - Codex plugin format: MD records `.codex-plugin/plugin.json compatibility format; portable root plugin.json and skills/; skills supported` vs TS `.codex-plugin/plugin.json compatibility format; portable plugin.json plus skills/`.
+  - Copilot plugin format: MD records `Agent Plugins root plugin.json or legacy plugin formats; skills supported` vs TS `Agent Plugins plugin.json or legacy .plugin/plugin.json / .claude-plugin/plugin.json`.
+  - opencode plugin commands: MD records `Configure in opencode.json or plugin directory / remove the entry or directory / no plugin list CLI command established` vs TS install command `Add plugin to opencode.json or plugin directory`.
+
+#### Not Tested
+
+- None. All covering test plan rows for T-04 (TP-06) were directly tested.
 ## Review Results
 
 ### Architecture Review
