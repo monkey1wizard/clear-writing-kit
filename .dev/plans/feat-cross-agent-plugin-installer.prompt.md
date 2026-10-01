@@ -190,11 +190,11 @@ None
 
 Workflow: IMPLEMENT
 Step: 0 of 7
-Last activity: 2026-10-02 — T-01 implementation committed as dfe8fa1; boundary gate passed after owner ignore-rule update b4700fa.
-Next step: Fix TP-01 preset rule ID prefixes and attached -c override rejection, then independently retest T-01.
-Current Task: T-01
+Last activity: 2026-10-02 — T-01 passed implement, independent test, and audit; final implementation commit dd7f4ff.
+Next step: Complete T-01 convergence gates, then execute T-02.
+Current Task: —
 Task Base Commit: 5d5a47621a0139e4f60043f870926f555435d6df
-Task Final Commit: b4700fa692cf97e3da6b7fd96de45c48ae9ebfe7
+Task Final Commit: dd7f4ff37c9c9f6786cbb6116564045473ad4ad9
 Test Retry Count: 1
 Review Retry Count: 0
 
@@ -224,7 +224,7 @@ Next human step: Resolved by owner authorization "allow". The owner's .gitignore
 
 #### Retry Handoff — T-01 / TEST
 
-- Status: OPEN
+- Status: RESOLVED
 - Problem: TP-01 failed: Japanese preset rule IDs omit ja-technical-writing/; attached -c<file> is treated as a path instead of rejected.
 - Evidence:
   - Test Results: T-01 2026-10-02, FAIL, 3 passed and 1 failed. TP-02, TP-05, and TP-31 passed.
@@ -235,9 +235,17 @@ Next human step: Resolved by owner authorization "allow". The owner's .gitignore
      - Result: TP-01 rule ID parity and attached override rejection failed.
      - Validation: T-01-test.receipt.md; completed agy test dispatch b77d1191-051a-409d-bd14-9387b2afd3a4.
      - Commit: b4700fa692cf97e3da6b7fd96de45c48ae9ebfe7
-- Next human step: No human action required below retry ceiling. Implementer fixes the two observed failures without changing scope, rebuilds dist, then tester retests all four T-01 rows.
+- Next human step: Resolved by fix dd7f4ff and independent retest. TP-01, TP-02, TP-05, and TP-31 passed; TP-01 had 76/76 passing probes.
+
+Dispatch: phase=implement task=T-01 role=CODER executor=codex model=gpt-6-luna state=completed session_id=01a0f889-d1dc-75e3-8b7a-48879d05b90a log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-01/1790876176-377301200-000000-T-01-implement-codex.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+Fix commit dd7f4ff updates Japanese preset rule prefixes and attached -c rejection, with rebuilt dist. Pre-commit and committed-range boundaries pass; worktree was clean before the retest cursor update.
 
 Dispatch: phase=test task=T-01 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=b77d1191-051a-409d-bd14-9387b2afd3a4 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-01/1790875719-841095900-000000-T-01-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
+
+Dispatch: phase=test task=T-01 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=967ab925-9cd6-4625-8f10-83a1cf7c92e1 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-01/1790876289-206536800-000000-T-01-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
+
+Dispatch: phase=audit task=T-01 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=1dea1239-e64d-4f8c-9fb6-d99be6bd3b8c log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-01/1790876586-925505000-000000-T-01-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
 
 ## Tasks
 
@@ -258,7 +266,8 @@ Evidence E: each task's tester receipt starts with the task title and records ev
 
 Steps map to tasks as follows: Step 1 → T-01 to T-03, Step 2 → T-04, Step 3 → T-05 and T-06, Step 4 → T-07, Step 5 → T-08 to T-11, Step 6 → T-12, Step 7 → the human review checklist. T-03 is a gate: if it ends in "stop", T-05 onward do not start.
 
-- [ ] T-01 — Ship the bundled `cwk check` command
+- [x] T-01 — Ship the bundled `cwk check` command *(dd7f4ff)*
+  - Commit: dd7f4ff37c9c9f6786cbb6116564045473ad4ad9
   - Targets: `writing/package.json`, `writing/package-lock.json`, `src/rules.ts`, `src/check.ts`, `src/cli.ts`, `dist/`
   - Depends on: None
   - Change: Add `esbuild` and `@modelcontextprotocol/server` as exact-version devDependencies, using the server version textlint 15.8.0 already resolves. Add a `build` script that bundles `../src/cli.ts` to `../dist/cwk.mjs` (ESM, platform node, `nodePaths` set to `writing/node_modules`, a `createRequire` banner for CommonJS dependencies). In `src/rules.ts`, statically import every rule and preset referenced by `writing/profiles/*.json` and map each name to its module. In `src/check.ts`, export `lintText({ text, language, genre, filename })`: validate `language` (`en-US`, `zh-TW`, `ja-JP`) and `genre` (`document`, `conversation`) and throw otherwise; build the kernel descriptor from the profile JSON imported at build time and the rule map, never through `loadTextlintrc`, because that resolves packages by name at runtime; call `createLinter` once per profile per process and cache it; throw on an unmapped rule or zero rules; export a load counter. In `src/cli.ts`, add a subcommand router and `check --language --genre` reading `--stdin` with optional `--stdin-filename`, or file paths, printing textlint's default format, exiting 0, 1, or 2, and rejecting `--config`, `--rule`, `--rulesdir`, `--no-textlintrc`, and `-c`. Keep `writing/check.cjs` unchanged as the parity reference. Build and commit `dist/`.
@@ -424,6 +433,32 @@ Evidence: node scratch probes testing TP-01, TP-02, TP-05, TP-31: TP-01 failed o
 #### Not Tested
 
 - None. All covering test plan rows for T-01 (TP-01, TP-02, TP-05, TP-31) were directly tested.
+
+### [T-01] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 4 | Passed: 4 | Failed: 0 | Skipped: 0
+Verdict: PASS
+Evidence: npm --prefix writing run build matches dist/ (TP-05: 0 diff), node probes verify TP-01 parity (76/76 checks passed matching writing/check.cjs, ja-technical-writing/ prefix, and -c override rejection), profile caching (TP-02: exactly 1 load per profile across all 6 profiles), and input validation (TP-31: throws on unknown language or genre).
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-01: `dist/cwk.mjs check` matches `writing/check.cjs` on Node for test cases and exit codes | Yes | PASS | 76/76 checks passed: rule IDs (including `ja-technical-writing/` preset rules), lines, columns, clean exit 0, finding exit 1, launcher error exit 2, and override flag rejection including attached `-c<file>` |
+| TP-02: Profile caching loads each profile once per process | Yes | PASS | `loadCounter` initialized to 0, rose to 6 after loading all 6 profiles, remained at 6 across repeated calls |
+| TP-05: Committed `dist/` equals fresh `npm --prefix writing run build` | Yes | PASS | Clean build; `git status --porcelain dist/` produced 0 diff |
+| TP-31: `lintText` throws on unknown language or genre | Yes | PASS | Throws descriptive error on unknown language, unknown genre, or empty fields; loadCounter remains 0 |
+
+#### Failed Tests
+
+- None. All 4 covering tests passed.
+
+#### Not Tested
+
+- None. All covering test plan rows for T-01 (TP-01, TP-02, TP-05, TP-31) were directly tested.
 ## Review Results
 
 ### Architecture Review
@@ -479,6 +514,26 @@ Verdict: CLEAR (STAGE 3.5, golem-architect, 2026-10-02).
 
 <!-- ENG_REVIEW: CLEAR -->
 
+### [T-01] 2026-10-02
+
+**Date:** 2026-10-02
+**Findings:** 0 total — 0 critical, 0 high, 0 medium, 0 low
+
+#### Summary
+
+The audit reviewed T-01 changes covering bundled `cwk check` implementation across `src/rules.ts`, `src/check.ts`, `src/cli.ts`, `writing/package.json`, and `dist/cwk.mjs`. Profile compilation and caching are bounded to 6 static profiles in process memory with no dynamic module resolution or code evaluation. CLI input handling rejects all configuration and rule overrides to prevent profile tampering. The rejected flags include `--config`, `--rule`, `--rulesdir`, and `-c`. File reading and stdin handling execute asynchronously with proper exit codes of 0, 1, and 2. The execution path contains no privileged operations and leaks no credentials. The review identified no deep performance bottlenecks and no OWASP Top 10 or STRIDE security vulnerabilities.
+
+#### Open Findings
+
+- None.
+
+#### Remediation Tracking
+
+| Finding | Severity | Status |
+| --- | --- | --- |
+| None | None | CLEAR |
+
+<!-- AUDIT_REVIEW: CLEAR -->
 ## Debug Log
 
 None.

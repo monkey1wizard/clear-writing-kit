@@ -390,7 +390,8 @@ A 類 Open Questions 的關閉紀錄：
 
 Step 與任務的對應：Step 1 → T-01 到 T-03，Step 2 → T-04，Step 3 → T-05 和 T-06，Step 4 → T-07，Step 5 → T-08 到 T-11，Step 6 → T-12，Step 7 → 人工審核清單。T-03 是關卡：它以「停止」結束時，T-05 之後的任務都不開始。
 
-- [ ] T-01 — 交付打包後的 `cwk check` 指令
+- [x] T-01 — 交付打包後的 `cwk check` 指令 *(dd7f4ff)*
+  - Commit: dd7f4ff37c9c9f6786cbb6116564045473ad4ad9
   - Targets: `writing/package.json`, `writing/package-lock.json`, `src/rules.ts`, `src/check.ts`, `src/cli.ts`, `dist/`
   - Depends on: None
   - Change: 把 `esbuild` 和 `@modelcontextprotocol/server` 以固定版本加入 devDependencies，server 的版本採用 textlint 15.8.0 已解析的版本。新增 `build` 指令，把 `../src/cli.ts` 打包成 `../dist/cwk.mjs`（ESM、platform node、`nodePaths` 設為 `writing/node_modules`，並加上給 CommonJS 相依套件用的 `createRequire` banner）。在 `src/rules.ts` 靜態匯入 `writing/profiles/*.json` 用到的每條規則和規則組，並把名稱對應到模組。在 `src/check.ts` 匯出 `lintText({ text, language, genre, filename })`：驗證 `language`（`en-US`、`zh-TW`、`ja-JP`）和 `genre`（`document`、`conversation`），其他值丟出錯誤；用建置時匯入的 profile JSON 和規則對應表建立 kernel descriptor，不經過 `loadTextlintrc`，因為它在執行時才依套件名稱解析；每個 profile 在每個程序只呼叫一次 `createLinter` 並快取；遇到未對應的規則或零條規則時丟出錯誤；匯出載入計數器。在 `src/cli.ts` 加上子指令分派，以及 `check --language --genre`：讀取 `--stdin`（可加 `--stdin-filename`）或檔案路徑，用 textlint 預設格式輸出，以 0、1 或 2 結束，並拒絕 `--config`、`--rule`、`--rulesdir`、`--no-textlintrc` 和 `-c`。`writing/check.cjs` 保持不變，作為一致性的參考。建置並 commit `dist/`。
