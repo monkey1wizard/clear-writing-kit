@@ -189,12 +189,12 @@ None
 ## Status
 
 Workflow: IMPLEMENT
-Step: 1 of 7
-Last activity: 2026-10-02 — T-03 converged. T-04 task-quality check passed: survey fields, evidence provenance, typed host records, and injected home paths are specified.
-Next step: Correct Claude/Codex capability verification flags based on captured installed CLI evidence and documented fields, then independently retest TP-06. Keep full installation-cycle evidence pending for later tasks.
-Current Task: T-04
+Step: 2 of 7
+Last activity: 2026-10-02 — T-04 passed implement, independent test, and audit; Claude/Codex capability records are verified.
+Next step: Converge T-04, then execute T-05 generated output style.
+Current Task: —
 Task Base Commit: ec859ffc06899d00f37997967688c10844045325
-Task Final Commit: 1fb062bb2f11732690451f61f439cb7251e04b09
+Task Final Commit: 8255e5430cc81c959fff80207d27af2316ecd9ee
 Test Retry Count: 2
 Review Retry Count: 0
 
@@ -286,7 +286,7 @@ Dispatch: phase=implement task=T-04 role=CODER executor=codex model=gpt-6-luna s
 
 #### Retry Handoff — T-04 / TEST
 
-- Status: OPEN
+- Status: RESOLVED
 - Problem: TP-06 still fails: all host records are marked unverified, despite captured installed-version capabilities for Claude Code and Codex. Installed-host discovery and field parity are now correct.
 - Evidence:
   - Test Results: T-04 2026-10-02 second test FAIL. Home injection, field alignment, and five installed version captures passed. Claude/Codex capability verification flags failed.
@@ -301,13 +301,19 @@ Dispatch: phase=implement task=T-04 role=CODER executor=codex model=gpt-6-luna s
      - Result: Versions, canonical field parity, and home injection passed. Both mandatory hosts remain false because rolling official documentation was rejected without regard to captured installed-version CLI evidence.
      - Validation: T-04-test.receipt.md, completed session 09c02d0f-04a3-4e38-9272-cf5ec2f75b62.
      - Commit: 1fb062bb2f11732690451f61f439cb7251e04b09
-- Next human step: No human action required below retry ceiling. Review the existing captured installed-version capabilities and official sources for Claude Code 2.1.286 and Codex 0.159.3. Mark those capability records verified when evidence establishes the required fields; do not demand patch-pinned documentation when captured installed CLI evidence confirms it. Keep other hosts false where identity or isolation fields remain unestablished. Synchronize the same flags and reasons in the report. State clearly that capability survey verification is not evidence of the later full apply/rerun/verify/uninstall cycle required by R-13. That cycle remains pending, and no live-host installation is authorized by a survey flag alone.
+- Next human step: Resolved by fix 8255e54 and independent TP-06 PASS: all five records match; Claude/Codex capabilities are evidence-verified; other hosts remain unverified where fields are not established. Full apply/rerun/verify/uninstall cycle remains pending for later tasks.
 
 Dispatch: phase=test task=T-04 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=09c02d0f-04a3-4e38-9272-cf5ec2f75b62 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-04/1790880642-988990600-000000-T-04-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
 
 Dispatch: phase=test task=T-04 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=c7db3eba-4636-4b55-b027-fa850bd9469d log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-04/1790880114-187962800-000000-T-04-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
 
 Dispatch: phase=implement task=T-04 role=CODER executor=codex model=gpt-6-luna state=completed session_id=01a0f8c9-a004-7613-ab33-3dd6c1c94b31 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-04/1790880357-974159700-000000-T-04-implement-codex.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+Dispatch: phase=implement task=T-04 role=CODER executor=codex model=gpt-6-luna state=completed session_id=01a0f8d1-b646-71e3-8d89-42d58aab407c log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-04/1790880887-976991200-000000-T-04-implement-codex.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+Dispatch: phase=test task=T-04 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=ff76669a-997b-4506-a72f-ba4df908cef1 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-04/1790881026-459995400-000000-T-04-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
+
+Dispatch: phase=audit task=T-04 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=9e3aa209-173d-4cd8-9c3e-d5226c40d3eb log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-04/1790881167-893958400-000000-T-04-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
 
 ## Tasks
 
@@ -352,7 +358,8 @@ Steps map to tasks as follows: Step 1 → T-01 to T-03, Step 2 → T-04, Step 3 
   - Acceptance: The committed payload passes parity on all three runtimes, and the report records the numbers.
   - Evidence: E + TP-04, TP-05.
 
-- [ ] T-04 — Record host capabilities as a verified host table
+- [x] T-04 — Record host capabilities as a verified host table *(8255e54)*
+  - Commit: 8255e5430cc81c959fff80207d27af2316ecd9ee
   - Targets: `.dev/research/host-capabilities.md`, `src/hosts.ts`
   - Depends on: None
   - Change: Survey Claude Code, Codex, Copilot CLI, opencode, and Antigravity CLI. For each, record the installed version, plugin format, plugin skill support, plugin install, remove, and list commands, MCP add, remove, and list or get commands, the environment variable that relocates the configuration directory for fixture isolation, the global instruction file path, output-style support, and identity environment variables by exact name. Capture command output for installed hosts and cite official URLs otherwise. Mark an item verified only with captured output or an official source for the installed version. Encode the same data in `src/hosts.ts` as a typed constant, with paths as functions of an injected home directory and an evidence string per record.
@@ -653,6 +660,29 @@ Evidence: node unit probes against `src/hosts.ts` and `.dev/research/host-capabi
 #### Not Tested
 
 - None. All covering test plan rows for T-04 (TP-06) were directly tested.
+
+### [T-04] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 1 | Passed: 1 | Failed: 0 | Skipped: 0
+Verdict: PASS
+Evidence: Node unit probes against `src/hosts.ts` and `.dev/research/host-capabilities.md` confirm all 5 hosts match row by row and field by field with zero `os.homedir()` calls (injected home paths tested), Claude Code 2.1.286 and Codex 0.159.3 are marked verified (`verified: true` / `**Yes.**`) with captured CLI output and official documentation citations, and Copilot CLI, opencode, and Antigravity CLI remain `verified: false` / `**No.**` due to unestablished identity or isolation fields (TP-06).
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-06: Every record in `src/hosts.ts` matches a row of `.dev/research/host-capabilities.md`, field by field; `verified: true` records cite captured output; no path uses `os.homedir()` | Yes | PASS | 5/5 hosts agree row by row and field by field. Zero uses of `os.homedir()` found; home injection functions return paths within the injected home directory. Claude Code 2.1.286 and Codex 0.159.3 are marked verified with captured local CLI executions and official documentation links. Copilot CLI, opencode, and Antigravity CLI correctly remain unverified due to unestablished identity or configuration relocation environment variables. |
+
+#### Failed Tests
+
+- None. All covering tests passed.
+
+#### Not Tested
+
+- None. All covering test plan rows for T-04 (TP-06) were directly tested.
 ## Review Results
 
 ### Architecture Review
@@ -758,6 +788,27 @@ The audit evaluated T-02 changes implementing the stdio MCP server in `src/mcp.t
 #### Summary
 
 The audit evaluated T-03 changes covering runtime portability, dictionary bundling, and build configuration across writing/package.json, dist/cwk.mjs, dist/dict/, and .dev/research/payload-spike.md. The build configuration pins esbuild and @modelcontextprotocol/server as exact dependencies. The bundle banner sets KUROMOJIN_DIC_PATH to a sibling dictionary path via import.meta.url. This path resolution eliminates runtime dependencies on the repository node_modules directory. The banner executes pure URL path resolution in memory with no hot-path synchronous file system I/O. The dictionary files contain static gzipped binary data copied directly from kuromoji. The payload introduces no dynamic code evaluation, network calls, or privilege boundary crossings. The review identified no deep performance bottlenecks, OWASP Top 10 vulnerabilities, or STRIDE security risks.
+
+#### Open Findings
+
+- None.
+
+#### Remediation Tracking
+
+| Finding | Severity | Status |
+| --- | --- | --- |
+| None | None | CLEAR |
+
+<!-- AUDIT_REVIEW: CLEAR -->
+
+### [T-04] 2026-10-02
+
+**Date:** 2026-10-02
+**Findings:** 0 total — 0 critical, 0 high, 0 medium, 0 low
+
+#### Summary
+
+The audit evaluated T-04 changes recording surveyed host capabilities across `src/hosts.ts` and `.dev/research/host-capabilities.md`. The implementation defines a strict, readonly typed structure (`HostCapability`) and constant array (`hosts`) with pure functions for path resolution under an injected home directory, avoiding unisolated `os.homedir()` calls or hardcoded user paths. Capability fields, CLI command templates, and verification statuses align row by row and field by field between the TypeScript constant and the research documentation. Claude Code and Codex CLI are verified with captured local command executions and official documentation URLs, while GitHub Copilot CLI, opencode, and Antigravity CLI remain explicitly unverified due to unestablished identity or configuration relocation environment variables. Path functions perform pure string interpolation without shell execution or dynamic evaluation. The exact-match environment variable definitions mitigate host identity spoofing. No deep performance bottlenecks, OWASP Top 10 vulnerabilities, or STRIDE security risks were identified.
 
 #### Open Findings
 

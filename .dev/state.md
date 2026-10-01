@@ -37,7 +37,7 @@
 
 | Plan | Source Plan | Last Session | Stopped At | Next Step | Context |
 | --- | --- | --- | --- | --- | --- |
-| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-03 implement/test/audit passed, 88e0fc9 | T-03 convergence, then T-04 | Layout 1 selected; isolated parity 198/198; all startup runs <3 s; AUDIT_REVIEW: CLEAR; report synchronized |
+| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-04 implement/test/audit passed, 8255e54 | T-04 convergence, then T-05 | All 5 records match; Claude/Codex capabilities verified; other hosts unverified; full installation cycles pending; AUDIT_REVIEW: CLEAR |
 
 ## Session Execution Context
 

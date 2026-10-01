@@ -414,7 +414,8 @@ Step 與任務的對應：Step 1 → T-01 到 T-03，Step 2 → T-04，Step 3 �
   - Acceptance: commit 的 payload 在三種執行環境上都通過一致性檢查，報告記錄了數據。
   - Evidence: E + TP-04, TP-05.
 
-- [ ] T-04 — 把工具能力記錄成已驗證的工具表
+- [x] T-04 — 把工具能力記錄成已驗證的工具表 *(8255e54)*
+  - Commit: 8255e5430cc81c959fff80207d27af2316ecd9ee
   - Targets: `.dev/research/host-capabilities.md`, `src/hosts.ts`
   - Depends on: None
   - Change: 調查 Claude Code、Codex、Copilot CLI、opencode、Antigravity CLI。逐一記錄已安裝的版本、plugin 格式、plugin skill 支援、plugin 安裝／移除／列出指令、MCP 新增／移除／列出或查詢指令、讓測試用家目錄隔離的設定目錄環境變數、全域指令檔路徑、output style 支援，以及完整名稱的身分環境變數。已安裝的工具擷取指令輸出，其他的引用官方網址。只有具備指令輸出或對應已安裝版本的官方來源時，才標為已驗證。把同樣的資料寫成 `src/hosts.ts` 裡有型別的常數，路徑寫成以注入的家目錄為參數的函式，每筆紀錄附證據字串。
