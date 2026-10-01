@@ -29,7 +29,7 @@ export const hosts: readonly HostCapability[] = [
     globalInstructionsFile: home => `${home}/.claude/CLAUDE.md`,
     outputStyleSupport: "yes",
     identityEnvironmentVariables: ["CLAUDECODE"],
-    verified: false,
+    verified: true,
     evidence: "Captured: absolute-path claude.exe --version => 2.1.286 (Claude Code); claude plugin --help lists install/uninstall/list; claude mcp --help lists add/remove/list/get. Official docs: https://docs.anthropic.com/en/docs/claude-code/plugins ; https://docs.anthropic.com/en/docs/claude-code/mcp ; https://docs.anthropic.com/en/docs/claude-code/settings ; https://docs.anthropic.com/en/docs/claude-code/cli-usage",
   },
   {
@@ -45,7 +45,7 @@ export const hosts: readonly HostCapability[] = [
     globalInstructionsFile: home => `${home}/.codex/AGENTS.md`,
     outputStyleSupport: "unknown",
     identityEnvironmentVariables: ["CODEX_SESSION_ID", "CODEX_THREAD_ID"],
-    verified: false,
+    verified: true,
     evidence: "Captured: codex --version => codex-cli 0.159.3; codex plugin --help lists add/remove/list; codex mcp --help lists add/remove/list/get. Official docs: https://developers.openai.com/plugins/build/plugins ; https://developers.openai.com/learn/docs-mcp ; https://developers.openai.com/codex/config-reference/",
   },
   {

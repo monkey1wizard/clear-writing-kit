@@ -191,11 +191,11 @@ None
 Workflow: IMPLEMENT
 Step: 1 of 7
 Last activity: 2026-10-02 — T-03 converged. T-04 task-quality check passed: survey fields, evidence provenance, typed host records, and injected home paths are specified.
-Next step: Fix T-04 installed-host discovery and exact survey/table field agreement, then independently retest TP-06.
+Next step: Correct Claude/Codex capability verification flags based on captured installed CLI evidence and documented fields, then independently retest TP-06. Keep full installation-cycle evidence pending for later tasks.
 Current Task: T-04
 Task Base Commit: ec859ffc06899d00f37997967688c10844045325
-Task Final Commit: 5537bfa2584d04eb323fb62d89c11373cb2f38c5
-Test Retry Count: 1
+Task Final Commit: 1fb062bb2f11732690451f61f439cb7251e04b09
+Test Retry Count: 2
 Review Retry Count: 0
 
 ### Deviations
@@ -287,9 +287,9 @@ Dispatch: phase=implement task=T-04 role=CODER executor=codex model=gpt-6-luna s
 #### Retry Handoff — T-04 / TEST
 
 - Status: OPEN
-- Problem: TP-06 failed. Installed Claude Code, Antigravity CLI, and opencode were incorrectly recorded unavailable; Codex version changed; survey/table field values diverged.
+- Problem: TP-06 still fails: all host records are marked unverified, despite captured installed-version capabilities for Claude Code and Codex. Installed-host discovery and field parity are now correct.
 - Evidence:
-  - Test Results: T-04 2026-10-02 FAIL. Home injection and no os.homedir passed; installed-host survey and field parity failed.
+  - Test Results: T-04 2026-10-02 second test FAIL. Home injection, field alignment, and five installed version captures passed. Claude/Codex capability verification flags failed.
   - Review Results: not-applicable
   - Security Review: not-applicable
 - Attempts:
@@ -297,9 +297,17 @@ Dispatch: phase=implement task=T-04 role=CODER executor=codex model=gpt-6-luna s
      - Result: Claude Code 2.1.286 available at C:/Users/leetz/AppData/Roaming/npm/claude.cmd. Antigravity CLI 1.2.14 available at C:/Users/leetz/AppData/Local/Microsoft/WinGet/Packages/Google.AntigravityCLI_Microsoft.Winget.Source_8wekyb3d8bbwe/agy.exe. opencode 1.18.34 available at C:/Users/leetz/scoop/shims/opencode.exe. Codex now reports 0.159.3. Several MD/TS field strings differ.
      - Validation: T-04-test.receipt.md, completed session c7db3eba-4636-4b55-b027-fa850bd9469d.
      - Commit: 5537bfa2584d04eb323fb62d89c11373cb2f38c5
-- Next human step: No human action required below retry ceiling. Re-survey installed hosts from the absolute paths above, retry the opencode transient error, capture installed versions and plugin/MCP install/remove/list/get command forms, config isolation variables, global instruction paths, output style support, and exact identity variables. Use the same canonical field values in the Markdown table and typed records. Do not infer uninstall status from a restricted PATH or transient launch error. Preserve unavailable/unknown limits honestly and verify each true flag with installed-version evidence.
+  2. 2026-10-02 — Retested discovery and field alignment fix 1fb062b.
+     - Result: Versions, canonical field parity, and home injection passed. Both mandatory hosts remain false because rolling official documentation was rejected without regard to captured installed-version CLI evidence.
+     - Validation: T-04-test.receipt.md, completed session 09c02d0f-04a3-4e38-9272-cf5ec2f75b62.
+     - Commit: 1fb062bb2f11732690451f61f439cb7251e04b09
+- Next human step: No human action required below retry ceiling. Review the existing captured installed-version capabilities and official sources for Claude Code 2.1.286 and Codex 0.159.3. Mark those capability records verified when evidence establishes the required fields; do not demand patch-pinned documentation when captured installed CLI evidence confirms it. Keep other hosts false where identity or isolation fields remain unestablished. Synchronize the same flags and reasons in the report. State clearly that capability survey verification is not evidence of the later full apply/rerun/verify/uninstall cycle required by R-13. That cycle remains pending, and no live-host installation is authorized by a survey flag alone.
+
+Dispatch: phase=test task=T-04 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=09c02d0f-04a3-4e38-9272-cf5ec2f75b62 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-04/1790880642-988990600-000000-T-04-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
 
 Dispatch: phase=test task=T-04 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=c7db3eba-4636-4b55-b027-fa850bd9469d log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-04/1790880114-187962800-000000-T-04-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
+
+Dispatch: phase=implement task=T-04 role=CODER executor=codex model=gpt-6-luna state=completed session_id=01a0f8c9-a004-7613-ab33-3dd6c1c94b31 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-04/1790880357-974159700-000000-T-04-implement-codex.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
 
 ## Tasks
 
@@ -618,6 +626,29 @@ Evidence: node unit probes against `src/hosts.ts` and `.dev/research/host-capabi
   - Codex plugin format: MD records `.codex-plugin/plugin.json compatibility format; portable root plugin.json and skills/; skills supported` vs TS `.codex-plugin/plugin.json compatibility format; portable plugin.json plus skills/`.
   - Copilot plugin format: MD records `Agent Plugins root plugin.json or legacy plugin formats; skills supported` vs TS `Agent Plugins plugin.json or legacy .plugin/plugin.json / .claude-plugin/plugin.json`.
   - opencode plugin commands: MD records `Configure in opencode.json or plugin directory / remove the entry or directory / no plugin list CLI command established` vs TS install command `Add plugin to opencode.json or plugin directory`.
+
+#### Not Tested
+
+- None. All covering test plan rows for T-04 (TP-06) were directly tested.
+
+### [T-04] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 1 | Passed: 0 | Failed: 1 | Skipped: 0
+Verdict: FAIL
+Evidence: node unit probes against `src/hosts.ts` and `.dev/research/host-capabilities.md`: TP-06 failed because all five hosts are marked `verified: false` and `**No.**`, leaving zero verified hosts and breaking downstream contracts R-13, T-07, and Step 7.
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-06: Every record in `src/hosts.ts` matches a row of `.dev/research/host-capabilities.md`, field by field; `verified: true` records cite captured output; no path uses `os.homedir()` | Yes | FAIL | Home injection and `os.homedir()` absence passed (0 uses). Field string alignment between MD and TS passed. Version capture passed for all 5 CLIs. Failed on verified status: Claude Code and Codex were surveyed on the owner's machine with full captured CLI output and official documentation, but were marked unverified (`verified: false` / `**No.**`), leaving zero verified hosts for downstream tasks. |
+
+#### Failed Tests
+
+- `TP-06: Claude Code and Codex marked unverified leaving zero verified hosts` — Step 2 and T-04 require surveying Claude Code, Codex, Copilot CLI, opencode, and Antigravity CLI, capturing command output for installed hosts, citing official URLs, and recording a verified host table. Both Claude Code (version 2.1.286) and Codex CLI (version 0.159.3) are installed on the owner's machine. Local command executions captured their installed versions, plugin CLI commands (`install`/`uninstall`/`list` and `add`/`remove`/`list`), MCP CLI commands (`add`/`remove`/`list`/`get`), configuration directory relocation environment variables (`CLAUDE_CONFIG_DIR`, `CODEX_HOME`), default configuration paths (`~/.claude`, `~/.codex`), global instruction paths (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`), output-style support (`yes` for Claude Code), and exact identity environment variables (`CLAUDECODE` and `CODEX_SESSION_ID`, `CODEX_THREAD_ID`). The implementer marked all five hosts `verified: false` in `src/hosts.ts` and `**No.**` in `.dev/research/host-capabilities.md`, reasoning that official documentation is rolling rather than pinned to patch versions. This rationale inappropriately invalidates standard official documentation cited in the evidence string. Marking zero verified hosts breaks the pipeline architecture: under R-13, `cwk install plan` emits no plan hash and `apply` refuses to run on unverified hosts; under T-07, plugin manifests are generated only for verified hosts; and under Step 7, human review requires installing on Claude Code and Codex. To pass, Claude Code and Codex must be marked `verified: true` in `src/hosts.ts` and `**Yes.**` in `.dev/research/host-capabilities.md`, supported by their captured CLI output and official documentation. Copilot CLI, opencode, and Antigravity CLI correctly remain `verified: false` because their configuration relocation variables or identity variables are unestablished or unverified.
 
 #### Not Tested
 
