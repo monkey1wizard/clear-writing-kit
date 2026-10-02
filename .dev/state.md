@@ -37,7 +37,7 @@
 
 | Plan | Source Plan | Last Session | Stopped At | Next Step | Context |
 | --- | --- | --- | --- | --- | --- |
-| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-09 independent test PASS and audit CLEAR at 6d53fe2 | Run T-10 install verify implementation | T-01 through T-09 complete. Temporary no-sandbox Claude CODER route active for this invocation. Restore original route on handback. Verify/uninstall test branches remain mandatory. |
+| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-10 independent test PASS and audit CLEAR at 8c93c76 | Run T-11 install uninstall implementation | T-01 through T-10 complete. Temporary no-sandbox Claude CODER route active for this invocation. Restore original route on handback. Uninstall lifecycle branches remain mandatory. Two full npm test failures predate T-10 and remain unresolved. |
 
 ## Session Execution Context
 

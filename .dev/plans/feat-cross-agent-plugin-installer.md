@@ -462,7 +462,8 @@ Step 與任務的對應：Step 1 → T-01 到 T-03，Step 2 → T-04，Step 3 �
   - Acceptance: `apply` 一次裝好全部內容、可重跑、保留檔案格式和其他工具的區塊，失敗後可經由 `plan` 接續。
   - Evidence: E + TP-09, TP-14, TP-15, TP-17, TP-18, TP-19, TP-20, TP-21, TP-22, TP-23, TP-28, TP-29, TP-30, TP-32, TP-33, TP-35, TP-36, TP-37.
 
-- [ ] T-10 — 交付 `cwk install verify`
+- [x] T-10 — 交付 `cwk install verify` *(8c93c76)*
+  - Commit: 8c93c7632001de3617106f08aa51c71650226a23
   - Targets: `src/install/verify.ts`, `src/cli.ts`, `dist/`
   - Depends on: T-09
   - Change: `verify(ctx)` 透過工具的列出或查詢指令讀取已登記的 MCP 指令並啟動它，直接以 stdio 傳送 MCP JSON-RPC（`initialize`、`tools/list`、`tools/call`），不使用 client 套件。它對每種語言各呼叫一次 `lintText`，用的句子必須產生結果，每次呼叫的時限是 30 秒。它在 Claude Code 內重新讀取 `outputStyle`，檢查區塊數量和大小，並列出舊版衝突。只有每項檢查都執行而且通過時才回傳「通過」，否則回傳「未完成」並列出每項失敗或略過的檢查。新增 `install verify`，重新建置 `dist/`。
