@@ -207,12 +207,12 @@ None
 
 Workflow: IMPLEMENT
 Step: 5 of 7
-Last activity: 2026-10-02 — Owner authorized completion of items 1 through 4. Isolated architecture and readiness review approved T-13/T-14 remediation. Original completed evidence retained.
-Next step: Implement T-13 through no-sandbox agy dispatch after fresh preflight. Do not run real-home install or finalize.
-Current Task: T-13
+Last activity: 2026-10-02 — T-13 completed at f2fd346 with committed permanent tests, final independent TESTER PASS, and AUDITOR CLEAR.
+Next step: Run T-14 implement/test/audit for per-host ownership and shared runtime retention. Do not run real-home install or finalize.
+Current Task:
 Interrupted Phase:
-Task Base Commit: 4ead407f6147e301fe96a10e683cecdf111ca961
-Task Final Commit: 53602d3031b215cae2b20e34eada6fb4788813da
+Task Base Commit:
+Task Final Commit:
 Test Retry Count: 0
 Review Retry Count: 0
 
@@ -221,11 +221,61 @@ Review Retry Count: 0
 | Date | Task | Deviation | Reason |
 | --- | --- | --- | --- |
 
+| 2026-10-02 | T-13 | Owner approved administrative boundary repair. Commit e1b4e30 stops tracking three ignored local pipeline receipts while preserving their files on disk. The first completed implement attempt at 07a1ca6 remains historical evidence; a fresh fix dispatch from e1b4e30 supersedes it for task convergence. | Early planning accidentally tracked local `.dev/pipeline` receipts. The repository hook prohibits committing ignored local workflow state, so untracking the receipts is the policy-compliant reconciliation. Product output is retained. |
+
 | 2026-10-02 | T-11 | Visibility-only boundary widening for src/install/settings.ts: export the unchanged topLevelMembers parser landed in T-09 commit 6d53fe2. | Reuse the existing format-preserving JSON parser from uninstall.ts. The sole out-of-allowlist code change is the export keyword, with no behavior or import changes. |
 
 | 2026-10-02 | T-01 | Owner authorized ignoring generated .dev/pipeline records. Administrative commit 5d5a476 precedes implementation dfe8fa1; task base advanced to it without discarding output. Owner replaced the shared ignore rule in b4700fa, so generated records now use local .git/info/exclude. Tested HEAD is b4700fa, with implementation unchanged. | Generated receipts and loop-log were outside the implementation allowlist. Owner .gitignore is authoritative. Already tracked evidence remains tracked. |
 
 ### Handoff Notes
+
+#### Retry Handoff — T-13 / TEST
+
+- Status: RESOLVED
+- Problem: Independent tests pass, but the repository naming gate rejects 23 plan-task ID references such as `TP-38` in `writing/test/installer-registration.test.cjs`. Plan-task IDs may appear only under `.dev/**`, so the permanent tests cannot be committed yet.
+- Evidence:
+  - Test Results: completed TESTER receipt 4440cad4-1101-44d0-95a5-2ce9f4b6af68 reports 16 focused tests, 56 total Node tests, 16 Python tests, lint, and build parity passing.
+  - Review Results: not-applicable; audit has not run.
+  - Security Review: not-applicable; no product change is requested.
+- Attempts:
+  1. 2026-10-02 — TESTER authored the two allowed permanent test files and all tests passed, but pre-commit naming-gate reported 23 violations in the registration test file.
+     - Result: Test commit blocked; files retained uncommitted and unstaged.
+     - Validation: `git commit` pre-commit hook, naming-gate 23 violations.
+     - Commit: none
+- Next human step: Completed TESTER dispatch c8d97b2e-ee97-401f-95a2-26cbc7b4be6d removed all 23 naming violations, retained behavior coverage, modified no production file, and passed focused/full suites plus naming-gate. Commit the permanent tests, update Task Final Commit, then run a fresh TESTER against committed HEAD.
+
+#### Retry Handoff — T-13 / IMPLEMENT
+
+- Status: RESOLVED
+- Problem: Replacement implementation receipt says pass, but direct ORCHESTRATOR inspection finds two contract violations in `src/install/registration.ts`. Plain Claude Args with a configured launcher still fall back to whitespace tokenization when the launcher anchor is absent. Generic missing-server regexes still classify output as absent without binding the requested MCP name. Non-anchor quote parsing also acts as a general shell-like parser instead of accepting only reversible simple tokens.
+- Evidence:
+  - Test Results: not-applicable; independent TESTER has not run and permanent T-13 tests do not exist yet.
+  - Review Results: ORCHESTRATOR source inspection after completed replacement dispatch c1c6a143-8253-4af1-92c9-45441382c711.
+  - Security Review: Fixed transport diagnostics no longer echo raw type values, but absent misclassification can authorize unsafe update/removal behavior and guessed plain args can be executed by verify.
+- Attempts:
+  1. 2026-10-02 — Replacement implement from base e1b4e30 sanitized transport diagnostics but retained zero-anchor fallback and generic absence patterns.
+     - Result: Contract not satisfied; no task commit created.
+     - Validation: Direct inspection of `isRecognizedAbsent`, `parseSimpleTokens`, and the zero-anchor branch in `readRegistration`.
+     - Commit: none
+- Next human step: Completed dispatch 1c1e6927-978a-4818-82b3-f479cb333dff and direct source inspection confirm exactly-one launcher anchoring, rejection of non-anchor quotes, name-bound absence patterns, failure precedence, and fixed diagnostic redaction. Proceed through boundary and independent TESTER coverage.
+
+#### Human Handback — boundary-scope-decision
+
+Status: RESOLVED
+Reason: boundary-scope-decision
+Task: T-13
+Phase: BOUNDARY
+Producer: BOUNDARY
+Producer state: fail: two root-generated planning receipts outside T-13 allowlist
+Git HEAD: e1b4e308309695fa32ec15f56f3d33bc694098f5
+Next human step: Owner approved the reconciliation. Commit e1b4e30 stopped tracking all three ignored local pipeline receipts without deleting their disk copies. Re-run T-13 scope/preflight and dispatch a real fix from the new base.
+What to check: .dev/pipeline/feat-cross-agent-plugin-installer/T-13/T-13-boundary-check.receipt.md and the two planning receipt diffs. Both receipt changes were created by ORCHESTRATOR planning gates before the T-13 dispatch, not by CODER.
+Expected result: T-13 production output remains intact, the replacement fix dispatch corrects the identified reader defects, and fresh working-tree plus committed-range boundary checks pass before independent TESTER dispatch.
+Pass/fail rule: Continue only after the replacement fix dispatch completes and both boundary checks pass. Do not widen the product task allowlist or discard binary-managed evidence.
+
+Dispatch: phase=implement task=T-13 role=CODER executor=agy model=gemini-3.8-flash state=completed session_id=e8531131-c78e-40c9-8d86-f4b3ede8a2d2 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-13/1790933430-849618200-000000-T-13-implement-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+T-13 implementation receipt, completed attempt log, nonempty native session database, unchanged HEAD, and pinned executable verified. Working-tree boundary failed only for the two pre-dispatch ORCHESTRATOR planning receipts omitted from the planning commit. No task commit, independent TESTER, AUDITOR, T-14, or goal verification is claimed. Preserve all output. No real-home installation, new-session acceptance, or finalize.
 
 #### Human Handback — goal-gaps-blocked
 
@@ -834,7 +884,7 @@ Steps map to tasks as follows: Step 1 → T-01 to T-03, Step 2 → T-04, Step 3 
   - Acceptance: `INSTALL.md` covers every R-19 item, and the README and docs checks pass.
   - Evidence: E + TP-26, TP-27.
 
-- [ ] T-13 — Compare complete current MCP registrations safely
+- [x] T-13 — Compare complete current MCP registrations safely *(f2fd346)*
   - Targets: `src/install/registration.ts`, `src/install/plan.ts`, `src/install/apply.ts`, `src/install/verify.ts`, `src/install/uninstall.ts`, `dist/`, `writing/test/installer-registration.test.cjs`, `writing/test/installer-fixtures.cjs`
   - Depends on: T-12
   - Change: Add one shared registration reader using existing spawn.ts and SHA-256/JSON-vector conventions. Distinguish present/absent/unreadable. Codex queries mcp get <name> --json and validates stdio command and the complete string-array args. Claude parses actual Command:/Args: output, JSON arrays when present, or a unique known-launcher anchor with unambiguous simple tokens. Reject duplicate fields, ambiguous quoting/whitespace, repeated anchors, malformed JSON, and unsupported transports without guessing. Only recognized missing-entry responses mean absent. Auth/permission/timeout/unknown failures are unreadable. Fingerprint the actual complete command and ordered args, not a reconstructed runtime preference. Include actual registration digest in plan target state, including different entries, so argument-only drift invalidates old hashes and apply writes nothing on stale approval. Uninstall removes exact matches only and keeps changed/unreadable entries. Verify shares the reader and never executes guessed commands. Remove obsolete duplicate parsing and substring-only checks. Never print current argv/env/raw host output or user-added secrets. No new dependency, host support, manifest ownership change, or real-home install. Rebuild dist with unchanged dictionary files.
@@ -1538,6 +1588,102 @@ Evidence: python -m unittest discover -s tests -v passed (16/16), npm --prefix w
 #### Not Tested
 
 - None. All covering test plan rows for T-12 (TP-26 and TP-27), document lints, build checks, and regression suites were tested.
+
+### [T-13] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 10 | Passed: 10 | Failed: 0 | Skipped: 0
+Verdict: PASS
+Evidence: node --test writing/test/installer-registration.test.cjs executed 16 tests, 16 passed, exit code 0; npm --prefix writing test executed 56 tests, 56 passed, exit code 0; python -m unittest discover -s tests -v executed 16 tests, 16 passed, exit code 0; npm --prefix writing run lint passed with 0 errors; fresh build matched dist/ with 0 diff.
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-38: Complete current MCP command and ordered args observed using captured native output shapes and CLI fixtures; argument add/remove/reorder/change invalidates plan approval; stale apply writes nothing; reader rejects malformed/ambiguous output and distinguishes recognized absence from auth/permission/timeout; exact matching unregisters while changed/unreadable entries remain; runtime preference changes cannot authorize removal; formatted outputs omit secret sentinels | Yes | PASS | 9 focused test blocks in `writing/test/installer-registration.test.cjs` prove full TP-38 acceptance criteria. Argument changes alter the computed plan hash. Stale apply returns mismatch error with zero filesystem writes and zero host mutation calls. Claude and Codex readers reject duplicate fields, unsupported transports, ambiguous quotes, and non-JSON args without an anchor. Explicit absence is separated from 401 unauthorized, EACCES permission denied, and timeout errors. Exact matching removes CLI entries during uninstall while changed and unreadable registrations remain kept. Planted sentinels do not appear in formatted output. |
+| TP-39: Shared verify reader starts parsed registered command on runtimes, probes all three languages, and skips unreadable entries without guessing; space-containing launcher paths remain intact; fresh build parity and regression suites pass | Yes | PASS | Probes verify stdio communication, `initialize`, `tools/list`, and `tools/call` with findings for en-US, zh-TW, and ja-JP. Unreadable and absent registrations mark server checks as skipped without executing fallback commands. Space-containing fixture home paths and launcher scripts execute and verify cleanly. |
+| TP-05: Committed `dist/` equals fresh `npm --prefix writing run build` | Yes | PASS | Clean build ran via `npm --prefix writing run build`. `git status --porcelain dist/` produced 0 diff against committed payload at HEAD 81dd822. |
+| TP-17: Config token redaction during plan, apply, verify, and uninstall | Yes | PASS | Planted secret token sentinels in host settings, environment variables, and error output lines never appear in formatted plan, apply, verify, or uninstall outputs. |
+| TP-24: `cwk install verify` execution, per-language findings, timeout, and failure states | Yes | PASS | Verify returns status pass on working registrations. Verify returns status incomplete when `outputStyle` is reset, when a legacy skill directory exists, or when the MCP server times out. |
+| TP-28: `install --help` lists subcommands across runtimes | Yes | PASS | `cwk install --help` executed on Node (v25.2.1), Deno (2.9.7), and Bun (1.3.12) lists `plan`, `apply`, `verify`, and `uninstall` with exit code 0. |
+| TP-36: Exit code contracts across subcommands | Yes | PASS | Valid operations exit 0. Subcommands exit 1 on missing `--agent` or host mismatch. Subcommands exit 2 on unknown flags or missing required `--plan-hash` for apply. |
+| Regression: Full writing test suite | Yes | PASS | `npm --prefix writing test` executed 56 tests across checkers, okf, and installer-registration test suites, 56 passed, 0 failed. |
+| Regression: Python artifacts suite | Yes | PASS | `python -m unittest discover -s tests -v` executed 16 tests, 16 passed, exit code 0. |
+| Regression: Documentation and profile lint suite | Yes | PASS | `npm --prefix writing run lint` executed profile check, okf check, docs lint, and markdownlint-cli2 with 0 errors across all checked files. |
+
+#### Failed Tests
+
+- None. All covering criteria, integration scenarios, and regression suites passed.
+
+#### Not Tested
+
+- None. All covering test plan rows for T-13 (TP-38, TP-39, TP-05, TP-17, TP-24, TP-28, TP-36) and regression suites were directly tested.
+
+### [T-13] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 10 | Passed: 10 | Failed: 0 | Skipped: 0
+Verdict: PASS
+Evidence: node --test writing/test/installer-registration.test.cjs passed (16/16), npm --prefix writing test passed (56/56), python -m unittest discover -s tests -v passed (16/16), npm --prefix writing run lint passed (0 errors), npm --prefix writing run okf:check passed (0 errors), and npm --prefix writing run build matched dist/ (0 diff).
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-38: Complete MCP command and ordered args observation, plan invalidation, stale apply protection, error classification, exact match removal, and secret redaction | Yes | PASS | 9 tests in writing/test/installer-registration.test.cjs verify all TP-38 criteria. Added, removed, reordered, and changed arguments alter the computed plan hash. Stale apply returns mismatch error with zero filesystem writes and zero host CLI mutations. Claude and Codex readers reject duplicate fields, unsupported transports, ambiguous quotes, and non-JSON args without an anchor. Explicit absence is distinguished from 401 unauthorized, EACCES permission denied, and timeout errors. Exact matching removes CLI entries during uninstall while changed and unreadable registrations are kept. Formatted outputs omit secret sentinels. |
+| TP-39: Shared verify reader starts registered command on runtimes, probes all three languages, and skips unreadable entries without guessing | Yes | PASS | Probes verify stdio communication, initialize, tools/list, and tools/call with findings for en-US, zh-TW, and ja-JP. Unreadable and absent registrations mark server checks as skipped without executing fallback commands. Space-containing fixture home paths and launcher scripts execute and verify cleanly. |
+| TP-05: Fresh build produces zero diff against committed dist/ | Yes | PASS | Clean build ran via npm --prefix writing run build. git status --porcelain dist/ produced 0 diff against committed payload at HEAD 81dd822. |
+| TP-17: Config token redaction during plan, apply, verify, and uninstall | Yes | PASS | Planted secret token sentinels in host settings, environment variables, and error output lines never appear in formatted plan, apply, verify, or uninstall outputs. |
+| TP-24: cwk install verify execution, per-language findings, timeout, and failure states | Yes | PASS | Verify returns status pass on working registrations. Verify returns status incomplete when outputStyle is reset, when a legacy skill directory exists, or when the MCP server times out. |
+| TP-28: install --help lists subcommands across runtimes | Yes | PASS | cwk install --help executed on Node (v25.2.1), Deno (2.9.7), and Bun (1.3.12) lists plan, apply, verify, and uninstall with exit code 0. |
+| TP-36: Exit code contracts across subcommands | Yes | PASS | Valid operations exit 0. Subcommands exit 1 on missing --agent or host mismatch. Subcommands exit 2 on unknown flags or missing required --plan-hash for apply. |
+| Regression: Full writing test suite | Yes | PASS | npm --prefix writing test executed 56 tests across checkers, okf, and installer-registration test suites, 56 passed, 0 failed. |
+| Regression: Python artifacts suite | Yes | PASS | python -m unittest discover -s tests -v executed 16 tests, 16 passed, exit code 0. |
+| Regression: Documentation and profile lint suite | Yes | PASS | npm --prefix writing run lint and npm --prefix writing run okf:check passed with 0 errors across all checked files. |
+
+#### Failed Tests
+
+- None. All covering criteria, integration scenarios, and regression suites passed.
+
+#### Not Tested
+
+- None. All covering test plan rows for T-13 (TP-38, TP-39, TP-05, TP-17, TP-24, TP-28, TP-36) and regression suites were directly tested.
+
+### [T-13] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 16 | Passed: 16 | Failed: 0 | Skipped: 0
+Verdict: PASS
+Evidence: node writing/test/installer-registration.test.cjs passed 16/16 tests; npm --prefix writing test passed 56/56; python -m unittest discover -s tests -v passed 16/16; npm --prefix writing run lint and okf:check passed with 0 errors; fresh build produced zero diff against committed dist/ at HEAD f2fd346.
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-38: Complete MCP command/ordered args observed; argument add/remove/reorder/change invalidates plan approval; stale apply writes nothing; reader rejects malformed/ambiguous output; explicit absence separated from auth/permission/timeout; exact match unregisters while changed/unreadable entries remain; runtime preference changes cannot authorize removal; formatted outputs omit secret sentinels | Yes | PASS | 9 focused test blocks in `writing/test/installer-registration.test.cjs` prove full TP-38 criteria. Argument changes alter the computed plan hash. Stale apply returns mismatch error with zero filesystem writes and zero host mutation calls. Claude and Codex readers reject duplicate fields, unsupported transports, ambiguous quotes, and non-JSON args without an anchor. Explicit absence is separated from 401 unauthorized, EACCES permission denied, and timeout errors. Exact matching removes CLI entries during uninstall while changed and unreadable registrations remain kept. Planted sentinels do not appear in formatted output. |
+| TP-39: Shared verify reader starts parsed registered command on runtimes, probes all three languages, and skips unreadable entries without guessing; space-containing launcher paths remain intact; fresh build parity and regression suites pass | Yes | PASS | Probes verify stdio communication, `initialize`, `tools/list`, and `tools/call` with findings for en-US, zh-TW, and ja-JP. Unreadable and absent registrations mark server checks as skipped without executing fallback commands. Space-containing fixture home paths and launcher scripts execute and verify cleanly. Permanent test files are committed at HEAD `f2fd346` and independently verified. |
+| TP-05: Committed `dist/` equals fresh `npm --prefix writing run build` | Yes | PASS | `npm --prefix writing run build` executed cleanly. `git status --porcelain dist/` showed zero diff against committed payload at HEAD `f2fd346`. |
+| TP-17: Config token redaction in formatted output | Yes | PASS | Secrets planted in fixture host configurations never appear in stdout or stderr for plan, apply, verify, or uninstall across normal and failure paths. |
+| TP-24: `cwk install verify` execution, per-language findings, timeout, and failure states | Yes | PASS | Verified `verify` returns `incomplete` with exit 1 on missing dictionary, reset `outputStyle`, legacy conflict, or unresponsive server timeout, and succeeds with valid findings on normal homes. |
+| TP-28: `install --help` lists subcommands across runtimes | Yes | PASS | Executed across runtimes; lists `plan`, `apply`, `verify`, and `uninstall` with exit 0. |
+| TP-36: Exit code contracts across subcommands | Yes | PASS | Subcommands exit non-zero on host mismatch, refused unverified host, failed step, or incomplete result, and exit 0 on clean pass. |
+| Regression: Full writing test suite | Yes | PASS | `npm --prefix writing test` executed 56 tests across 3 test suites, 56 passed, 0 failed, duration ~13 s. |
+| Regression: Python artifacts test suite | Yes | PASS | `python -m unittest discover -s tests -v` executed 16 tests, 16 passed, exit code 0. |
+| Regression: Format and lint checks | Yes | PASS | `npm --prefix writing run lint` and `npm --prefix writing run okf:check` reported 0 errors. |
+
+#### Failed Tests
+
+- None. All covering criteria, permanent registration tests, and regression suites passed.
+
+#### Not Tested
+
+- None. All covering test plan rows for T-13 (TP-38, TP-39, TP-05, TP-17, TP-24, TP-28, TP-36) and regression suites were tested against committed HEAD f2fd346.
 ## Review Results
 
 ### Architecture Review
@@ -1861,6 +2007,27 @@ The audit evaluated task T-11 changes delivering `cwk install uninstall` across 
 #### Summary
 
 The audit evaluated task T-12 changes delivering user- and agent-facing documentation across `INSTALL.md`, `README.md`, `docs/verification.md`, and the authorized generated artifact `knowledge/usage/gemini.md` through final commit `53602d3`. The documentation establishes strong security containment and defensive operations for AI coding agents: `INSTALL.md` explicitly forbids automatic runtime installation, mandates explicit user confirmation before applying installation plans, prohibits direct modification or deletion of host configuration files, requires cryptographic plan hashing to prevent state drift, and enforces separated pass and fail reporting. In `README.md`, three-language parity (English, Traditional Chinese, Japanese) is verified, the legacy disclaimer regarding global settings is replaced with accurate explanations of what files the installer touches, and safe uninstall and backup restoration procedures are documented. In `docs/verification.md`, stdio JSON-RPC transport, multi-language probes, strict exit codes, and backup preservation limits are clearly detailed. The authorized generated refresh of `knowledge/usage/gemini.md` was executed strictly via `node writing/okf.cjs --generate` with no manual tampering, resolving historical test failures and achieving complete test passage. No naming authority regressions, deep performance bottlenecks, OWASP Top 10 vulnerabilities, or STRIDE security threats were identified.
+
+#### Open Findings
+
+- None.
+
+#### Remediation Tracking
+
+| Finding | Severity | Status |
+| --- | --- | --- |
+| None | None | CLEAR |
+
+<!-- AUDIT_REVIEW: CLEAR -->
+
+### [T-13] 2026-10-02
+
+**Date:** 2026-10-02
+**Findings:** 0 total — 0 critical, 0 high, 0 medium, 0 low
+
+#### Summary
+
+The audit evaluated task T-13 changes delivering safe, exact comparison of MCP registrations across `src/install/registration.ts`, `src/install/plan.ts`, `src/install/apply.ts`, `src/install/verify.ts`, `src/install/uninstall.ts`, `dist/cwk.mjs`, and tests in `writing/test/installer-registration.test.cjs` and `writing/test/installer-fixtures.cjs` through final commit `f2fd346`. The shared registration reader distinguishes present, absent, and unreadable states without speculative parsing or execution. Codex queries `mcp get <name> --json` and validates the stdio transport, string command, and complete string-array args. Claude output parsing validates `Command:` and `Args:` lines, JSON arrays, or an unambiguous launcher anchor surrounded by simple tokens, rejecting duplicate fields, ambiguous quotes, repeated anchors, and non-stdio transports. Explicit absence is strictly separated from authentication, permission, and timeout failures, treating the latter as unreadable. Exact SHA-256 fingerprints of the ordered command and argument vector are recorded in the plan target state, ensuring that any argument addition, removal, reordering, or alteration invalidates prior approval and prevents stale apply writes. Uninstall unregisters only exact fingerprint matches while safely keeping changed or unreadable entries. Verification shares the reader and skips server probes on unreadable registrations without executing guessed commands. Error messages and formatted output avoid echoing raw host output, user arguments, or planted configuration secrets. No naming authority regressions, deep performance bottlenecks, OWASP Top 10 vulnerabilities, or STRIDE security threats were identified.
 
 #### Open Findings
 

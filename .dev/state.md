@@ -37,7 +37,7 @@
 
 | Plan | Source Plan | Last Session | Stopped At | Next Step | Context |
 | --- | --- | --- | --- | --- | --- |
-| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | Owner authorized items 1 through 4, T-13/T-14 architecture/readiness approved | Fresh preflight then T-13 implement/test/audit through agy | T-01 through T-12 remain complete. Original goal gaps retained as evidence. Two new blocking remediation tasks cover exact MCP registration state and per-host/shared ownership. Fresh planning/refining gates pass. Independent TESTER owns permanent regressions, root commits and retests final HEAD. No real-home installation, new-session acceptance, or finalize. Temporarily use agy CODER and restore codex on terminal handback. |
+| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-13 completed at f2fd346 with final TESTER PASS and AUDITOR CLEAR | Converge T-13, then run T-14 implement/test/audit through agy | T-01 through T-13 complete. Permanent registration regressions are committed and independently rerun. T-14 remains for per-host ownership and shared payload retention. No real-home installation, new-session acceptance, or finalize. Restore original CODER route codex at terminal handback. |
 
 ## Session Execution Context
 

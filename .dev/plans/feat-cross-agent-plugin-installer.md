@@ -517,7 +517,7 @@ Step 與任務的對應：Step 1 → T-01 到 T-03，Step 2 → T-04，Step 3 �
   - Acceptance: `INSTALL.md` 涵蓋 R-19 的每一項，README 和文件檢查都通過。
   - Evidence: E + TP-26, TP-27.
 
-- [ ] T-13 — 完整比對目前 MCP 登記
+- [x] T-13 — 完整比對目前 MCP 登記 *(f2fd346)*
   - Targets: `src/install/registration.ts`, `src/install/plan.ts`, `src/install/apply.ts`, `src/install/verify.ts`, `src/install/uninstall.ts`, `dist/`, `writing/test/installer-registration.test.cjs`, `writing/test/installer-fixtures.cjs`
   - Depends on: T-12
   - Change: 依核准的修正設計，新增共用登記讀取模組，沿用 spawn.ts 和 SHA-256／JSON 指令陣列。分開已登記、不存在與無法讀取。Codex 使用合法 stdio JSON，Claude 只接受可唯一判定的欄位與參數。處理重複欄位、模糊引號、空白邊界、重複啟動器、損壞 JSON、非支援傳輸方式與查詢失敗。實際完整指紋納入 plan hash，不把所有不同登記壓成同一個狀態。舊 hash 的 apply 不產生修改。解除安裝比對實際指紋，保留變動或無法讀取的項目。verify 共用讀取結果，不執行猜測指令。移除重複解析與只比對子字串的舊路徑。輸出不含目前參數、環境值或原始回應。沒有新增相依套件、宿主支援或歸屬修改。重建 dist，既有字典不變。
