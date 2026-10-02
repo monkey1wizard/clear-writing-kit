@@ -524,7 +524,8 @@ Step 與任務的對應：Step 1 → T-01 到 T-03，Step 2 → T-04，Step 3 �
   - Acceptance: 獨立 TESTER 在實作後撰寫永久整合測試，涵蓋參數新增、刪除、重排和修改，舊 hash 套用無檔案或 CLI 修改，相符登記移除、變動或無法讀取登記保留，含空格路徑、執行環境偏好變更、明確不存在與查詢失敗，以及输出不含密鑰測試字串。TESTER 不改正式程式。協調者提交測試後，在提交後 HEAD 重測，再獨立審查。最多 8 個來源、測試與產出入口檔案。
   - Evidence: E + TP-38, TP-39, TP-05, TP-17, TP-24, TP-28, TP-36.
 
-- [ ] T-14 — 保留宿主專屬項目與共用酬載
+- [x] T-14 — 保留宿主專屬項目與共用酬載 *(95df464)*
+  - Commit: 95df4643afcbe804b100f22069400f417f893574
   - Targets: `src/install/manifest.ts`, `src/install/plan.ts`, `src/install/apply.ts`, `src/install/uninstall.ts`, `dist/`, `writing/test/installer-ownership.test.cjs`, `writing/test/installer-fixtures.cjs`, `docs/verification.md`
   - Depends on: T-13
   - Change: 依核准的修正設計，新增合法的資訊清單結構版本，記錄檔案所屬宿主、宿主完成的步驟與實際 output style 目標。保留 CLI 歸屬、原子寫入、雜湊檢查和備份。共用啟動器與酬載記錄已知使用者。歸屬與完成紀錄納入 plan hash。舊紀錄只根據具體證據判定，其他維持歸屬未明並回報。apply 可以補登內容與舊雜湊相符的未變更項目，只寫資訊清單，不重寫產出或覆蓋不同的舊雜湊，補登完成後維持冪等。解除安裝只處理所選宿主的區塊與已記錄路徑的設定。先處理 CLI，再移除共用檔案。其他宿主、未明舊紀錄、保留或移除失敗的登記、保留的區塊或設定仍使用時，保留共用檔案和原因紀錄以供重試。不新增計數器、通用 adapter、相依套件或登記解析設計。重建 dist，字典不變，更新驗證文件。

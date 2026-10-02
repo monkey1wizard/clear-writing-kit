@@ -205,21 +205,24 @@ None
 
 ## Status
 
-Workflow: IMPLEMENT
+Workflow: DONE
 Step: 5 of 7
-Last activity: 2026-10-02 — T-13 completed at f2fd346 with committed permanent tests, final independent TESTER PASS, and AUDITOR CLEAR.
-Next step: Run T-14 implement/test/audit for per-host ownership and shared runtime retention. Do not run real-home install or finalize.
+Last activity: 2026-10-02 — T-14 completed at 95df464 after ORCHESTRATOR-direct TEST passed 79/79 and direct AUDIT cleared two remediated findings.
+Next step: Run ORCHESTRATOR-owned goal-backward verification. Do not dispatch another executor, run real-home installation or new-session acceptance, or finalize.
 Current Task:
 Interrupted Phase:
 Task Base Commit:
 Task Final Commit:
-Test Retry Count: 0
+Test Retry Count: 3
 Review Retry Count: 0
+Verification Independence: DEGRADED_BUNDLED
 
 ### Deviations
 
 | Date | Task | Deviation | Reason |
 | --- | --- | --- | --- |
+
+| 2026-10-02 | T-14 | Owner explicitly authorized ORCHESTRATOR to perform direct TEST and AUDIT after three Codex TESTER sessions could not launch PowerShell. Record `Verification Independence: DEGRADED_BUNDLED`; no further executor dispatch is permitted for these phases. | Codex Windows sandbox/helper repeatedly failed with `helper_unknown_error: setup refresh had errors`; owner requires the pipeline to finish without another model. |
 
 | 2026-10-02 | T-13 | Owner approved administrative boundary repair. Commit e1b4e30 stops tracking three ignored local pipeline receipts while preserving their files on disk. The first completed implement attempt at 07a1ca6 remains historical evidence; a fresh fix dispatch from e1b4e30 supersedes it for task convergence. | Early planning accidentally tracked local `.dev/pipeline` receipts. The repository hook prohibits committing ignored local workflow state, so untracking the receipts is the policy-compliant reconciliation. Product output is retained. |
 
@@ -228,6 +231,90 @@ Review Retry Count: 0
 | 2026-10-02 | T-01 | Owner authorized ignoring generated .dev/pipeline records. Administrative commit 5d5a476 precedes implementation dfe8fa1; task base advanced to it without discarding output. Owner replaced the shared ignore rule in b4700fa, so generated records now use local .git/info/exclude. Tested HEAD is b4700fa, with implementation unchanged. | Generated receipts and loop-log were outside the implementation allowlist. Owner .gitignore is authoritative. Already tracked evidence remains tracked. |
 
 ### Handoff Notes
+
+#### Retry Handoff — T-14 / TEST
+
+- Status: RESOLVED
+- Problem: The first Codex TESTER dispatch could not inspect or execute the repository because every internal `exec_command` failed before PowerShell started with `helper_unknown_error: setup refresh had errors`.
+- Evidence:
+- Test Results: T-14 receipt reports `Total: 0`, `Verdict: BLOCKED`, and no tests authored or run.
+- Review Results: not-applicable; audit has not run.
+- Security Review: not-applicable; no security finding triggered the retry.
+- Attempts:
+1. 2026-10-02 — Codex TESTER dispatch completed, but its command runner failed three times during process setup.
+- Result: No product or test file changed. HEAD remains `afa620a39b1716bd0161fe7b363b8649293705e2`.
+- Validation: `.dev/pipeline/feat-cross-agent-plugin-installer/T-14/T-14-test.receipt.md`; attempt log `1790953582-162613400-000000-T-14-test-codex.log`.
+- Commit: none
+2. 2026-10-02 — Second Codex TESTER dispatch reached the same process-setup failure on both internal command attempts.
+- Result: Receipt remains `Total: 0`, `Verdict: BLOCKED`; no product or test file changed.
+- Validation: Attempt log `1790953680-517747100-000000-T-14-test-codex.log`.
+- Commit: none
+3. 2026-10-02 — Final Codex TESTER retry failed before launching PowerShell on three internal commands, including `pwd`.
+- Result: Receipt remains `Total: 0`, `Verdict: BLOCKED`; no product or test file changed.
+- Validation: Attempt log `1790953809-435868400-000000-T-14-test-codex.log`.
+- Commit: none
+- Next human step: Owner explicitly authorized ORCHESTRATOR to perform direct TEST and AUDIT with degraded bundled independence. Author and commit the permanent T-14 tests, rerun the committed HEAD, then complete direct audit and convergence without another executor dispatch.
+
+#### Retry Handoff — T-14 / IMPLEMENT
+
+- Status: RESOLVED
+- Problem: The completed T-14 implementation regresses the committed T-13 registration-reader contract. `node --test writing/test/installer-registration.test.cjs` reports 12 functional failures: Claude and Codex registrations are read as `absent`, argument-only drift no longer changes the plan hash, stale apply proceeds, exact-match uninstall/retention assertions fail, and verify becomes incomplete. The thirteenth failure is the expected pre-commit `dist/` cleanliness assertion and is not the product defect.
+- Evidence:
+- Test Results: Full `npm --prefix writing test` result is 43 passed / 13 failed. Focused `node --test writing/test/installer-registration.test.cjs` result is 3 passed / 13 failed. The failures reproduce before any task commit; HEAD remains `2016449e06be30ac0822ac15dc226f88780c42b5`.
+- Review Results: not-applicable; product commit and AUDITOR dispatch have not run.
+- Security Review: not-applicable; no security finding triggered this retry.
+- Attempts:
+1. 2026-10-02 — Initial T-14 implementation completed, but coordinator regression tests exposed the T-13 behavior break before commit.
+- Result: Current uncommitted output is retained for an in-place fix.
+- Validation: `npm --prefix writing test`; `node --test writing/test/installer-registration.test.cjs`.
+- Commit: none
+- Resolution: The apparent product regression was a fixture-environment false positive. The RTK-launched Node process contains both `Path` and `PATH`; `createFixtureHome` adds the stub directory only to the later `PATH` key, while the product's case-insensitive Windows lookup reads the earlier `Path` key and invokes the real global host CLI. Re-running with one normalized `PATH` key gives 15/16 passing: every functional case passes and only the expected pre-commit `dist/` cleanliness assertion fails.
+- Required repair: Preserve all T-14 ownership and migration behavior while restoring every committed T-13 registration/plan/apply/verify/uninstall behavior. Do not modify permanent tests. Rebuild `dist/cwk.mjs`, then run the focused registration suite and distinguish the pre-commit dist-cleanliness assertion from functional failures.
+- Allowed files: Existing T-14 targets only. Keep current output in place and repair it in fix mode.
+- Pass rule: All 12 functional registration tests pass; only the committed-dist cleanliness test may remain false before the orchestrator creates the product commit. Existing lint, Python, and non-registration Node regressions must remain green.
+- Next human step: Run one T-14 IMPLEMENT fix dispatch against the retained working tree, then repeat the focused registration suite and working-tree boundary check before any commit.
+
+#### Resolved Handback Record — convergence-human-repair (AGY quota)
+
+Status: RESOLVED
+Reason: convergence-human-repair
+Task: T-14
+Phase: CONVERGE
+Producer: CONVERGE
+Producer state: Two consecutive IMPLEMENT dispatches ended disconnected-partial at provider response with AGY 429 RESOURCE_EXHAUSTED; both processes exited and neither changed a product file.
+Git HEAD: 2016449e06be30ac0822ac15dc226f88780c42b5
+Next human step: Owner explicitly authorized a fresh T-14 retry on 2026-10-02 after changing TESTER and AUDITOR to codex. Resume from the retained T-14 cursor with CODER temporarily routed to agy for the no-sandbox implementation dispatch. Do not discard T-13 commits or workflow evidence.
+What to check: T-14 attempt logs 1790942246-094720100-000000-T-14-implement-agy.log and 1790942650-825384900-000000-T-14-implement-agy.log. Both must show terminal_state disconnected-partial, error 429 RESOURCE_EXHAUSTED, and unchanged HEAD 2016449.
+Expected result: A later owner-authorized T-14 implement dispatch reaches terminal_state completed with a nonempty receipt and native session database, then normal boundary/test/audit resumes.
+Pass/fail rule: Continue only after provider availability is restored and the owner explicitly requests retry. A third automatic dispatch in this invocation is forbidden.
+
+#### Resolved Handback Record — convergence-human-repair (accepted T-14 output)
+
+Status: RESOLVED
+Reason: convergence-human-repair
+Task: T-14
+Phase: CONVERGE
+Producer: CONVERGE
+Producer state: The owner-authorized implementation attempt completed with a fresh receipt and native AGY session record. A coordinator-triggered fix dispatch then ended terminal_state no-writeback because the retained implementation already satisfied the product contract. Independent diagnosis proved the reported registration failures were caused by the committed fixture's duplicate Windows Path/PATH keys under RTK, not by T-14 product code.
+Git HEAD: 2016449e06be30ac0822ac15dc226f88780c42b5
+Next human step: Owner explicitly authorized retaining the original completed T-14 implementation output and proceeding to the product commit plus Codex TESTER and Codex AUDITOR. TESTER may repair the allowed `writing/test/installer-fixtures.cjs` Windows Path/PATH instability while adding T-14 ownership tests. Do not dispatch AGY or any other model.
+What to check: Attempt log `1790948339-077842000-000000-T-14-implement-agy.log` is completed. Fix log `1790949321-549528500-000000-T-14-implement-agy.log` is no-writeback. `node --test writing/test/installer-registration.test.cjs` under duplicate Path/PATH gives 3/16, while the same command with a single normalized PATH key gives 15/16 and only the pre-commit dist cleanliness assertion fails.
+Expected result: With owner authorization, the orchestrator records the accepted implementation boundary, commits the six allowed T-14 product/doc files, then dispatches the codex TESTER to author permanent T-14 tests and make the allowed fixture environment-key repair before committed-HEAD retest and audit.
+Pass/fail rule: Do not advance from IMPLEMENT while the latest attempt is no-writeback unless the owner explicitly authorizes the retained completed output path. Do not discard or revert any current output.
+
+#### Human Handback — convergence-human-repair
+
+Status: RESOLVED
+Reason: convergence-human-repair
+Task: T-14
+Phase: CONVERGE
+Producer: CONVERGE
+Producer state: Three consecutive Codex TESTER dispatches completed with BLOCKED receipts and zero tests because the Codex Windows sandbox/helper failed before launching every PowerShell command with helper_unknown_error setup refresh had errors. No test or product file changed.
+Git HEAD: afa620a39b1716bd0161fe7b363b8649293705e2
+Next human step: Owner explicitly authorized ORCHESTRATOR to perform direct TEST and AUDIT with degraded bundled independence. Resume T-14 from product commit `afa620a` without another executor dispatch.
+What to check: Codex TEST attempt logs `1790953582-162613400-000000-T-14-test-codex.log`, `1790953680-517747100-000000-T-14-test-codex.log`, and `1790953809-435868400-000000-T-14-test-codex.log`; each receipt reports zero tests and BLOCKED.
+Expected result: A later owner-authorized Codex TESTER dispatch can read the workspace, author the two allowed permanent test files, run the T-14 suites, and return a non-BLOCKED receipt before audit.
+Pass/fail rule: Continue only after the Codex command runner can launch PowerShell and the owner explicitly requests resume. Preserve product commit `afa620a` and all workflow evidence.
 
 #### Retry Handoff — T-13 / TEST
 
@@ -891,7 +978,8 @@ Steps map to tasks as follows: Step 1 → T-01 to T-03, Step 2 → T-04, Step 3 
   - Acceptance: Independently authored permanent integration tests prove argument add/remove/reorder/change invalidates plan approval, stale apply has no filesystem/CLI writes, exact match removal and changed/unreadable preservation, shared parsing/verify behavior, space-containing homes, runtime preference changes, explicit absence versus lookup failure, and no secret sentinel in formatted output. Keep production code unmodified in TESTER. TESTER alone authors named test files after implementation. Root commits those tests then retests the committed HEAD before audit. Maximum source/test/generated-entry files is 8, excluding unchanged dictionary assets.
   - Evidence: E + TP-38, TP-39, TP-05, TP-17, TP-24, TP-28, TP-36.
 
-- [ ] T-14 — Preserve host-owned artifacts and shared runtime consumers
+- [x] T-14 — Preserve host-owned artifacts and shared runtime consumers *(95df464)*
+  - Commit: 95df4643afcbe804b100f22069400f417f893574
   - Targets: `src/install/manifest.ts`, `src/install/plan.ts`, `src/install/apply.ts`, `src/install/uninstall.ts`, `dist/`, `writing/test/installer-ownership.test.cjs`, `writing/test/installer-fixtures.cjs`, `docs/verification.md`
   - Depends on: T-13
   - Change: Add a validated manifest schema revision for per-file host owners, per-host completion metadata, and the durable actual output-style settings target. Preserve existing CLI host ownership, atomic replacement, hashes, and backups. Shared payload/launcher track known consumers. Block and settings records track their specific host and actual target. Include ownership/completion metadata in plan hash. Migrate old manifests conservatively: concrete recorded evidence may establish ownership, otherwise keep explicit unresolved legacy ownership and report it. Never assign every old item to the requesting host. On apply, exact matching current no-op artifacts may adopt selected-host metadata without rewriting artifact bytes or replacing differing old hashes. Metadata-only adoption is a manifest write, not a claim of zero writes. Fully adopted reruns are idempotent. Uninstall selects only requested-host block/settings records at persisted target paths. CLI cleanup precedes shared cleanup. Keep shared files while another owner, unresolved legacy ownership, kept/failed CLI consumer, retained block, or retained settings record remains. Persist retained owners/reasons so retry and final-consumer cleanup remain safe. No counters, generic adapters, new dependencies, registration redesign, or real-home writes. Rebuild dist without dictionary changes and update verification docs with tested ownership/migration behavior.
@@ -1684,6 +1772,115 @@ Evidence: node writing/test/installer-registration.test.cjs passed 16/16 tests; 
 #### Not Tested
 
 - None. All covering test plan rows for T-13 (TP-38, TP-39, TP-05, TP-17, TP-24, TP-28, TP-36) and regression suites were tested against committed HEAD f2fd346.
+
+### [T-14] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Total: 0 | Passed: 0 | Failed: 0 | Skipped: 0
+Verdict: BLOCKED
+Evidence: No test command could be run because `exec_command` failed before PowerShell started with `helper_unknown_error: setup refresh had errors` on repeated attempts. The task prompt and test harness could not be inspected in this environment.
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| Two-host installation orders and either first-uninstall choice preserve the surviving host registration, byte-identical block/settings, and runnable launcher | No | BLOCKED | Command runner unavailable; tests not authored. |
+| Final consumer removal cleans only exact matching artifacts | No | BLOCKED | Command runner unavailable; tests not authored. |
+| No-op adoption, ambiguous legacy ownership, changed old hashes, relocated configuration paths, upgrades, changed shared files/blocks, failed CLI removal, and repeated cleanup | No | BLOCKED | Command runner unavailable; tests not authored. |
+
+#### Failed Tests
+
+- None run.
+
+#### Not Tested
+
+- All T-14 acceptance scenarios. The repository could not be inspected or executed because the command runner failed during process setup.
+
+### [T-14] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Total: 0 | Passed: 0 | Failed: 0 | Skipped: 0
+Verdict: BLOCKED
+Evidence: No test commands ran. `exec_command` failed to create a process (`helper_unknown_error: setup refresh had errors`) on both initial workspace inspection attempts, so the active Test Plan, fixtures, and test runner could not be inspected. No test files were changed.
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-40 | No | BLOCKED | Could not inspect the active Test Plan or execute tests. |
+| TP-41 | No | BLOCKED | Could not inspect the active Test Plan or execute tests. |
+| TP-05 | No | BLOCKED | Could not inspect the active Test Plan or execute tests. |
+| TP-17 | No | BLOCKED | Could not inspect the active Test Plan or execute tests. |
+| TP-18 | No | BLOCKED | Could not inspect the active Test Plan or execute tests. |
+| TP-19 | No | BLOCKED | Could not inspect the active Test Plan or execute tests. |
+| TP-20 | No | BLOCKED | Could not inspect the active Test Plan or execute tests. |
+| TP-21 | No | BLOCKED | Could not inspect the active Test Plan or execute tests. |
+| TP-23 | No | BLOCKED | Could not inspect the active Test Plan or execute tests. |
+| TP-24 | No | BLOCKED | Could not inspect the active Test Plan or execute tests. |
+| TP-25 | No | BLOCKED | Could not inspect the active Test Plan or execute tests. |
+| TP-28 | No | BLOCKED | Could not inspect the active Test Plan or execute tests. |
+| TP-36 | No | BLOCKED | Could not inspect the active Test Plan or execute tests. |
+
+#### Failed Tests
+
+- None. No tests could be started.
+
+#### Not Tested
+
+- All T-14 ownership, migration, adoption, upgrade, and cleanup scenarios. Workspace execution was unavailable, so no independent integration tests could be authored or run.
+
+### [T-14] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Total: 0 | Passed: 0 | Failed: 0 | Skipped: 0
+Verdict: BLOCKED
+Evidence: Test authoring and execution did not start. `exec_command` failed before launching PowerShell with `Rejected("Failed to create unified exec process: helper_unknown_error: setup refresh had errors")` on three attempts, including `pwd` and reading the active prompt. The required source, fixtures, tests, and project conventions therefore could not be read or written.
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| Host installation orders and first-uninstall choices preserve surviving registration and shared artifacts | No | BLOCKED | Could not inspect or execute repository. |
+| Final consumer removal cleans exact matching artifacts only | No | BLOCKED | Could not inspect or execute repository. |
+| No-op adoption, ambiguous legacy ownership, changed hashes, relocated paths, upgrades, changed shared files/blocks, failed CLI removal, and repeated cleanup | No | BLOCKED | Could not author tests or run APIs. |
+
+#### Failed Tests
+
+- None — no test process could be started.
+
+#### Not Tested
+
+- All T-14 acceptance scenarios; local process-launch setup failure prevented reading repository files, editing test files, and running tests.
+
+### [T-14] 2026-10-02 — ORCHESTRATOR direct verification
+
+Run: 2026-10-02
+Mode: spec
+Verification Independence: DEGRADED_BUNDLED
+Total: 79 | Passed: 79 | Failed: 0 | Skipped: 0
+Verdict: PASS
+Evidence: At committed HEAD `95df4643afcbe804b100f22069400f417f893574`, `npm --prefix writing test` passed 63/63 Node tests and `python -m unittest discover -s tests -v` passed 16/16 tests. `npm --prefix writing run lint` completed with 0 errors and 10 existing wording warnings. A fresh `npm --prefix writing run build` left `dist/` unchanged, and `git diff --check` passed.
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-40: Both installation orders and either first-uninstall choice preserve the surviving host | Yes | PASS | Four production-API fixture permutations preserve the surviving MCP/plugin state, block bytes, settings bytes, ownership metadata, launcher, and three-language `verify`; final exact-match removal and repeated removal pass. |
+| TP-41: Adoption, legacy migration, retained changes, retries, and cross-host upgrades | Yes | PASS | Seven permanent ownership tests cover metadata-only adoption and idempotence, explicit legacy ownership, strict schema validation, relocated settings/block paths, edited blocks, changed shared files, failed MCP removal and retry, and upgrade ownership transfer with final cleanup of both versions. |
+| TP-05 and regression suites | Yes | PASS | Fresh build parity passed. The full Node and Python suites passed from committed HEAD; lint, OKF freshness, publication links, and Markdown checks completed with 0 errors. |
+| TP-17 through TP-25, TP-28, and TP-36 inherited installer contracts | Yes | PASS | Existing registration, lifecycle, redaction, verify, CLI help, and exit-code regressions remained green. T-14 tests exercise production `computePlan`, `applyPlan`, `verifyInstall`, and `uninstall` with host mutation logs. |
+
+#### Failed Tests
+
+- None in the final committed-HEAD run. Two earlier 61/62 runs correctly failed the build-freshness assertion while an audited source fix and rebuilt bundle were still uncommitted; the committed-HEAD reruns passed.
+
+#### Not Tested
+
+- Real-home installation and new-session acceptance remain Step 7 human work and were explicitly outside this repair scope.
+
 ## Review Results
 
 ### Architecture Review
@@ -2040,6 +2237,34 @@ The audit evaluated task T-13 changes delivering safe, exact comparison of MCP r
 | None | None | CLEAR |
 
 <!-- AUDIT_REVIEW: CLEAR -->
+
+### [T-14] 2026-10-02 — ORCHESTRATOR direct audit
+
+**Date:** 2026-10-02
+**Verification Independence:** DEGRADED_BUNDLED
+**Verdict:** CLEAR
+**Open findings:** 0 total — 0 critical, 0 high, 0 medium, 0 low
+**Remediated findings:** 2 medium
+
+#### Summary
+
+The audit covered `2016449e06be30ac0822ac15dc226f88780c42b5..95df4643afcbe804b100f22069400f417f893574`, including manifest parsing, plan hashing, metadata-only adoption, shared payload ownership, host-specific block/settings removal, exact CLI fingerprint removal, and final hash-gated cleanup. Unsupported or fractional manifest schema revisions and non-`outputStyle` schema-2 setting records now fail closed in commit `345d3bd`; saved manifests always emit revision 2. Cross-host upgrades now carry all recorded consumers onto the new payload and launcher in commit `95df464`, so removing the upgrading host cannot strand the surviving host or leave false legacy ownership. Both repairs have permanent negative or lifecycle regressions.
+
+Deletion remains constrained to manifest paths inside `.clear-writing-kit`, exact file hashes, exact block hashes, and exact current CLI fingerprints. Changed, unreadable, failed, other-host, or unresolved legacy records are retained with reasons. Configuration contents and raw host output are not logged. No dependency, network path, host support, protected-path change, or real-home write was added. The added ownership scan is linear in the local manifest plus copied payload entries and introduces no material performance risk.
+
+#### Open Findings
+
+- None.
+
+#### Remediation Tracking
+
+| Finding | Severity | Status |
+| --- | --- | --- |
+| Unknown manifest revisions and unsupported settings records were accepted as current schema | Medium | FIXED in `345d3bd`; negative parser regression passes |
+| Cross-host upgrade assigned a new payload only to the upgrading host | Medium | FIXED in `95df464`; upgrade/removal lifecycle regression passes |
+
+<!-- AUDIT_REVIEW: CLEAR -->
+
 ## Debug Log
 
 Dispatch: phase=audit task=T-12 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=313fb68c-6b40-47fa-a97b-6f66d00166b9 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-12/1790931424-919424800-000000-T-12-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
