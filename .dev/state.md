@@ -37,7 +37,7 @@
 
 | Plan | Source Plan | Last Session | Stopped At | Next Step | Context |
 | --- | --- | --- | --- | --- | --- |
-| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-06 generator/test/audit passed, c6e86b3 | T-06 convergence, then T-07 | TP-08 PASS, Python 16/16; AUDIT_REVIEW: CLEAR; TP-09 pending T-09 apply; TP-10 pending T-07 manifests |
+| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-07 no-sandbox Claude recovery failed at OAuth authentication | Restore Claude login, then resume T-07 without sandbox | GAL works normally; original CODER route restored; T-01 through T-06 complete; f670942 initial T-07; corrections retained uncommitted; TP-10 provisional |
 
 ## Session Execution Context
 

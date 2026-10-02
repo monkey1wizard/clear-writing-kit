@@ -1,5 +1,7 @@
 {
   "name": "clear-writing-kit",
   "version": "2.0.0",
-  "description": "Clear writing guidance and output style for coding agents."
+  "description": "Clear writing guidance and output style for coding agents.",
+  "skills": ["./skills/coding-agent-writing"],
+  "outputStyles": ["./output-styles/clear-writing-kit.md"]
 }

@@ -190,12 +190,12 @@ None
 
 Workflow: IMPLEMENT
 Step: 3 of 7
-Last activity: 2026-10-02 — T-06 committed generator tests and audit passed. TP-09 remains pending the T-09 apply prerequisite.
-Next step: Converge T-06, then execute T-07 plugin manifests.
+Last activity: 2026-10-02 — Owner resumed after restoring Claude authentication. The no-sandbox Claude implementation completed with a receipt and native session. Corrected plugin manifests await committed independent testing.
+Next step: Claude Code authentication restored. Resume T-07 implement fix through the owner-authorized no-sandbox Claude executor, then certify the committed manifests independently.
 Current Task: T-07
 Task Base Commit: ee542298ea85b242a6abab95e625dad29197af9c
-Task Final Commit: —
-Test Retry Count: 0
+Task Final Commit: f67094293918b8812bdb531d86964354db54a7d5
+Test Retry Count: 1
 Review Retry Count: 0
 
 ### Deviations
@@ -206,6 +206,38 @@ Review Retry Count: 0
 | 2026-10-02 | T-01 | Owner authorized ignoring generated .dev/pipeline records. Administrative commit 5d5a476 precedes implementation dfe8fa1; task base advanced to it without discarding output. Owner replaced the shared ignore rule in b4700fa, so generated records now use local .git/info/exclude. Tested HEAD is b4700fa, with implementation unchanged. | Generated receipts and loop-log were outside the implementation allowlist. Owner .gitignore is authoritative. Already tracked evidence remains tracked. |
 
 ### Handoff Notes
+
+#### Human Handback — convergence-human-repair
+
+Status: RESOLVED
+Reason: convergence-human-repair
+Task: T-07
+Phase: CONVERGE
+Producer: CONVERGE
+Producer state: On the owner-authorized resumed invocation, Codex implement fix ended no-receipt with session 01a0f908-fc39-7d42-bd1c-e2a08ae867b8. Native sandbox log identifies deny ACE update failure on C:/Code/clear-writing-kit/.agents, owned by CodexSandboxOffline. Owner then explicitly prohibited sandbox. The one recovery dispatch used GAL's normal Claude Code permission-bypass adapter and existing configured claude-sonnet-5-5 model. It ended disconnected-partial, session 9d2987fd-fd55-4a91-aad3-d171cdfac966, terminal_reason api_error, result Failed to authenticate: OAuth session expired and could not be refreshed. Neither attempt produced a successful implementation receipt. GAL replay protection is not a defect. Retained Codex corrections remain uncommitted and TP-10 is provisional.
+Git HEAD: f67094293918b8812bdb531d86964354db54a7d5
+Next human step: Resolved on 2026-10-02 by owner request "try again" and claude auth status reporting loggedIn true. Resume through the authenticated Claude executor without sandbox. Preserve retained output and dispatcher leases. The original CODER route must be restored when this invocation ends. TP-10 remains provisional until tested against the corrected commit.
+
+#### Retry Handoff — T-07 / TEST
+
+- Status: OPEN
+- Problem: The previous CODER reconciliation attempt produced no receipt because its command runner returned helper_unknown_error: setup refresh had errors. Owner has explicitly resumed this task. Production corrections from TP-10 remain uncommitted and must be reconciled before any test PASS is accepted.
+- Evidence:
+  - Test Results: TP-10 provisional PASS on modified working tree, not on f670942.
+  - Review Results: not-applicable
+  - Security Review: not-applicable
+- Attempts:
+  1. 2026-10-02 — Tested f670942 with unexpected production edits.
+     - Result: Retest required after CODER reconciliation and commit.
+     - Validation: Completed session d4e1856e-155c-4e76-a6be-564428067e86.
+     - Commit: f67094293918b8812bdb531d86964354db54a7d5
+- Next human step: Owner explicitly requires no sandbox. Codex child invocation is fixed to workspace-write and sandbox.log identifies ACL update failure on .agents, owned by CodexSandboxOffline. Temporarily route CODER to the existing Claude Code executor/model so GAL uses its normal permission-bypass adapter. Verify execution, reconcile retained Codex corrections, and add explicit Claude skill and outputStyle declarations using its native schema. Preserve allowlists, logs, leases, and replay guards. Restore the original CODER route when this invocation ends. TESTER must certify the new committed manifests without production edits.
+
+The tester reported TP-10 PASS but modified production manifests during spec testing. Its receipt does not certify Task Final Commit f670942. Retain both changes: Codex marketplace source path changed from ../.. to .; Codex skills changed to ./skills/coding-agent-writing. CODER must reconcile these corrections against native CLI schemas, ensure Claude explicitly declares only the requested skill and output style paths rather than relying on default whole-directory discovery, and return a task-scoped diff. No commits or real-home installs. After the orchestrator commits, TESTER must rerun TP-10 without editing any production manifest. Prior PASS is provisional, not a passing gate for the committed task.
+
+Dispatch: phase=implement task=T-07 role=CODER executor=claude model=claude-sonnet-5-5 state=completed session_id=dff5453f-8e45-4af9-8e07-a6be365b7691 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-07/1790911242-199540200-000000-T-07-implement-claude.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+T-07 recovery: Claude authentication is restored. The completed implementation reconciled retained Codex paths and explicitly declared the Claude skill and output style. Boundary check passed. The fixture installs passed preliminary checks, but Claude skill-name readback and TP-10 certification remain TESTER-owned after commit.
 
 New prompt. Source approval and planning reviews are carried forward. T-03 is the payload gate. If it returns stop, T-05 onward cannot start. Human review occurs once after all automated tasks and goal-backward verification. T-01 implementation dispatch completed and was committed. Working tree was clean at b4700fa before this test cursor update. Boundary verification passed. Independent testing and audit have not run. Generated bundle whitespace warnings come from embedded dependency strings and remain unchanged to preserve build reproducibility.
 
@@ -821,6 +853,29 @@ Evidence: python scripts/generate-agents-block.py --check passes on committed in
 #### Not Tested
 
 - `TP-09`: Deferred to T-09 in accordance with plan dependency limit ("T-06 dependency limit: TP-09 exercises fallback commands after apply and also covers T-09. Preserve it as mandatory at T-09 if install apply is unavailable during T-06. Do not claim it ran before its prerequisite exists.").
+
+### [T-07] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 1 | Passed: 1 | Failed: 0 | Skipped: 0
+Verdict: PASS
+Evidence: python scratch/test_tp10.py: isolated fixture installation verified for Claude Code (CLAUDE_CONFIG_DIR) and Codex CLI (CODEX_HOME), listing coding-agent-writing and clear-writing-kit output style without MCP or web-skills
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-10: Plugin installation on isolated fixture homes for verified hosts (Claude Code, Codex CLI) listing `coding-agent-writing` and output style with no MCP or web-skills | Yes | PASS | Verified on clean fixture homes via `CLAUDE_CONFIG_DIR` and `CODEX_HOME`; Claude lists `coding-agent-writing` (Skills count 1) and caches `output-styles/clear-writing-kit.md`; Codex lists `clear-writing-kit@clear-writing-kit` as installed/enabled with `skills/coding-agent-writing/SKILL.md`; all manifests verified free of MCP declarations and `web-skills` references. |
+
+#### Failed Tests
+
+- None.
+
+#### Not Tested
+
+- None. All covering test plan rows for T-07 (TP-10) were executed and verified against isolated fixture homes.
 ## Review Results
 
 ### Architecture Review

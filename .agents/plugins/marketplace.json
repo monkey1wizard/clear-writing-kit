@@ -5,7 +5,7 @@
       "name": "clear-writing-kit",
       "source": {
         "source": "local",
-        "path": "../.."
+        "path": "."
       }
     }
   ]
