@@ -188,14 +188,14 @@ None
 
 ## Status
 
-Workflow: IMPLEMENT
+Workflow: DONE
 Step: 5 of 7
-Last activity: 2026-10-02 — Owner reports another pipeline restored AGY usage and requests another retry. Fresh preflight and pin match.
-Next step: Resume T-12 authorized generated OKF repair through agy, then independently retest and audit.
-Current Task: T-12
+Last activity: 2026-10-02 — T-12 independent TESTER PASS and AUDITOR CLEAR at 53602d3. All task phases complete.
+Next step: Run convergence and checker-directed in-process goal-backward verification. No whole-plan verification is claimed yet.
+Current Task:
 Interrupted Phase: None
 Task Base Commit: 4ead407f6147e301fe96a10e683cecdf111ca961
-Task Final Commit: 46ec9379ef5ce295b6052557aad31613cf454018
+Task Final Commit: 53602d3031b215cae2b20e34eada6fb4788813da
 Test Retry Count: 1
 Review Retry Count: 0
 
@@ -241,7 +241,7 @@ T-12 generated-file repair runtime recovery: Original agy process exited code 3 
 
 #### Interrupted Phase — T-12 / IMPLEMENT
 
-- Status: OPEN
+- Status: RESOLVED
 - Cause: tool-unavailable
 - Workflow at interruption: IMPLEMENT
 - Durable state present:
@@ -250,7 +250,7 @@ T-12 generated-file repair runtime recovery: Original agy process exited code 3 
   - Worktree: dirty, prompt/state only
   - Test Results: T-12 TP-27 FAIL, existing full checks stale
   - Review Results: no
-- Resume action: One IMPLEMENT recovery dispatch after the original exit, preserving outputs. Generate knowledge/usage/gemini.md through the existing generator only, no manual edits. If recovery again ends without completed, create convergence-human-repair handback and run pipeline-handback-check.
+- Resume action: Resolved by completed generator repair and documentation reconciliation at 53602d3, passing boundary checks, independent TESTER PASS, and AUDITOR CLEAR.
 
 Owner scope authorization 2026-10-02: "allow to modify them" permits generated knowledge/usage/gemini.md repair plus the previously listed documentation and execution/state surfaces. The original T-12 task and TP-26/TP-27 remain unchanged in meaning. Only its execution allowlist gains the named generated file, as an explicit human amendment. Local fix self-check: one deterministic generated metadata refresh, no architecture or runtime behavior change, no manual knowledge editing. Existing generator and full lint/OKF/tests form the acceptance probe. No source-plan semantic rewrite or regeneration of the execution prompt is needed. Pin this fresh invocation to SHA256 EE23053DF544D50F85CC54FA8F34B1C1C40E8CAFBF823FA9CC6DDB40FCA9E872, version gal 0.2.4 (d4b5db8d-dirty). Fresh preflight passed. CODER fix owns only the named generated file and any minimal factual documentation corrections already allowed. Run the existing generator and return the diff. Do not write tests, edit prompt/state, stash, commit, install into real home, or modify unrelated generated files. If the generator changes any other tracked content, stop and report that output without discarding it. Fresh independent T-12 test/audit evidence is required after commit. Temporarily use agy CODER, restore original codex route on handback.
 
@@ -267,7 +267,7 @@ Owner scope authorization 2026-10-02: "allow to modify them" permits generated k
 
 #### Retry Handoff — T-12 / TEST
 
-- Status: OPEN
+- Status: RESOLVED
 - Problem: The original stale OKF failure is repaired at 46ec937, with preliminary full lint/OKF and regressions passing. Remaining in-scope T-12 document accuracy issues: docs/verification.md still claims this plan does not change knowledge, lacks the authorized repair resolution, and names Bun 1.3.10 while current runtime is 1.3.12. Chinese/Japanese README prose tells users to run a bare cwk command without installing an alias. These statements must be reconciled before fresh independent TP-26/27 certification.
 - Evidence:
   - Test Results: TESTER receipt delivered at 02a3c59, native session 8b1e3cbd-8740-4f67-a84f-35ae8b0951f2. Supplemental ORCHESTRATOR commands npm --prefix writing run lint and npm --prefix writing run okf:check both exited 1 with Stale generated file: usage/gemini.md.
@@ -278,7 +278,7 @@ Owner scope authorization 2026-10-02: "allow to modify them" permits generated k
      - Result: Focused documentation tests passed. Required TP-27 full checks failed. No production edits by TESTER.
      - Validation: Current receipt, completed attempt log, and nonempty native session record present. Supplemental full lint/okf commands fail. Semantic task verdict is FAIL.
      - Commit: 02a3c59cf3bf66b57d5b70e7fdd19f0b84cea3ab
-- Next human step: CODER must minimally correct docs/verification.md to preserve historical failures but record the authorized generated repair and freshly checked runtime versions. Replace bare cwk uninstall in Chinese/Japanese README prose with node dist/cwk.mjs install uninstall --agent <agent>, matching English. Keep all other content and the generated repair. Do not commit, stash, author tests, or hand-edit knowledge. Then independent TESTER must run full TP-26/27 and regressions against the final commit. No retry ceiling is claimed.
+- Next human step: Resolved by authorized generated repair at 46ec937 and factual documentation reconciliation at 53602d3. Independent TESTER session e1dab52e-c12d-4bd4-bd50-4e454881c618 passed TP-26/27 including full lint/OKF and regressions. Independent AUDITOR session 313fb68c-6b40-47fa-a97b-6f66d00166b9 returned CLEAR. No retry ceiling is claimed.
 
 Dispatch: phase=test task=T-12 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=8b1e3cbd-8740-4f67-a84f-35ae8b0951f2 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-12/1790922125-014860600-000000-T-12-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
 
@@ -292,7 +292,7 @@ Latest runtime cutoff: After the completed T-12 TEST receipt/native record were 
 
 #### Interrupted Phase — T-12 / TEST
 
-- Status: OPEN
+- Status: RESOLVED
 - Cause: tool-unavailable
 - Workflow at interruption: TEST
 - Durable state present:
@@ -301,7 +301,7 @@ Latest runtime cutoff: After the completed T-12 TEST receipt/native record were 
   - Worktree: dirty, recovery notes only
   - Test Results: no completed T-12 evidence
   - Review Results: no
-- Resume action: Owner must approve the new executable binding or restore the pinned GAL. Re-run pipeline-preflight, then one T-12 test recovery dispatch only after confirming the original process exited. Read and validate its current receipt, completed log and native session evidence. Do not alter leases or discard output. T-12 remains unchecked and unverified.
+- Resume action: Resolved by current independent TP-26/27 PASS at 53602d3 with nonempty receipt/native record, completed log, unchanged HEAD, and no production edits. Invocation pin remains 3054AF9BCC6A2ABF4DF255425935DD3E1D50F3F700B6DD7F1EF624E8C1B0DFAD.
 
 Binary drift: Invocation pin was SHA256 9554F129DC1C2115E0995E4CE3D8BE0ED7674283D0B3C98EB6B1C84994DEC566, version gal 0.2.4 (ef70f97c-dirty). Before trusting the T-12 committed-range boundary receipt, rehash returned 12068C5D3CDCF499696C7F400F416E6EDD02F0D27501A8D069AA9E9D7E571F24, version gal 0.2.4 (791af7b9-dirty). The orchestrator's batched tool cell had already queued the TEST dispatch after the hash call, without inspecting the mismatch first. That was an orchestration error. Do not trust this boundary receipt or the started test as passing evidence. On detection, the orchestrator terminated only the owned agy child tree PID 56100 under GAL PID 65008. The original dispatch exited disconnected-partial with session-evidence-missing-terminal and no session ID. No product changes occurred. This stop enforces the binary-binding rule, not a caller-side timeout. No further gate commands are trusted or run with the changed executable. No terminal decision or plan completion is claimed.
 
@@ -792,7 +792,8 @@ Steps map to tasks as follows: Step 1 → T-01 to T-03, Step 2 → T-04, Step 3 
   - Acceptance: `uninstall` restores a clean fixture home and keeps every changed item.
   - Evidence: E + TP-17, TP-25, TP-28, TP-36.
 
-- [ ] T-12 — Document installation for agents and people
+- [x] T-12 — Document installation for agents and people *(53602d3)*
+  - Commit: 53602d3031b215cae2b20e34eada6fb4788813da
   - Targets: `INSTALL.md`, `README.md`, `docs/verification.md`, `knowledge/usage/gemini.md`
   - Owner-authorized remediation: Refresh only the stale generated knowledge/usage/gemini.md through node writing/okf.cjs --generate. No manual knowledge edit, source rule change, other generated diff, SKILL.md change, or test-contract weakening is authorized. Check the generated diff and stop if additional content changes occur.
   - Depends on: T-10, T-11
@@ -1454,6 +1455,35 @@ Evidence: TP-26 verified with 10/10 R-19 item-by-item anchoring quotes from INST
 
 - Full baseline `npm --prefix writing run okf:check` / `npm --prefix writing run lint`: pre-existing failure in `writing/test/okf.test.cjs` on `knowledge/usage/gemini.md` dates to commit `bf6d3a5` (2026-09-29). As specified in task constraints, `knowledge/` is not modified and baseline failures are distinguished from direct changed-document checks.
 - Live new-session agent activation: requires interactive human agent session as specified in Step 7 human review checklist.
+
+### [T-12] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 7 | Passed: 7 | Failed: 0 | Skipped: 0
+Verdict: PASS
+Evidence: python -m unittest discover -s tests -v passed (16/16), npm --prefix writing run lint passed (0 errors), npm --prefix writing run okf:check passed (0 errors), and npm --prefix writing test passed (40/40); INSTALL.md quotes validated for all R-19 clauses.
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-26: `INSTALL.md` covers R-19 item by item with anchoring quotes | Yes | PASS | Anchoring quotes verified for runtime preflight (lines 7, 10, 11-14), repository clone and committed payload (lines 24-25), ban on direct configuration edits (lines 29-30), read-only plan (lines 35, 38), showing plan output (line 41), explicit confirmation wait (lines 45-46), apply with plan hash (lines 50, 53), verify execution (lines 60, 63), separate pass and fail reporting (lines 70-71), and new session request for behavior check (lines 75-76). |
+| TP-27: README 3-language parity, removed disclaimer, updated generator docs, and verification.md | Yes | PASS | Parity confirmed across English, Traditional Chinese, and Japanese sections. `test_readme_languages_have_equal_commands_and_local_links` passed. The legacy disclaimer that the repository does not edit global agent settings is removed. `npm --prefix writing run lint` and `npm --prefix writing run okf:check` passed with 0 errors. |
+| Regression: Full writing test suite | Yes | PASS | `npm --prefix writing test` executed 40 tests, 40 passed, 0 failed. The two historical OKF failures are cleared following the authorized Gemini knowledge refresh. |
+| Regression: Python artifacts suite | Yes | PASS | `python -m unittest discover -s tests -v` executed 16 tests, 16 passed, exit code 0. |
+| Regression: Generator check parity | Yes | PASS | `node writing/generate-profiles.cjs --check`, `python scripts/generate-output-style.py --check`, and `python scripts/generate-agents-block.py --check` all passed with exit code 0. |
+| Document lint: Markdown and writing quality | Yes | PASS | `npx --prefix writing markdownlint-cli2 --config writing/.markdownlint-cli2.jsonc INSTALL.md README.md docs/verification.md` reported 0 errors across 3 files. `node writing/lint-docs.cjs` reported 0 errors. `zhtw` MCP tool reported 0 errors and 0 warnings on updated README Traditional Chinese text. |
+| Build parity: Fresh build matches committed payload | Yes | PASS | `npm --prefix writing run build` ran cleanly. `git status --porcelain dist/` showed 0 diff against committed payload at HEAD `53602d3`. |
+
+#### Failed Tests
+
+- None. All covering criteria, regression suites, and verification checks passed.
+
+#### Not Tested
+
+- None. All covering test plan rows for T-12 (TP-26 and TP-27), document lints, build checks, and regression suites were tested.
 ## Review Results
 
 ### Architecture Review
@@ -1764,7 +1794,36 @@ The audit evaluated task T-11 changes delivering `cwk install uninstall` across 
 | None | None | CLEAR |
 
 <!-- AUDIT_REVIEW: CLEAR -->
+
+### [T-12] 2026-10-02
+
+**Date:** 2026-10-02
+**Findings:** 0 total — 0 critical, 0 high, 0 medium, 0 low
+
+#### Summary
+
+The audit evaluated task T-12 changes delivering user- and agent-facing documentation across `INSTALL.md`, `README.md`, `docs/verification.md`, and the authorized generated artifact `knowledge/usage/gemini.md` through final commit `53602d3`. The documentation establishes strong security containment and defensive operations for AI coding agents: `INSTALL.md` explicitly forbids automatic runtime installation, mandates explicit user confirmation before applying installation plans, prohibits direct modification or deletion of host configuration files, requires cryptographic plan hashing to prevent state drift, and enforces separated pass and fail reporting. In `README.md`, three-language parity (English, Traditional Chinese, Japanese) is verified, the legacy disclaimer regarding global settings is replaced with accurate explanations of what files the installer touches, and safe uninstall and backup restoration procedures are documented. In `docs/verification.md`, stdio JSON-RPC transport, multi-language probes, strict exit codes, and backup preservation limits are clearly detailed. The authorized generated refresh of `knowledge/usage/gemini.md` was executed strictly via `node writing/okf.cjs --generate` with no manual tampering, resolving historical test failures and achieving complete test passage. No naming authority regressions, deep performance bottlenecks, OWASP Top 10 vulnerabilities, or STRIDE security threats were identified.
+
+#### Open Findings
+
+- None.
+
+#### Remediation Tracking
+
+| Finding | Severity | Status |
+| --- | --- | --- |
+| None | None | CLEAR |
+
+<!-- AUDIT_REVIEW: CLEAR -->
 ## Debug Log
+
+Dispatch: phase=audit task=T-12 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=313fb68c-6b40-47fa-a97b-6f66d00166b9 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-12/1790931424-919424800-000000-T-12-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
+
+T-12 audit CLEAR, zero findings. Current receipt, completed log, nonempty native session database, and unchanged HEAD verified. No whole-plan verification or real-home activation is claimed.
+
+Dispatch: phase=test task=T-12 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=e1dab52e-c12d-4bd4-bd50-4e454881c618 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-12/1790931208-768857800-000000-T-12-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
+
+T-12 independent TESTER passed TP-26 and TP-27 at 53602d3, including full lint/OKF, 40 Node tests, 16 Python tests, artifact checks, and fresh build parity. Current receipt, completed log, native session record, unchanged HEAD, and absence of production edits verified. Prior retry remains open pending independent audit and convergence.
 
 Dispatch: phase=implement task=T-12 role=CODER executor=agy model=gemini-3.8-flash state=completed session_id=5780925f-6478-4ad6-a19c-cec06352a2ca log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-12/1790930593-281821400-000000-T-12-implement-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
 

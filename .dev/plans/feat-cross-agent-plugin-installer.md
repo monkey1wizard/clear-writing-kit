@@ -478,7 +478,8 @@ Step 與任務的對應：Step 1 → T-01 到 T-03，Step 2 → T-04，Step 3 �
   - Acceptance: `uninstall` 讓乾淨的測試用家目錄回到原狀，並保留每個被修改過的項目。
   - Evidence: E + TP-17, TP-25, TP-28, TP-36.
 
-- [ ] T-12 — 為 agent 和使用者撰寫安裝文件
+- [x] T-12 — 為 agent 和使用者撰寫安裝文件 *(53602d3)*
+  - Commit: 53602d3031b215cae2b20e34eada6fb4788813da
   - Targets: `INSTALL.md`, `README.md`, `docs/verification.md`
   - Depends on: T-10, T-11
   - Change: 依 R-19 撰寫 `INSTALL.md`。agent 從 repo clone 執行，`dist/` 已 commit，所以不需要 `npm install`。agent 先檢查 `node`、`deno`、`bun`，三者都沒有時附官方安裝網址並停止，不自行安裝執行環境。接著執行 `install plan --agent <self>`、顯示結果、等待明確確認、帶 plan hash 執行 `install apply`、執行 `install verify`、分開回報通過與失敗的步驟、絕不直接修改工具設定檔，並請使用者開新對話做行為驗收。在 README 三種語言的段落加入相同的安裝指令，把「本儲存庫不修改全域 agent 設定」改寫成安裝程式會修改什麼、怎麼解除安裝，並更新 output style 產生器的說明。在 `docs/verification.md` 說明 `verify`。不手動修改 `knowledge/`。
