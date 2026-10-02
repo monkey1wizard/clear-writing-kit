@@ -50,6 +50,8 @@ node dist/cwk.mjs install uninstall --agent claude
 
 Supported runtimes are Node.js (>= 20.18.0), Deno (>= 2.0.0, via `deno run -A`), and Bun. Agents follow the guided procedure in [INSTALL.md](INSTALL.md).
 
+Read the [installer guide](docs/installer.md) for supported hosts, managed state, verification, upgrades, and conservative uninstall behavior.
+
 Preview in a new temporary directory:
 
 ```powershell
@@ -148,6 +150,8 @@ node dist/cwk.mjs install uninstall --agent claude
 
 支援的執行階段包含 Node.js（20.18.0 以上版本）、Deno（2.0.0 以上版本，透過 `deno run -A`）及 Bun。代理程式請遵循 [INSTALL.md](INSTALL.md) 的指示流程。
 
+支援的宿主、管理範圍、驗證、升級與保守解除安裝行為，請參閱[安裝程式指南](docs/installer.md)。
+
 在新的暫存目錄預覽：
 
 ```powershell
@@ -245,6 +249,8 @@ node dist/cwk.mjs install uninstall --agent claude
 ```
 
 対応する実行環境はNode.js（20.18.0以降）、Deno（2.0.0以降、`deno run -A`）、Bunである。エージェントは [INSTALL.md](INSTALL.md) の手順に従う。
+
+対応ホスト、管理対象、検証、更新、保守的なアンインストール動作については、[インストーラーガイド](docs/installer.md)を参照する。
 
 新しい一時フォルダーにプレビューを生成する。
 
