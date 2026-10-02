@@ -189,12 +189,12 @@ None
 ## Status
 
 Workflow: IMPLEMENT
-Step: 3 of 7
-Last activity: 2026-10-02 — Owner resumed after restoring Claude authentication. The no-sandbox Claude implementation completed with a receipt and native session. Corrected plugin manifests await committed independent testing.
-Next step: Claude Code authentication restored. Resume T-07 implement fix through the owner-authorized no-sandbox Claude executor, then certify the committed manifests independently.
-Current Task: T-07
+Step: 5 of 7
+Last activity: 2026-10-02 — T-07 independent test and audit passed at f7c5bbf. Plugin manifests are ready. Installer plan is next.
+Next step: Run T-08 install plan implementation through the owner-authorized no-sandbox Claude executor.
+Current Task:
 Task Base Commit: ee542298ea85b242a6abab95e625dad29197af9c
-Task Final Commit: f67094293918b8812bdb531d86964354db54a7d5
+Task Final Commit: f7c5bbfd8021f5ba96ce81e9a6b8d37a354cd18e
 Test Retry Count: 1
 Review Retry Count: 0
 
@@ -220,7 +220,7 @@ Next human step: Resolved on 2026-10-02 by owner request "try again" and claude 
 
 #### Retry Handoff — T-07 / TEST
 
-- Status: OPEN
+- Status: RESOLVED
 - Problem: The previous CODER reconciliation attempt produced no receipt because its command runner returned helper_unknown_error: setup refresh had errors. Owner has explicitly resumed this task. Production corrections from TP-10 remain uncommitted and must be reconciled before any test PASS is accepted.
 - Evidence:
   - Test Results: TP-10 provisional PASS on modified working tree, not on f670942.
@@ -231,13 +231,19 @@ Next human step: Resolved on 2026-10-02 by owner request "try again" and claude 
      - Result: Retest required after CODER reconciliation and commit.
      - Validation: Completed session d4e1856e-155c-4e76-a6be-564428067e86.
      - Commit: f67094293918b8812bdb531d86964354db54a7d5
-- Next human step: Owner explicitly requires no sandbox. Codex child invocation is fixed to workspace-write and sandbox.log identifies ACL update failure on .agents, owned by CodexSandboxOffline. Temporarily route CODER to the existing Claude Code executor/model so GAL uses its normal permission-bypass adapter. Verify execution, reconcile retained Codex corrections, and add explicit Claude skill and outputStyle declarations using its native schema. Preserve allowlists, logs, leases, and replay guards. Restore the original CODER route when this invocation ends. TESTER must certify the new committed manifests without production edits.
+- Next human step: Resolved by completed Claude implementation and independent TP-10 PASS at f7c5bbfd8021f5ba96ce81e9a6b8d37a354cd18e. The test made no production edits and the independent audit is CLEAR. Restore the original CODER route when this invocation ends.
 
 The tester reported TP-10 PASS but modified production manifests during spec testing. Its receipt does not certify Task Final Commit f670942. Retain both changes: Codex marketplace source path changed from ../.. to .; Codex skills changed to ./skills/coding-agent-writing. CODER must reconcile these corrections against native CLI schemas, ensure Claude explicitly declares only the requested skill and output style paths rather than relying on default whole-directory discovery, and return a task-scoped diff. No commits or real-home installs. After the orchestrator commits, TESTER must rerun TP-10 without editing any production manifest. Prior PASS is provisional, not a passing gate for the committed task.
 
 Dispatch: phase=implement task=T-07 role=CODER executor=claude model=claude-sonnet-5-5 state=completed session_id=dff5453f-8e45-4af9-8e07-a6be365b7691 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-07/1790911242-199540200-000000-T-07-implement-claude.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
 
 T-07 recovery: Claude authentication is restored. The completed implementation reconciled retained Codex paths and explicitly declared the Claude skill and output style. Boundary check passed. The fixture installs passed preliminary checks, but Claude skill-name readback and TP-10 certification remain TESTER-owned after commit.
+
+Dispatch: phase=test task=T-07 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=319d247b-2fd3-4d10-9145-095fec0a0ed2 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-07/1790911563-246147000-000000-T-07-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
+
+T-07 independent retest: TP-10 PASS at f7c5bbfd8021f5ba96ce81e9a6b8d37a354cd18e, with unchanged HEAD and no production edits. Claude details lists coding-agent-writing and zero MCP servers. Codex plugin is installed and enabled with the declared skill in its cache. Python artifacts 12/12 and checker regressions 26/26 passed. TP-09 remains deferred until T-09 delivers apply.
+
+Dispatch: phase=audit task=T-07 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=a6701ea4-278f-41fc-b051-67c06b8c9547 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-07/1790912102-409811200-000000-T-07-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
 
 New prompt. Source approval and planning reviews are carried forward. T-03 is the payload gate. If it returns stop, T-05 onward cannot start. Human review occurs once after all automated tasks and goal-backward verification. T-01 implementation dispatch completed and was committed. Working tree was clean at b4700fa before this test cursor update. Boundary verification passed. Independent testing and audit have not run. Generated bundle whitespace warnings come from embedded dependency strings and remain unchanged to preserve build reproducibility.
 
@@ -453,7 +459,8 @@ Steps map to tasks as follows: Step 1 → T-01 to T-03, Step 2 → T-04, Step 3 
   - Acceptance: `--check` passes on the committed block, and the size, marker, and content rules hold.
   - Evidence: E + TP-08, TP-09.
 
-- [ ] T-07 — Ship plugin manifests for every verified host
+- [x] T-07 — Ship plugin manifests for every verified host *(f7c5bbf)*
+  - Commit: f7c5bbfd8021f5ba96ce81e9a6b8d37a354cd18e
   - Targets: `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `.codex-plugin/plugin.json`, `.agents/plugins/marketplace.json`, and one manifest per other verified host with plugin skills, at the paths in the survey
   - Depends on: T-04, T-05
   - Change: Declare `clear-writing-kit` for each verified host with plugin skill support, using the field names recorded in the survey. Every manifest ships only `skills/coding-agent-writing/`. The Claude manifest also ships `output-styles/`. Add the marketplace entries that point at the repository root. Declare no MCP server and never reference `web-skills/`. A verified host without plugin skills gets no manifest, because `skillCopyDir` in `src/hosts.ts` covers it.
@@ -876,6 +883,34 @@ Evidence: python scratch/test_tp10.py: isolated fixture installation verified fo
 #### Not Tested
 
 - None. All covering test plan rows for T-07 (TP-10) were executed and verified against isolated fixture homes.
+
+### [T-07] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 6 | Passed: 6 | Failed: 0 | Skipped: 0
+Verdict: PASS
+Evidence: TP-10 verified across Claude Code 2.1.286 and Codex CLI 0.159.3 isolated fixture homes, passing static schema audits, CLI validation, clean installation, inventory listing, and regression test suites.
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| Manifest static schema check: Claude and Codex manifests declare only `skills/coding-agent-writing/`, Claude declares output style, source points to `.`, no MCP servers, no `web-skills/`, no manifests for unverified hosts | Yes | PASS | Checked `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `.codex-plugin/plugin.json`, `.agents/plugins/marketplace.json`. Zero forbidden tokens. |
+| CLI manifest validation: `claude plugin validate` on plugin and marketplace manifests | Yes | PASS | Both manifests passed validation with exit code 0. |
+| Claude Code isolated fixture installation: `CLAUDE_CONFIG_DIR` isolated home | Yes | PASS | Local marketplace added, plugin `clear-writing-kit@clear-writing-kit` installed at version 2.0.0, enabled. `claude plugin details` confirms `Skills (1) coding-agent-writing` and `MCP servers (0)`. Cache contains `output-styles/clear-writing-kit.md`. |
+| Codex CLI isolated fixture installation: `CODEX_HOME` isolated home | Yes | PASS | Local marketplace added, plugin `clear-writing-kit@clear-writing-kit` installed at version 2.0.0, status `installed, enabled`. Cache contains `skills/coding-agent-writing/SKILL.md` and `.codex-plugin/plugin.json` declaring `./skills/coding-agent-writing`. |
+| Regression test: Python artifacts suite | Yes | PASS | `python -m unittest discover -s tests -v` executed 12 tests, 12 passed, exit code 0. |
+| Regression test: Checkers suite | Yes | PASS | `node --test test/checkers.test.cjs` executed 26 tests, 26 passed, exit code 0. |
+
+#### Failed Tests
+
+None.
+
+#### Not Tested
+
+- TP-09: Fallback command verification after `apply`. Skipped because `apply` prerequisite is delivered in T-09.
 ## Review Results
 
 ### Architecture Review
@@ -1044,6 +1079,27 @@ The audit evaluated T-05 changes scoping Claude Code output style generation to 
 #### Summary
 
 The audit evaluated T-06 changes implementing the agent instruction block generator across `scripts/artifacts.py`, `scripts/generate-agents-block.py`, `install/agents-block.md`, and `tests/test_artifacts.py`. Function `render_agents_block()` extracts the version from `skills/coding-agent-writing/SKILL.md` frontmatter, verifies the byte budget under 2,048 bytes, and formats markers with persistent core rules. The generated block uses the portable placeholder `<home>` to prevent leaking local environment paths. Script `generate-agents-block.py` defaults safely to `install/agents-block.md` inside the repository and supports deterministic integrity verification via `--check`. The generator runs offline without dynamic code evaluation or remote network access. The review identified no deep performance bottlenecks, OWASP Top 10 vulnerabilities, or STRIDE security risks.
+
+#### Open Findings
+
+- None.
+
+#### Remediation Tracking
+
+| Finding | Severity | Status |
+| --- | --- | --- |
+| None | None | CLEAR |
+
+<!-- AUDIT_REVIEW: CLEAR -->
+
+### [T-07] 2026-10-02
+
+**Date:** 2026-10-02
+**Findings:** 0 total — 0 critical, 0 high, 0 medium, 0 low
+
+#### Summary
+
+The audit evaluated T-07 changes delivering host plugin manifests across `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `.codex-plugin/plugin.json`, and `.agents/plugins/marketplace.json`. Each manifest declares `clear-writing-kit` version 2.0.0 for verified hosts that support plugin skills. All manifests scope their skill declarations exclusively to `./skills/coding-agent-writing`. The Claude Code manifest also declares `./output-styles/clear-writing-kit.md`. Neither manifest declares MCP servers or references `web-skills/`. The marketplace declarations use safe relative paths pointing to the repository root. Static schema validation confirmed no path traversal vulnerabilities, no secrets, and no external network endpoints. The review identified no deep performance bottlenecks, OWASP Top 10 vulnerabilities, or STRIDE security risks.
 
 #### Open Findings
 

@@ -438,7 +438,8 @@ Step 與任務的對應：Step 1 → T-01 到 T-03，Step 2 → T-04，Step 3 �
   - Acceptance: `--check` 對 commit 的區塊通過，大小、標記和內容規則都成立。
   - Evidence: E + TP-08, TP-09.
 
-- [ ] T-07 — 為每個已驗證工具提供 plugin 設定檔
+- [x] T-07 — 為每個已驗證工具提供 plugin 設定檔 *(f7c5bbf)*
+  - Commit: f7c5bbfd8021f5ba96ce81e9a6b8d37a354cd18e
   - Targets: `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `.codex-plugin/plugin.json`, `.agents/plugins/marketplace.json`，以及其他支援 plugin skill 的已驗證工具各一份設定檔，路徑依調查結果
   - Depends on: T-04, T-05
   - Change: 對每個支援 plugin skill 的已驗證工具，用調查記錄的欄位名稱宣告 `clear-writing-kit`。每份設定檔只提供 `skills/coding-agent-writing/`。Claude 的設定檔另外提供 `output-styles/`。新增指向 repo 根目錄的 marketplace 項目。不宣告 MCP server，也不提到 `web-skills/`。不支援 plugin skill 的已驗證工具不需要設定檔，由 `src/hosts.ts` 的 `skillCopyDir` 處理。

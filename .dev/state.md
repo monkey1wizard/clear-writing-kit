@@ -37,7 +37,7 @@
 
 | Plan | Source Plan | Last Session | Stopped At | Next Step | Context |
 | --- | --- | --- | --- | --- | --- |
-| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-07 no-sandbox Claude recovery failed at OAuth authentication | Restore Claude login, then resume T-07 without sandbox | GAL works normally; original CODER route restored; T-01 through T-06 complete; f670942 initial T-07; corrections retained uncommitted; TP-10 provisional |
+| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-07 independent test PASS and audit CLEAR at f7c5bbf | Run T-08 install plan implementation | T-01 through T-07 complete. Claude authentication restored. Temporary no-sandbox Claude CODER route active for this invocation. Restore original route on handback. |
 
 ## Session Execution Context
 
