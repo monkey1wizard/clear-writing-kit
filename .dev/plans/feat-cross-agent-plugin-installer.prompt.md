@@ -190,11 +190,11 @@ None
 
 Workflow: IMPLEMENT
 Step: 5 of 7
-Last activity: 2026-10-02 — T-08 independent tests PASS and audit CLEAR at 79c4d60. Read-only installation planning is ready.
-Next step: Run T-09 install apply implementation through the owner-authorized no-sandbox Claude executor.
-Current Task: T-09
+Last activity: 2026-10-02 — T-09 independent tests PASS and audit CLEAR at 6d53fe2. Approved-plan application is ready.
+Next step: Run T-10 install verify implementation through the owner-authorized no-sandbox Claude executor.
+Current Task:
 Task Base Commit: 9f43372c13a3b466eba62c717884ecef58330833
-Task Final Commit:
+Task Final Commit: 6d53fe2cf9f87dbe9d101b6207d2a922b22ee7b3
 Test Retry Count: 0
 Review Retry Count: 0
 
@@ -283,6 +283,12 @@ Dispatch: phase=implement task=T-09 role=CODER executor=claude model=claude-sonn
 - Next human step: Resolved by the permitted scope correction. No allowlist widening or owner decision was needed. Orchestrator must commit the allowlisted implementation and run independent tests and audit.
 
 Dispatch: phase=implement task=T-09 role=CODER executor=claude model=claude-sonnet-5-5 state=completed session_id=58d63a06-2200-4037-af5f-3cc8db87ffba log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-09/1790913995-820823100-000000-T-09-implement-claude.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+Dispatch: phase=test task=T-09 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=efb2fec4-0c3e-4b93-aade-6987683c797b log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-09/1790914144-507306800-000000-T-09-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
+
+T-09 independent test: PASS at 6d53fe2cf9f87dbe9d101b6207d2a922b22ee7b3 with unchanged HEAD and no production edits. TP-05, TP-09, TP-14, TP-15, TP-17 apply branch, TP-18 through TP-23, TP-28 through TP-30, TP-32, TP-33, and TP-35 through TP-37 are covered. Verify/uninstall branches remain NotRun at T-10/T-11. Audit must assess failure reporting and manifest custody as well as write scope, backups, launcher upgrades, and atomic writes. The implementation notes that a stale opaque plan hash reports candidate targets rather than identifying one exact changed target.
+
+Dispatch: phase=audit task=T-09 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=c9ce8c6a-9874-4c2b-9e35-f9595c971600 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-09/1790914625-291669300-000000-T-09-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
 
 New prompt. Source approval and planning reviews are carried forward. T-03 is the payload gate. If it returns stop, T-05 onward cannot start. Human review occurs once after all automated tasks and goal-backward verification. T-01 implementation dispatch completed and was committed. Working tree was clean at b4700fa before this test cursor update. Boundary verification passed. Independent testing and audit have not run. Generated bundle whitespace warnings come from embedded dependency strings and remain unchanged to preserve build reproducibility.
 
@@ -514,7 +520,8 @@ Steps map to tasks as follows: Step 1 → T-01 to T-03, Step 2 → T-04, Step 3 
   - Acceptance: `plan` is read-only, deterministic, reports conflicts, and refuses unverified hosts.
   - Evidence: E + TP-05, TP-11, TP-12, TP-13, TP-14, TP-15, TP-16, TP-17, TP-22, TP-28, TP-32, TP-34, TP-36.
 
-- [ ] T-09 — Ship `cwk install apply`
+- [x] T-09 — Ship `cwk install apply` *(6d53fe2)*
+  - Commit: 6d53fe2cf9f87dbe9d101b6207d2a922b22ee7b3
   - Targets: `src/install/fsutil.ts`, `src/install/manifest.ts`, `src/install/payload.ts`, `src/install/settings.ts`, `src/install/apply.ts`, `src/cli.ts`, `dist/`
   - Depends on: T-08
   - Change: `fsutil.ts`: add `writeTextAtomic(path, text, format)` writing a sibling temporary file and renaming it over the target, retrying a locked rename 5 times 100 ms apart before an error that names the path, and `backup(path, backupDir)`. `manifest.ts`: add `saveManifest` through `writeTextAtomic`. `payload.ts`: copy `dist/` to `<home>/.clear-writing-kit/<version>/` and write the launcher `<home>/.clear-writing-kit/cwk.mjs` with one dynamic import of the active version, keeping older versions. `settings.ts`: `setOutputStyle(path, value)` changes only `outputStyle`, keeps key order and indentation, backs up first, returns the old value, creates a missing file containing only `outputStyle`, and throws on invalid JSON before writing. `apply.ts`: `applyPlan(ctx, planHash)` recomputes the plan and writes nothing on a mismatch, backs up targets, writes the block text computed by `plan`, runs the other steps, registers `clear-writing-kit-textlint` with the launcher and the planned runtime, records each completed step in the manifest immediately, and on a failed step stops and returns the step, its output, and the completed steps. Add `install apply --agent --plan-hash` and rebuild `dist/`.
@@ -994,6 +1001,51 @@ Evidence: npm --prefix writing run build matches dist/ (TP-05: 0 diff); 17/17 in
 - TP-17 (`apply`, `verify`, `uninstall` branches): Secret non-leakage during subsequent subcommands. Deferred until respective tasks land.
 - TP-32 (`apply` branch): Corrupted manifest refusal during `apply`. Deferred until T-09.
 - TP-36 (`apply`, `verify`, `uninstall` branches): Subcommand exit code checks for future subcommands. Deferred until respective tasks land.
+
+### [T-09] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 20 | Passed: 20 | Failed: 0 | Skipped: 0
+Verdict: PASS
+Evidence: npm --prefix writing run build matches dist/ (TP-05: 0 diff); 18/18 independent Node/Deno/Bun probes passed covering TP-09, TP-14, TP-15, TP-17, TP-18, TP-19, TP-20, TP-21, TP-22, TP-23, TP-28, TP-29, TP-30, TP-32, TP-33, TP-35, TP-36, TP-37, Python artifacts (16/16), and checkers suite (26/26).
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-09: Fallback command execution after `apply` | Yes | PASS | Fallback command template `<runtime> <home>/.clear-writing-kit/cwk.mjs check` executes and prints results across Node, Deno (`run -A`), and Bun from both cmd.exe and PowerShell. |
+| TP-14: Deterministic plan hash and target change detection/refusal during `apply` | Yes | PASS | Unchanged state yields identical 64-char SHA-256 plan hash; mutating a target file after plan causes `apply` to refuse execution, leave target unmodified, and report hash mismatch. |
+| TP-15: Unverified host lists manual steps without hash and refuses apply | Yes | PASS | `plan --agent copilot` lists manual installation steps without plan hash; `apply --agent copilot` refuses to run with exit code 1. |
+| TP-17: Config token redaction | Yes | PASS | Host secrets in fixture `settings.json` are never printed in `apply` stdout or stderr. |
+| TP-18: Normal `apply` execution and idempotency | Yes | PASS | `apply` copies payload, registers MCP server, runs plugin install, inserts instruction block, updates `settings.json`, and records completed steps in manifest; repeat execution is idempotent. |
+| TP-19: CRLF, UTF-8 BOM preservation, and spaces in home path | Yes | PASS | `apply` preserves UTF-8 BOM and CRLF line endings on instruction files and succeeds when user home path contains spaces. |
+| TP-20: Stop on failure and resume | Yes | PASS | When an MCP step fails, `apply` aborts immediately, manifest records prior completed steps, subsequent `plan` displays only remaining steps, and subsequent `apply` resumes to completion. |
+| TP-21: `settings.json` preservation and backup | Yes | PASS | `apply` updates only `outputStyle`, preserves 4-space indentation and exact key ordering, and creates an automatic backup in `.clear-writing-kit/backups`. |
+| TP-22: Argument containing space and `&` preserved through `.cmd` stub | Yes | PASS | Command spawning via Windows `.cmd` stub preserves arguments containing whitespace and ampersands intact across Node, Deno, and Bun. |
+| TP-23: Versioned payload and launcher upgrade | Yes | PASS | `apply` deploys versioned payload to `<home>/.clear-writing-kit/<version>/`, updates `cwk.mjs` launcher to dynamically import active version, preserves older version payloads, and launcher responds. |
+| TP-28: `install --help` lists subcommands across runtimes | Yes | PASS | `cwk install --help` executed on Node, Deno, and Bun lists `plan`, `apply`, `verify`, and `uninstall` with exit code 0. |
+| TP-29: Locked file atomic rename retry | Yes | PASS | In Windows, locked target file rename retries 5 times 100ms apart before aborting with an error naming the path, leaving target bytes unchanged. |
+| TP-30: Multiple foreign blocks preserved | Yes | PASS | Files containing foreign `ccync` and `codebase-memory-mcp` blocks retain both blocks byte-for-byte identical after kit block insertion. |
+| TP-32: Corrupted manifest handling | Yes | PASS | Corrupted `install-manifest.json` causes `plan` and `apply` to fail with an error explicitly mentioning the manifest. |
+| TP-33: Multiple kit blocks failure | Yes | PASS | Target file containing two kit blocks causes `apply` to fail and write no files. |
+| TP-35: Missing `settings.json` creates minimal file | Yes | PASS | When `settings.json` is missing, `apply` creates a new file containing only `outputStyle`. |
+| TP-36: Exit code contracts across subcommands | Yes | PASS | Valid `apply` exits 0; host mismatch, unverified host, or step failure exits 1; invalid arguments or unknown subcommands exit 2. |
+| TP-37: Invalid JSON settings stops before writing any file | Yes | PASS | Malformed `settings.json` causes `apply` to stop before writing payload, launcher, or settings. |
+| Regression: Python artifacts suite | Yes | PASS | `python -m unittest discover -s tests -v` executed 16 tests, 16 passed, exit code 0. |
+| Regression: Checkers suite | Yes | PASS | `node --test test/checkers.test.cjs` executed 26 tests, 26 passed, exit code 0. |
+
+#### Failed Tests
+
+- None. All 18 covering criteria and 2 regression suites passed.
+
+#### Not Tested
+
+- TP-16 (`verify` branch): Conflict reporting during `verify`. Deferred until T-10.
+- TP-17 (`verify`, `uninstall` branches): Secret non-leakage during verify/uninstall. Deferred until respective tasks land.
+- TP-24: `cwk install verify` execution. Deferred until T-10.
+- TP-25: `cwk install uninstall` execution. Deferred until T-11.
 ## Review Results
 
 ### Architecture Review
@@ -1204,6 +1256,27 @@ The audit evaluated T-07 changes delivering host plugin manifests across `.claud
 #### Summary
 
 The audit evaluated T-08 changes delivering read-only installation planning (`cwk install plan`) across `src/install/spawn.ts`, `src/install/runtime.ts`, `src/install/identity.ts`, `src/install/fsutil.ts`, `src/install/manifest.ts`, `src/install/block.ts`, `src/install/plan.ts`, `src/cli.ts`, and `dist/`. The implementation adheres strictly to read-only guarantees: no files or configurations are written during plan execution. Subprocess execution in `spawn.ts` safely routes `.cmd` and `.bat` through `cmd.exe /d /s /c` with defensive quoting and explicit rejection of unrepresentable metacharacters (`"`, `%`, `\r`, `\n`, `\0`), and executes non-batch binaries directly without shell evaluation. Host identity resolution in `identity.ts` enforces exact-variable matching without prefix matching, correctly distinguishing missing required variables from foreign variables present without the requested host's variable, which allows nested execution environments without spoofing. Plan hashing in `plan.ts` deterministically binds installer version, payload digest, normalized target states, manifest digest, runtime arguments, and detected conflicts without binding unstable timestamps or absolute paths. Token redaction is preserved: `settings.json` is only parsed to extract and sanitize `outputStyle`, ensuring authentication tokens and unrelated keys are never read, emitted in diffs, or leaked into error logs. Line diffing operates strictly on the kit block lines via LCS, preventing foreign file leakage. Manifest parsing validates schema integrity and rejects corruption without echoing untrusted input. No deep performance bottlenecks, OWASP Top 10 vulnerabilities, or STRIDE security risks were identified.
+
+#### Open Findings
+
+- None.
+
+#### Remediation Tracking
+
+| Finding | Severity | Status |
+| --- | --- | --- |
+| None | None | CLEAR |
+
+<!-- AUDIT_REVIEW: CLEAR -->
+
+### [T-09] 2026-10-02
+
+**Date:** 2026-10-02
+**Findings:** 0 total — 0 critical, 0 high, 0 medium, 0 low
+
+#### Summary
+
+The audit evaluated T-09 changes delivering `cwk install apply` across `src/install/fsutil.ts`, `src/install/manifest.ts`, `src/install/payload.ts`, `src/install/settings.ts`, `src/install/apply.ts`, `src/cli.ts`, and `dist/`. The implementation adheres strictly to security, integrity, and performance requirements. Cryptographic hash verification via `planHash` prevents TOCTOU drift and immediately halts execution before any filesystem modifications if target states change. Atomic writes in `fsutil.ts` (`writeTextAtomic`) utilize sibling temporary files with cleanup on failure and bounded Windows file-lock retry handling (5 retries at 100 ms) naming the locked path on exhaustion. Automated backups (`backup`) use `COPYFILE_EXCL` with monotonic collision counters to guarantee existing backups are never overwritten. In `payload.ts`, version deployment isolates extraction into a temporary staging directory prior to atomic substitution, and `writeLauncher` validates version strings against `/^[\w.+-]+$/` to eliminate path traversal and arbitrary code injection into dynamic imports. In `settings.ts`, `setOutputStyle` parses JSON before writing, validates the root object type without echoing file contents or secrets, and precisely edits only the `outputStyle` member while maintaining indentation, key order, BOM, and line endings. Subprocess invocations in `apply.ts` run with a 120-second timeout through `spawn.ts` argument safeguards, manifest state is committed to disk immediately after each successful step to support clean failure recovery, and diagnostic outputs are truncated to 2000 characters to prevent buffer bloat. No deep performance bottlenecks, OWASP Top 10 vulnerabilities, or STRIDE security risks were identified.
 
 #### Open Findings
 

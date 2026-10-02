@@ -454,7 +454,8 @@ Step 與任務的對應：Step 1 → T-01 到 T-03，Step 2 → T-04，Step 3 �
   - Acceptance: `plan` 只讀、結果可重現、會回報衝突，並拒絕未驗證的工具。
   - Evidence: E + TP-05, TP-11, TP-12, TP-13, TP-14, TP-15, TP-16, TP-17, TP-22, TP-28, TP-32, TP-34, TP-36.
 
-- [ ] T-09 — 交付 `cwk install apply`
+- [x] T-09 — 交付 `cwk install apply` *(6d53fe2)*
+  - Commit: 6d53fe2cf9f87dbe9d101b6207d2a922b22ee7b3
   - Targets: `src/install/fsutil.ts`, `src/install/manifest.ts`, `src/install/payload.ts`, `src/install/settings.ts`, `src/install/apply.ts`, `src/cli.ts`, `dist/`
   - Depends on: T-08
   - Change: `fsutil.ts`：新增 `writeTextAtomic(path, text, format)`，先寫同目錄的暫存檔，再改名取代目標檔；改名因鎖定失敗時，每隔 100 ms 重試 5 次，之後丟出含路徑的錯誤。另新增 `backup(path, backupDir)`。`manifest.ts`：新增經由 `writeTextAtomic` 寫入的 `saveManifest`。`payload.ts`：把 `dist/` 複製到 `<home>/.clear-writing-kit/<version>/`，寫入啟動檔 `<home>/.clear-writing-kit/cwk.mjs`，內容是動態匯入目前版本的一行程式，舊版本保留。`settings.ts`：`setOutputStyle(path, value)` 只改 `outputStyle`，保留欄位順序和縮排，先備份，回傳原本的值；檔案不存在時建立只含 `outputStyle` 的檔案；JSON 無效時在寫入前丟出錯誤。`apply.ts`：`applyPlan(ctx, planHash)` 重新計算計畫，hash 不符就不寫入；備份目標檔；寫入 `plan` 算出的區塊文字；執行其他步驟；用啟動檔和計畫選定的執行環境登記 `clear-writing-kit-textlint`；每完成一個步驟就立即記錄到 manifest；步驟失敗時停止，回傳該步驟、它的輸出和已完成的步驟。新增 `install apply --agent --plan-hash`，重新建置 `dist/`。
