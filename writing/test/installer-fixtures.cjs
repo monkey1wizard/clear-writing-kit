@@ -128,6 +128,8 @@ function createFixtureHome(options = {}) {
   const initialState = {
     plugin: options.pluginInstalled ?? true,
     mcp: options.mcp ?? null,
+    ...(options.pluginByHost ? { pluginByHost: { ...options.pluginByHost } } : {}),
+    ...(options.mcpByHost ? { mcpByHost: { ...options.mcpByHost } } : {}),
     mcpMode: options.mcpMode ?? null,
     claudeFormat: options.claudeFormat ?? 'json',
     mutationCalls: []
@@ -142,6 +144,17 @@ const [host, family, verb, ...args] = process.argv.slice(2);
 const stateFile = process.env.CWK_STUB_STATE_FILE;
 const state = fs.existsSync(stateFile) ? JSON.parse(fs.readFileSync(stateFile, 'utf8')) : {};
 if (!state.mutationCalls) state.mutationCalls = [];
+const hostPlugin = () => state.pluginByHost ? Boolean(state.pluginByHost[host]) : Boolean(state.plugin);
+const setHostPlugin = value => {
+  if (state.pluginByHost) state.pluginByHost[host] = value;
+  else state.plugin = value;
+};
+const hostMcp = () => state.mcpByHost ? state.mcpByHost[host] : state.mcp;
+const setHostMcp = value => {
+  if (state.mcpByHost) state.mcpByHost[host] = value;
+  else if (value === undefined) delete state.mcp;
+  else state.mcp = value;
+};
 
 if (family === 'plugin') {
   if (verb === 'list') {
@@ -149,13 +162,13 @@ if (family === 'plugin') {
       process.stderr.write(state.pluginListError + '\\n');
       process.exit(1);
     }
-    console.log(state.plugin ? 'clear-writing-kit' : '');
+    console.log(hostPlugin() ? 'clear-writing-kit' : '');
   } else if (verb === 'add' || verb === 'install') {
     state.mutationCalls.push({ host, family, verb, args });
-    state.plugin = true;
+    setHostPlugin(true);
   } else if (verb === 'remove' || verb === 'uninstall') {
     state.mutationCalls.push({ host, family, verb, args });
-    state.plugin = false;
+    setHostPlugin(false);
   }
 } else if (family === 'mcp') {
   if (verb === 'get') {
@@ -199,7 +212,8 @@ if (family === 'plugin') {
       }
       process.exit(0);
     }
-    if (!state.mcp) {
+    const currentMcp = hostMcp();
+    if (!currentMcp) {
       if (host === 'codex') {
         process.stderr.write('clear-writing-kit-textlint not found\\n');
       } else {
@@ -211,34 +225,39 @@ if (family === 'plugin') {
       if (state.codexFormat === 'transport') {
         console.log(JSON.stringify({
           name: 'clear-writing-kit-textlint',
-          transport: { type: 'stdio', command: state.mcp.command, args: state.mcp.args }
+          transport: { type: 'stdio', command: currentMcp.command, args: currentMcp.args }
         }));
       } else {
         console.log(JSON.stringify({
           name: 'clear-writing-kit-textlint',
-          command: state.mcp.command,
-          args: state.mcp.args
+          command: currentMcp.command,
+          args: currentMcp.args
         }));
       }
     } else {
       if (state.claudeFormat === 'simple_tokens') {
-        console.log('Type: stdio\\nCommand: ' + state.mcp.command + '\\nArgs: ' + state.mcp.args.join(' '));
+        console.log('Type: stdio\\nCommand: ' + currentMcp.command + '\\nArgs: ' + currentMcp.args.join(' '));
       } else if (state.claudeFormat === 'backtick_json') {
-        console.log('Type: stdio\\nCommand: ' + state.mcp.command + '\\nArgs: \`' + JSON.stringify(state.mcp.args) + '\`');
+        console.log('Type: stdio\\nCommand: ' + currentMcp.command + '\\nArgs: \`' + JSON.stringify(currentMcp.args) + '\`');
       } else if (state.claudeFormat === 'bullet_points') {
-        console.log('- Type: stdio\\n- Command: ' + state.mcp.command + '\\n- Args: ' + JSON.stringify(state.mcp.args));
+        console.log('- Type: stdio\\n- Command: ' + currentMcp.command + '\\n- Args: ' + JSON.stringify(currentMcp.args));
       } else {
-        console.log('Type: stdio\\nCommand: ' + state.mcp.command + '\\nArgs: ' + JSON.stringify(state.mcp.args));
+        console.log('Type: stdio\\nCommand: ' + currentMcp.command + '\\nArgs: ' + JSON.stringify(currentMcp.args));
       }
     }
   } else if (verb === 'add') {
     state.mutationCalls.push({ host, family, verb, args });
     const dashDash = args.indexOf('--');
     const cmdArgs = dashDash >= 0 ? args.slice(dashDash + 1) : args;
-    state.mcp = { command: cmdArgs[0], args: cmdArgs.slice(1) };
+    setHostMcp({ command: cmdArgs[0], args: cmdArgs.slice(1) });
   } else if (verb === 'remove') {
     state.mutationCalls.push({ host, family, verb, args });
-    delete state.mcp;
+    if (Array.isArray(state.mcpRemoveErrorHosts) && state.mcpRemoveErrorHosts.includes(host)) {
+      process.stderr.write('Simulated mcp remove failure\\n');
+      fs.writeFileSync(stateFile, JSON.stringify(state));
+      process.exit(1);
+    }
+    setHostMcp(undefined);
   }
 }
 fs.writeFileSync(stateFile, JSON.stringify(state));
@@ -277,16 +296,21 @@ fs.writeFileSync(stateFile, JSON.stringify(state));
     fs.writeFileSync(path.join(claudeConfigDir, 'settings.json'), JSON.stringify({ outputStyle: 'clear-writing-kit' }));
   }
 
-  const env = {
-    ...process.env,
-    PATH: `${stubBinDir}${path.delimiter}${process.env.PATH}`,
+  const env = { ...process.env };
+  const inheritedPathKey = Object.keys(env).find(key => key.toLowerCase() === 'path');
+  const inheritedPath = inheritedPathKey ? env[inheritedPathKey] : '';
+  for (const key of Object.keys(env)) {
+    if (key.toLowerCase() === 'path') delete env[key];
+  }
+  Object.assign(env, {
+    PATH: `${stubBinDir}${path.delimiter}${inheritedPath}`,
     CWK_STUB_STATE_FILE: statePath,
     CLAUDECODE: '1',
     CODEX_SESSION_ID: 'test-session-123',
     CODEX_THREAD_ID: 'test-thread-456',
     USERPROFILE: home,
     HOME: home
-  };
+  });
 
   const getState = () => JSON.parse(fs.readFileSync(statePath, 'utf8'));
   const setState = (updater) => {
