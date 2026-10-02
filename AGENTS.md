@@ -66,7 +66,7 @@ The repository has one maintained rule source and several generated or projected
 | Rule sources | `skills/coding-agent-writing/`, `web-skills/web-answer-writing/` | Maintained accuracy and locale guidance |
 | Generated knowledge and instructions | `knowledge/`, `web-instructions/`, `install/agents-block.md`, `output-styles/` | Committed projections generated from maintained sources |
 | Checker and MCP | `src/check.ts`, `src/rules.ts`, `src/mcp.ts`, `src/cli.ts` | Profile loading, textlint execution, MCP transport, and CLI routing |
-| Installer | `src/install/`, `src/hosts.ts` | Plan, hash-bound apply, verify, uninstall, host capability and ownership tracking |
+| Installer | `src/install/`, `src/hosts.ts` | Plan, hash-bound apply, verify, uninstall, host capability and ownership tracking; durable behavior reference in `docs/installer.md` |
 | Runtime payload | `dist/` | Reproducible committed ESM bundle and Japanese dictionary |
 | Tooling and tests | `writing/`, `scripts/`, `tests/` | Build, lint, OKF publication, artifact generation, and regression coverage |
 
