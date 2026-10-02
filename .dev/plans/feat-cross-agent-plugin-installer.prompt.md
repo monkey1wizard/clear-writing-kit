@@ -188,14 +188,14 @@ None
 
 ## Status
 
-Workflow: TEST
+Workflow: IMPLEMENT
 Step: 5 of 7
-Last activity: 2026-10-02 — T-10 independent tests PASS and audit CLEAR at 8c93c76. FINDING-001 is resolved.
-Next step: Independently test the T-11 recovery commit with native Claude/Codex fixture cycles, then audit.
-Current Task: T-11
+Last activity: 2026-10-02 — T-11 independent tests PASS and audit CLEAR at b0f2d66.
+Next step: Run T-12 documentation after T-11 convergence.
+Current Task:
 Interrupted Phase:
 Task Base Commit: 9942c1079480bee0d4af56598669d138cb513708
-Task Final Commit: 04f0746f490283af8ef47b3dabca3b9fd99dbf4c
+Task Final Commit: b0f2d668ce78a0ce779a19c3a79e14db1372087d
 Test Retry Count: 1
 Review Retry Count: 0
 
@@ -405,9 +405,15 @@ Dispatch: phase=implement task=T-11 role=CODER executor=agy model=gemini-3.8-fla
 
 T-11 recovery completed with unchanged HEAD and boundary pass. Codex now removes clear-writing-kit@clear-writing-kit. The same scoped uninstall module also records outputStyle backup paths and recognizes CRLF when deleting installer-created single-member settings. Independent tester must cover those extra settings branches and all native lifecycle/modified-item/upgrade checks. The interrupted implementation marker is resolved. The test retry remains OPEN pending new evidence.
 
+Dispatch: phase=test task=T-11 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=89244ce5-ea32-4ddb-8fdd-60ca58b5ce2a log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-11/1790920168-480771900-000000-T-11-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
+
+T-11 retest: PASS at unchanged HEAD b0f2d668ce78a0ce779a19c3a79e14db1372087d. Native Claude and Codex full fixture lifecycles, qualified Codex plugin removal, modified block/MCP/payload retention, upgrade cleanup, TP-05/17/25/28/36, and focused regressions pass. Full npm suite's two existing OKF failures are not cleared by this focused run. Independent audit remains required before convergence.
+
+Dispatch: phase=audit task=T-11 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=d96a31a9-7eaa-4b44-bbf1-6795ed08786b log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-11/1790920701-393878600-000000-T-11-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
+
 #### Retry Handoff — T-11 / TEST
 
-- Status: OPEN
+- Status: RESOLVED
 - Problem: TP-25 failed in native Codex CLI plugin removal. Codex requires the qualified plugin@marketplace identity or --marketplace.
 - Evidence:
   - Test Results: T-11 2026-10-02 FAIL at 04f0746. Claude native lifecycle and other probes passed. Codex uninstall ran codex plugin remove clear-writing-kit and got exit 1: plugin requires --marketplace unless passed as <plugin>@<marketplace>.
@@ -418,7 +424,11 @@ T-11 recovery completed with unchanged HEAD and boundary pass. Codex now removes
      - Result: TP-25 native Codex removal failed. Manifest retained and plugin not removed. Other test rows and regressions passed.
      - Validation: completed test session ca726cb9-1ccb-4b30-ad5a-1e8903663f4d.
      - Commit: 04f0746f490283af8ef47b3dabca3b9fd99dbf4c
-- Next human step: CODER must correct only the Codex plugin removal argument in uninstall.ts to match the qualified identity used during apply, clear-writing-kit@clear-writing-kit, or the equivalent native --marketplace form. Keep fingerprint guards, other hosts, retained-item behavior, and scope unchanged. Rebuild dist, no prompt edits/stash/commits/tests. TESTER must rerun native Claude and Codex full cycles, including modified-item retention and upgrade cleanup, against the new commit.
+  2. 2026-10-02 — Recovery repair committed as b0f2d66 after Claude provider 429 and tool-visibility interruption.
+     - Result: Qualified Codex plugin removal and backup reporting corrected. Native lifecycle/retention/upgrade retest PASS. Audit CLEAR with zero open findings.
+     - Validation: completed agy implement 557ddaf2-0e95-4f74-9608-539449d34286, test 89244ce5-ea32-4ddb-8fdd-60ca58b5ce2a, audit d96a31a9-7eaa-4b44-bbf1-6795ed08786b, current receipts and native records present.
+     - Commit: b0f2d668ce78a0ce779a19c3a79e14db1372087d
+- Next human step: Resolved by repair, native retest, and independent audit. Continue T-12 only after convergence gates pass.
 
 New prompt. Source approval and planning reviews are carried forward. T-03 is the payload gate. If it returns stop, T-05 onward cannot start. Human review occurs once after all automated tasks and goal-backward verification. T-01 implementation dispatch completed and was committed. Working tree was clean at b4700fa before this test cursor update. Boundary verification passed. Independent testing and audit have not run. Generated bundle whitespace warnings come from embedded dependency strings and remain unchanged to preserve build reproducibility.
 
@@ -666,7 +676,8 @@ Steps map to tasks as follows: Step 1 → T-01 to T-03, Step 2 → T-04, Step 3 
   - Acceptance: `verify` proves the server works per language and never reports pass with a missing or failed check.
   - Evidence: E + TP-16, TP-17, TP-24, TP-28, TP-36.
 
-- [ ] T-11 — Ship `cwk install uninstall`
+- [x] T-11 — Ship `cwk install uninstall` *(b0f2d66)*
+  - Commit: b0f2d668ce78a0ce779a19c3a79e14db1372087d
   - Targets: `src/install/block.ts`, `src/install/uninstall.ts`, `src/install/settings.ts`, `src/cli.ts`, `dist/`
   - Boundary justification: settings.ts is limited to exporting the unchanged topLevelMembers parser from already-landed T-09 logic for reuse by uninstall.ts. No behavior change is authorized in that file.
   - Depends on: T-09
@@ -1277,6 +1288,35 @@ Evidence: npm --prefix writing run build matches dist/ (TP-05: 0 diff); independ
 #### Not Tested
 
 - None. All covering test plan rows for T-11 (TP-05, TP-17, TP-25, TP-28, TP-36) were tested.
+
+### [T-11] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 7 | Passed: 7 | Failed: 0 | Skipped: 0
+Verdict: PASS
+Evidence: npm --prefix writing run build matches dist/ (TP-05: 0 diff); independent probes verify TP-17, TP-25, TP-28, TP-36, Python artifacts suite (16/16), and checkers suite (26/26). Native Codex CLI plugin removal passed with qualified identity clear-writing-kit@clear-writing-kit; full apply/verify/uninstall cycles verified on native Claude Code and native Codex CLI with isolated configuration directories.
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-05: Committed `dist/` equals fresh `npm --prefix writing run build` | Yes | PASS | Clean build executed. `git status --porcelain dist/` produced 0 diff against committed payload `b0f2d66`. |
+| TP-17: Config token redaction during `uninstall` | Yes | PASS | Planted secrets in host `settings.json` never appeared in `uninstall` stdout or stderr. |
+| TP-25: `cwk install uninstall` clean fixture home restoration, hand-edited block retention, re-pointed MCP retention, changed payload retention, upgrade removal, and native host lifecycles | Yes | PASS | `removeBlock` unit tests, clean home restoration, hand-edited block retention, re-pointed MCP retention, changed payload retention, upgrade version A to B removal, and native Claude Code & Codex CLI lifecycles all passed. Native Codex CLI plugin removal succeeded using `clear-writing-kit@clear-writing-kit`, transitioning status to `not installed`. |
+| TP-28: `install --help` lists subcommands across runtimes | Yes | PASS | `cwk install --help` executed on Node (v25.2.1), Deno (2.9.7), and Bun (1.3.12) lists `plan`, `apply`, `verify`, and `uninstall` with exit code 0. |
+| TP-36: Exit code contracts across subcommands for `uninstall` | Yes | PASS | Valid `uninstall` exits 0 on `done`. Missing `--agent`, host mismatch, or unverified host exits 1. Unknown flags exit 2. |
+| Regression: Python artifacts suite | Yes | PASS | `python -m unittest discover -s tests -v` executed 16 tests, 16 passed, exit code 0. |
+| Regression: Checkers suite | Yes | PASS | `node --test writing/test/checkers.test.cjs` executed 26 tests, 26 passed, exit code 0. |
+
+#### Failed Tests
+
+- None. All covering criteria and regression suites passed.
+
+#### Not Tested
+
+- None. All covering test plan rows for T-11 (TP-05, TP-17, TP-25, TP-28, TP-36) and regression suites were tested.
 ## Review Results
 
 ### Architecture Review
@@ -1564,6 +1604,27 @@ The audit evaluated task T-10 changes delivering `cwk install verify` across `sr
 | Finding | Severity | Status |
 | --- | --- | --- |
 | FINDING-001 | LOW | RESOLVED |
+
+<!-- AUDIT_REVIEW: CLEAR -->
+
+### [T-11] 2026-10-02
+
+**Date:** 2026-10-02
+**Findings:** 0 total — 0 critical, 0 high, 0 medium, 0 low
+
+#### Summary
+
+The audit evaluated task T-11 changes delivering `cwk install uninstall` across `src/install/block.ts`, `src/install/uninstall.ts`, `src/install/settings.ts`, `src/cli.ts`, and `dist/cwk.mjs` through final commit `b0f2d66`. The implementation adheres strictly to security containment, integrity verification, safe process execution, and configuration privacy. Block removal in `removeBlock` cryptographically verifies the instruction block against `expectedHash` (SHA-256 of bytes as written) before splicing, safely preserving foreign blocks and hand-edited content. Payload cleanup enforces path boundary containment (`isInside`) to ensure deletions remain strictly within `<home>/.clear-writing-kit`, and verifies file hashes against the manifest before unlinking. Host CLI removals execute without shell expansion, invoke host commands with 120-second timeouts, and enforce strict fingerprint and launcher verification before removing MCP or plugin registrations, properly qualifying the Codex plugin target (`clear-writing-kit@clear-writing-kit`). Settings modification in `clearOutputStyle` inspects only `outputStyle` and avoids leaking auth tokens or surrounding keys into outputs or logs. Automated backups are preserved, and empty directory pruning is safely bounded to the kit directory. No deep performance bottlenecks, OWASP Top 10 vulnerabilities, or STRIDE security risks were identified.
+
+#### Open Findings
+
+- None.
+
+#### Remediation Tracking
+
+| Finding | Severity | Status |
+| --- | --- | --- |
+| None | None | CLEAR |
 
 <!-- AUDIT_REVIEW: CLEAR -->
 ## Debug Log

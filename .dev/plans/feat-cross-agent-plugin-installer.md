@@ -470,7 +470,8 @@ Step 與任務的對應：Step 1 → T-01 到 T-03，Step 2 → T-04，Step 3 �
   - Acceptance: `verify` 證明 server 在每種語言都能運作，且有檢查缺漏或失敗時絕不回報通過。
   - Evidence: E + TP-16, TP-17, TP-24, TP-28, TP-36.
 
-- [ ] T-11 — 交付 `cwk install uninstall`
+- [x] T-11 — 交付 `cwk install uninstall` *(b0f2d66)*
+  - Commit: b0f2d668ce78a0ce779a19c3a79e14db1372087d
   - Targets: `src/install/block.ts`, `src/install/uninstall.ts`, `src/cli.ts`, `dist/`
   - Depends on: T-09
   - Change: 在 `block.ts` 新增 `removeBlock(text, expectedHash)`，`expectedHash` 是寫入時區塊位元組的 SHA-256。`uninstall(ctx)` 移除雜湊值相符的 manifest 檔案項目；目前指令與指紋相符時，用工具的移除指令移除 CLI 項目；kit 區塊的雜湊值相符時移除區塊；移除雜湊值相符的 payload 版本。每個被保留的項目都附上原因回報。備份保留。新增 `install uninstall`，重新建置 `dist/`。
