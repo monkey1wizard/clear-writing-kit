@@ -37,7 +37,7 @@
 
 | Plan | Source Plan | Last Session | Stopped At | Next Step | Context |
 | --- | --- | --- | --- | --- | --- |
-| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-11 independent tests PASS and audit CLEAR at b0f2d66 | Run T-12 documentation after convergence | T-01 through T-11 complete. Temporary agy CODER route active. Restore codex on terminal handback. Native Claude/Codex fixture cycles pass. Marketplace retention and backup-based exact restoration limits must be documented. New-session human acceptance is not established. Two existing full npm test failures remain unresolved. |
+| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | Resume stopped before dispatch on GAL hash drift from df3463df to ed2ed73b-dirty | Stabilize installed GAL and approve binding, then resume T-12 IMPLEMENT | Owner reports quota is back, but no new phase ran to verify it. T-01 through T-11 converged. T-12 docs committed at 02a3c59, task unchecked. Authorized generator repair of knowledge/usage/gemini.md remains pending. Full lint/OKF checks still fail. CODER route is codex, no-sandbox constraint remains. No current terminal gate or completion. |
 
 ## Session Execution Context
 
