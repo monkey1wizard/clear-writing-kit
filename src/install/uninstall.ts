@@ -2,12 +2,12 @@ import { readdir, rm, rmdir } from "node:fs/promises";
 import { dirname, isAbsolute, join, relative } from "node:path";
 import { type HostCapability } from "../hosts.js";
 import { removeBlock } from "./block.js";
-import { mcpFingerprint, pluginFingerprint } from "./apply.js";
+import { pluginFingerprint } from "./apply.js";
 import { backup, readText, sha256File, writeTextAtomic } from "./fsutil.js";
 import { resolveHost } from "./identity.js";
 import { manifestPath, readManifest, saveManifest, type Manifest } from "./manifest.js";
-import { MCP_NAME, OUTPUT_STYLE, PLUGIN_NAME, type PlanContext, type PlanError } from "./plan.js";
-import { pickRuntime, probeRuntimes } from "./runtime.js";
+import { OUTPUT_STYLE, PLUGIN_NAME, type PlanContext, type PlanError } from "./plan.js";
+import { MCP_NAME, readRegistration } from "./registration.js";
 import { topLevelMembers } from "./settings.js";
 import { run, which } from "./spawn.js";
 
@@ -115,20 +115,23 @@ export async function uninstall(ctx: PlanContext): Promise<UninstallOutcome> {
     try {
       if (entry.kind === "mcp") {
         if (entry.name !== MCP_NAME) { keep(`The MCP name is not ${MCP_NAME}.`); continue; }
-        const shown = await run(binary, ["mcp", "get", MCP_NAME], { env: ctx.env });
-        if (shown.code === -1) { fail(`"${hostBinary(host)} mcp get" could not run.`); continue; }
-        if (shown.code !== 0) { removed.push({ target, detail: "The host has no such entry. Nothing to remove." }); continue; }
-        const runtime = pickRuntime(await probeRuntimes(ctx.env));
         const launcher = join(kitDirectory, "cwk.mjs");
-        const text = normalizePath(shown.stdout + shown.stderr);
-        const matches = runtime.ok
-          && mcpFingerprint([runtime.value.command, ...runtime.value.args, launcher, "mcp"]) === entry.fingerprint
-          && text.includes(normalizePath(launcher))
-          && text.includes(normalizePath(runtime.value.command));
-        if (!matches) { keep("The current MCP entry does not match what the installer registered. It was changed after install."); continue; }
+        const readResult = await readRegistration(host, ctx.env, { launcher });
+        if (readResult.status === "unreadable") {
+          keep("The current MCP entry could not be read safely. It was kept.");
+          continue;
+        }
+        if (readResult.status === "absent") {
+          removed.push({ target, detail: "The host has no such entry. Nothing to remove." });
+          continue;
+        }
+        if (readResult.fingerprint !== entry.fingerprint) {
+          keep("The current MCP entry does not match what the installer registered. It was changed after install.");
+          continue;
+        }
         const scope = host.id === "claude" ? ["--scope", "user"] : [];
         const result = await run(binary, ["mcp", "remove", MCP_NAME, ...scope], { env: ctx.env, timeoutMs: 120000 });
-        if (result.code !== 0) fail(limit(`"mcp remove" exited with code ${result.code}. ${(result.stdout + result.stderr).trim()}`));
+        if (result.code !== 0) fail(`"mcp remove" exited with code ${result.code}.`);
         else removed.push({ target, detail: "Removed through the host remove command." });
       } else {
         if (entry.name !== PLUGIN_NAME || entry.fingerprint !== pluginFingerprint(host.id)) { keep("The fingerprint does not match the plugin the installer registered."); continue; }
@@ -137,7 +140,7 @@ export async function uninstall(ctx: PlanContext): Promise<UninstallOutcome> {
         if (!new RegExp(`(^|[^\\w-])${PLUGIN_NAME}(?![\\w-])`, "m").test(listed.stdout)) { removed.push({ target, detail: "The host has no such plugin. Nothing to remove." }); continue; }
         const pluginTarget = host.id === "codex" ? `${PLUGIN_NAME}@${PLUGIN_NAME}` : PLUGIN_NAME;
         const result = await run(binary, ["plugin", host.id === "codex" ? "remove" : "uninstall", pluginTarget], { env: ctx.env, timeoutMs: 120000 });
-        if (result.code !== 0) fail(limit(`"plugin remove" exited with code ${result.code}. ${(result.stdout + result.stderr).trim()}`));
+        if (result.code !== 0) fail(`"plugin remove" exited with code ${result.code}.`);
         else removed.push({ target, detail: "Removed through the host remove command." });
       }
     } catch (error) {

@@ -37675,10 +37675,10 @@ var require_trough = __commonJS({
     function trough() {
       var fns = [];
       var middleware = {};
-      middleware.run = run2;
+      middleware.run = run3;
       middleware.use = use;
       return middleware;
-      function run2() {
+      function run3() {
         var index = -1;
         var input2 = slice.call(arguments, 0, -1);
         var done = arguments[arguments.length - 1];
@@ -38078,7 +38078,7 @@ var require_unified = __commonJS({
       processor.use = use;
       processor.parse = parse3;
       processor.stringify = stringify;
-      processor.run = run2;
+      processor.run = run3;
       processor.runSync = runSync;
       processor.process = process4;
       processor.processSync = processSync;
@@ -38211,7 +38211,7 @@ var require_unified = __commonJS({
         }
         return Parser(String(file2), file2);
       }
-      function run2(node2, file2, cb) {
+      function run3(node2, file2, cb) {
         assertNode(node2);
         freeze();
         if (!cb && typeof file2 === "function") {
@@ -38239,7 +38239,7 @@ var require_unified = __commonJS({
       function runSync(node2, file2) {
         var result;
         var complete;
-        run2(node2, file2, done);
+        run3(node2, file2, done);
         assertDone("runSync", "run", complete);
         return result;
         function done(error62, tree) {
@@ -87426,7 +87426,7 @@ var require_visit = __commonJS({
         return h ? h(node2, rewritten) : node2;
       };
       const cache = /* @__PURE__ */ new Map();
-      function run2(s) {
+      function run3(s) {
         const cached2 = cache.get(s);
         if (cached2 === RESOLVING2) {
           return new schemas.$ZodLazy({
@@ -87452,21 +87452,21 @@ var require_visit = __commonJS({
             let changed = false;
             const newShape = {};
             for (const k of keys) {
-              const mapped = run2(oldShape[k]);
+              const mapped = run3(oldShape[k]);
               if (mapped !== oldShape[k])
                 changed = true;
               newShape[k] = mapped;
             }
             let newCatchall = def.catchall;
             if (def.catchall) {
-              newCatchall = run2(def.catchall);
+              newCatchall = run3(def.catchall);
               if (newCatchall !== def.catchall)
                 changed = true;
             }
             return changed ? (0, util_js_1.clone)(s, { ...def, shape: newShape, catchall: newCatchall }) : s;
           }
           case "array": {
-            const mapped = run2(def.element);
+            const mapped = run3(def.element);
             return mapped === def.element ? s : (0, util_js_1.clone)(s, { ...def, element: mapped });
           }
           case "tuple": {
@@ -87474,14 +87474,14 @@ var require_visit = __commonJS({
             let changed = false;
             const newItems = [];
             for (const item of oldItems) {
-              const mapped = run2(item);
+              const mapped = run3(item);
               if (mapped !== item)
                 changed = true;
               newItems.push(mapped);
             }
             let newRest = def.rest;
             if (def.rest) {
-              newRest = run2(def.rest);
+              newRest = run3(def.rest);
               if (newRest !== def.rest)
                 changed = true;
             }
@@ -87489,12 +87489,12 @@ var require_visit = __commonJS({
           }
           case "record":
           case "map": {
-            const newKey = run2(def.keyType);
-            const newVal = run2(def.valueType);
+            const newKey = run3(def.keyType);
+            const newVal = run3(def.valueType);
             return newKey === def.keyType && newVal === def.valueType ? s : (0, util_js_1.clone)(s, { ...def, keyType: newKey, valueType: newVal });
           }
           case "set": {
-            const newVal = run2(def.valueType);
+            const newVal = run3(def.valueType);
             return newVal === def.valueType ? s : (0, util_js_1.clone)(s, { ...def, valueType: newVal });
           }
           case "union": {
@@ -87502,7 +87502,7 @@ var require_visit = __commonJS({
             let changed = false;
             const newOptions = [];
             for (const opt of oldOptions) {
-              const mapped = run2(opt);
+              const mapped = run3(opt);
               if (mapped !== opt)
                 changed = true;
               newOptions.push(mapped);
@@ -87510,8 +87510,8 @@ var require_visit = __commonJS({
             return changed ? (0, util_js_1.clone)(s, { ...def, options: newOptions }) : s;
           }
           case "intersection": {
-            const newLeft = run2(def.left);
-            const newRight = run2(def.right);
+            const newLeft = run3(def.left);
+            const newRight = run3(def.right);
             return newLeft === def.left && newRight === def.right ? s : (0, util_js_1.clone)(s, { ...def, left: newLeft, right: newRight });
           }
           case "optional":
@@ -87523,23 +87523,23 @@ var require_visit = __commonJS({
           case "nonoptional":
           case "promise":
           case "success": {
-            const newInner = run2(def.innerType);
+            const newInner = run3(def.innerType);
             return newInner === def.innerType ? s : (0, util_js_1.clone)(s, { ...def, innerType: newInner });
           }
           case "pipe": {
-            const newIn = run2(def.in);
-            const newOut = run2(def.out);
+            const newIn = run3(def.in);
+            const newOut = run3(def.out);
             return newIn === def.in && newOut === def.out ? s : (0, util_js_1.clone)(s, { ...def, in: newIn, out: newOut });
           }
           case "function": {
-            const newInput = run2(def.input);
-            const newOutput = run2(def.output);
+            const newInput = run3(def.input);
+            const newOutput = run3(def.output);
             return newInput === def.input && newOutput === def.output ? s : (0, util_js_1.clone)(s, { ...def, input: newInput, output: newOutput });
           }
           case "lazy": {
             const original = def.getter;
             const { _cachedInner, ...rest } = def;
-            return (0, util_js_1.clone)(s, { ...rest, getter: () => run2(original()) });
+            return (0, util_js_1.clone)(s, { ...rest, getter: () => run3(original()) });
           }
           // A leaf by choice: `parts` are regex fragments, not data positions.
           case "template_literal":
@@ -87570,7 +87570,7 @@ var require_visit = __commonJS({
           }
         }
       }
-      return run2(schema);
+      return run3(schema);
     }
     (function() {
       var keys = Object.getOwnPropertyNames(exports);
@@ -140213,8 +140213,8 @@ var require_async = __commonJS({
             return callback(null, results);
           }
           while (readyTasks.length && runningTasks < concurrency) {
-            var run2 = readyTasks.shift();
-            run2();
+            var run3 = readyTasks.shift();
+            run3();
           }
         }
         function addListener(taskName, fn) {
@@ -149040,6 +149040,238 @@ function run(command, args, options = {}) {
   });
 }
 
+// ../src/install/registration.ts
+var MCP_NAME = "clear-writing-kit-textlint";
+function registrationVector(reg) {
+  return [reg.command, ...reg.args];
+}
+function registrationFingerprint(reg) {
+  return sha256(JSON.stringify(registrationVector(reg)));
+}
+function isRecognizedAbsent(output2, serverName) {
+  const text = output2.trim();
+  if (!text) return false;
+  if (/(?:auth|unauthorized|unauthenticated|forbidden|token|credential|permission|access\s+denied|eacces|eperm|timeout|timed\s*out|etimedout|connection\s+refused|econnrefused)/i.test(
+    text
+  )) {
+    return false;
+  }
+  const escaped = serverName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  if (new RegExp(`no\\s+(?:mcp\\s+)?server\\s+(?:found\\s+)?(?:named\\s+|with\\s+name\\s+)?['"\`]?${escaped}['"\`]?(?![\\w-])`, "i").test(text)) {
+    return true;
+  }
+  if (new RegExp(`(?:mcp\\s+)?server\\s+['"\`]?${escaped}['"\`]?\\s+(?:is\\s+)?(?:not\\s+found|does\\s+not\\s+exist)(?![\\w-])`, "i").test(text)) {
+    return true;
+  }
+  if (new RegExp(`(?:^|[\\s"'\`])${escaped}['"\`]?\\s+(?:is\\s+not\\s+registered|does\\s+not\\s+exist|not\\s+found)(?![\\w-])`, "i").test(text)) {
+    return true;
+  }
+  if (new RegExp(`(?:unknown|no\\s+such)\\s+(?:mcp\\s+)?server\\s*[:\\s]\\s*['"\`]?${escaped}['"\`]?(?![\\w-])`, "i").test(text)) {
+    return true;
+  }
+  return false;
+}
+function parseSimpleTokens(text) {
+  if (/["'`]/.test(text)) {
+    return void 0;
+  }
+  const trimmed = text.trim();
+  if (!trimmed) return [];
+  return trimmed.split(/\s+/);
+}
+function findAnchorOccurrences(argsText, launcher) {
+  const normText = argsText.replace(/\\/g, "/").toLowerCase();
+  const normAnchor = launcher.replace(/\\/g, "/").toLowerCase();
+  const matches = [];
+  let searchPos = 0;
+  while (searchPos < normText.length) {
+    const foundIdx = normText.indexOf(normAnchor, searchPos);
+    if (foundIdx === -1) break;
+    const foundEnd = foundIdx + normAnchor.length;
+    let start = foundIdx;
+    let end = foundEnd;
+    let isQuoted = false;
+    if (start > 0 && (argsText[start - 1] === '"' || argsText[start - 1] === "'" || argsText[start - 1] === "`") && end < argsText.length && argsText[end] === argsText[start - 1]) {
+      start--;
+      end++;
+      isQuoted = true;
+    }
+    const beforeBoundary = start === 0 || /\s/.test(argsText[start - 1]);
+    const afterBoundary = end === argsText.length || /\s/.test(argsText[end]);
+    if (beforeBoundary && afterBoundary) {
+      const token = isQuoted ? argsText.slice(start + 1, end - 1) : argsText.slice(start, end);
+      matches.push({ start, end, token });
+    }
+    searchPos = Math.max(end, foundEnd);
+  }
+  return matches;
+}
+async function readRegistration(host, env, options) {
+  const serverName = options?.serverName ?? MCP_NAME;
+  const timeoutMs = options?.timeoutMs ?? 12e4;
+  const binaryName = host.mcpCommands.add.split(" ")[0];
+  const binary = which(binaryName, env);
+  if (!binary) {
+    return { status: "unreadable", reason: `Host command "${binaryName}" is not on PATH.` };
+  }
+  const queryArgs = host.id === "codex" ? ["mcp", "get", serverName, "--json"] : ["mcp", "get", serverName];
+  const res = await run(binary, queryArgs, { env, timeoutMs });
+  if (res.code === -1) {
+    return { status: "unreadable", reason: "Host mcp get timed out or failed to start." };
+  }
+  if (res.code !== 0) {
+    if (isRecognizedAbsent(res.stdout + "\n" + res.stderr, serverName)) {
+      return { status: "absent" };
+    }
+    return { status: "unreadable", reason: `Host command exited with code ${res.code}.` };
+  }
+  if (host.id === "codex") {
+    let parsed;
+    try {
+      parsed = JSON.parse(res.stdout);
+    } catch {
+      return { status: "unreadable", reason: "Host output is not valid JSON." };
+    }
+    if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+      return { status: "unreadable", reason: "Host JSON output must be an object." };
+    }
+    const obj = parsed;
+    let command2;
+    let args2;
+    if (obj.transport !== void 0) {
+      if (typeof obj.transport !== "object" || obj.transport === null || Array.isArray(obj.transport)) {
+        return { status: "unreadable", reason: "Malformed transport in host JSON." };
+      }
+      const transport = obj.transport;
+      if (transport.type !== "stdio") {
+        return { status: "unreadable", reason: "Unsupported transport type." };
+      }
+      command2 = transport.command;
+      args2 = transport.args;
+    } else {
+      if (obj.type !== void 0 && obj.type !== "stdio") {
+        return { status: "unreadable", reason: "Unsupported transport type." };
+      }
+      command2 = obj.command;
+      args2 = obj.args;
+    }
+    if (typeof command2 !== "string" || command2.trim() === "") {
+      return { status: "unreadable", reason: "Missing stdio command in host registration." };
+    }
+    if (!Array.isArray(args2) || !args2.every((a) => typeof a === "string")) {
+      return { status: "unreadable", reason: "Args must be an array of strings." };
+    }
+    let cleanCommand = command2.trim();
+    if (cleanCommand.startsWith('"') && cleanCommand.endsWith('"') && cleanCommand.length >= 2 && cleanCommand.indexOf('"', 1) === cleanCommand.length - 1 || cleanCommand.startsWith("'") && cleanCommand.endsWith("'") && cleanCommand.length >= 2 && cleanCommand.indexOf("'", 1) === cleanCommand.length - 1 || cleanCommand.startsWith("`") && cleanCommand.endsWith("`") && cleanCommand.length >= 2 && cleanCommand.indexOf("`", 1) === cleanCommand.length - 1) {
+      cleanCommand = cleanCommand.slice(1, -1).trim();
+    }
+    if (!cleanCommand) {
+      return { status: "unreadable", reason: "Missing stdio command in host registration." };
+    }
+    if (/["'`]/.test(cleanCommand)) {
+      return { status: "unreadable", reason: "Ambiguous quoting in host command." };
+    }
+    const registration2 = { command: cleanCommand, args: [...args2] };
+    return {
+      status: "present",
+      registration: registration2,
+      fingerprint: registrationFingerprint(registration2)
+    };
+  }
+  const cleanStdout = res.stdout.replace(/\x1b\[[0-9;]*[a-zA-Z]/g, "");
+  const lines = cleanStdout.split(/\r?\n/);
+  let typeCount = 0;
+  let typeVal;
+  let commandCount = 0;
+  let commandVal;
+  let argsCount = 0;
+  let argsVal;
+  for (const line of lines) {
+    const matchType = /^\s*(?:[-*•]\s+)?type\s*:\s*(.*?)\s*$/i.exec(line);
+    if (matchType) {
+      typeCount++;
+      typeVal = matchType[1];
+    }
+    const matchCommand = /^\s*(?:[-*•]\s+)?command\s*:\s*(.*?)\s*$/i.exec(line);
+    if (matchCommand) {
+      commandCount++;
+      commandVal = matchCommand[1];
+    }
+    const matchArgs = /^\s*(?:[-*•]\s+)?args\s*:\s*(.*?)\s*$/i.exec(line);
+    if (matchArgs) {
+      argsCount++;
+      argsVal = matchArgs[1];
+    }
+  }
+  if (typeCount > 1 || commandCount > 1 || argsCount > 1) {
+    return { status: "unreadable", reason: "Duplicate fields detected in host output." };
+  }
+  if (commandCount === 0 || argsCount === 0 || !commandVal) {
+    return { status: "unreadable", reason: "Missing Command or Args field in host output." };
+  }
+  if (typeVal !== void 0 && typeVal.toLowerCase() !== "stdio") {
+    return { status: "unreadable", reason: "Unsupported transport type." };
+  }
+  let command = commandVal.trim();
+  if (command.startsWith('"') && command.endsWith('"') && command.length >= 2 && command.indexOf('"', 1) === command.length - 1 || command.startsWith("'") && command.endsWith("'") && command.length >= 2 && command.indexOf("'", 1) === command.length - 1 || command.startsWith("`") && command.endsWith("`") && command.length >= 2 && command.indexOf("`", 1) === command.length - 1) {
+    command = command.slice(1, -1).trim();
+  }
+  if (!command) {
+    return { status: "unreadable", reason: "Empty Command field." };
+  }
+  if (/["'`]/.test(command)) {
+    return { status: "unreadable", reason: "Ambiguous quoting in Command field." };
+  }
+  let argsText = argsVal.trim();
+  if (argsText.startsWith("`") && argsText.endsWith("`") && argsText.length >= 2 && argsText.indexOf("`", 1) === argsText.length - 1 || argsText.startsWith('"') && argsText.endsWith('"') && argsText.length >= 2 && argsText.startsWith('"[')) {
+    argsText = argsText.slice(1, -1).trim();
+  }
+  let args;
+  if (argsText.startsWith("[")) {
+    try {
+      const parsed = JSON.parse(argsText);
+      if (!Array.isArray(parsed) || !parsed.every((item) => typeof item === "string")) {
+        return { status: "unreadable", reason: "Args JSON must be an array of strings." };
+      }
+      args = parsed;
+    } catch {
+      return { status: "unreadable", reason: "Malformed JSON in Args field." };
+    }
+  } else if (options?.launcher) {
+    const matches = findAnchorOccurrences(argsText, options.launcher);
+    if (matches.length === 0) {
+      return { status: "unreadable", reason: "Launcher anchor not found in non-JSON Args." };
+    }
+    if (matches.length > 1) {
+      return { status: "unreadable", reason: "Repeated launcher anchor in Args." };
+    }
+    const match2 = matches[0];
+    const beforeStr = argsText.slice(0, match2.start);
+    const afterStr = argsText.slice(match2.end);
+    const tokensBefore = parseSimpleTokens(beforeStr);
+    if (tokensBefore === void 0) {
+      return { status: "unreadable", reason: "Ambiguous quoting or tokens before launcher anchor." };
+    }
+    const tokensAfter = parseSimpleTokens(afterStr);
+    if (tokensAfter === void 0) {
+      return { status: "unreadable", reason: "Ambiguous quoting or tokens after launcher anchor." };
+    }
+    args = [...tokensBefore, match2.token, ...tokensAfter];
+  } else {
+    const tokens = parseSimpleTokens(argsText);
+    if (tokens === void 0) {
+      return { status: "unreadable", reason: "Ambiguous quoting or tokens in Args." };
+    }
+    args = tokens;
+  }
+  const registration = { command, args };
+  return {
+    status: "present",
+    registration,
+    fingerprint: registrationFingerprint(registration)
+  };
+}
+
 // ../src/install/runtime.ts
 var order = ["node", "deno", "bun"];
 function parseVersion(output2) {
@@ -149075,12 +149307,10 @@ function pickRuntime(probes) {
 }
 
 // ../src/install/plan.ts
-var MCP_NAME = "clear-writing-kit-textlint";
 var PLUGIN_NAME = "clear-writing-kit";
 var OUTPUT_STYLE = "clear-writing-kit";
 var LEGACY_SKILL = "accurate-answer";
 var fail = (kind, message2) => ({ status: "error", kind, message: message2 });
-var normalizePath = (text) => text.replace(/\\+/g, "/");
 var hostBinary = (host) => host.mcpCommands.add.split(" ")[0];
 async function isDirectory(path4) {
   try {
@@ -149138,11 +149368,22 @@ async function readHostState(host, env, launcher, runtime) {
   const plugins = await run(binary, ["plugin", "list"], { env });
   if (plugins.code !== 0) return fail("state", `"${hostBinary(host)} plugin list" failed with exit code ${plugins.code}.`);
   const plugin = new RegExp(`(^|[^\\w-])${PLUGIN_NAME}(?![\\w-])`, "m").test(plugins.stdout) ? "installed" : "absent";
-  const entry = await run(binary, ["mcp", "get", MCP_NAME], { env });
-  if (entry.code === -1) return fail("state", `"${hostBinary(host)} mcp get" could not run.`);
-  const shown = normalizePath(entry.stdout + entry.stderr);
-  const mcp = entry.code !== 0 ? "absent" : shown.includes(normalizePath(launcher)) && shown.includes(normalizePath(runtime.command)) ? "current" : "different";
-  return { plugin, mcp };
+  const mcpResult = await readRegistration(host, env, { launcher });
+  if (mcpResult.status === "unreadable") {
+    return fail("state", `The MCP registration for ${MCP_NAME} could not be read: ${mcpResult.reason}`);
+  }
+  if (mcpResult.status === "absent") {
+    return { plugin, mcp: { status: "absent" } };
+  }
+  const plannedFingerprint = registrationFingerprint({ command: runtime.command, args: [...runtime.args, launcher, "mcp"] });
+  const isCurrent = mcpResult.fingerprint === plannedFingerprint;
+  return {
+    plugin,
+    mcp: {
+      status: isCurrent ? "current" : "different",
+      fingerprint: mcpResult.fingerprint
+    }
+  };
 }
 async function computePlan(ctx) {
   const resolved = resolveHost(ctx.agent, ctx.env);
@@ -149189,14 +149430,14 @@ async function computePlan(ctx) {
     diff: state.plugin === "installed" ? [] : [`+ plugin ${PLUGIN_NAME}`]
   });
   const registration = [runtime.value.command, ...runtime.value.args, launcher, "mcp"];
-  targetStates.mcp = state.mcp;
+  targetStates.mcp = state.mcp.status === "absent" ? "absent" : `${state.mcp.status}:${state.mcp.fingerprint}`;
   steps.push({
     id: "mcp",
-    action: state.mcp === "current" ? "none" : state.mcp === "absent" ? "create" : "update",
+    action: state.mcp.status === "current" ? "none" : state.mcp.status === "absent" ? "create" : "update",
     target: `${host.id} mcp ${MCP_NAME}`,
     summary: `Register ${MCP_NAME} through "${hostBinary(host)} mcp".`,
-    diff: state.mcp === "current" ? [] : [
-      ...state.mcp === "different" ? [`- mcp ${MCP_NAME} (existing entry does not match)`] : [],
+    diff: state.mcp.status === "current" ? [] : [
+      ...state.mcp.status === "different" ? [`- mcp ${MCP_NAME} (existing entry does not match)`] : [],
       `+ mcp ${MCP_NAME}: ${registration.join(" ")}`
     ]
   });
@@ -149404,7 +149645,7 @@ async function prepareWrites(host, plan, ctx) {
 async function runHost(binary, args, env, tolerate) {
   const result = await run(binary, args, { env, timeoutMs: 12e4 });
   if (result.code !== 0 && !(tolerate === true || tolerate?.test(result.stdout + result.stderr))) {
-    throw new Error(limit(`"${args.slice(0, 2).join(" ")}" exited with code ${result.code}. ${(result.stdout + result.stderr).trim()}`));
+    throw new Error(limit(`"${args.slice(0, 2).join(" ")}" exited with code ${result.code}.`));
   }
 }
 async function applyPlan(ctx, planHash) {
@@ -169002,7 +169243,7 @@ function visit(schema, fnOrHandlers) {
     return h ? h(node2, rewritten) : node2;
   };
   const cache = /* @__PURE__ */ new Map();
-  function run2(s) {
+  function run3(s) {
     const cached2 = cache.get(s);
     if (cached2 === RESOLVING) {
       return new $ZodLazy({
@@ -169028,21 +169269,21 @@ function visit(schema, fnOrHandlers) {
         let changed = false;
         const newShape = {};
         for (const k of keys) {
-          const mapped = run2(oldShape[k]);
+          const mapped = run3(oldShape[k]);
           if (mapped !== oldShape[k])
             changed = true;
           newShape[k] = mapped;
         }
         let newCatchall = def.catchall;
         if (def.catchall) {
-          newCatchall = run2(def.catchall);
+          newCatchall = run3(def.catchall);
           if (newCatchall !== def.catchall)
             changed = true;
         }
         return changed ? clone(s, { ...def, shape: newShape, catchall: newCatchall }) : s;
       }
       case "array": {
-        const mapped = run2(def.element);
+        const mapped = run3(def.element);
         return mapped === def.element ? s : clone(s, { ...def, element: mapped });
       }
       case "tuple": {
@@ -169050,14 +169291,14 @@ function visit(schema, fnOrHandlers) {
         let changed = false;
         const newItems = [];
         for (const item of oldItems) {
-          const mapped = run2(item);
+          const mapped = run3(item);
           if (mapped !== item)
             changed = true;
           newItems.push(mapped);
         }
         let newRest = def.rest;
         if (def.rest) {
-          newRest = run2(def.rest);
+          newRest = run3(def.rest);
           if (newRest !== def.rest)
             changed = true;
         }
@@ -169065,12 +169306,12 @@ function visit(schema, fnOrHandlers) {
       }
       case "record":
       case "map": {
-        const newKey = run2(def.keyType);
-        const newVal = run2(def.valueType);
+        const newKey = run3(def.keyType);
+        const newVal = run3(def.valueType);
         return newKey === def.keyType && newVal === def.valueType ? s : clone(s, { ...def, keyType: newKey, valueType: newVal });
       }
       case "set": {
-        const newVal = run2(def.valueType);
+        const newVal = run3(def.valueType);
         return newVal === def.valueType ? s : clone(s, { ...def, valueType: newVal });
       }
       case "union": {
@@ -169078,7 +169319,7 @@ function visit(schema, fnOrHandlers) {
         let changed = false;
         const newOptions = [];
         for (const opt of oldOptions) {
-          const mapped = run2(opt);
+          const mapped = run3(opt);
           if (mapped !== opt)
             changed = true;
           newOptions.push(mapped);
@@ -169086,8 +169327,8 @@ function visit(schema, fnOrHandlers) {
         return changed ? clone(s, { ...def, options: newOptions }) : s;
       }
       case "intersection": {
-        const newLeft = run2(def.left);
-        const newRight = run2(def.right);
+        const newLeft = run3(def.left);
+        const newRight = run3(def.right);
         return newLeft === def.left && newRight === def.right ? s : clone(s, { ...def, left: newLeft, right: newRight });
       }
       case "optional":
@@ -169099,23 +169340,23 @@ function visit(schema, fnOrHandlers) {
       case "nonoptional":
       case "promise":
       case "success": {
-        const newInner = run2(def.innerType);
+        const newInner = run3(def.innerType);
         return newInner === def.innerType ? s : clone(s, { ...def, innerType: newInner });
       }
       case "pipe": {
-        const newIn = run2(def.in);
-        const newOut = run2(def.out);
+        const newIn = run3(def.in);
+        const newOut = run3(def.out);
         return newIn === def.in && newOut === def.out ? s : clone(s, { ...def, in: newIn, out: newOut });
       }
       case "function": {
-        const newInput = run2(def.input);
-        const newOutput = run2(def.output);
+        const newInput = run3(def.input);
+        const newOutput = run3(def.output);
         return newInput === def.input && newOutput === def.output ? s : clone(s, { ...def, input: newInput, output: newOutput });
       }
       case "lazy": {
         const original = def.getter;
         const { _cachedInner, ...rest } = def;
-        return clone(s, { ...rest, getter: () => run2(original()) });
+        return clone(s, { ...rest, getter: () => run3(original()) });
       }
       // A leaf by choice: `parts` are regex fragments, not data positions.
       case "template_literal":
@@ -169146,7 +169387,7 @@ function visit(schema, fnOrHandlers) {
       }
     }
   }
-  return run2(schema);
+  return run3(schema);
 }
 
 // node_modules/zod/v4/classic/deep-partial.js
@@ -183271,7 +183512,6 @@ import { readdir as readdir2, rm as rm3, rmdir } from "node:fs/promises";
 import { dirname as dirname4, isAbsolute as isAbsolute2, join as join7, relative } from "node:path";
 var OUTPUT_LIMIT2 = 2e3;
 var limit2 = (text) => text.length > OUTPUT_LIMIT2 ? `${text.slice(0, OUTPUT_LIMIT2)}... (truncated)` : text;
-var normalizePath2 = (text) => text.replace(/\\+/g, "/");
 var hostBinary3 = (host) => host.mcpCommands.add.split(" ")[0];
 var BLOCK_SUFFIX = "#block";
 var isInside = (parent, child) => {
@@ -183369,26 +183609,23 @@ async function uninstall(ctx) {
           keep(`The MCP name is not ${MCP_NAME}.`);
           continue;
         }
-        const shown = await run(binary, ["mcp", "get", MCP_NAME], { env: ctx.env });
-        if (shown.code === -1) {
-          fail3(`"${hostBinary3(host)} mcp get" could not run.`);
+        const launcher = join7(kitDirectory, "cwk.mjs");
+        const readResult = await readRegistration(host, ctx.env, { launcher });
+        if (readResult.status === "unreadable") {
+          keep("The current MCP entry could not be read safely. It was kept.");
           continue;
         }
-        if (shown.code !== 0) {
+        if (readResult.status === "absent") {
           removed.push({ target, detail: "The host has no such entry. Nothing to remove." });
           continue;
         }
-        const runtime = pickRuntime(await probeRuntimes(ctx.env));
-        const launcher = join7(kitDirectory, "cwk.mjs");
-        const text = normalizePath2(shown.stdout + shown.stderr);
-        const matches = runtime.ok && mcpFingerprint([runtime.value.command, ...runtime.value.args, launcher, "mcp"]) === entry.fingerprint && text.includes(normalizePath2(launcher)) && text.includes(normalizePath2(runtime.value.command));
-        if (!matches) {
+        if (readResult.fingerprint !== entry.fingerprint) {
           keep("The current MCP entry does not match what the installer registered. It was changed after install.");
           continue;
         }
         const scope = host.id === "claude" ? ["--scope", "user"] : [];
         const result = await run(binary, ["mcp", "remove", MCP_NAME, ...scope], { env: ctx.env, timeoutMs: 12e4 });
-        if (result.code !== 0) fail3(limit2(`"mcp remove" exited with code ${result.code}. ${(result.stdout + result.stderr).trim()}`));
+        if (result.code !== 0) fail3(`"mcp remove" exited with code ${result.code}.`);
         else removed.push({ target, detail: "Removed through the host remove command." });
       } else {
         if (entry.name !== PLUGIN_NAME || entry.fingerprint !== pluginFingerprint(host.id)) {
@@ -183406,7 +183643,7 @@ async function uninstall(ctx) {
         }
         const pluginTarget = host.id === "codex" ? `${PLUGIN_NAME}@${PLUGIN_NAME}` : PLUGIN_NAME;
         const result = await run(binary, ["plugin", host.id === "codex" ? "remove" : "uninstall", pluginTarget], { env: ctx.env, timeoutMs: 12e4 });
-        if (result.code !== 0) fail3(limit2(`"plugin remove" exited with code ${result.code}. ${(result.stdout + result.stderr).trim()}`));
+        if (result.code !== 0) fail3(`"plugin remove" exited with code ${result.code}.`);
         else removed.push({ target, detail: "Removed through the host remove command." });
       }
     } catch (error62) {
@@ -183529,7 +183766,6 @@ var FIXTURES = [
 ];
 var limit3 = (text) => text.length > DETAIL_LIMIT ? `${text.slice(0, DETAIL_LIMIT)}... (truncated)` : text;
 var message = (error62) => error62 instanceof Error ? error62.message : String(error62);
-var slashes = (text) => text.replace(/\\/g, "/");
 var hostBinary4 = (host) => host.mcpCommands.add.split(" ")[0];
 var LEGACY_SKILL2 = "accurate-answer";
 var CMD_LIMIT_MESSAGE = "An argument contains a character that cmd.exe cannot carry unchanged.";
@@ -183588,24 +183824,6 @@ async function findLegacyConflicts(home, configDirectory, instructionsPath, inst
     conflicts.push({ kind: "instruction-block", target: instructionsPath, detail: `The "${name}" block names ${LEGACY_SKILL2}.` });
   }
   return conflicts;
-}
-function parseRegistration(text, launcher) {
-  const command = /^\s*command:\s*(.+?)\s*$/im.exec(text)?.[1];
-  const argsText = /^\s*args:\s*(.*?)\s*$/im.exec(text)?.[1];
-  if (!command || argsText === void 0) return "The host output has no command and arguments lines.";
-  if (argsText.startsWith("[")) {
-    try {
-      const parsed = JSON.parse(argsText);
-      if (Array.isArray(parsed) && parsed.every((item) => typeof item === "string")) return { command, args: parsed };
-    } catch {
-    }
-  }
-  const index = slashes(argsText).indexOf(slashes(launcher));
-  if (index < 0) return "The registered arguments do not name the installed launcher.";
-  const before = argsText.slice(0, index).trim().split(/\s+/).filter(Boolean);
-  const after = argsText.slice(index + launcher.length).trim().split(/\s+/).filter(Boolean);
-  if (after.length !== 1 || after[0] !== "mcp") return "The registered arguments do not end with the launcher and mcp.";
-  return { command, args: [...before, argsText.slice(index, index + launcher.length), "mcp"] };
 }
 var McpSession = class {
   constructor(child, timeoutMs) {
@@ -183793,16 +184011,14 @@ async function verifyInstall(ctx) {
   if (!binary) {
     checks.push(fail2("mcp-registration", `The ${host.displayName} command "${hostBinary4(host)}" is not on PATH, so the registered command cannot be read.`));
   } else {
-    const entry = await run(binary, ["mcp", "get", MCP_NAME], { env: ctx.env });
-    if (entry.code === -1) checks.push(fail2("mcp-registration", `"${hostBinary4(host)} mcp get" could not run.`));
-    else if (entry.code !== 0) checks.push(fail2("mcp-registration", `${MCP_NAME} is not registered in ${host.displayName}.`));
-    else {
-      const parsed = parseRegistration(entry.stdout + entry.stderr, launcher);
-      if (typeof parsed === "string") checks.push(fail2("mcp-registration", parsed));
-      else {
-        registration = parsed;
-        checks.push(pass("mcp-registration", `Registered command: ${[parsed.command, ...parsed.args].join(" ")}`));
-      }
+    const regResult = await readRegistration(host, ctx.env, { launcher, timeoutMs });
+    if (regResult.status === "present") {
+      registration = regResult.registration;
+      checks.push(pass("mcp-registration", `The MCP registration for ${MCP_NAME} was read.`));
+    } else if (regResult.status === "absent") {
+      checks.push(fail2("mcp-registration", `${MCP_NAME} is not registered in ${host.displayName}.`));
+    } else {
+      checks.push(fail2("mcp-registration", `The MCP registration for ${MCP_NAME} could not be read: ${regResult.reason}`));
     }
   }
   if (registration) checks.push(...await checkServer(registration, ctx.env, timeoutMs));

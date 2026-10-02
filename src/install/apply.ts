@@ -63,7 +63,7 @@ async function prepareWrites(host: HostCapability, plan: Plan, ctx: PlanContext)
 async function runHost(binary: string, args: string[], env: PlanContext["env"], tolerate?: RegExp | true) {
   const result = await run(binary, args, { env, timeoutMs: 120000 });
   if (result.code !== 0 && !(tolerate === true || tolerate?.test(result.stdout + result.stderr))) {
-    throw new Error(limit(`"${args.slice(0, 2).join(" ")}" exited with code ${result.code}. ${(result.stdout + result.stderr).trim()}`));
+    throw new Error(limit(`"${args.slice(0, 2).join(" ")}" exited with code ${result.code}.`));
   }
 }
 

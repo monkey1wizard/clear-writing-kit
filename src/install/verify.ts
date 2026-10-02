@@ -6,6 +6,7 @@ import { findBlock } from "./block.js";
 import { readText } from "./fsutil.js";
 import { resolveHost } from "./identity.js";
 import { MCP_NAME, OUTPUT_STYLE, type Conflict, type PlanContext, type PlanError } from "./plan.js";
+import { readRegistration, type McpRegistration } from "./registration.js";
 import { run, which, type Env } from "./spawn.js";
 
 export type VerifyContext = PlanContext & {
@@ -32,7 +33,6 @@ const FIXTURES: { language: string; text: string }[] = [
 
 const limit = (text: string) => (text.length > DETAIL_LIMIT ? `${text.slice(0, DETAIL_LIMIT)}... (truncated)` : text);
 const message = (error: unknown) => (error instanceof Error ? error.message : String(error));
-const slashes = (text: string) => text.replace(/\\/g, "/");
 const hostBinary = (host: HostCapability) => host.mcpCommands.add.split(" ")[0];
 
 const LEGACY_SKILL = "accurate-answer";
@@ -101,32 +101,6 @@ async function findLegacyConflicts(home: string, configDirectory: string, instru
     conflicts.push({ kind: "instruction-block", target: instructionsPath, detail: `The "${name}" block names ${LEGACY_SKILL}.` });
   }
   return conflicts;
-}
-
-type Registration = { command: string; args: string[] };
-
-/**
- * Reads the registered command from the text of `mcp get`.
- * The arguments line is plain text, so the launcher path is matched as one argument. This keeps a path with spaces whole.
- */
-function parseRegistration(text: string, launcher: string): Registration | string {
-  const command = /^\s*command:\s*(.+?)\s*$/im.exec(text)?.[1];
-  const argsText = /^\s*args:\s*(.*?)\s*$/im.exec(text)?.[1];
-  if (!command || argsText === undefined) return "The host output has no command and arguments lines.";
-  if (argsText.startsWith("[")) {
-    try {
-      const parsed: unknown = JSON.parse(argsText);
-      if (Array.isArray(parsed) && parsed.every(item => typeof item === "string")) return { command, args: parsed };
-    } catch {
-      // Fall through to the plain text form.
-    }
-  }
-  const index = slashes(argsText).indexOf(slashes(launcher));
-  if (index < 0) return "The registered arguments do not name the installed launcher.";
-  const before = argsText.slice(0, index).trim().split(/\s+/).filter(Boolean);
-  const after = argsText.slice(index + launcher.length).trim().split(/\s+/).filter(Boolean);
-  if (after.length !== 1 || after[0] !== "mcp") return "The registered arguments do not end with the launcher and mcp.";
-  return { command, args: [...before, argsText.slice(index, index + launcher.length), "mcp"] };
 }
 
 /** One MCP stdio session: newline-delimited JSON-RPC 2.0 messages, with no client library. */
@@ -224,7 +198,7 @@ const fail = (id: string, detail: string): Check => ({ id, status: "fail", detai
 const skipped = (id: string, detail: string): Check => ({ id, status: "skipped", detail });
 
 /** Starts the registered command and checks `initialize`, `tools/list`, and one `tools/call` per language. A broken session skips the checks that remain. */
-async function checkServer(registration: Registration, env: Env, timeoutMs: number): Promise<Check[]> {
+async function checkServer(registration: McpRegistration, env: Env, timeoutMs: number): Promise<Check[]> {
   const ids = ["mcp-initialize", "mcp-tools", ...FIXTURES.map(fixture => `lint-${fixture.language}`)];
   const checks: Check[] = [];
   const skipRest = (reason: string) => {
@@ -329,20 +303,18 @@ export async function verifyInstall(ctx: VerifyContext): Promise<VerifyOutcome> 
   const serverIds = ["mcp-initialize", "mcp-tools", ...FIXTURES.map(fixture => `lint-${fixture.language}`)];
 
   const binary = which(hostBinary(host), ctx.env);
-  let registration: Registration | undefined;
+  let registration: McpRegistration | undefined;
   if (!binary) {
     checks.push(fail("mcp-registration", `The ${host.displayName} command "${hostBinary(host)}" is not on PATH, so the registered command cannot be read.`));
   } else {
-    const entry = await run(binary, ["mcp", "get", MCP_NAME], { env: ctx.env });
-    if (entry.code === -1) checks.push(fail("mcp-registration", `"${hostBinary(host)} mcp get" could not run.`));
-    else if (entry.code !== 0) checks.push(fail("mcp-registration", `${MCP_NAME} is not registered in ${host.displayName}.`));
-    else {
-      const parsed = parseRegistration(entry.stdout + entry.stderr, launcher);
-      if (typeof parsed === "string") checks.push(fail("mcp-registration", parsed));
-      else {
-        registration = parsed;
-        checks.push(pass("mcp-registration", `Registered command: ${[parsed.command, ...parsed.args].join(" ")}`));
-      }
+    const regResult = await readRegistration(host, ctx.env, { launcher, timeoutMs });
+    if (regResult.status === "present") {
+      registration = regResult.registration;
+      checks.push(pass("mcp-registration", `The MCP registration for ${MCP_NAME} was read.`));
+    } else if (regResult.status === "absent") {
+      checks.push(fail("mcp-registration", `${MCP_NAME} is not registered in ${host.displayName}.`));
+    } else {
+      checks.push(fail("mcp-registration", `The MCP registration for ${MCP_NAME} could not be read: ${regResult.reason}`));
     }
   }
   if (registration) checks.push(...await checkServer(registration, ctx.env, timeoutMs));

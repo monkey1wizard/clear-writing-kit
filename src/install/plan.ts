@@ -5,10 +5,11 @@ import { findBlock, upsertBlock } from "./block.js";
 import { digestTree, readText, sha256, sha256File } from "./fsutil.js";
 import { readManifest, type Manifest } from "./manifest.js";
 import { resolveHost } from "./identity.js";
+import { MCP_NAME, readRegistration, registrationFingerprint } from "./registration.js";
 import { pickRuntime, probeRuntimes, type Runtime, type RuntimeProbe } from "./runtime.js";
 import { run, which, type Env } from "./spawn.js";
 
-export const MCP_NAME = "clear-writing-kit-textlint";
+export { MCP_NAME };
 export const PLUGIN_NAME = "clear-writing-kit";
 export const OUTPUT_STYLE = "clear-writing-kit";
 const LEGACY_SKILL = "accurate-answer";
@@ -105,17 +106,28 @@ function manualSteps(host: HostCapability, home: string, env: Env) {
   ];
 }
 
-async function readHostState(host: HostCapability, env: Env, launcher: string, runtime: Runtime): Promise<PlanError | { plugin: "absent" | "installed"; mcp: "absent" | "current" | "different" }> {
+async function readHostState(host: HostCapability, env: Env, launcher: string, runtime: Runtime): Promise<PlanError | { plugin: "absent" | "installed"; mcp: { status: "absent" | "current" | "different"; fingerprint?: string } }> {
   const binary = which(hostBinary(host), env);
   if (!binary) return fail("state", `The ${host.displayName} command "${hostBinary(host)}" is not on PATH, so its plugin and MCP state cannot be read.`);
   const plugins = await run(binary, ["plugin", "list"], { env });
   if (plugins.code !== 0) return fail("state", `"${hostBinary(host)} plugin list" failed with exit code ${plugins.code}.`);
   const plugin = new RegExp(`(^|[^\\w-])${PLUGIN_NAME}(?![\\w-])`, "m").test(plugins.stdout) ? "installed" : "absent";
-  const entry = await run(binary, ["mcp", "get", MCP_NAME], { env });
-  if (entry.code === -1) return fail("state", `"${hostBinary(host)} mcp get" could not run.`);
-  const shown = normalizePath(entry.stdout + entry.stderr);
-  const mcp = entry.code !== 0 ? "absent" : shown.includes(normalizePath(launcher)) && shown.includes(normalizePath(runtime.command)) ? "current" : "different";
-  return { plugin, mcp };
+  const mcpResult = await readRegistration(host, env, { launcher });
+  if (mcpResult.status === "unreadable") {
+    return fail("state", `The MCP registration for ${MCP_NAME} could not be read: ${mcpResult.reason}`);
+  }
+  if (mcpResult.status === "absent") {
+    return { plugin, mcp: { status: "absent" } };
+  }
+  const plannedFingerprint = registrationFingerprint({ command: runtime.command, args: [...runtime.args, launcher, "mcp"] });
+  const isCurrent = mcpResult.fingerprint === plannedFingerprint;
+  return {
+    plugin,
+    mcp: {
+      status: isCurrent ? "current" : "different",
+      fingerprint: mcpResult.fingerprint
+    }
+  };
 }
 
 export async function computePlan(ctx: PlanContext): Promise<PlanOutcome> {
@@ -172,14 +184,14 @@ export async function computePlan(ctx: PlanContext): Promise<PlanOutcome> {
   });
 
   const registration = [runtime.value.command, ...runtime.value.args, launcher, "mcp"];
-  targetStates.mcp = state.mcp;
+  targetStates.mcp = state.mcp.status === "absent" ? "absent" : `${state.mcp.status}:${state.mcp.fingerprint}`;
   steps.push({
     id: "mcp",
-    action: state.mcp === "current" ? "none" : state.mcp === "absent" ? "create" : "update",
+    action: state.mcp.status === "current" ? "none" : state.mcp.status === "absent" ? "create" : "update",
     target: `${host.id} mcp ${MCP_NAME}`,
     summary: `Register ${MCP_NAME} through "${hostBinary(host)} mcp".`,
-    diff: state.mcp === "current" ? [] : [
-      ...(state.mcp === "different" ? [`- mcp ${MCP_NAME} (existing entry does not match)`] : []),
+    diff: state.mcp.status === "current" ? [] : [
+      ...(state.mcp.status === "different" ? [`- mcp ${MCP_NAME} (existing entry does not match)`] : []),
       `+ mcp ${MCP_NAME}: ${registration.join(" ")}`
     ]
   });
