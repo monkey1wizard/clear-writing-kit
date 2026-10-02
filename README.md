@@ -198,7 +198,7 @@ python -m unittest discover -s tests -v
 
 Claude 輸出樣式名稱與產生的檔名也改為 `clear-writing-kit`。既有安裝不會自動遷移。請先產生新檔案，再於 Claude Code 選取新樣式。確認新樣式正常後，才移除舊樣式。本次變更不會重新命名本機工作目錄或遠端儲存庫。
 
-安裝程式會將執行階段酬載安裝至 `~/.clear-writing-kit/<version>/`，建立啟動器 `~/.clear-writing-kit/cwk.mjs`，註冊宿主外掛程式，註冊 `clear-writing-kit-textlint` MCP 伺服器，在全域指示檔案（`~/.claude/CLAUDE.md` 或 `~/.codex/AGENTS.md`）加入獨立的指示區塊，並為 Claude Code 在 `~/.claude/settings.json` 設定 `outputStyle`（修改前會先備份）。若要解除安裝，請執行 `cwk install uninstall --agent <agent>`（亦可使用 `deno run -A` 或 `bun`）。解除安裝程式會移除資訊清單中雜湊相符的檔案、取消註冊指紋相符的 CLI 項目、移除雜湊相符的指示區塊，並刪除對應的酬載目錄。若檔案或項目曾被修改，則會保留並回報原因。保留的備份可用於還原原有的 `outputStyle` 或原始檔案結尾換行。市集註冊項目則保留供手動移除。[規則遷移紀錄](docs/rule-migration.md)說明原本要求的新位置。[檢查器說明](docs/writing-checks.md)列出規則範圍與範例。
+安裝程式會將執行階段酬載安裝至 `~/.clear-writing-kit/<version>/`，建立啟動器 `~/.clear-writing-kit/cwk.mjs`，註冊宿主外掛程式，註冊 `clear-writing-kit-textlint` MCP 伺服器，在全域指示檔案（`~/.claude/CLAUDE.md` 或 `~/.codex/AGENTS.md`）加入獨立的指示區塊，並為 Claude Code 在 `~/.claude/settings.json` 設定 `outputStyle`（修改前會先備份）。若要解除安裝，請執行 `node dist/cwk.mjs install uninstall --agent <agent>`（亦可使用 `deno run -A` 或 `bun`）。解除安裝程式會移除資訊清單中雜湊相符的檔案、取消註冊指紋相符的 CLI 項目、移除雜湊相符的指示區塊，並刪除對應的酬載目錄。若檔案或項目曾被修改，則會保留並回報原因。保留的備份可用於還原原有的 `outputStyle` 或原始檔案結尾換行。市集註冊項目則保留供手動移除。[規則遷移紀錄](docs/rule-migration.md)說明原本要求的新位置。[檢查器說明](docs/writing-checks.md)列出規則範圍與範例。
 
 ## 日本語
 
@@ -296,4 +296,4 @@ python -m unittest discover -s tests -v
 
 Claudeの出力スタイル名と生成ファイル名も `clear-writing-kit` に変わる。既存のインストールは自動移行されない。新しいファイルを生成し、Claude Codeで新しいスタイルを選択する。新しいスタイルの動作を確認してから、古いスタイルを削除する。この変更では、ローカルの作業フォルダーやリモートリポジトリの名前を変更しない。
 
-インストーラーは実行時ペイロードを `~/.clear-writing-kit/<version>/` に配置し、ランチャー `~/.clear-writing-kit/cwk.mjs` を作成する。各ホストのプラグインと `clear-writing-kit-textlint` MCPサーバーを登録する。グローバル指示ファイル（`~/.claude/CLAUDE.md` または `~/.codex/AGENTS.md`）に指示ブロックを追加する。Claude Codeでは `~/.claude/settings.json` のバックアップを作成し、`outputStyle` を設定する。アンインストールするには、`cwk install uninstall --agent <agent>` を実行する（`deno run -A` または `bun` も使用可能）。アンインストーラーは、マニフェストとハッシュが一致するファイルを削除する。フィンガープリントが一致するCLI登録と、ハッシュが一致する指示ブロックやペイロードも削除する。変更されたファイルや設定は保持し、理由を報告する。以前の `outputStyle` や元の末尾改行は、保持されたバックアップから復元できる。マーケットプレイスの登録は手動削除用に保持される。[規則の移行記録](docs/rule-migration.md)に、元の要件の移行先を記載する。[検査ツールの説明](docs/writing-checks.md)には、規則の範囲と例を記載する。
+インストーラーは実行時ペイロードを `~/.clear-writing-kit/<version>/` に配置し、ランチャー `~/.clear-writing-kit/cwk.mjs` を作成する。各ホストのプラグインと `clear-writing-kit-textlint` MCPサーバーを登録する。グローバル指示ファイル（`~/.claude/CLAUDE.md` または `~/.codex/AGENTS.md`）に指示ブロックを追加する。Claude Codeでは `~/.claude/settings.json` のバックアップを作成し、`outputStyle` を設定する。アンインストールするには、`node dist/cwk.mjs install uninstall --agent <agent>` を実行する（`deno run -A` または `bun` も使用可能）。アンインストーラーは、マニフェストとハッシュが一致するファイルを削除する。フィンガープリントが一致するCLI登録と、ハッシュが一致する指示ブロックやペイロードも削除する。変更されたファイルや設定は保持し、理由を報告する。以前の `outputStyle` や元の末尾改行は、保持されたバックアップから復元できる。マーケットプレイスの登録は手動削除用に保持される。[規則の移行記録](docs/rule-migration.md)に、元の要件の移行先を記載する。[検査ツールの説明](docs/writing-checks.md)には、規則の範囲と例を記載する。

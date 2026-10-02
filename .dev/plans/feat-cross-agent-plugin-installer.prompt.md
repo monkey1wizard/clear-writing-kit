@@ -193,9 +193,9 @@ Step: 5 of 7
 Last activity: 2026-10-02 — Owner reports another pipeline restored AGY usage and requests another retry. Fresh preflight and pin match.
 Next step: Resume T-12 authorized generated OKF repair through agy, then independently retest and audit.
 Current Task: T-12
-Interrupted Phase: T-12 / IMPLEMENT
+Interrupted Phase: None
 Task Base Commit: 4ead407f6147e301fe96a10e683cecdf111ca961
-Task Final Commit: 02a3c59cf3bf66b57d5b70e7fdd19f0b84cea3ab
+Task Final Commit: 46ec9379ef5ce295b6052557aad31613cf454018
 Test Retry Count: 1
 Review Retry Count: 0
 
@@ -268,7 +268,7 @@ Owner scope authorization 2026-10-02: "allow to modify them" permits generated k
 #### Retry Handoff — T-12 / TEST
 
 - Status: OPEN
-- Problem: T-12 TP-27 does not pass. Completed TESTER receipt says PASS but explicitly lists required full lint and okf:check as not tested. ORCHESTRATOR rejects that verdict rather than weakening the contract.
+- Problem: The original stale OKF failure is repaired at 46ec937, with preliminary full lint/OKF and regressions passing. Remaining in-scope T-12 document accuracy issues: docs/verification.md still claims this plan does not change knowledge, lacks the authorized repair resolution, and names Bun 1.3.10 while current runtime is 1.3.12. Chinese/Japanese README prose tells users to run a bare cwk command without installing an alias. These statements must be reconciled before fresh independent TP-26/27 certification.
 - Evidence:
   - Test Results: TESTER receipt delivered at 02a3c59, native session 8b1e3cbd-8740-4f67-a84f-35ae8b0951f2. Supplemental ORCHESTRATOR commands npm --prefix writing run lint and npm --prefix writing run okf:check both exited 1 with Stale generated file: usage/gemini.md.
   - Review Results: not-applicable, not dispatched
@@ -278,7 +278,7 @@ Owner scope authorization 2026-10-02: "allow to modify them" permits generated k
      - Result: Focused documentation tests passed. Required TP-27 full checks failed. No production edits by TESTER.
      - Validation: Current receipt, completed attempt log, and nonempty native session record present. Supplemental full lint/okf commands fail. Semantic task verdict is FAIL.
      - Commit: 02a3c59cf3bf66b57d5b70e7fdd19f0b84cea3ab
-- Next human step: Resolve the scope decision above. No fourth attempt or retry ceiling is claimed. Task remains unchecked and audit/goal verification have not run.
+- Next human step: CODER must minimally correct docs/verification.md to preserve historical failures but record the authorized generated repair and freshly checked runtime versions. Replace bare cwk uninstall in Chinese/Japanese README prose with node dist/cwk.mjs install uninstall --agent <agent>, matching English. Keep all other content and the generated repair. Do not commit, stash, author tests, or hand-edit knowledge. Then independent TESTER must run full TP-26/27 and regressions against the final commit. No retry ceiling is claimed.
 
 Dispatch: phase=test task=T-12 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=8b1e3cbd-8740-4f67-a84f-35ae8b0951f2 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-12/1790922125-014860600-000000-T-12-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
 
@@ -1766,4 +1766,6 @@ The audit evaluated task T-11 changes delivering `cwk install uninstall` across 
 <!-- AUDIT_REVIEW: CLEAR -->
 ## Debug Log
 
-None.
+Dispatch: phase=implement task=T-12 role=CODER executor=agy model=gemini-3.8-flash state=completed session_id=5780925f-6478-4ad6-a19c-cec06352a2ca log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-12/1790930593-281821400-000000-T-12-implement-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+T-12 documentation remediation completed. Current implementation receipt, completed attempt log, and nonempty native session database verified. HEAD remained 46ec937 during dispatch. Working-tree boundary passed for README.md, docs/verification.md, and orchestration metadata. Independent TESTER certification remains pending.

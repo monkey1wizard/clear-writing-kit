@@ -46,7 +46,7 @@ Repository branding and the Claude output-style name now use `clear-writing-kit`
 
 ## Cross-agent installer verification (2026-10-02)
 
-Date: 2026-10-02. Environment: Windows, Node.js 25.2.1, Deno 2.9.7, Bun 1.3.10.
+Date: 2026-10-02. Environment: Windows, Node.js 25.2.1, Deno 2.9.7, Bun 1.3.12.
 
 ### The verify command
 
@@ -76,4 +76,4 @@ The `cwk install uninstall --agent <agent>` command removes installed items base
 
 ### Historical test status distinction
 
-Keep the 2026-09-29 local check results above distinct from later regression runs. Two pre-existing test failures in `writing/test/okf.test.cjs` stem from a stale `source_sha256` in `knowledge/usage/gemini.md` dating from commit `bf6d3a5` (2026-09-29). Those failures predate the installer implementation. The installer plan does not change `knowledge/` or its generation sources.
+Keep the 2026-09-29 local check results above distinct from later regression runs. Two historical test failures in `writing/test/okf.test.cjs` stemmed from a stale `source_sha256` in `knowledge/usage/gemini.md` dating from commit `bf6d3a5` (2026-09-29), predating the installer implementation. Under owner authorization on 2026-10-02, that stale generated file was repaired through `node writing/okf.cjs --generate` (recorded at commit `46ec937`) without manual edits or changes to source rules, restoring full OKF check and test passage.
