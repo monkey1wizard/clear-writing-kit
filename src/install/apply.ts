@@ -2,7 +2,7 @@ import { basename, dirname, join } from "node:path";
 import { hosts, type HostCapability } from "../hosts.js";
 import { findBlock, upsertBlock } from "./block.js";
 import { backup, readText, sha256, writeTextAtomic } from "./fsutil.js";
-import { readManifest, saveManifest, type Manifest } from "./manifest.js";
+import { readManifest, saveManifest, type Manifest, type ManifestBlockRecord, type ManifestSettingsRecord } from "./manifest.js";
 import { copyPayload, writeLauncher } from "./payload.js";
 import { computePlan, MCP_NAME, OUTPUT_STYLE, PLUGIN_NAME, type Plan, type PlanContext, type PlanError, type StepId } from "./plan.js";
 import { setOutputStyle } from "./settings.js";
@@ -95,6 +95,7 @@ export async function applyPlan(ctx: PlanContext, planHash: string): Promise<App
   const backups: string[] = [];
   const completed: StepId[] = [];
   const unchanged: StepId[] = [];
+  let metadataChanged = false;
   const kept = async (path: string) => {
     const copy = await backup(path, backupDir);
     if (copy) backups.push(copy);
@@ -102,6 +103,58 @@ export async function applyPlan(ctx: PlanContext, planHash: string): Promise<App
 
   for (const step of plan.steps) {
     if (step.action === "none") {
+      // Adopt selected-host metadata for exact matching no-op artifacts
+      if (step.id === "payload") {
+        if (manifest.version !== plan.version) {
+          manifest.version = plan.version;
+          metadataChanged = true;
+        }
+        for (const file of manifest.files) {
+          if (!file.owners.includes(host.id)) {
+            file.owners.push(host.id);
+            file.owners.sort();
+            metadataChanged = true;
+          }
+        }
+      } else if (step.id === "plugin") {
+        const entry = { host: host.id, kind: "plugin", name: PLUGIN_NAME, fingerprint: pluginFingerprint(host.id) };
+        const existing = manifest.cli.find(item => item.host === entry.host && item.kind === entry.kind && item.name === entry.name);
+        if (!existing || existing.fingerprint !== entry.fingerprint) {
+          upsertBy(manifest.cli, entry, item => item.host === entry.host && item.kind === entry.kind && item.name === entry.name);
+          metadataChanged = true;
+        }
+      } else if (step.id === "mcp") {
+        const entry = { host: host.id, kind: "mcp", name: MCP_NAME, fingerprint: mcpFingerprint(writes.registration) };
+        const existing = manifest.cli.find(item => item.host === entry.host && item.kind === entry.kind && item.name === entry.name);
+        if (!existing || existing.fingerprint !== entry.fingerprint) {
+          upsertBy(manifest.cli, entry, item => item.host === entry.host && item.kind === entry.kind && item.name === entry.name);
+          metadataChanged = true;
+        }
+      } else if (step.id === "block") {
+        const block = findBlock(writes.instructionsText);
+        if (block) {
+          const blockSha = sha256(block.text);
+          const existing = manifest.blocks.find(item => item.host === host.id && item.target === writes.instructionsPath);
+          if (!existing || existing.sha256 !== blockSha) {
+            const blockRecord: ManifestBlockRecord = { host: host.id, target: writes.instructionsPath, sha256: blockSha };
+            upsertBy(manifest.blocks, blockRecord, item => item.host === blockRecord.host && item.target === blockRecord.target);
+            metadataChanged = true;
+          }
+        }
+      } else if (step.id === "output-style" && writes.settingsPath) {
+        const existing = manifest.settings.find(item => item.host === host.id && item.target === writes.settingsPath && item.setting === "outputStyle");
+        if (!existing || existing.value !== OUTPUT_STYLE) {
+          const settingRecord: ManifestSettingsRecord = { host: host.id, target: writes.settingsPath, setting: "outputStyle", value: OUTPUT_STYLE };
+          upsertBy(manifest.settings, settingRecord, item => item.host === settingRecord.host && item.target === settingRecord.target && item.setting === settingRecord.setting);
+          metadataChanged = true;
+        }
+      }
+
+      if (!manifest.completedSteps[host.id]) manifest.completedSteps[host.id] = [];
+      if (!manifest.completedSteps[host.id].includes(step.id)) {
+        manifest.completedSteps[host.id].push(step.id);
+        metadataChanged = true;
+      }
       unchanged.push(step.id);
       continue;
     }
@@ -109,7 +162,16 @@ export async function applyPlan(ctx: PlanContext, planHash: string): Promise<App
       if (step.id === "payload") {
         const copied = await copyPayload(ctx.payloadDir, writes.versionDirectory);
         const launcher = await writeLauncher(writes.launcher, plan.version);
-        for (const file of [...copied, launcher]) upsertBy(manifest.files, file, item => item.path === file.path);
+        for (const file of [...copied, launcher]) {
+          const existing = manifest.files.find(item => item.path === file.path);
+          if (existing) {
+            existing.sha256 = file.sha256;
+            if (!existing.owners.includes(host.id)) existing.owners.push(host.id);
+            existing.owners.sort();
+          } else {
+            manifest.files.push({ path: file.path, sha256: file.sha256, owners: [host.id] });
+          }
+        }
         manifest.version = plan.version;
       } else if (step.id === "plugin") {
         await runHost(binary, ["plugin", "marketplace", "add", dirname(ctx.payloadDir)], ctx.env, /already/i);
@@ -126,17 +188,28 @@ export async function applyPlan(ctx: PlanContext, planHash: string): Promise<App
         await kept(writes.instructionsPath);
         await writeTextAtomic(writes.instructionsPath, writes.instructionsText, { bom: writes.instructionsBom });
         const block = findBlock(writes.instructionsText);
-        if (block) upsertBy(manifest.files, { path: `${writes.instructionsPath}#block`, sha256: sha256(block.text) }, item => item.path === `${writes.instructionsPath}#block`);
+        if (block) {
+          const blockRecord: ManifestBlockRecord = { host: host.id, target: writes.instructionsPath, sha256: sha256(block.text) };
+          upsertBy(manifest.blocks, blockRecord, item => item.host === blockRecord.host && item.target === blockRecord.target);
+        }
       } else if (writes.settingsPath) {
         await setOutputStyle(writes.settingsPath, OUTPUT_STYLE, backupDir);
+        const settingRecord: ManifestSettingsRecord = { host: host.id, target: writes.settingsPath, setting: "outputStyle", value: OUTPUT_STYLE };
+        upsertBy(manifest.settings, settingRecord, item => item.host === settingRecord.host && item.target === settingRecord.target && item.setting === settingRecord.setting);
       }
-      if (!manifest.completedSteps.includes(step.id)) manifest.completedSteps.push(step.id);
+      if (!manifest.completedSteps[host.id]) manifest.completedSteps[host.id] = [];
+      if (!manifest.completedSteps[host.id].includes(step.id)) manifest.completedSteps[host.id].push(step.id);
       await saveManifest(ctx.home, manifest);
       completed.push(step.id);
     } catch (error) {
       return { status: "failed", step: step.id, output: limit(error instanceof Error ? error.message : String(error)), completed };
     }
   }
+
+  if (metadataChanged) {
+    await saveManifest(ctx.home, manifest);
+  }
+
   return { status: "applied", completed, unchanged, backups };
 }
 

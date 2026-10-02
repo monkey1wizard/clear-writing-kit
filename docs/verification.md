@@ -74,6 +74,21 @@ The `cwk install uninstall --agent <agent>` command removes installed items base
 - Modified item retention: Any file, instruction block, or MCP entry modified after installation is preserved and reported with the reason.
 - Restoration limits: Timestamped backups (such as `settings.json.bak`) are preserved in the backup directory. Restoring a prior `outputStyle` or an original non-standard trailing newline requires manual restoration from the retained backup. Host marketplace registrations are retained for manual removal.
 
+### Manifest ownership, shared retention, and migration
+
+Manifest schema revision 2 tracks granular ownership across hosts:
+
+- Per-file host owners: Each tracked payload file and launcher records an array of host owners that consume the runtime.
+- Block and settings records: Instruction blocks and output-style settings entries track their specific host and persisted actual target path.
+- Per-host completion metadata: Completed step lists are partitioned by host rather than recorded as a single global list.
+- Shared runtime retention: Payload files and launcher are preserved during uninstall while another host owner, unresolved legacy ownership, a retained or failed CLI registration, a retained block, or a retained settings record remains.
+- Final consumer removal: When no surviving host or unresolved record references the shared runtime, exact-matching payload files and launcher are removed, empty directories are pruned, and the manifest is deleted.
+- Metadata adoption on apply: Applying an already-current artifact adopts host ownership metadata into the manifest without rewriting file bytes or replacing differing old hashes. Fully adopted reruns are idempotent.
+- Conservative legacy migration: Unversioned or schema revision 1 manifests are migrated into revision 2 structures. Where unambiguous evidence exists (such as host-specific instruction file paths or unique CLI entries), ownership is attributed to that host. Where ownership cannot be resolved from recorded evidence, items receive explicit unresolved legacy ownership and are retained, rather than assigned to the requesting host.
+- Relocated configuration targets: Custom configuration directories specified through environment variables are persisted as durable target paths, ensuring uninstall cleans the exact files written during apply.
+
 ### Historical test status distinction
 
 Keep the 2026-09-29 local check results above distinct from later regression runs. Two historical test failures in `writing/test/okf.test.cjs` stemmed from a stale `source_sha256` in `knowledge/usage/gemini.md` dating from commit `bf6d3a5` (2026-09-29), predating the installer implementation. Under owner authorization on 2026-10-02, that stale generated file was repaired through `node writing/okf.cjs --generate` (recorded at commit `46ec937`) without manual edits or changes to source rules, restoring full OKF check and test passage.
+
+All installer test passes reflect execution in isolated fixture homes with stubbed or simulated host CLI environments. Live real-home installation and end-to-end interactive session activation across Claude Code and Codex remain pending human review.

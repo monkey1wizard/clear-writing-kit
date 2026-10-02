@@ -148866,10 +148866,21 @@ function removeBlock(text, expectedHash) {
 
 // ../src/install/manifest.ts
 import { join as join2 } from "node:path";
-var emptyManifest = () => ({ version: null, files: [], cli: [], completedSteps: [] });
+var CURRENT_SCHEMA_REVISION = 2;
+var LEGACY_OWNER = "legacy";
+var emptyManifest = () => ({
+  schemaRevision: CURRENT_SCHEMA_REVISION,
+  version: null,
+  files: [],
+  cli: [],
+  blocks: [],
+  settings: [],
+  completedSteps: {}
+});
 var manifestPath = (home) => join2(home, ".clear-writing-kit", "install-manifest.json");
 var isObject = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
 var isString = (value) => typeof value === "string";
+var isStringArray = (value) => Array.isArray(value) && value.every(isString);
 function parseManifest(text) {
   const invalid = err("The install manifest is not valid. Fix or remove it before continuing.");
   let data;
@@ -148879,16 +148890,120 @@ function parseManifest(text) {
     return invalid;
   }
   if (!isObject(data) || !(data.version === null || isString(data.version))) return invalid;
-  const { files, cli, completedSteps } = data;
-  if (!Array.isArray(files) || !Array.isArray(cli) || !Array.isArray(completedSteps)) return invalid;
-  const filesValid = files.every((entry) => isObject(entry) && isString(entry.path) && isString(entry.sha256) && /^[0-9a-f]{64}$/.test(entry.sha256));
-  const cliValid = cli.every((entry) => isObject(entry) && isString(entry.host) && isString(entry.kind) && isString(entry.name) && isString(entry.fingerprint));
-  if (!filesValid || !cliValid || !completedSteps.every(isString)) return invalid;
+  const { files, cli } = data;
+  if (!Array.isArray(files) || !Array.isArray(cli)) return invalid;
+  if (typeof data.schemaRevision === "number" && data.schemaRevision >= 2) {
+    const filesValid2 = files.every(
+      (entry) => isObject(entry) && isString(entry.path) && isString(entry.sha256) && /^[0-9a-f]{64}$/.test(entry.sha256) && isStringArray(entry.owners)
+    );
+    const cliValid2 = cli.every(
+      (entry) => isObject(entry) && isString(entry.host) && isString(entry.kind) && isString(entry.name) && isString(entry.fingerprint)
+    );
+    const blocks = Array.isArray(data.blocks) ? data.blocks : [];
+    const blocksValid = blocks.every(
+      (entry) => isObject(entry) && isString(entry.host) && isString(entry.target) && isString(entry.sha256) && /^[0-9a-f]{64}$/.test(entry.sha256)
+    );
+    const settings = Array.isArray(data.settings) ? data.settings : [];
+    const settingsValid = settings.every(
+      (entry) => isObject(entry) && isString(entry.host) && isString(entry.target) && isString(entry.setting) && isString(entry.value)
+    );
+    const completedSteps = isObject(data.completedSteps) ? data.completedSteps : null;
+    const completedValid = completedSteps !== null && Object.entries(completedSteps).every(([k, v]) => isString(k) && isStringArray(v));
+    if (!filesValid2 || !cliValid2 || !blocksValid || !settingsValid || !completedValid) return invalid;
+    return ok({
+      schemaRevision: data.schemaRevision,
+      version: data.version,
+      files: files.map(({ path: path4, sha256: sha2562, owners }) => ({
+        path: path4,
+        sha256: sha2562,
+        owners: [...new Set(owners)].sort()
+      })),
+      cli: cli.map(({ host, kind, name, fingerprint }) => ({ host, kind, name, fingerprint })),
+      blocks: blocks.map(({ host, target, sha256: sha2562 }) => ({ host, target, sha256: sha2562 })),
+      settings: settings.map(({ host, target, setting, value }) => ({ host, target, setting, value })),
+      completedSteps: Object.fromEntries(
+        Object.entries(completedSteps).map(([h, steps]) => [h, [...new Set(steps)]])
+      )
+    });
+  }
+  const filesValid = files.every(
+    (entry) => isObject(entry) && isString(entry.path) && isString(entry.sha256) && /^[0-9a-f]{64}$/.test(entry.sha256)
+  );
+  const cliValid = cli.every(
+    (entry) => isObject(entry) && isString(entry.host) && isString(entry.kind) && isString(entry.name) && isString(entry.fingerprint)
+  );
+  const rawCompleted = data.completedSteps;
+  const completedIsArray = isStringArray(rawCompleted);
+  const completedIsObject = isObject(rawCompleted) && Object.entries(rawCompleted).every(([k, v]) => isString(k) && isStringArray(v));
+  if (!filesValid || !cliValid || !completedIsArray && !completedIsObject && rawCompleted !== void 0) return invalid;
+  const cliEntries = cli.map(({ host, kind, name, fingerprint }) => ({ host, kind, name, fingerprint }));
+  const recordedCliHosts = [...new Set(cliEntries.map((c) => c.host))].filter(Boolean).sort();
+  const migratedBlocks = [];
+  const migratedFiles = [];
+  for (const f of files) {
+    if (f.path.endsWith("#block")) {
+      const target = f.path.slice(0, -"#block".length);
+      const normalized = target.replace(/\\+/g, "/");
+      let blockHost = LEGACY_OWNER;
+      if (normalized.includes("/.claude/") || normalized.endsWith("/CLAUDE.md") || normalized === "CLAUDE.md") {
+        blockHost = "claude";
+      } else if (normalized.includes("/.codex/") || normalized.endsWith("/AGENTS.md") || normalized === "AGENTS.md") {
+        blockHost = "codex";
+      } else if (recordedCliHosts.length === 1) {
+        blockHost = recordedCliHosts[0];
+      }
+      migratedBlocks.push({
+        host: blockHost,
+        target,
+        sha256: f.sha256
+      });
+    } else {
+      let owners;
+      if (isStringArray(f.owners) && f.owners.length > 0) {
+        owners = [...new Set(f.owners)].sort();
+      } else if (recordedCliHosts.length > 0) {
+        owners = [...recordedCliHosts];
+      } else {
+        owners = [LEGACY_OWNER];
+      }
+      migratedFiles.push({
+        path: f.path,
+        sha256: f.sha256,
+        owners
+      });
+    }
+  }
+  const migratedSettings = [];
+  if (Array.isArray(data.settings)) {
+    for (const s of data.settings) {
+      if (isObject(s) && isString(s.host) && isString(s.target) && isString(s.setting) && isString(s.value)) {
+        migratedSettings.push({ host: s.host, target: s.target, setting: s.setting, value: s.value });
+      }
+    }
+  }
+  let migratedCompleted = {};
+  if (completedIsObject) {
+    migratedCompleted = Object.fromEntries(
+      Object.entries(rawCompleted).map(([h, steps]) => [h, [...new Set(steps)]])
+    );
+  } else if (completedIsArray) {
+    const stepList = rawCompleted;
+    if (recordedCliHosts.length > 0) {
+      for (const h of recordedCliHosts) {
+        migratedCompleted[h] = [...stepList];
+      }
+    } else {
+      migratedCompleted[LEGACY_OWNER] = [...stepList];
+    }
+  }
   return ok({
+    schemaRevision: CURRENT_SCHEMA_REVISION,
     version: data.version,
-    files: files.map(({ path: path4, sha256: sha2562 }) => ({ path: path4, sha256: sha2562 })),
-    cli: cli.map(({ host, kind, name, fingerprint }) => ({ host, kind, name, fingerprint })),
-    completedSteps: [...completedSteps]
+    files: migratedFiles,
+    cli: cliEntries,
+    blocks: migratedBlocks,
+    settings: migratedSettings,
+    completedSteps: migratedCompleted
   });
 }
 async function readManifest(home) {
@@ -148896,7 +149011,18 @@ async function readManifest(home) {
   return file2 ? parseManifest(file2.text) : ok(emptyManifest());
 }
 async function saveManifest(home, manifest) {
-  await writeTextAtomic(manifestPath(home), `${JSON.stringify(manifest, null, 2)}
+  const normalized = {
+    schemaRevision: manifest.schemaRevision || CURRENT_SCHEMA_REVISION,
+    version: manifest.version,
+    files: manifest.files.map((f) => ({ path: f.path, sha256: f.sha256, owners: [...new Set(f.owners)].sort() })),
+    cli: manifest.cli.map((c) => ({ host: c.host, kind: c.kind, name: c.name, fingerprint: c.fingerprint })),
+    blocks: (manifest.blocks || []).map((b) => ({ host: b.host, target: b.target, sha256: b.sha256 })),
+    settings: (manifest.settings || []).map((s) => ({ host: s.host, target: s.target, setting: s.setting, value: s.value })),
+    completedSteps: Object.fromEntries(
+      Object.entries(manifest.completedSteps || {}).map(([h, steps]) => [h, [...new Set(steps)].sort()])
+    )
+  };
+  await writeTextAtomic(manifestPath(home), `${JSON.stringify(normalized, null, 2)}
 `, { bom: false });
 }
 
@@ -149311,6 +149437,7 @@ var PLUGIN_NAME = "clear-writing-kit";
 var OUTPUT_STYLE = "clear-writing-kit";
 var LEGACY_SKILL = "accurate-answer";
 var fail = (kind, message2) => ({ status: "error", kind, message: message2 });
+var normalizePath = (text) => text.replace(/\\+/g, "/");
 var hostBinary = (host) => host.mcpCommands.add.split(" ")[0];
 async function isDirectory(path4) {
   try {
@@ -149342,9 +149469,21 @@ function blockVersion(blockText) {
   return /<!-- clear-writing-kit:begin v=([^ >]+) -->/.exec(blockText)?.[1];
 }
 function manifestDigest(manifest) {
-  const files = [...manifest.files].sort((a, b) => a.path.localeCompare(b.path));
-  const cli = [...manifest.cli].sort((a, b) => `${a.host}${a.kind}${a.name}`.localeCompare(`${b.host}${b.kind}${b.name}`));
-  return sha256(JSON.stringify({ version: manifest.version, files, cli }));
+  const files = [...manifest.files].map((f) => ({ path: normalizePath(f.path), sha256: f.sha256, owners: [...f.owners].sort() })).sort((a, b) => a.path.localeCompare(b.path));
+  const cli = [...manifest.cli].map((c) => ({ host: c.host, kind: c.kind, name: c.name, fingerprint: c.fingerprint })).sort((a, b) => `${a.host}:${a.kind}:${a.name}`.localeCompare(`${b.host}:${b.kind}:${b.name}`));
+  const blocks = [...manifest.blocks || []].map((b) => ({ host: b.host, target: normalizePath(b.target), sha256: b.sha256 })).sort((a, b) => `${a.host}:${a.target}`.localeCompare(`${b.host}:${b.target}`));
+  const settings = [...manifest.settings || []].map((s) => ({ host: s.host, target: normalizePath(s.target), setting: s.setting, value: s.value })).sort((a, b) => `${a.host}:${a.target}:${a.setting}`.localeCompare(`${b.host}:${b.target}:${b.setting}`));
+  const completedEntries = Object.entries(manifest.completedSteps || {}).map(([h, steps]) => [h, [...steps].sort()]).sort(([a], [b]) => a.localeCompare(b));
+  const completedSteps = Object.fromEntries(completedEntries);
+  return sha256(JSON.stringify({
+    schemaRevision: manifest.schemaRevision,
+    version: manifest.version,
+    files,
+    cli,
+    blocks,
+    settings,
+    completedSteps
+  }));
 }
 function foreignBlocksNaming(text) {
   const names = [];
@@ -149673,12 +149812,63 @@ async function applyPlan(ctx, planHash) {
   const backups = [];
   const completed = [];
   const unchanged = [];
+  let metadataChanged = false;
   const kept = async (path4) => {
     const copy = await backup(path4, backupDir);
     if (copy) backups.push(copy);
   };
   for (const step of plan.steps) {
     if (step.action === "none") {
+      if (step.id === "payload") {
+        if (manifest.version !== plan.version) {
+          manifest.version = plan.version;
+          metadataChanged = true;
+        }
+        for (const file2 of manifest.files) {
+          if (!file2.owners.includes(host.id)) {
+            file2.owners.push(host.id);
+            file2.owners.sort();
+            metadataChanged = true;
+          }
+        }
+      } else if (step.id === "plugin") {
+        const entry = { host: host.id, kind: "plugin", name: PLUGIN_NAME, fingerprint: pluginFingerprint(host.id) };
+        const existing = manifest.cli.find((item) => item.host === entry.host && item.kind === entry.kind && item.name === entry.name);
+        if (!existing || existing.fingerprint !== entry.fingerprint) {
+          upsertBy(manifest.cli, entry, (item) => item.host === entry.host && item.kind === entry.kind && item.name === entry.name);
+          metadataChanged = true;
+        }
+      } else if (step.id === "mcp") {
+        const entry = { host: host.id, kind: "mcp", name: MCP_NAME, fingerprint: mcpFingerprint(writes.registration) };
+        const existing = manifest.cli.find((item) => item.host === entry.host && item.kind === entry.kind && item.name === entry.name);
+        if (!existing || existing.fingerprint !== entry.fingerprint) {
+          upsertBy(manifest.cli, entry, (item) => item.host === entry.host && item.kind === entry.kind && item.name === entry.name);
+          metadataChanged = true;
+        }
+      } else if (step.id === "block") {
+        const block = findBlock(writes.instructionsText);
+        if (block) {
+          const blockSha = sha256(block.text);
+          const existing = manifest.blocks.find((item) => item.host === host.id && item.target === writes.instructionsPath);
+          if (!existing || existing.sha256 !== blockSha) {
+            const blockRecord = { host: host.id, target: writes.instructionsPath, sha256: blockSha };
+            upsertBy(manifest.blocks, blockRecord, (item) => item.host === blockRecord.host && item.target === blockRecord.target);
+            metadataChanged = true;
+          }
+        }
+      } else if (step.id === "output-style" && writes.settingsPath) {
+        const existing = manifest.settings.find((item) => item.host === host.id && item.target === writes.settingsPath && item.setting === "outputStyle");
+        if (!existing || existing.value !== OUTPUT_STYLE) {
+          const settingRecord = { host: host.id, target: writes.settingsPath, setting: "outputStyle", value: OUTPUT_STYLE };
+          upsertBy(manifest.settings, settingRecord, (item) => item.host === settingRecord.host && item.target === settingRecord.target && item.setting === settingRecord.setting);
+          metadataChanged = true;
+        }
+      }
+      if (!manifest.completedSteps[host.id]) manifest.completedSteps[host.id] = [];
+      if (!manifest.completedSteps[host.id].includes(step.id)) {
+        manifest.completedSteps[host.id].push(step.id);
+        metadataChanged = true;
+      }
       unchanged.push(step.id);
       continue;
     }
@@ -149686,7 +149876,16 @@ async function applyPlan(ctx, planHash) {
       if (step.id === "payload") {
         const copied = await copyPayload(ctx.payloadDir, writes.versionDirectory);
         const launcher = await writeLauncher(writes.launcher, plan.version);
-        for (const file2 of [...copied, launcher]) upsertBy(manifest.files, file2, (item) => item.path === file2.path);
+        for (const file2 of [...copied, launcher]) {
+          const existing = manifest.files.find((item) => item.path === file2.path);
+          if (existing) {
+            existing.sha256 = file2.sha256;
+            if (!existing.owners.includes(host.id)) existing.owners.push(host.id);
+            existing.owners.sort();
+          } else {
+            manifest.files.push({ path: file2.path, sha256: file2.sha256, owners: [host.id] });
+          }
+        }
         manifest.version = plan.version;
       } else if (step.id === "plugin") {
         await runHost(binary, ["plugin", "marketplace", "add", dirname3(ctx.payloadDir)], ctx.env, /already/i);
@@ -149703,16 +149902,25 @@ async function applyPlan(ctx, planHash) {
         await kept(writes.instructionsPath);
         await writeTextAtomic(writes.instructionsPath, writes.instructionsText, { bom: writes.instructionsBom });
         const block = findBlock(writes.instructionsText);
-        if (block) upsertBy(manifest.files, { path: `${writes.instructionsPath}#block`, sha256: sha256(block.text) }, (item) => item.path === `${writes.instructionsPath}#block`);
+        if (block) {
+          const blockRecord = { host: host.id, target: writes.instructionsPath, sha256: sha256(block.text) };
+          upsertBy(manifest.blocks, blockRecord, (item) => item.host === blockRecord.host && item.target === blockRecord.target);
+        }
       } else if (writes.settingsPath) {
         await setOutputStyle(writes.settingsPath, OUTPUT_STYLE, backupDir);
+        const settingRecord = { host: host.id, target: writes.settingsPath, setting: "outputStyle", value: OUTPUT_STYLE };
+        upsertBy(manifest.settings, settingRecord, (item) => item.host === settingRecord.host && item.target === settingRecord.target && item.setting === settingRecord.setting);
       }
-      if (!manifest.completedSteps.includes(step.id)) manifest.completedSteps.push(step.id);
+      if (!manifest.completedSteps[host.id]) manifest.completedSteps[host.id] = [];
+      if (!manifest.completedSteps[host.id].includes(step.id)) manifest.completedSteps[host.id].push(step.id);
       await saveManifest(ctx.home, manifest);
       completed.push(step.id);
     } catch (error62) {
       return { status: "failed", step: step.id, output: limit(error62 instanceof Error ? error62.message : String(error62)), completed };
     }
+  }
+  if (metadataChanged) {
+    await saveManifest(ctx.home, manifest);
   }
   return { status: "applied", completed, unchanged, backups };
 }
@@ -183513,7 +183721,6 @@ import { dirname as dirname4, isAbsolute as isAbsolute2, join as join7, relative
 var OUTPUT_LIMIT2 = 2e3;
 var limit2 = (text) => text.length > OUTPUT_LIMIT2 ? `${text.slice(0, OUTPUT_LIMIT2)}... (truncated)` : text;
 var hostBinary3 = (host) => host.mcpCommands.add.split(" ")[0];
-var BLOCK_SUFFIX = "#block";
 var isInside = (parent, child) => {
   const path4 = relative(parent, child);
   return path4 !== "" && !path4.startsWith("..") && !isAbsolute2(path4);
@@ -183578,8 +183785,16 @@ async function uninstall(ctx) {
   const failed = [];
   const backups = [];
   const notes = [];
-  const remaining = { ...manifest, files: [], cli: [] };
-  const configDirectory = host.configDirectoryEnv && ctx.env[host.configDirectoryEnv] || host.configDirectory(ctx.home);
+  const remaining = {
+    schemaRevision: manifest.schemaRevision,
+    version: manifest.version,
+    files: [],
+    cli: [],
+    blocks: [],
+    settings: [],
+    completedSteps: { ...manifest.completedSteps }
+  };
+  delete remaining.completedSteps[host.id];
   const binary = which(hostBinary3(host), ctx.env);
   for (const entry of manifest.cli) {
     const target = `${entry.host} ${entry.kind} ${entry.name}`;
@@ -183653,11 +183868,15 @@ async function uninstall(ctx) {
   if (manifest.cli.some((entry) => entry.host === host.id && entry.kind === "plugin")) {
     notes.push(`The plugin marketplace entry for ${PLUGIN_NAME} was not recorded by the installer. Remove it by hand with "${hostBinary3(host)} plugin marketplace remove ${PLUGIN_NAME}" if it is no longer wanted.`);
   }
-  for (const entry of manifest.files.filter((file2) => file2.path.endsWith(BLOCK_SUFFIX))) {
-    const path4 = entry.path.slice(0, -BLOCK_SUFFIX.length);
+  for (const record3 of manifest.blocks) {
+    if (record3.host !== host.id) {
+      remaining.blocks.push(record3);
+      continue;
+    }
+    const path4 = record3.target;
     const keep = (detail) => {
       kept.push({ target: `${path4} (block)`, detail });
-      remaining.files.push(entry);
+      remaining.blocks.push(record3);
     };
     try {
       const file2 = await readText(path4);
@@ -183665,7 +183884,7 @@ async function uninstall(ctx) {
         removed.push({ target: `${path4} (block)`, detail: "The file is already gone." });
         continue;
       }
-      const result = removeBlock(file2.text, entry.sha256);
+      const result = removeBlock(file2.text, record3.sha256);
       if (result.status === "absent") {
         removed.push({ target: `${path4} (block)`, detail: "The block is already gone." });
         continue;
@@ -183681,10 +183900,31 @@ async function uninstall(ctx) {
       removed.push({ target: `${path4} (block)`, detail: result.text === "" ? "Removed. The file held nothing else, so it was deleted." : "Removed. Text outside the block is unchanged." });
     } catch (error62) {
       kept.push({ target: `${path4} (block)`, detail: limit2(error62 instanceof Error ? error62.message : String(error62)) });
-      remaining.files.push(entry);
+      remaining.blocks.push(record3);
     }
   }
-  if (host.outputStyleSupport === "yes" && manifest.completedSteps.includes("output-style")) {
+  for (const record3 of manifest.settings) {
+    if (record3.host !== host.id) {
+      remaining.settings.push(record3);
+      continue;
+    }
+    const settingsPath = record3.target;
+    try {
+      const { result, backup: copy } = await clearOutputStyle(settingsPath, record3.value, backupDir);
+      if (copy) backups.push(copy);
+      if (result === "different") {
+        kept.push({ target: `${settingsPath} ${record3.setting}`, detail: `${record3.setting} is not "${record3.value}" now. It was changed after install.` });
+        remaining.settings.push(record3);
+      } else if (result !== "absent") {
+        removed.push({ target: `${settingsPath} ${record3.setting}`, detail: result === "file-removed" ? "Removed. The file held nothing else, so it was deleted." : "Removed. Other settings are unchanged." });
+      }
+    } catch (error62) {
+      kept.push({ target: `${settingsPath} ${record3.setting}`, detail: limit2(error62 instanceof Error ? error62.message : String(error62)) });
+      remaining.settings.push(record3);
+    }
+  }
+  const configDirectory = host.configDirectoryEnv && ctx.env[host.configDirectoryEnv] || host.configDirectory(ctx.home);
+  if (!manifest.settings.some((s) => s.host === host.id) && host.outputStyleSupport === "yes" && (manifest.completedSteps[host.id]?.includes("output-style") || Array.isArray(manifest.completedSteps) && manifest.completedSteps.includes("output-style"))) {
     const settingsPath = join7(configDirectory, "settings.json");
     try {
       const { result, backup: copy } = await clearOutputStyle(settingsPath, OUTPUT_STYLE, backupDir);
@@ -183695,37 +183935,83 @@ async function uninstall(ctx) {
       kept.push({ target: `${settingsPath} outputStyle`, detail: limit2(error62 instanceof Error ? error62.message : String(error62)) });
     }
   }
-  const removedFiles = [];
-  for (const entry of manifest.files.filter((file2) => !file2.path.endsWith(BLOCK_SUFFIX))) {
-    const keep = (detail) => {
+  const hasAnotherOwner = manifest.files.some((f) => f.owners.some((o) => o !== host.id && o !== LEGACY_OWNER));
+  const otherHostInCli = remaining.cli.some((c) => c.host !== host.id);
+  const otherHostInBlocks = remaining.blocks.some((b) => b.host !== host.id && b.host !== LEGACY_OWNER);
+  const otherHostInSettings = remaining.settings.some((s) => s.host !== host.id && s.host !== LEGACY_OWNER);
+  const otherConsumerRemains = hasAnotherOwner || otherHostInCli || otherHostInBlocks || otherHostInSettings;
+  const hasLegacyOwnership = manifest.files.some((f) => f.owners.includes(LEGACY_OWNER)) || remaining.blocks.some((b) => b.host === LEGACY_OWNER) || remaining.settings.some((s) => s.host === LEGACY_OWNER);
+  const hasKeptOrFailedCli = remaining.cli.length > 0;
+  const hasRetainedBlock = remaining.blocks.length > 0;
+  const hasRetainedSettings = remaining.settings.length > 0;
+  const shouldRetainShared = otherConsumerRemains || hasLegacyOwnership || hasKeptOrFailedCli || hasRetainedBlock || hasRetainedSettings;
+  if (shouldRetainShared) {
+    const hostFailedOrKept = remaining.cli.some((c) => c.host === host.id) || remaining.blocks.some((b) => b.host === host.id) || remaining.settings.some((s) => s.host === host.id);
+    if (hostFailedOrKept && manifest.completedSteps[host.id]) {
+      remaining.completedSteps[host.id] = [...manifest.completedSteps[host.id]];
+    }
+    for (const entry of manifest.files) {
+      let nextOwners = entry.owners;
+      if (!hostFailedOrKept) {
+        nextOwners = entry.owners.filter((o) => o !== host.id);
+      }
+      if (nextOwners.length === 0) {
+        nextOwners = [LEGACY_OWNER];
+      }
+      const updatedEntry = {
+        path: entry.path,
+        sha256: entry.sha256,
+        owners: [...new Set(nextOwners)].sort()
+      };
+      remaining.files.push(updatedEntry);
+      let detail = "Shared runtime file is retained.";
+      if (otherConsumerRemains) {
+        detail = "Shared runtime file is retained because another installed host uses it.";
+      } else if (hasLegacyOwnership) {
+        detail = "Shared runtime file is retained because unresolved legacy ownership remains.";
+      } else if (hasKeptOrFailedCli) {
+        detail = "Shared runtime file is retained because a CLI entry was kept or failed removal.";
+      } else if (hasRetainedBlock) {
+        detail = "Shared runtime file is retained because an instruction block was kept.";
+      } else if (hasRetainedSettings) {
+        detail = "Shared runtime file is retained because a settings record was kept.";
+      }
       kept.push({ target: entry.path, detail });
-      remaining.files.push(entry);
-    };
-    if (!isInside(kitDirectory, entry.path)) {
-      keep("The path is outside the kit directory. The installer never removes it.");
-      continue;
     }
-    try {
-      const hash2 = await sha256File(entry.path);
-      if (hash2 === void 0) {
-        removed.push({ target: entry.path, detail: "The file is already gone." });
+  } else {
+    const removedFiles = [];
+    for (const entry of manifest.files) {
+      const keep = (detail) => {
+        kept.push({ target: entry.path, detail });
+        remaining.files.push(entry);
+      };
+      if (!isInside(kitDirectory, entry.path)) {
+        keep("The path is outside the kit directory. The installer never removes it.");
         continue;
       }
-      if (hash2 !== entry.sha256) {
-        keep("The file was changed after install. Its hash no longer matches.");
-        continue;
+      try {
+        const hash2 = await sha256File(entry.path);
+        if (hash2 === void 0) {
+          removed.push({ target: entry.path, detail: "The file is already gone." });
+          continue;
+        }
+        if (hash2 !== entry.sha256) {
+          keep("The file was changed after install. Its hash no longer matches.");
+          continue;
+        }
+        await rm3(entry.path, { force: true });
+        removedFiles.push(entry.path);
+        removed.push({ target: entry.path, detail: "Removed. Its hash matched the manifest." });
+      } catch (error62) {
+        keep(limit2(error62 instanceof Error ? error62.message : String(error62)));
       }
-      await rm3(entry.path, { force: true });
-      removedFiles.push(entry.path);
-      removed.push({ target: entry.path, detail: "Removed. Its hash matched the manifest." });
-    } catch (error62) {
-      keep(limit2(error62 instanceof Error ? error62.message : String(error62)));
     }
+    for (const path4 of removedFiles) await pruneEmpty(dirname4(path4), kitDirectory);
   }
-  for (const path4 of removedFiles) await pruneEmpty(dirname4(path4), kitDirectory);
-  const anyLeft = remaining.files.length > 0 || remaining.cli.length > 0;
-  if (anyLeft) await saveManifest(ctx.home, remaining);
-  else {
+  const anyLeft = remaining.files.length > 0 || remaining.cli.length > 0 || remaining.blocks.length > 0 || remaining.settings.length > 0;
+  if (anyLeft) {
+    await saveManifest(ctx.home, remaining);
+  } else {
     await rm3(manifestPath(ctx.home), { force: true });
     try {
       if ((await readdir2(kitDirectory)).length === 0) await rmdir(kitDirectory);

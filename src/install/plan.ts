@@ -83,9 +83,31 @@ function blockVersion(blockText: string) {
 }
 
 function manifestDigest(manifest: Manifest) {
-  const files = [...manifest.files].sort((a, b) => a.path.localeCompare(b.path));
-  const cli = [...manifest.cli].sort((a, b) => `${a.host}${a.kind}${a.name}`.localeCompare(`${b.host}${b.kind}${b.name}`));
-  return sha256(JSON.stringify({ version: manifest.version, files, cli }));
+  const files = [...manifest.files]
+    .map(f => ({ path: normalizePath(f.path), sha256: f.sha256, owners: [...f.owners].sort() }))
+    .sort((a, b) => a.path.localeCompare(b.path));
+  const cli = [...manifest.cli]
+    .map(c => ({ host: c.host, kind: c.kind, name: c.name, fingerprint: c.fingerprint }))
+    .sort((a, b) => `${a.host}:${a.kind}:${a.name}`.localeCompare(`${b.host}:${b.kind}:${b.name}`));
+  const blocks = [...(manifest.blocks || [])]
+    .map(b => ({ host: b.host, target: normalizePath(b.target), sha256: b.sha256 }))
+    .sort((a, b) => `${a.host}:${a.target}`.localeCompare(`${b.host}:${b.target}`));
+  const settings = [...(manifest.settings || [])]
+    .map(s => ({ host: s.host, target: normalizePath(s.target), setting: s.setting, value: s.value }))
+    .sort((a, b) => `${a.host}:${a.target}:${a.setting}`.localeCompare(`${b.host}:${b.target}:${b.setting}`));
+  const completedEntries = Object.entries(manifest.completedSteps || {})
+    .map(([h, steps]) => [h, [...steps].sort()] as [string, string[]])
+    .sort(([a], [b]) => a.localeCompare(b));
+  const completedSteps = Object.fromEntries(completedEntries);
+  return sha256(JSON.stringify({
+    schemaRevision: manifest.schemaRevision,
+    version: manifest.version,
+    files,
+    cli,
+    blocks,
+    settings,
+    completedSteps
+  }));
 }
 
 function foreignBlocksNaming(text: string) {
