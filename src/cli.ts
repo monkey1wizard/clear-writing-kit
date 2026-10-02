@@ -1,7 +1,55 @@
 #!/usr/bin/env node
 import { readFile } from "node:fs/promises";
+import { homedir } from "node:os";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { lintText } from "./check.js";
+import { computePlan, formatPlan } from "./install/plan.js";
 import { runMcpServer } from "./mcp.js";
+
+const installUsage = [
+  "Usage: cwk install <plan|apply|verify|uninstall> --agent <claude|codex|copilot|opencode|antigravity>",
+  "",
+  "  plan       Show what the installer would change and print a plan hash. Writes nothing.",
+  "  apply      Apply a plan. Requires --plan-hash from a plan run.",
+  "  verify     Check an installation.",
+  "  uninstall  Remove what the installer installed.",
+  ""
+].join("\n");
+
+async function runInstall(args: string[]): Promise<number> {
+  const subcommand = args.shift();
+  if (subcommand === "--help" || subcommand === "-h" || (subcommand !== undefined && args.includes("--help"))) {
+    process.stdout.write(installUsage);
+    return 0;
+  }
+  if (subcommand === "apply" || subcommand === "verify" || subcommand === "uninstall") {
+    process.stderr.write(`"cwk install ${subcommand}" is not available in this build.\n`);
+    return 2;
+  }
+  if (subcommand !== "plan") {
+    process.stderr.write(installUsage);
+    return 2;
+  }
+  const flag = args.indexOf("--agent");
+  const agent = flag >= 0 ? args[flag + 1] : undefined;
+  const extra = args.filter((_, index) => index !== flag && index !== flag + 1);
+  if (extra.length) {
+    process.stderr.write(`Unknown argument: ${extra[0]}\n${installUsage}`);
+    return 2;
+  }
+  const payloadDir = dirname(fileURLToPath(import.meta.url));
+  let blockText: string;
+  try {
+    blockText = await readFile(join(payloadDir, "..", "install", "agents-block.md"), "utf8");
+  } catch {
+    process.stderr.write("Cannot read install/agents-block.md next to the payload. Run the installer from the repository checkout.\n");
+    return 1;
+  }
+  const outcome = await computePlan({ agent, env: process.env, home: homedir(), payloadDir, blockText });
+  process.stdout.write(formatPlan(outcome));
+  return outcome.status === "ready" ? 0 : 1;
+}
 
 async function main() {
   const args = process.argv.slice(2);
@@ -9,6 +57,10 @@ async function main() {
   if (command === "mcp") {
     if (args.length) throw new Error("Usage: cwk mcp");
     await runMcpServer();
+    return;
+  }
+  if (command === "install") {
+    process.exitCode = await runInstall(args);
     return;
   }
   if (command !== "check") throw new Error("Usage: cwk check --language <language> --genre <genre> [--stdin [--stdin-filename <name>] | files...]");

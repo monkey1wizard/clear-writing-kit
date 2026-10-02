@@ -248,8 +248,8 @@ var require_common = __commonJS({
         }
         return debug;
       }
-      function extend2(namespace, delimiter) {
-        const newDebug = createDebug(this.namespace + (typeof delimiter === "undefined" ? ":" : delimiter) + namespace);
+      function extend2(namespace, delimiter2) {
+        const newDebug = createDebug(this.namespace + (typeof delimiter2 === "undefined" ? ":" : delimiter2) + namespace);
         newDebug.log = this.log;
         return newDebug;
       }
@@ -1685,7 +1685,7 @@ var require_lodash = __commonJS({
           function object2() {
           }
           return function(proto) {
-            if (!isObject2(proto)) {
+            if (!isObject3(proto)) {
               return {};
             }
             if (objectCreate) {
@@ -2087,7 +2087,7 @@ var require_lodash = __commonJS({
           if (result2 !== undefined2) {
             return result2;
           }
-          if (!isObject2(value)) {
+          if (!isObject3(value)) {
             return value;
           }
           var isArr = isArray(value);
@@ -2434,7 +2434,7 @@ var require_lodash = __commonJS({
           return true;
         }
         function baseIsNative(value) {
-          if (!isObject2(value) || isMasked(value)) {
+          if (!isObject3(value) || isMasked(value)) {
             return false;
           }
           var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
@@ -2474,7 +2474,7 @@ var require_lodash = __commonJS({
           return result2;
         }
         function baseKeysIn(object2) {
-          if (!isObject2(object2)) {
+          if (!isObject3(object2)) {
             return nativeKeysIn(object2);
           }
           var isProto = isPrototype(object2), result2 = [];
@@ -2519,7 +2519,7 @@ var require_lodash = __commonJS({
           }
           baseFor(source, function(srcValue, key) {
             stack || (stack = new Stack());
-            if (isObject2(srcValue)) {
+            if (isObject3(srcValue)) {
               baseMergeDeep(object2, source, key, srcIndex, baseMerge, customizer, stack);
             } else {
               var newValue = customizer ? customizer(safeGet(object2, key), srcValue, key + "", object2, source, stack) : undefined2;
@@ -2559,7 +2559,7 @@ var require_lodash = __commonJS({
               newValue = objValue;
               if (isArguments(objValue)) {
                 newValue = toPlainObject(objValue);
-              } else if (!isObject2(objValue) || isFunction(objValue)) {
+              } else if (!isObject3(objValue) || isFunction(objValue)) {
                 newValue = initCloneObject(srcValue);
               }
             } else {
@@ -2698,7 +2698,7 @@ var require_lodash = __commonJS({
           return shuffleSelf(array2, baseClamp(n, 0, array2.length));
         }
         function baseSet(object2, path4, value, customizer) {
-          if (!isObject2(object2)) {
+          if (!isObject3(object2)) {
             return object2;
           }
           path4 = castPath(path4, object2);
@@ -2712,7 +2712,7 @@ var require_lodash = __commonJS({
               var objValue = nested[key];
               newValue = customizer ? customizer(objValue, key, nested) : undefined2;
               if (newValue === undefined2) {
-                newValue = isObject2(objValue) ? objValue : isIndex(path4[index + 1]) ? [] : {};
+                newValue = isObject3(objValue) ? objValue : isIndex(path4[index + 1]) ? [] : {};
               }
             }
             assignValue(nested, key, newValue);
@@ -3009,8 +3009,8 @@ var require_lodash = __commonJS({
               if (index >= ordersLength) {
                 return result2;
               }
-              var order = orders[index];
-              return result2 * (order == "desc" ? -1 : 1);
+              var order2 = orders[index];
+              return result2 * (order2 == "desc" ? -1 : 1);
             }
           }
           return object2.index - other.index;
@@ -3175,7 +3175,7 @@ var require_lodash = __commonJS({
                 return new Ctor(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
             }
             var thisBinding = baseCreate(Ctor.prototype), result2 = Ctor.apply(thisBinding, args);
-            return isObject2(result2) ? result2 : thisBinding;
+            return isObject3(result2) ? result2 : thisBinding;
           };
         }
         function createCurry(func, bitmask, arity) {
@@ -3511,7 +3511,7 @@ var require_lodash = __commonJS({
           return objValue;
         }
         function customDefaultsMerge(objValue, srcValue, key, object2, source, stack) {
-          if (isObject2(objValue) && isObject2(srcValue)) {
+          if (isObject3(objValue) && isObject3(srcValue)) {
             stack.set(srcValue, objValue);
             baseMerge(objValue, srcValue, undefined2, customDefaultsMerge, stack);
             stack["delete"](srcValue);
@@ -3859,7 +3859,7 @@ var require_lodash = __commonJS({
           return !!length && (type == "number" || type != "symbol" && reIsUint.test(value)) && (value > -1 && value % 1 == 0 && value < length);
         }
         function isIterateeCall(value, index, object2) {
-          if (!isObject2(object2)) {
+          if (!isObject3(object2)) {
             return false;
           }
           var type = typeof index;
@@ -3902,7 +3902,7 @@ var require_lodash = __commonJS({
           return value === proto;
         }
         function isStrictComparable(value) {
-          return value === value && !isObject2(value);
+          return value === value && !isObject3(value);
         }
         function matchesStrictComparable(key, srcValue) {
           return function(object2) {
@@ -4264,7 +4264,7 @@ var require_lodash = __commonJS({
           }
           return mapped.length && mapped[0] === arrays[0] ? baseIntersection(mapped, undefined2, comparator) : [];
         });
-        function join(array2, separator) {
+        function join6(array2, separator) {
           return array2 == null ? "" : nativeJoin.call(array2, separator);
         }
         function last(array2) {
@@ -4620,7 +4620,7 @@ var require_lodash = __commonJS({
           if (fromIndex < 0) {
             fromIndex = nativeMax(length + fromIndex, 0);
           }
-          return isString(collection) ? fromIndex <= length && collection.indexOf(value, fromIndex) > -1 : !!length && baseIndexOf(collection, value, fromIndex) > -1;
+          return isString2(collection) ? fromIndex <= length && collection.indexOf(value, fromIndex) > -1 : !!length && baseIndexOf(collection, value, fromIndex) > -1;
         }
         var invokeMap = baseRest(function(collection, path4, args) {
           var index = -1, isFunc = typeof path4 == "function", result2 = isArrayLike(collection) ? Array2(collection.length) : [];
@@ -4688,7 +4688,7 @@ var require_lodash = __commonJS({
             return 0;
           }
           if (isArrayLike(collection)) {
-            return isString(collection) ? stringSize(collection) : collection.length;
+            return isString2(collection) ? stringSize(collection) : collection.length;
           }
           var tag = getTag(collection);
           if (tag == mapTag || tag == setTag) {
@@ -4784,7 +4784,7 @@ var require_lodash = __commonJS({
             throw new TypeError2(FUNC_ERROR_TEXT);
           }
           wait = toNumber(wait) || 0;
-          if (isObject2(options)) {
+          if (isObject3(options)) {
             leading = !!options.leading;
             maxing = "maxWait" in options;
             maxWait = maxing ? nativeMax(toNumber(options.maxWait) || 0, wait) : maxWait;
@@ -4954,7 +4954,7 @@ var require_lodash = __commonJS({
           if (typeof func != "function") {
             throw new TypeError2(FUNC_ERROR_TEXT);
           }
-          if (isObject2(options)) {
+          if (isObject3(options)) {
             leading = "leading" in options ? !!options.leading : leading;
             trailing = "trailing" in options ? !!options.trailing : trailing;
           }
@@ -5062,7 +5062,7 @@ var require_lodash = __commonJS({
           return typeof value == "number" && nativeIsFinite(value);
         }
         function isFunction(value) {
-          if (!isObject2(value)) {
+          if (!isObject3(value)) {
             return false;
           }
           var tag = baseGetTag(value);
@@ -5074,7 +5074,7 @@ var require_lodash = __commonJS({
         function isLength(value) {
           return typeof value == "number" && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
         }
-        function isObject2(value) {
+        function isObject3(value) {
           var type = typeof value;
           return value != null && (type == "object" || type == "function");
         }
@@ -5123,7 +5123,7 @@ var require_lodash = __commonJS({
           return isInteger(value) && value >= -MAX_SAFE_INTEGER && value <= MAX_SAFE_INTEGER;
         }
         var isSet = nodeIsSet ? baseUnary(nodeIsSet) : baseIsSet;
-        function isString(value) {
+        function isString2(value) {
           return typeof value == "string" || !isArray(value) && isObjectLike(value) && baseGetTag(value) == stringTag;
         }
         function isSymbol(value) {
@@ -5148,7 +5148,7 @@ var require_lodash = __commonJS({
             return [];
           }
           if (isArrayLike(value)) {
-            return isString(value) ? stringToArray(value) : copyArray(value);
+            return isString2(value) ? stringToArray(value) : copyArray(value);
           }
           if (symIterator && value[symIterator]) {
             return iteratorToArray(value[symIterator]());
@@ -5181,9 +5181,9 @@ var require_lodash = __commonJS({
           if (isSymbol(value)) {
             return NAN;
           }
-          if (isObject2(value)) {
+          if (isObject3(value)) {
             var other = typeof value.valueOf == "function" ? value.valueOf() : value;
-            value = isObject2(other) ? other + "" : other;
+            value = isObject3(other) ? other + "" : other;
           }
           if (typeof value != "string") {
             return value === 0 ? value : +value;
@@ -5404,7 +5404,7 @@ var require_lodash = __commonJS({
             var Ctor = object2 && object2.constructor;
             if (isArrLike) {
               accumulator = isArr ? new Ctor() : [];
-            } else if (isObject2(object2)) {
+            } else if (isObject3(object2)) {
               accumulator = isFunction(Ctor) ? baseCreate(getPrototype(object2)) : {};
             } else {
               accumulator = {};
@@ -5694,7 +5694,7 @@ var require_lodash = __commonJS({
         }
         function truncate(string4, options) {
           var length = DEFAULT_TRUNC_LENGTH, omission = DEFAULT_TRUNC_OMISSION;
-          if (isObject2(options)) {
+          if (isObject3(options)) {
             var separator = "separator" in options ? options.separator : separator;
             length = "length" in options ? toInteger(options.length) : length;
             omission = "omission" in options ? baseToString(options.omission) : omission;
@@ -5824,13 +5824,13 @@ var require_lodash = __commonJS({
         });
         function mixin(object2, source, options) {
           var props = keys(source), methodNames = baseFunctions(source, props);
-          if (options == null && !(isObject2(source) && (methodNames.length || !props.length))) {
+          if (options == null && !(isObject3(source) && (methodNames.length || !props.length))) {
             options = source;
             source = object2;
             object2 = this;
             methodNames = baseFunctions(source, keys(source));
           }
-          var chain2 = !(isObject2(options) && "chain" in options) || !!options.chain, isFunc = isFunction(object2);
+          var chain2 = !(isObject3(options) && "chain" in options) || !!options.chain, isFunc = isFunction(object2);
           arrayEach(methodNames, function(methodName) {
             var func = source[methodName];
             object2[methodName] = func;
@@ -6176,19 +6176,19 @@ var require_lodash = __commonJS({
         lodash.isNil = isNil;
         lodash.isNull = isNull;
         lodash.isNumber = isNumber;
-        lodash.isObject = isObject2;
+        lodash.isObject = isObject3;
         lodash.isObjectLike = isObjectLike;
         lodash.isPlainObject = isPlainObject3;
         lodash.isRegExp = isRegExp;
         lodash.isSafeInteger = isSafeInteger;
         lodash.isSet = isSet;
-        lodash.isString = isString;
+        lodash.isString = isString2;
         lodash.isSymbol = isSymbol;
         lodash.isTypedArray = isTypedArray;
         lodash.isUndefined = isUndefined;
         lodash.isWeakMap = isWeakMap;
         lodash.isWeakSet = isWeakSet;
-        lodash.join = join;
+        lodash.join = join6;
         lodash.kebabCase = kebabCase;
         lodash.last = last;
         lodash.lastIndexOf = lastIndexOf;
@@ -12163,7 +12163,7 @@ var require_lodash2 = __commonJS({
     var symbolProto = Symbol2 ? Symbol2.prototype : void 0;
     var symbolToString = symbolProto ? symbolProto.toString : void 0;
     function baseIsRegExp(value) {
-      return isObject2(value) && objectToString.call(value) == regexpTag;
+      return isObject3(value) && objectToString.call(value) == regexpTag;
     }
     function baseSlice(array2, start, end) {
       var index = -1, length = array2.length;
@@ -12197,7 +12197,7 @@ var require_lodash2 = __commonJS({
       end = end === void 0 ? length : end;
       return !start && end >= length ? array2 : baseSlice(array2, start, end);
     }
-    function isObject2(value) {
+    function isObject3(value) {
       var type = typeof value;
       return !!value && (type == "object" || type == "function");
     }
@@ -12230,9 +12230,9 @@ var require_lodash2 = __commonJS({
       if (isSymbol(value)) {
         return NAN;
       }
-      if (isObject2(value)) {
+      if (isObject3(value)) {
         var other = typeof value.valueOf == "function" ? value.valueOf() : value;
-        value = isObject2(other) ? other + "" : other;
+        value = isObject3(other) ? other + "" : other;
       }
       if (typeof value != "string") {
         return value === 0 ? value : +value;
@@ -12246,7 +12246,7 @@ var require_lodash2 = __commonJS({
     }
     function truncate(string4, options) {
       var length = DEFAULT_TRUNC_LENGTH, omission = DEFAULT_TRUNC_OMISSION;
-      if (isObject2(options)) {
+      if (isObject3(options)) {
         var separator = "separator" in options ? options.separator : separator;
         length = "length" in options ? toInteger(options.length) : length;
         omission = "omission" in options ? baseToString(options.omission) : omission;
@@ -13111,7 +13111,7 @@ var require_common2 = __commonJS({
     function isNothing(subject) {
       return typeof subject === "undefined" || subject === null;
     }
-    function isObject2(subject) {
+    function isObject3(subject) {
       return typeof subject === "object" && subject !== null;
     }
     function toArray(sequence) {
@@ -13140,7 +13140,7 @@ var require_common2 = __commonJS({
       return number4 === 0 && Number.NEGATIVE_INFINITY === 1 / number4;
     }
     module.exports.isNothing = isNothing;
-    module.exports.isObject = isObject2;
+    module.exports.isObject = isObject3;
     module.exports.toArray = toArray;
     module.exports.repeat = repeat;
     module.exports.isNegativeZero = isNegativeZero;
@@ -14354,7 +14354,7 @@ var require_loader = __commonJS({
         }
         try {
           prefix = decodeURIComponent(prefix);
-        } catch (err) {
+        } catch (err2) {
           throwError(state, "tag prefix is malformed: " + prefix);
         }
         state.tagMap[handle] = prefix;
@@ -15099,7 +15099,7 @@ var require_loader = __commonJS({
       }
       try {
         tagName = decodeURIComponent(tagName);
-      } catch (err) {
+      } catch (err2) {
         throwError(state, "tag name is malformed: " + tagName);
       }
       if (isVerbatim) {
@@ -17818,14 +17818,14 @@ var require_apply = __commonJS({
         if (!index) {
           return options.complete();
         }
-        options.loadFile(index, function(err, data) {
-          if (err) {
-            return options.complete(err);
+        options.loadFile(index, function(err2, data) {
+          if (err2) {
+            return options.complete(err2);
           }
           var updatedContent = applyPatch(data, index, options);
-          options.patched(index, updatedContent, function(err2) {
-            if (err2) {
-              return options.complete(err2);
+          options.patched(index, updatedContent, function(err3) {
+            if (err3) {
+              return options.complete(err3);
             }
             processIndex();
           });
@@ -18332,7 +18332,7 @@ var require_diff = __commonJS({
     var diff_1 = require_libcjs();
     var node_util_1 = __require("node:util");
     var strip_ansi_1 = __importDefault(require_strip_ansi());
-    var isFile = (filePath) => {
+    var isFile2 = (filePath) => {
       try {
         const stats = fs3.statSync(filePath);
         return stats.isFile();
@@ -18376,7 +18376,7 @@ var require_diff = __commonJS({
         if (messages.length === 0) {
           return;
         }
-        if (!isFile(filePath)) {
+        if (!isFile2(filePath)) {
           return;
         }
         output2 += `${(0, node_util_1.styleText)("underline", result.filePath)}
@@ -19707,7 +19707,7 @@ var require_Obj = __commonJS({
 var require_Str = __commonJS({
   "node_modules/prelude-ls/lib/Str.js"(exports, module) {
     var split;
-    var join;
+    var join6;
     var lines;
     var unlines;
     var words;
@@ -19722,7 +19722,7 @@ var require_Str = __commonJS({
     split = curry$(function(sep, str) {
       return str.split(sep);
     });
-    join = curry$(function(sep, xs) {
+    join6 = curry$(function(sep, xs) {
       return xs.join(sep);
     });
     lines = function(str) {
@@ -19781,7 +19781,7 @@ var require_Str = __commonJS({
     };
     module.exports = {
       split,
-      join,
+      join: join6,
       lines,
       unlines,
       words,
@@ -20237,7 +20237,7 @@ var require_levenshtein = __commonJS({
       var collator;
       try {
         collator = typeof Intl !== "undefined" && typeof Intl.Collator !== "undefined" ? Intl.Collator("generic", { sensitivity: "base" }) : null;
-      } catch (err) {
+      } catch (err2) {
         console.log("Collator could not be initialized and wouldn't be used");
       }
       var prevRow = [], str2Char = [];
@@ -21752,34 +21752,34 @@ var require_lib4 = __commonJS({
             throw new Error("The options " + nameToRaw(first) + " and " + nameToRaw(second) + " are mutually exclusive - you cannot use them at the same time.");
           };
           checkMutuallyExclusive = function() {
-            var rules, i$2, len$2, rule, present, j$2, len1$2, element, k$, len2$, opt2;
+            var rules, i$2, len$2, rule, present2, j$2, len1$2, element, k$, len2$, opt2;
             rules = libOptions.mutuallyExclusive;
             if (!rules) {
               return;
             }
             for (i$2 = 0, len$2 = rules.length; i$2 < len$2; ++i$2) {
               rule = rules[i$2];
-              present = null;
+              present2 = null;
               for (j$2 = 0, len1$2 = rule.length; j$2 < len1$2; ++j$2) {
                 element = rule[j$2];
                 if (toString$.call(element).slice(8, -1) === "Array") {
                   for (k$ = 0, len2$ = element.length; k$ < len2$; ++k$) {
                     opt2 = element[k$];
                     if (opt2 in obj) {
-                      if (present != null) {
-                        mutuallyExclusiveError(present, opt2);
+                      if (present2 != null) {
+                        mutuallyExclusiveError(present2, opt2);
                       } else {
-                        present = opt2;
+                        present2 = opt2;
                         break;
                       }
                     }
                   }
                 } else {
                   if (element in obj) {
-                    if (present != null) {
-                      mutuallyExclusiveError(present, element);
+                    if (present2 != null) {
+                      mutuallyExclusiveError(present2, element);
                     } else {
-                      present = element;
+                      present2 = element;
                     }
                   }
                 }
@@ -22786,17 +22786,17 @@ var require_lib6 = __commonJS({
       if (endLine === -1) {
         end = source.length;
       }
-      const lineDiff = endLine - startLine;
+      const lineDiff2 = endLine - startLine;
       const markerLines = {};
-      if (lineDiff) {
-        for (let i = 0; i <= lineDiff; i++) {
+      if (lineDiff2) {
+        for (let i = 0; i <= lineDiff2; i++) {
           const lineNumber = i + startLine;
           if (!startColumn) {
             markerLines[lineNumber] = true;
           } else if (i === 0) {
             const sourceLength = source[lineNumber - 1].length;
             markerLines[lineNumber] = [startColumn, sourceLength - startColumn + 1];
-          } else if (i === lineDiff) {
+          } else if (i === lineDiff2) {
             markerLines[lineNumber] = [0, endColumn];
           } else {
             const sourceLength = source[lineNumber - i].length;
@@ -26393,8 +26393,8 @@ var require_hosts = __commonJS({
       bugstemplate: ({ domain: domain2, user, project }) => `https://${domain2}/${user}/${project}/issues`,
       hashformat: formatHashFragment
     };
-    var hosts = {};
-    hosts.github = {
+    var hosts2 = {};
+    hosts2.github = {
       // First two are insecure and generally shouldn't be used any more, but
       // they are still supported.
       protocols: ["git:", "http:", "git+ssh:", "git+https:", "ssh:", "https:"],
@@ -26422,7 +26422,7 @@ var require_hosts = __commonJS({
         return { user, project, committish };
       }
     };
-    hosts.bitbucket = {
+    hosts2.bitbucket = {
       protocols: ["git+ssh:", "git+https:", "ssh:", "https:"],
       domain: "bitbucket.org",
       treepath: "src",
@@ -26444,7 +26444,7 @@ var require_hosts = __commonJS({
         return { user, project, committish: url2.hash.slice(1) };
       }
     };
-    hosts.gitlab = {
+    hosts2.gitlab = {
       protocols: ["git+ssh:", "git+https:", "ssh:", "https:"],
       domain: "gitlab.com",
       treepath: "tree",
@@ -26469,7 +26469,7 @@ var require_hosts = __commonJS({
         return { user, project, committish: url2.hash.slice(1) };
       }
     };
-    hosts.gist = {
+    hosts2.gist = {
       protocols: ["git:", "git+ssh:", "git+https:", "ssh:", "https:"],
       domain: "gist.github.com",
       editpath: "edit",
@@ -26508,7 +26508,7 @@ var require_hosts = __commonJS({
         return fragment && "file-" + formatHashFragment(fragment);
       }
     };
-    hosts.sourcehut = {
+    hosts2.sourcehut = {
       protocols: ["git+ssh:", "https:"],
       domain: "git.sr.ht",
       treepath: "tree",
@@ -26531,10 +26531,10 @@ var require_hosts = __commonJS({
         return { user, project, committish: url2.hash.slice(1) };
       }
     };
-    for (const [name, host] of Object.entries(hosts)) {
-      hosts[name] = Object.assign({}, defaults, host);
+    for (const [name, host] of Object.entries(hosts2)) {
+      hosts2[name] = Object.assign({}, defaults, host);
     }
-    module.exports = hosts;
+    module.exports = hosts2;
   }
 });
 
@@ -26672,11 +26672,11 @@ var require_from_url = __commonJS({
           committish = decodeURIComponent(segments.committish);
           defaultRepresentation = protocols[parsed.protocol]?.name || parsed.protocol.slice(0, -1);
         }
-      } catch (err) {
-        if (err instanceof URIError) {
+      } catch (err2) {
+        if (err2 instanceof URIError) {
           return;
         } else {
-          throw err;
+          throw err2;
         }
       }
       return [gitHostName, user, auth, project, committish, defaultRepresentation, opts];
@@ -26689,7 +26689,7 @@ var require_lib7 = __commonJS({
   "node_modules/hosted-git-info/lib/index.js"(exports, module) {
     "use strict";
     var { LRUCache } = require_commonjs();
-    var hosts = require_hosts();
+    var hosts2 = require_hosts();
     var fromUrl = require_from_url();
     var parseUrl = require_parse_url();
     var cache = new LRUCache({ max: 1e3 });
@@ -26821,7 +26821,7 @@ var require_lib7 = __commonJS({
         return this.sshurl(opts);
       }
     };
-    for (const [name, host] of Object.entries(hosts)) {
+    for (const [name, host] of Object.entries(hosts2)) {
       GitHost.addHost(name, host);
     }
     module.exports = GitHost;
@@ -27529,7 +27529,7 @@ var require_config_initializer = __commonJS({
     var node_fs_1 = __importDefault(__require("node:fs"));
     var node_path_1 = __importDefault(__require("node:path"));
     var logger_js_1 = require_logger();
-    var isFile = (filePath) => {
+    var isFile2 = (filePath) => {
       try {
         return node_fs_1.default.statSync(filePath).isFile();
       } catch (error62) {
@@ -27570,7 +27570,7 @@ var require_config_initializer = __commonJS({
       return getTextlintDependencyNames(dir).then((pkgNames) => {
         const rcFile = `.textlintrc.json`;
         const filePath = node_path_1.default.resolve(dir, rcFile);
-        if (isFile(filePath)) {
+        if (isFile2(filePath)) {
           logger_js_1.Logger.error(`${rcFile} is already existed.`);
           return Promise.resolve(1);
         }
@@ -28539,10 +28539,10 @@ var require_parse4 = __commonJS({
       return c2;
     }
     function syntaxError(message) {
-      const err = new SyntaxError(message);
-      err.lineNumber = line;
-      err.columnNumber = column;
-      return err;
+      const err2 = new SyntaxError(message);
+      err2.lineNumber = line;
+      err2.columnNumber = column;
+      return err2;
     }
   }
 });
@@ -28786,7 +28786,7 @@ var require_common3 = __commonJS({
     function isNothing(subject) {
       return typeof subject === "undefined" || subject === null;
     }
-    function isObject2(subject) {
+    function isObject3(subject) {
       return typeof subject === "object" && subject !== null;
     }
     function toArray(sequence) {
@@ -28815,7 +28815,7 @@ var require_common3 = __commonJS({
       return number4 === 0 && Number.NEGATIVE_INFINITY === 1 / number4;
     }
     module.exports.isNothing = isNothing;
-    module.exports.isObject = isObject2;
+    module.exports.isObject = isObject3;
     module.exports.toArray = toArray;
     module.exports.repeat = repeat;
     module.exports.isNegativeZero = isNegativeZero;
@@ -30029,7 +30029,7 @@ var require_loader2 = __commonJS({
         }
         try {
           prefix = decodeURIComponent(prefix);
-        } catch (err) {
+        } catch (err2) {
           throwError(state, "tag prefix is malformed: " + prefix);
         }
         state.tagMap[handle] = prefix;
@@ -30774,7 +30774,7 @@ var require_loader2 = __commonJS({
       }
       try {
         tagName = decodeURIComponent(tagName);
-      } catch (err) {
+      } catch (err2) {
         throwError(state, "tag name is malformed: " + tagName);
       }
       if (isVerbatim) {
@@ -31876,7 +31876,7 @@ var require_rc_config_loader = __commonJS({
       const extensions = Object.keys(loaderByExt);
       while (extensions.length) {
         const ext = extensions.shift();
-        const configLocation = join(parts, configFileName + ext);
+        const configLocation = join6(parts, configFileName + ext);
         if (!fs_1.default.existsSync(configLocation)) {
           continue;
         }
@@ -31905,9 +31905,9 @@ var require_rc_config_loader = __commonJS({
         }
       }
       if (packageJSON) {
-        const pkgJSONLoc = join(parts, "package.json");
+        const pkgJSONLoc = join6(parts, "package.json");
         if (fs_1.default.existsSync(pkgJSONLoc)) {
-          const pkgJSON = json5_1.default.parse(readFile2(pkgJSONLoc));
+          const pkgJSON = json5_1.default.parse(readFile3(pkgJSONLoc));
           if (pkgJSON[packageJSONFieldName]) {
             return {
               config: pkgJSON[packageJSONFieldName],
@@ -31924,7 +31924,7 @@ var require_rc_config_loader = __commonJS({
     function splitPath(x) {
       return path_1.default.resolve(x || "").split(path_1.default.sep);
     }
-    function join(parts, filename) {
+    function join6(parts, filename) {
       return path_1.default.resolve(parts.join(path_1.default.sep) + path_1.default.sep, filename);
     }
     function loadJSConfigFile(filePath, suppress) {
@@ -31944,7 +31944,7 @@ Error: ${error62.message}`;
     function loadJSONConfigFile(filePath, suppress) {
       debug(`Loading JSON config file: ${filePath}`);
       try {
-        return json5_1.default.parse(readFile2(filePath));
+        return json5_1.default.parse(readFile3(filePath));
       } catch (error62) {
         debug(`Error reading JSON file: ${filePath}`);
         if (!suppress) {
@@ -31954,14 +31954,14 @@ Error: ${error62.message}`;
         }
       }
     }
-    function readFile2(filePath) {
+    function readFile3(filePath) {
       return fs_1.default.readFileSync(filePath, "utf8");
     }
     function loadYAMLConfigFile(filePath, suppress) {
       debug(`Loading YAML config file: ${filePath}`);
       const yaml = require_js_yaml2();
       try {
-        return yaml.load(readFile2(filePath)) || {};
+        return yaml.load(readFile3(filePath)) || {};
       } catch (error62) {
         debug(`Error reading YAML file: ${filePath}`);
         if (!suppress) {
@@ -34190,7 +34190,7 @@ var require_task_runner = __commonJS({
        * @returns {Promise}
        */
       static process(task) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve2, reject) => {
           const messages = [];
           task.on(textlint_core_task_js_1.default.events.message, (message) => {
             messages.push(message);
@@ -34200,7 +34200,7 @@ var require_task_runner = __commonJS({
           });
           task.on(textlint_core_task_js_1.default.events.complete, () => {
             task.removeAllListeners();
-            resolve(messages);
+            resolve2(messages);
           });
           task.start();
         });
@@ -34543,11 +34543,11 @@ var require_source_code_fixer = __commonJS({
     var debug = (0, debug_1.default)("textlint:source-code-fixer");
     var BOM = "\uFEFF";
     function compareMessagesByLocation(a, b) {
-      const lineDiff = a.line - b.line;
-      if (lineDiff === 0) {
+      const lineDiff2 = a.line - b.line;
+      if (lineDiff2 === 0) {
         return a.column - b.column;
       } else {
-        return lineDiff;
+        return lineDiff2;
       }
     }
     function clone2(object2) {
@@ -35041,11 +35041,11 @@ var require_sort_messages_process = __commonJS({
     exports.default = sortByLineColumn;
     function sortByLineColumn(messages) {
       return messages.sort(function(a, b) {
-        const lineDiff = a.line - b.line;
-        if (lineDiff === 0) {
+        const lineDiff2 = a.line - b.line;
+        if (lineDiff2 === 0) {
           return a.column - b.column;
         } else {
-          return lineDiff;
+          return lineDiff2;
         }
       });
     }
@@ -36926,9 +36926,9 @@ var require_legacy = __commonJS({
           _arr.push(_s.value);
           if (i && _arr.length === i) break;
         }
-      } catch (err) {
+      } catch (err2) {
         _d = true;
-        _e = err;
+        _e = err2;
       } finally {
         try {
           if (!_n && _i["return"] != null) _i["return"]();
@@ -36983,9 +36983,9 @@ var require_legacy = __commonJS({
             });
           };
           for (var _iterator = __getOwnPropNames3(from)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) _loop();
-        } catch (err) {
+        } catch (err2) {
           _didIteratorError = true;
-          _iteratorError = err;
+          _iteratorError = err2;
         } finally {
           try {
             if (!_iteratorNormalCompletion && _iterator.return != null) {
@@ -37094,9 +37094,9 @@ var require_legacy = __commonJS({
             var key = _step.value;
             dst[key] = src[key];
           }
-        } catch (err) {
+        } catch (err2) {
           _didIteratorError = true;
-          _iteratorError = err;
+          _iteratorError = err2;
         } finally {
           try {
             if (!_iteratorNormalCompletion && _iterator.return != null) {
@@ -37245,9 +37245,9 @@ var require_legacy = __commonJS({
               }
               path4.pop();
             }
-          } catch (err) {
+          } catch (err2) {
             _didIteratorError = true;
-            _iteratorError = err;
+            _iteratorError = err2;
           } finally {
             try {
               if (!_iteratorNormalCompletion && _iterator.return != null) {
@@ -37428,9 +37428,9 @@ var require_legacy = __commonJS({
                     var key = _step.value;
                     dst[key] = clone3(src[key]);
                   }
-                } catch (err) {
+                } catch (err2) {
                   _didIteratorError = true;
-                  _iteratorError = err;
+                  _iteratorError = err2;
                 } finally {
                   try {
                     if (!_iteratorNormalCompletion && _iterator.return != null) {
@@ -37495,9 +37495,9 @@ var require_bail = __commonJS({
   "node_modules/bail/index.js"(exports, module) {
     "use strict";
     module.exports = bail;
-    function bail(err) {
-      if (err) {
-        throw err;
+    function bail(err2) {
+      if (err2) {
+        throw err2;
       }
     }
   }
@@ -37675,10 +37675,10 @@ var require_trough = __commonJS({
     function trough() {
       var fns = [];
       var middleware = {};
-      middleware.run = run;
+      middleware.run = run2;
       middleware.use = use;
       return middleware;
-      function run() {
+      function run2() {
         var index = -1;
         var input2 = slice.call(arguments, 0, -1);
         var done = arguments[arguments.length - 1];
@@ -37686,14 +37686,14 @@ var require_trough = __commonJS({
           throw new Error("Expected function as last argument, not " + done);
         }
         next.apply(null, [null].concat(input2));
-        function next(err) {
+        function next(err2) {
           var fn = fns[++index];
           var params = slice.call(arguments, 0);
           var values = params.slice(1);
           var length = input2.length;
           var pos = -1;
-          if (err) {
-            done(err);
+          if (err2) {
+            done(err2);
             return;
           }
           while (++pos < length) {
@@ -37867,7 +37867,7 @@ var require_core3 = __commonJS({
     var buffer = require_is_buffer2();
     module.exports = VFile;
     var own2 = {}.hasOwnProperty;
-    var order = ["history", "path", "basename", "stem", "extname", "dirname"];
+    var order2 = ["history", "path", "basename", "stem", "extname", "dirname"];
     VFile.prototype.toString = toString;
     Object.defineProperty(VFile.prototype, "path", { get: getPath, set: setPath });
     Object.defineProperty(VFile.prototype, "dirname", {
@@ -37901,14 +37901,14 @@ var require_core3 = __commonJS({
       this.history = [];
       this.cwd = proc.cwd();
       index = -1;
-      while (++index < order.length) {
-        prop = order[index];
+      while (++index < order2.length) {
+        prop = order2[index];
         if (own2.call(options, prop)) {
           this[prop] = options[prop];
         }
       }
       for (prop in options) {
-        if (order.indexOf(prop) < 0) {
+        if (order2.indexOf(prop) < 0) {
           this[prop] = options[prop];
         }
       }
@@ -37925,33 +37925,33 @@ var require_core3 = __commonJS({
     function getDirname() {
       return typeof this.path === "string" ? p.dirname(this.path) : void 0;
     }
-    function setDirname(dirname) {
+    function setDirname(dirname2) {
       assertPath(this.path, "dirname");
-      this.path = p.join(dirname || "", this.basename);
+      this.path = p.join(dirname2 || "", this.basename);
     }
     function getBasename() {
       return typeof this.path === "string" ? p.basename(this.path) : void 0;
     }
-    function setBasename(basename) {
-      assertNonEmpty(basename, "basename");
-      assertPart(basename, "basename");
-      this.path = p.join(this.dirname || "", basename);
+    function setBasename(basename2) {
+      assertNonEmpty(basename2, "basename");
+      assertPart(basename2, "basename");
+      this.path = p.join(this.dirname || "", basename2);
     }
     function getExtname() {
       return typeof this.path === "string" ? p.extname(this.path) : void 0;
     }
-    function setExtname(extname) {
-      assertPart(extname, "extname");
+    function setExtname(extname2) {
+      assertPart(extname2, "extname");
       assertPath(this.path, "extname");
-      if (extname) {
-        if (extname.charCodeAt(0) !== 46) {
+      if (extname2) {
+        if (extname2.charCodeAt(0) !== 46) {
           throw new Error("`extname` must start with `.`");
         }
-        if (extname.indexOf(".", 1) > -1) {
+        if (extname2.indexOf(".", 1) > -1) {
           throw new Error("`extname` cannot contain multiple dots");
         }
       }
-      this.path = p.join(this.dirname, this.stem + (extname || ""));
+      this.path = p.join(this.dirname, this.stem + (extname2 || ""));
     }
     function getStem() {
       return typeof this.path === "string" ? p.basename(this.path, this.extname) : void 0;
@@ -37993,7 +37993,7 @@ var require_lib10 = __commonJS({
     module.exports = VFile;
     VFile.prototype.message = message;
     VFile.prototype.info = info;
-    VFile.prototype.fail = fail;
+    VFile.prototype.fail = fail2;
     function message(reason, position, origin) {
       var message2 = new VMessage(reason, position, origin);
       if (this.path) {
@@ -38004,7 +38004,7 @@ var require_lib10 = __commonJS({
       this.messages.push(message2);
       return message2;
     }
-    function fail() {
+    function fail2() {
       var message2 = this.message.apply(this, arguments);
       message2.fatal = true;
       throw message2;
@@ -38078,7 +38078,7 @@ var require_unified = __commonJS({
       processor.use = use;
       processor.parse = parse3;
       processor.stringify = stringify;
-      processor.run = run;
+      processor.run = run2;
       processor.runSync = runSync;
       processor.process = process4;
       processor.processSync = processSync;
@@ -38211,7 +38211,7 @@ var require_unified = __commonJS({
         }
         return Parser(String(file2), file2);
       }
-      function run(node2, file2, cb) {
+      function run2(node2, file2, cb) {
         assertNode(node2);
         freeze();
         if (!cb && typeof file2 === "function") {
@@ -38222,14 +38222,14 @@ var require_unified = __commonJS({
           return new Promise(executor);
         }
         executor(null, cb);
-        function executor(resolve, reject) {
+        function executor(resolve2, reject) {
           transformers.run(node2, vfile(file2), done);
           function done(error62, tree, file3) {
             tree = tree || node2;
             if (error62) {
               reject(error62);
-            } else if (resolve) {
-              resolve(tree);
+            } else if (resolve2) {
+              resolve2(tree);
             } else {
               cb(null, tree, file3);
             }
@@ -38239,7 +38239,7 @@ var require_unified = __commonJS({
       function runSync(node2, file2) {
         var result;
         var complete;
-        run(node2, file2, done);
+        run2(node2, file2, done);
         assertDone("runSync", "run", complete);
         return result;
         function done(error62, tree) {
@@ -38268,14 +38268,14 @@ var require_unified = __commonJS({
           return new Promise(executor);
         }
         executor(null, cb);
-        function executor(resolve, reject) {
+        function executor(resolve2, reject) {
           var file2 = vfile(doc);
           pipeline.run(processor, { file: file2 }, done);
           function done(error62) {
             if (error62) {
               reject(error62);
-            } else if (resolve) {
-              resolve(file2);
+            } else if (resolve2) {
+              resolve2(file2);
             } else {
               cb(null, file2);
             }
@@ -38372,7 +38372,7 @@ var require_convert = __commonJS({
     module.exports = convert;
     function convert(test) {
       if (test == null) {
-        return ok;
+        return ok2;
       }
       if (typeof test === "string") {
         return typeFactory(test);
@@ -38418,7 +38418,7 @@ var require_convert = __commonJS({
         return Boolean(node2 && node2.type === test);
       }
     }
-    function ok() {
+    function ok2() {
       return true;
     }
   }
@@ -39079,7 +39079,7 @@ var require_syntax = __commonJS({
     text[104] = [emailAutolink, httpAutolink];
     text[87] = [emailAutolink, wwwAutolink];
     text[119] = [emailAutolink, wwwAutolink];
-    function tokenizeEmailAutolink(effects, ok, nok) {
+    function tokenizeEmailAutolink(effects, ok2, nok) {
       var self2 = this;
       var hasDot;
       return start;
@@ -39138,12 +39138,12 @@ var require_syntax = __commonJS({
         if (hasDot) {
           effects.exit("literalAutolinkEmail");
           effects.exit("literalAutolink");
-          return ok(code2);
+          return ok2(code2);
         }
         return nok(code2);
       }
     }
-    function tokenizeWwwAutolink(effects, ok, nok) {
+    function tokenizeWwwAutolink(effects, ok2, nok) {
       var self2 = this;
       return start;
       function start(code2) {
@@ -39161,10 +39161,10 @@ var require_syntax = __commonJS({
       function done(code2) {
         effects.exit("literalAutolinkWww");
         effects.exit("literalAutolink");
-        return ok(code2);
+        return ok2(code2);
       }
     }
-    function tokenizeHttpAutolink(effects, ok, nok) {
+    function tokenizeHttpAutolink(effects, ok2, nok) {
       var self2 = this;
       return start;
       function start(code2) {
@@ -39231,10 +39231,10 @@ var require_syntax = __commonJS({
       function done(code2) {
         effects.exit("literalAutolinkHttp");
         effects.exit("literalAutolink");
-        return ok(code2);
+        return ok2(code2);
       }
     }
-    function tokenizeWww(effects, ok, nok) {
+    function tokenizeWww(effects, ok2, nok) {
       return start;
       function start(code2) {
         effects.consume(code2);
@@ -39262,10 +39262,10 @@ var require_syntax = __commonJS({
         return nok(code2);
       }
       function after(code2) {
-        return code2 === null || markdownLineEnding(code2) ? nok(code2) : ok(code2);
+        return code2 === null || markdownLineEnding(code2) ? nok(code2) : ok2(code2);
       }
     }
-    function tokenizeDomain(effects, ok, nok) {
+    function tokenizeDomain(effects, ok2, nok) {
       var hasUnderscoreInLastSegment;
       var hasUnderscoreInLastLastSegment;
       return domain3;
@@ -39299,19 +39299,19 @@ var require_syntax = __commonJS({
       }
       function done(code2) {
         if (!hasUnderscoreInLastLastSegment && !hasUnderscoreInLastSegment) {
-          return ok(code2);
+          return ok2(code2);
         }
         return nok(code2);
       }
     }
-    function tokenizePath(effects, ok) {
+    function tokenizePath(effects, ok2) {
       var balance = 0;
       return inPath;
       function inPath(code2) {
         if (code2 === 38) {
           return effects.check(
             namedCharacterReference,
-            ok,
+            ok2,
             continuedPunctuation
           )(code2);
         }
@@ -39326,10 +39326,10 @@ var require_syntax = __commonJS({
           )(code2);
         }
         if (pathEnd(code2)) {
-          return ok(code2);
+          return ok2(code2);
         }
         if (trailingPunctuation(code2)) {
-          return effects.check(punctuation, ok, continuedPunctuation)(code2);
+          return effects.check(punctuation, ok2, continuedPunctuation)(code2);
         }
         effects.consume(code2);
         return inPath;
@@ -39340,10 +39340,10 @@ var require_syntax = __commonJS({
       }
       function parenAtPathEnd(code2) {
         balance--;
-        return balance < 0 ? ok(code2) : continuedPunctuation(code2);
+        return balance < 0 ? ok2(code2) : continuedPunctuation(code2);
       }
     }
-    function tokenizeNamedCharacterReference(effects, ok, nok) {
+    function tokenizeNamedCharacterReference(effects, ok2, nok) {
       return start;
       function start(code2) {
         effects.consume(code2);
@@ -39361,10 +39361,10 @@ var require_syntax = __commonJS({
         return nok(code2);
       }
       function after(code2) {
-        return pathEnd(code2) ? ok(code2) : nok(code2);
+        return pathEnd(code2) ? ok2(code2) : nok(code2);
       }
     }
-    function tokenizePunctuation(effects, ok, nok) {
+    function tokenizePunctuation(effects, ok2, nok) {
       return start;
       function start(code2) {
         effects.consume(code2);
@@ -39375,7 +39375,7 @@ var require_syntax = __commonJS({
           effects.consume(code2);
           return after;
         }
-        return pathEnd(code2) ? ok(code2) : nok(code2);
+        return pathEnd(code2) ? ok2(code2) : nok(code2);
       }
     }
     function trailingPunctuation(code2) {
@@ -39569,12 +39569,12 @@ var require_resolve_all = __commonJS({
     function resolveAll(constructs, events, context) {
       var called = [];
       var index = -1;
-      var resolve;
+      var resolve2;
       while (++index < constructs.length) {
-        resolve = constructs[index].resolveAll;
-        if (resolve && called.indexOf(resolve) < 0) {
-          events = resolve(events, context);
-          called.push(resolve);
+        resolve2 = constructs[index].resolveAll;
+        if (resolve2 && called.indexOf(resolve2) < 0) {
+          events = resolve2(events, context);
+          called.push(resolve2);
         }
       }
       return events;
@@ -39688,7 +39688,7 @@ var require_micromark_extension_gfm_strikethrough = __commonJS({
         }
         return events;
       }
-      function tokenizeStrikethrough(effects, ok, nok) {
+      function tokenizeStrikethrough(effects, ok2, nok) {
         var previous = this.previous;
         var events = this.events;
         var size = 0;
@@ -39715,7 +39715,7 @@ var require_micromark_extension_gfm_strikethrough = __commonJS({
           after = classifyCharacter(code);
           token._open = !after || after === 2 && before;
           token._close = !before || before === 2 && after;
-          return ok(code);
+          return ok2(code);
         }
       }
     }
@@ -39738,7 +39738,7 @@ var require_factory_space = __commonJS({
   "node_modules/micromark-extension-gfm/node_modules/micromark/dist/tokenize/factory-space.js"(exports, module) {
     "use strict";
     var markdownSpace = require_markdown_space();
-    function spaceFactory(effects, ok, type, max) {
+    function spaceFactory(effects, ok2, type, max) {
       var limit = max ? max - 1 : Infinity;
       var size = 0;
       return start;
@@ -39747,7 +39747,7 @@ var require_factory_space = __commonJS({
           effects.enter(type);
           return prefix(code);
         }
-        return ok(code);
+        return ok2(code);
       }
       function prefix(code) {
         if (markdownSpace(code) && size++ < limit) {
@@ -39755,7 +39755,7 @@ var require_factory_space = __commonJS({
           return prefix;
         }
         effects.exit(type);
-        return ok(code);
+        return ok2(code);
       }
     }
     module.exports = spaceFactory;
@@ -39854,7 +39854,7 @@ var require_syntax2 = __commonJS({
       }
       return events;
     }
-    function tokenizeTable(effects, ok, nok) {
+    function tokenizeTable(effects, ok2, nok) {
       var align = [];
       var tableHeaderCount = 0;
       var seenDelimiter;
@@ -40038,7 +40038,7 @@ var require_syntax2 = __commonJS({
       }
       function tableClose(code) {
         effects.exit("table");
-        return ok(code);
+        return ok2(code);
       }
       function tableContinue(code) {
         effects.enter("lineEnding");
@@ -40124,7 +40124,7 @@ var require_syntax2 = __commonJS({
         return createSpace(effects, rowStartBody, "linePrefix", 4);
       }
     }
-    function tokenizeSetextUnderlineMini(effects, ok, nok) {
+    function tokenizeSetextUnderlineMini(effects, ok2, nok) {
       return start;
       function start(code) {
         if (code !== 45) {
@@ -40146,12 +40146,12 @@ var require_syntax2 = __commonJS({
           return whitespace;
         }
         if (code === null || code === -5 || code === -4 || code === -3) {
-          return ok(code);
+          return ok2(code);
         }
         return nok(code);
       }
     }
-    function tokenizeNextPrefixedOrBlank(effects, ok, nok) {
+    function tokenizeNextPrefixedOrBlank(effects, ok2, nok) {
       var size = 0;
       return start;
       function start(code) {
@@ -40163,10 +40163,10 @@ var require_syntax2 = __commonJS({
         if (code === -1 || code === 32) {
           effects.consume(code);
           size++;
-          return size === 4 ? ok : whitespace;
+          return size === 4 ? ok2 : whitespace;
         }
         if (code === null || code < 0) {
-          return ok(code);
+          return ok2(code);
         }
         return nok(code);
       }
@@ -40208,7 +40208,7 @@ var require_factory_space2 = __commonJS({
   "node_modules/micromark-extension-gfm-task-list-item/node_modules/micromark/dist/tokenize/factory-space.js"(exports, module) {
     "use strict";
     var markdownSpace = require_markdown_space2();
-    function spaceFactory(effects, ok, type, max) {
+    function spaceFactory(effects, ok2, type, max) {
       var limit = max ? max - 1 : Infinity;
       var size = 0;
       return start;
@@ -40217,7 +40217,7 @@ var require_factory_space2 = __commonJS({
           effects.enter(type);
           return prefix(code);
         }
-        return ok(code);
+        return ok2(code);
       }
       function prefix(code) {
         if (markdownSpace(code) && size++ < limit) {
@@ -40225,7 +40225,7 @@ var require_factory_space2 = __commonJS({
           return prefix;
         }
         effects.exit(type);
-        return ok(code);
+        return ok2(code);
       }
     }
     module.exports = spaceFactory;
@@ -40270,7 +40270,7 @@ var require_syntax3 = __commonJS({
     var prefixSize = require_prefix_size();
     var tasklistCheck = { tokenize: tokenizeTasklistCheck };
     exports.text = { 91: tasklistCheck };
-    function tokenizeTasklistCheck(effects, ok, nok) {
+    function tokenizeTasklistCheck(effects, ok2, nok) {
       var self2 = this;
       return open2;
       function open2(code) {
@@ -40310,16 +40310,16 @@ var require_syntax3 = __commonJS({
           effects.consume(code);
           effects.exit("taskListCheckMarker");
           effects.exit("taskListCheck");
-          return effects.check({ tokenize: spaceThenNonSpace }, ok, nok);
+          return effects.check({ tokenize: spaceThenNonSpace }, ok2, nok);
         }
         return nok(code);
       }
     }
-    function spaceThenNonSpace(effects, ok, nok) {
+    function spaceThenNonSpace(effects, ok2, nok) {
       var self2 = this;
       return spaceFactory(effects, after, "whitespace");
       function after(code) {
-        return prefixSize(self2.events, "whitespace") && code !== null && !markdownLineEndingOrSpace(code) ? ok(code) : nok(code);
+        return prefixSize(self2.events, "whitespace") && code !== null && !markdownLineEndingOrSpace(code) ? ok2(code) : nok(code);
       }
     }
   }
@@ -41318,7 +41318,7 @@ var require_factory_space3 = __commonJS({
   "node_modules/mdast-util-from-markdown/node_modules/micromark/dist/tokenize/factory-space.js"(exports, module) {
     "use strict";
     var markdownSpace = require_markdown_space3();
-    function spaceFactory(effects, ok, type, max) {
+    function spaceFactory(effects, ok2, type, max) {
       var limit = max ? max - 1 : Infinity;
       var size = 0;
       return start;
@@ -41327,7 +41327,7 @@ var require_factory_space3 = __commonJS({
           effects.enter(type);
           return prefix(code);
         }
-        return ok(code);
+        return ok2(code);
       }
       function prefix(code) {
         if (markdownSpace(code) && size++ < limit) {
@@ -41335,7 +41335,7 @@ var require_factory_space3 = __commonJS({
           return prefix;
         }
         effects.exit(type);
-        return ok(code);
+        return ok2(code);
       }
     }
     module.exports = spaceFactory;
@@ -41413,10 +41413,10 @@ var require_partial_blank_line = __commonJS({
       tokenize: tokenizePartialBlankLine,
       partial: true
     };
-    function tokenizePartialBlankLine(effects, ok, nok) {
+    function tokenizePartialBlankLine(effects, ok2, nok) {
       return factorySpace(effects, afterWhitespace, "linePrefix");
       function afterWhitespace(code) {
-        return code === null || markdownLineEnding(code) ? ok(code) : nok(code);
+        return code === null || markdownLineEnding(code) ? ok2(code) : nok(code);
       }
     }
     module.exports = partialBlankLine;
@@ -41536,7 +41536,7 @@ var require_document = __commonJS({
         }
         stack.length = size;
       }
-      function tokenizeInspect(effects2, ok) {
+      function tokenizeInspect(effects2, ok2) {
         var subcontinued = 0;
         inspectResult = {};
         return inspectStart;
@@ -41594,22 +41594,22 @@ var require_document = __commonJS({
         function inspectDone(code) {
           inspectResult.continued = subcontinued;
           self2.interrupt = self2.containerState = void 0;
-          return ok(code);
+          return ok2(code);
         }
       }
     }
-    function tokenizeContainer(effects, ok, nok) {
+    function tokenizeContainer(effects, ok2, nok) {
       return factorySpace(
         effects,
-        effects.attempt(this.parser.constructs.document, ok, nok),
+        effects.attempt(this.parser.constructs.document, ok2, nok),
         "linePrefix",
         this.parser.constructs.disable.null.indexOf("codeIndented") > -1 ? void 0 : 4
       );
     }
-    function tokenizeLazyFlow(effects, ok, nok) {
+    function tokenizeLazyFlow(effects, ok2, nok) {
       return factorySpace(
         effects,
-        effects.lazy(this.parser.constructs.flow, ok, nok),
+        effects.lazy(this.parser.constructs.flow, ok2, nok),
         "linePrefix",
         this.parser.constructs.disable.null.indexOf("codeIndented") > -1 ? void 0 : 4
       );
@@ -41870,7 +41870,7 @@ var require_content2 = __commonJS({
       subtokenize(events);
       return events;
     }
-    function tokenizeContent(effects, ok) {
+    function tokenizeContent(effects, ok2) {
       var previous;
       return start;
       function start(code) {
@@ -41897,7 +41897,7 @@ var require_content2 = __commonJS({
       function contentEnd(code) {
         effects.exit("chunkContent");
         effects.exit("content");
-        return ok(code);
+        return ok2(code);
       }
       function contentContinue(code) {
         effects.consume(code);
@@ -41909,7 +41909,7 @@ var require_content2 = __commonJS({
         return data;
       }
     }
-    function tokenizeContinuation(effects, ok, nok) {
+    function tokenizeContinuation(effects, ok2, nok) {
       var self2 = this;
       return startLookahead;
       function startLookahead(code) {
@@ -41923,9 +41923,9 @@ var require_content2 = __commonJS({
           return nok(code);
         }
         if (self2.parser.constructs.disable.null.indexOf("codeIndented") > -1 || prefixSize(self2.events, "linePrefix") < 4) {
-          return effects.interrupt(self2.parser.constructs.flow, nok, ok)(code);
+          return effects.interrupt(self2.parser.constructs.flow, nok, ok2)(code);
         }
-        return ok(code);
+        return ok2(code);
       }
     }
     module.exports = content;
@@ -42225,12 +42225,12 @@ var require_resolve_all2 = __commonJS({
     function resolveAll(constructs, events, context) {
       var called = [];
       var index = -1;
-      var resolve;
+      var resolve2;
       while (++index < constructs.length) {
-        resolve = constructs[index].resolveAll;
-        if (resolve && called.indexOf(resolve) < 0) {
-          events = resolve(events, context);
-          called.push(resolve);
+        resolve2 = constructs[index].resolveAll;
+        if (resolve2 && called.indexOf(resolve2) < 0) {
+          events = resolve2(events, context);
+          called.push(resolve2);
         }
       }
       return events;
@@ -42480,12 +42480,12 @@ var require_create_tokenizer = __commonJS({
               return construct.tokenize.call(
                 fields ? assign({}, context, fields) : context,
                 effects,
-                ok,
+                ok2,
                 nok
               )(code);
             }
           }
-          function ok(code) {
+          function ok2(code) {
             onreturn(currentConstruct, info);
             return returnState;
           }
@@ -42741,7 +42741,7 @@ var require_attention = __commonJS({
       }
       return events;
     }
-    function tokenizeAttention(effects, ok) {
+    function tokenizeAttention(effects, ok2) {
       var before = classifyCharacter(this.previous);
       var marker;
       return start;
@@ -42765,7 +42765,7 @@ var require_attention = __commonJS({
         close = !before || before === 2 && after;
         token._open = marker === 42 ? open2 : open2 && (before || !close);
         token._close = marker === 42 ? close : close && (after || !open2);
-        return ok(code);
+        return ok2(code);
       }
     }
     module.exports = attention;
@@ -42829,7 +42829,7 @@ var require_autolink = __commonJS({
       name: "autolink",
       tokenize: tokenizeAutolink
     };
-    function tokenizeAutolink(effects, ok, nok) {
+    function tokenizeAutolink(effects, ok2, nok) {
       var size = 1;
       return start;
       function start(code) {
@@ -42911,7 +42911,7 @@ var require_autolink = __commonJS({
         effects.consume(code);
         effects.exit("autolinkMarker");
         effects.exit("autolink");
-        return ok;
+        return ok2;
       }
     }
     module.exports = autolink;
@@ -42932,7 +42932,7 @@ var require_block_quote = __commonJS({
       },
       exit
     };
-    function tokenizeBlockQuoteStart(effects, ok, nok) {
+    function tokenizeBlockQuoteStart(effects, ok2, nok) {
       var self2 = this;
       return start;
       function start(code) {
@@ -42957,16 +42957,16 @@ var require_block_quote = __commonJS({
           effects.consume(code);
           effects.exit("blockQuotePrefixWhitespace");
           effects.exit("blockQuotePrefix");
-          return ok;
+          return ok2;
         }
         effects.exit("blockQuotePrefix");
-        return ok(code);
+        return ok2(code);
       }
     }
-    function tokenizeBlockQuoteContinuation(effects, ok, nok) {
+    function tokenizeBlockQuoteContinuation(effects, ok2, nok) {
       return factorySpace(
         effects,
-        effects.attempt(blockQuote, ok, nok),
+        effects.attempt(blockQuote, ok2, nok),
         "linePrefix",
         this.parser.constructs.disable.null.indexOf("codeIndented") > -1 ? void 0 : 4
       );
@@ -42997,7 +42997,7 @@ var require_character_escape = __commonJS({
       name: "characterEscape",
       tokenize: tokenizeCharacterEscape
     };
-    function tokenizeCharacterEscape(effects, ok, nok) {
+    function tokenizeCharacterEscape(effects, ok2, nok) {
       return start;
       function start(code) {
         effects.enter("characterEscape");
@@ -43012,7 +43012,7 @@ var require_character_escape = __commonJS({
           effects.consume(code);
           effects.exit("characterEscapeValue");
           effects.exit("characterEscape");
-          return ok;
+          return ok2;
         }
         return nok(code);
       }
@@ -45300,7 +45300,7 @@ var require_character_reference = __commonJS({
       name: "characterReference",
       tokenize: tokenizeCharacterReference
     };
-    function tokenizeCharacterReference(effects, ok, nok) {
+    function tokenizeCharacterReference(effects, ok2, nok) {
       var self2 = this;
       var size = 0;
       var max;
@@ -45351,7 +45351,7 @@ var require_character_reference = __commonJS({
           effects.consume(code);
           effects.exit("characterReferenceMarker");
           effects.exit("characterReference");
-          return ok;
+          return ok2;
         }
         if (test(code) && size++ < max) {
           effects.consume(code);
@@ -45377,7 +45377,7 @@ var require_code_fenced = __commonJS({
       tokenize: tokenizeCodeFenced,
       concrete: true
     };
-    function tokenizeCodeFenced(effects, ok, nok) {
+    function tokenizeCodeFenced(effects, ok2, nok) {
       var self2 = this;
       var closingFenceConstruct = {
         tokenize: tokenizeClosingFence,
@@ -45445,7 +45445,7 @@ var require_code_fenced = __commonJS({
       }
       function openAfter(code) {
         effects.exit("codeFencedFence");
-        return self2.interrupt ? ok(code) : content(code);
+        return self2.interrupt ? ok2(code) : content(code);
       }
       function content(code) {
         if (code === null) {
@@ -45474,9 +45474,9 @@ var require_code_fenced = __commonJS({
       }
       function after(code) {
         effects.exit("codeFenced");
-        return ok(code);
+        return ok2(code);
       }
-      function tokenizeClosingFence(effects2, ok2, nok2) {
+      function tokenizeClosingFence(effects2, ok3, nok2) {
         var size = 0;
         return factorySpace(
           effects2,
@@ -45502,7 +45502,7 @@ var require_code_fenced = __commonJS({
         function closingSequenceEnd(code) {
           if (code === null || markdownLineEnding(code)) {
             effects2.exit("codeFencedFence");
-            return ok2(code);
+            return ok3(code);
           }
           return nok2(code);
         }
@@ -45539,14 +45539,14 @@ var require_code_indented = __commonJS({
       chunkedSplice(events, events.length, 0, [["exit", code, context]]);
       return events;
     }
-    function tokenizeCodeIndented(effects, ok, nok) {
+    function tokenizeCodeIndented(effects, ok2, nok) {
       return effects.attempt(indentedContentConstruct, afterPrefix, nok);
       function afterPrefix(code) {
         if (code === null) {
-          return ok(code);
+          return ok2(code);
         }
         if (markdownLineEnding(code)) {
-          return effects.attempt(indentedContentConstruct, afterPrefix, ok)(code);
+          return effects.attempt(indentedContentConstruct, afterPrefix, ok2)(code);
         }
         effects.enter("codeFlowValue");
         return content(code);
@@ -45560,7 +45560,7 @@ var require_code_indented = __commonJS({
         return content;
       }
     }
-    function tokenizeIndentedContent(effects, ok, nok) {
+    function tokenizeIndentedContent(effects, ok2, nok) {
       var self2 = this;
       return factorySpace(effects, afterPrefix, "linePrefix", 4 + 1);
       function afterPrefix(code) {
@@ -45570,7 +45570,7 @@ var require_code_indented = __commonJS({
           effects.exit("lineEnding");
           return factorySpace(effects, afterPrefix, "linePrefix", 4 + 1);
         }
-        return prefixSize(self2.events, "linePrefix") < 4 ? nok(code) : ok(code);
+        return prefixSize(self2.events, "linePrefix") < 4 ? nok(code) : ok2(code);
       }
     }
     module.exports = codeIndented;
@@ -45627,7 +45627,7 @@ var require_code_text = __commonJS({
     function previous(code) {
       return code !== 96 || this.events[this.events.length - 1][1].type === "characterEscape";
     }
-    function tokenizeCodeText(effects, ok, nok) {
+    function tokenizeCodeText(effects, ok2, nok) {
       var sizeOpen = 0;
       var size;
       var token;
@@ -45687,7 +45687,7 @@ var require_code_text = __commonJS({
         if (size === sizeOpen) {
           effects.exit("codeTextSequence");
           effects.exit("codeText");
-          return ok(code);
+          return ok2(code);
         }
         token.type = "codeTextData";
         return data(code);
@@ -45704,7 +45704,7 @@ var require_factory_destination = __commonJS({
     var asciiControl = require_ascii_control2();
     var markdownLineEndingOrSpace = require_markdown_line_ending_or_space3();
     var markdownLineEnding = require_markdown_line_ending2();
-    function destinationFactory(effects, ok, nok, type, literalType, literalMarkerType, rawType, stringType, max) {
+    function destinationFactory(effects, ok2, nok, type, literalType, literalMarkerType, rawType, stringType, max) {
       var limit = max || Infinity;
       var balance = 0;
       return start;
@@ -45735,7 +45735,7 @@ var require_factory_destination = __commonJS({
           effects.exit(literalMarkerType);
           effects.exit(literalType);
           effects.exit(type);
-          return ok;
+          return ok2;
         }
         effects.enter(stringType);
         effects.enter("chunkString", {
@@ -45774,7 +45774,7 @@ var require_factory_destination = __commonJS({
             effects.exit(stringType);
             effects.exit(rawType);
             effects.exit(type);
-            return ok(code);
+            return ok2(code);
           }
           effects.consume(code);
           return destinationRaw;
@@ -45785,7 +45785,7 @@ var require_factory_destination = __commonJS({
           effects.exit(stringType);
           effects.exit(rawType);
           effects.exit(type);
-          return ok(code);
+          return ok2(code);
         }
         if (asciiControl(code)) return nok(code);
         effects.consume(code);
@@ -45809,7 +45809,7 @@ var require_factory_label = __commonJS({
     "use strict";
     var markdownLineEnding = require_markdown_line_ending2();
     var markdownSpace = require_markdown_space3();
-    function labelFactory(effects, ok, nok, type, markerType, stringType) {
+    function labelFactory(effects, ok2, nok, type, markerType, stringType) {
       var self2 = this;
       var size = 0;
       var data;
@@ -45835,7 +45835,7 @@ var require_factory_label = __commonJS({
           effects.consume(code);
           effects.exit(markerType);
           effects.exit(type);
-          return ok;
+          return ok2;
         }
         if (markdownLineEnding(code)) {
           effects.enter("lineEnding");
@@ -45877,7 +45877,7 @@ var require_factory_whitespace = __commonJS({
     var markdownLineEnding = require_markdown_line_ending2();
     var markdownSpace = require_markdown_space3();
     var factorySpace = require_factory_space3();
-    function whitespaceFactory(effects, ok) {
+    function whitespaceFactory(effects, ok2) {
       var seen;
       return start;
       function start(code) {
@@ -45895,7 +45895,7 @@ var require_factory_whitespace = __commonJS({
             seen ? "linePrefix" : "lineSuffix"
           )(code);
         }
-        return ok(code);
+        return ok2(code);
       }
     }
     module.exports = whitespaceFactory;
@@ -45908,7 +45908,7 @@ var require_factory_title = __commonJS({
     "use strict";
     var markdownLineEnding = require_markdown_line_ending2();
     var factorySpace = require_factory_space3();
-    function titleFactory(effects, ok, nok, type, markerType, stringType) {
+    function titleFactory(effects, ok2, nok, type, markerType, stringType) {
       var marker;
       return start;
       function start(code) {
@@ -45925,7 +45925,7 @@ var require_factory_title = __commonJS({
           effects.consume(code);
           effects.exit(markerType);
           effects.exit(type);
-          return ok;
+          return ok2;
         }
         effects.enter(stringType);
         return atTitleBreak(code);
@@ -45989,7 +45989,7 @@ var require_definition = __commonJS({
       tokenize: tokenizeTitle,
       partial: true
     };
-    function tokenizeDefinition(effects, ok, nok) {
+    function tokenizeDefinition(effects, ok2, nok) {
       var self2 = this;
       var identifier;
       return start;
@@ -46039,12 +46039,12 @@ var require_definition = __commonJS({
           if (self2.parser.defined.indexOf(identifier) < 0) {
             self2.parser.defined.push(identifier);
           }
-          return ok(code);
+          return ok2(code);
         }
         return nok(code);
       }
     }
-    function tokenizeTitle(effects, ok, nok) {
+    function tokenizeTitle(effects, ok2, nok) {
       return start;
       function start(code) {
         return markdownLineEndingOrSpace(code) ? factoryWhitespace(effects, before)(code) : nok(code);
@@ -46063,7 +46063,7 @@ var require_definition = __commonJS({
         return nok(code);
       }
       function after(code) {
-        return code === null || markdownLineEnding(code) ? ok(code) : nok(code);
+        return code === null || markdownLineEnding(code) ? ok2(code) : nok(code);
       }
     }
     module.exports = definition;
@@ -46079,7 +46079,7 @@ var require_hard_break_escape = __commonJS({
       name: "hardBreakEscape",
       tokenize: tokenizeHardBreakEscape
     };
-    function tokenizeHardBreakEscape(effects, ok, nok) {
+    function tokenizeHardBreakEscape(effects, ok2, nok) {
       return start;
       function start(code) {
         effects.enter("hardBreakEscape");
@@ -46091,7 +46091,7 @@ var require_hard_break_escape = __commonJS({
         if (markdownLineEnding(code)) {
           effects.exit("escapeMarker");
           effects.exit("hardBreakEscape");
-          return ok(code);
+          return ok2(code);
         }
         return nok(code);
       }
@@ -46149,7 +46149,7 @@ var require_heading_atx = __commonJS({
       }
       return events;
     }
-    function tokenizeHeadingAtx(effects, ok, nok) {
+    function tokenizeHeadingAtx(effects, ok2, nok) {
       var self2 = this;
       var size = 0;
       return start;
@@ -46165,7 +46165,7 @@ var require_heading_atx = __commonJS({
         }
         if (code === null || markdownLineEndingOrSpace(code)) {
           effects.exit("atxHeadingSequence");
-          return self2.interrupt ? ok(code) : headingBreak(code);
+          return self2.interrupt ? ok2(code) : headingBreak(code);
         }
         return nok(code);
       }
@@ -46176,7 +46176,7 @@ var require_heading_atx = __commonJS({
         }
         if (code === null || markdownLineEnding(code)) {
           effects.exit("atxHeading");
-          return ok(code);
+          return ok2(code);
         }
         if (markdownSpace(code)) {
           return factorySpace(effects, headingBreak, "whitespace")(code);
@@ -46323,7 +46323,7 @@ var require_html_flow = __commonJS({
       }
       return events;
     }
-    function tokenizeHtmlFlow(effects, ok, nok) {
+    function tokenizeHtmlFlow(effects, ok2, nok) {
       var self2 = this;
       var kind;
       var startTag;
@@ -46349,7 +46349,7 @@ var require_html_flow = __commonJS({
         if (code === 63) {
           effects.consume(code);
           kind = 3;
-          return self2.interrupt ? ok : continuationDeclarationInside;
+          return self2.interrupt ? ok2 : continuationDeclarationInside;
         }
         if (asciiAlpha(code)) {
           effects.consume(code);
@@ -46375,21 +46375,21 @@ var require_html_flow = __commonJS({
         if (asciiAlpha(code)) {
           effects.consume(code);
           kind = 4;
-          return self2.interrupt ? ok : continuationDeclarationInside;
+          return self2.interrupt ? ok2 : continuationDeclarationInside;
         }
         return nok(code);
       }
       function commentOpenInside(code) {
         if (code === 45) {
           effects.consume(code);
-          return self2.interrupt ? ok : continuationDeclarationInside;
+          return self2.interrupt ? ok2 : continuationDeclarationInside;
         }
         return nok(code);
       }
       function cdataOpenInside(code) {
         if (code === buffer.charCodeAt(index++)) {
           effects.consume(code);
-          return index === buffer.length ? self2.interrupt ? ok : continuation : cdataOpenInside;
+          return index === buffer.length ? self2.interrupt ? ok2 : continuation : cdataOpenInside;
         }
         return nok(code);
       }
@@ -46405,7 +46405,7 @@ var require_html_flow = __commonJS({
         if (code === null || code === 47 || code === 62 || markdownLineEndingOrSpace(code)) {
           if (code !== 47 && startTag && htmlRawNames.indexOf(buffer.toLowerCase()) > -1) {
             kind = 1;
-            return self2.interrupt ? ok(code) : continuation(code);
+            return self2.interrupt ? ok2(code) : continuation(code);
           }
           if (htmlBlockNames.indexOf(buffer.toLowerCase()) > -1) {
             kind = 6;
@@ -46413,7 +46413,7 @@ var require_html_flow = __commonJS({
               effects.consume(code);
               return basicSelfClosing;
             }
-            return self2.interrupt ? ok(code) : continuation(code);
+            return self2.interrupt ? ok2(code) : continuation(code);
           }
           kind = 7;
           return self2.interrupt ? nok(code) : startTag ? completeAttributeNameBefore(code) : completeClosingTagAfter(code);
@@ -46428,7 +46428,7 @@ var require_html_flow = __commonJS({
       function basicSelfClosing(code) {
         if (code === 62) {
           effects.consume(code);
-          return self2.interrupt ? ok : continuation;
+          return self2.interrupt ? ok2 : continuation;
         }
         return nok(code);
       }
@@ -46628,17 +46628,17 @@ var require_html_flow = __commonJS({
       }
       function done(code) {
         effects.exit("htmlFlow");
-        return ok(code);
+        return ok2(code);
       }
     }
-    function tokenizeNextBlank(effects, ok, nok) {
+    function tokenizeNextBlank(effects, ok2, nok) {
       return start;
       function start(code) {
         effects.exit("htmlFlowData");
         effects.enter("lineEndingBlank");
         effects.consume(code);
         effects.exit("lineEndingBlank");
-        return effects.attempt(partialBlankLine, ok, nok);
+        return effects.attempt(partialBlankLine, ok2, nok);
       }
     }
     module.exports = htmlFlow;
@@ -46659,7 +46659,7 @@ var require_html_text = __commonJS({
       name: "htmlText",
       tokenize: tokenizeHtmlText
     };
-    function tokenizeHtmlText(effects, ok, nok) {
+    function tokenizeHtmlText(effects, ok2, nok) {
       var self2 = this;
       var marker;
       var buffer;
@@ -46970,7 +46970,7 @@ var require_html_text = __commonJS({
           effects.consume(code);
           effects.exit("htmlTextData");
           effects.exit("htmlText");
-          return ok;
+          return ok2;
         }
         return nok(code);
       }
@@ -47092,7 +47092,7 @@ var require_label_end = __commonJS({
       chunkedSplice(events, open2, events.length, media);
       return events;
     }
-    function tokenizeLabelEnd(effects, ok, nok) {
+    function tokenizeLabelEnd(effects, ok2, nok) {
       var self2 = this;
       var index = self2.events.length;
       var labelStart;
@@ -47128,25 +47128,25 @@ var require_label_end = __commonJS({
         if (code === 40) {
           return effects.attempt(
             resourceConstruct,
-            ok,
-            defined ? ok : balanced
+            ok2,
+            defined ? ok2 : balanced
           )(code);
         }
         if (code === 91) {
           return effects.attempt(
             fullReferenceConstruct,
-            ok,
-            defined ? effects.attempt(collapsedReferenceConstruct, ok, balanced) : balanced
+            ok2,
+            defined ? effects.attempt(collapsedReferenceConstruct, ok2, balanced) : balanced
           )(code);
         }
-        return defined ? ok(code) : balanced(code);
+        return defined ? ok2(code) : balanced(code);
       }
       function balanced(code) {
         labelStart._balanced = true;
         return nok(code);
       }
     }
-    function tokenizeResource(effects, ok, nok) {
+    function tokenizeResource(effects, ok2, nok) {
       return start;
       function start(code) {
         effects.enter("resource");
@@ -47193,12 +47193,12 @@ var require_label_end = __commonJS({
           effects.consume(code);
           effects.exit("resourceMarker");
           effects.exit("resource");
-          return ok;
+          return ok2;
         }
         return nok(code);
       }
     }
-    function tokenizeFullReference(effects, ok, nok) {
+    function tokenizeFullReference(effects, ok2, nok) {
       var self2 = this;
       return start;
       function start(code) {
@@ -47217,10 +47217,10 @@ var require_label_end = __commonJS({
           normalizeIdentifier(
             self2.sliceSerialize(self2.events[self2.events.length - 1][1]).slice(1, -1)
           )
-        ) < 0 ? nok(code) : ok(code);
+        ) < 0 ? nok(code) : ok2(code);
       }
     }
-    function tokenizeCollapsedReference(effects, ok, nok) {
+    function tokenizeCollapsedReference(effects, ok2, nok) {
       return start;
       function start(code) {
         effects.enter("reference");
@@ -47235,7 +47235,7 @@ var require_label_end = __commonJS({
           effects.consume(code);
           effects.exit("referenceMarker");
           effects.exit("reference");
-          return ok;
+          return ok2;
         }
         return nok(code);
       }
@@ -47254,7 +47254,7 @@ var require_label_start_image = __commonJS({
       tokenize: tokenizeLabelStartImage,
       resolveAll: labelEnd.resolveAll
     };
-    function tokenizeLabelStartImage(effects, ok, nok) {
+    function tokenizeLabelStartImage(effects, ok2, nok) {
       var self2 = this;
       return start;
       function start(code) {
@@ -47279,7 +47279,7 @@ var require_label_start_image = __commonJS({
         "_hiddenFootnoteSupport" in self2.parser.constructs ? (
           /* c8 ignore next */
           nok(code)
-        ) : ok(code);
+        ) : ok2(code);
       }
     }
     module.exports = labelStartImage;
@@ -47296,7 +47296,7 @@ var require_label_start_link = __commonJS({
       tokenize: tokenizeLabelStartLink,
       resolveAll: labelEnd.resolveAll
     };
-    function tokenizeLabelStartLink(effects, ok, nok) {
+    function tokenizeLabelStartLink(effects, ok2, nok) {
       var self2 = this;
       return start;
       function start(code) {
@@ -47312,7 +47312,7 @@ var require_label_start_link = __commonJS({
         "_hiddenFootnoteSupport" in self2.parser.constructs ? (
           /* c8 ignore next */
           nok(code)
-        ) : ok(code);
+        ) : ok2(code);
       }
     }
     module.exports = labelStartLink;
@@ -47328,13 +47328,13 @@ var require_line_ending = __commonJS({
       name: "lineEnding",
       tokenize: tokenizeLineEnding
     };
-    function tokenizeLineEnding(effects, ok) {
+    function tokenizeLineEnding(effects, ok2) {
       return start;
       function start(code) {
         effects.enter("lineEnding");
         effects.consume(code);
         effects.exit("lineEnding");
-        return factorySpace(effects, ok, "linePrefix");
+        return factorySpace(effects, ok2, "linePrefix");
       }
     }
     module.exports = lineEnding;
@@ -47352,7 +47352,7 @@ var require_thematic_break = __commonJS({
       name: "thematicBreak",
       tokenize: tokenizeThematicBreak
     };
-    function tokenizeThematicBreak(effects, ok, nok) {
+    function tokenizeThematicBreak(effects, ok2, nok) {
       var size = 0;
       var marker;
       return start;
@@ -47373,7 +47373,7 @@ var require_thematic_break = __commonJS({
           return nok(code);
         }
         effects.exit("thematicBreak");
-        return ok(code);
+        return ok2(code);
       }
       function sequence(code) {
         if (code === marker) {
@@ -47416,7 +47416,7 @@ var require_list = __commonJS({
       tokenize: tokenizeIndent,
       partial: true
     };
-    function tokenizeListStart(effects, ok, nok) {
+    function tokenizeListStart(effects, ok2, nok) {
       var self2 = this;
       var initialSize = prefixSize(self2.events, "linePrefix");
       var size = 0;
@@ -47485,10 +47485,10 @@ var require_list = __commonJS({
       }
       function endOfPrefix(code) {
         self2.containerState.size = initialSize + sizeChunks(self2.sliceStream(effects.exit("listItemPrefix")));
-        return ok(code);
+        return ok2(code);
       }
     }
-    function tokenizeListContinuation(effects, ok, nok) {
+    function tokenizeListContinuation(effects, ok2, nok) {
       var self2 = this;
       self2.containerState._closeFlow = void 0;
       return effects.check(partialBlankLine, onBlank, notBlank);
@@ -47496,7 +47496,7 @@ var require_list = __commonJS({
         self2.containerState.furtherBlankLines = self2.containerState.furtherBlankLines || self2.containerState.initialBlankLine;
         return factorySpace(
           effects,
-          ok,
+          ok2,
           "listItemIndent",
           self2.containerState.size + 1
         )(code);
@@ -47507,20 +47507,20 @@ var require_list = __commonJS({
           return notInCurrentItem(code);
         }
         self2.containerState.furtherBlankLines = self2.containerState.initialBlankLine = void 0;
-        return effects.attempt(indentConstruct, ok, notInCurrentItem)(code);
+        return effects.attempt(indentConstruct, ok2, notInCurrentItem)(code);
       }
       function notInCurrentItem(code) {
         self2.containerState._closeFlow = true;
         self2.interrupt = void 0;
         return factorySpace(
           effects,
-          effects.attempt(list, ok, nok),
+          effects.attempt(list, ok2, nok),
           "linePrefix",
           self2.parser.constructs.disable.null.indexOf("codeIndented") > -1 ? void 0 : 4
         )(code);
       }
     }
-    function tokenizeIndent(effects, ok, nok) {
+    function tokenizeIndent(effects, ok2, nok) {
       var self2 = this;
       return factorySpace(
         effects,
@@ -47529,13 +47529,13 @@ var require_list = __commonJS({
         self2.containerState.size + 1
       );
       function afterPrefix(code) {
-        return prefixSize(self2.events, "listItemIndent") === self2.containerState.size ? ok(code) : nok(code);
+        return prefixSize(self2.events, "listItemIndent") === self2.containerState.size ? ok2(code) : nok(code);
       }
     }
     function tokenizeListEnd(effects) {
       effects.exit(this.containerState.type);
     }
-    function tokenizeListItemPrefixWhitespace(effects, ok, nok) {
+    function tokenizeListItemPrefixWhitespace(effects, ok2, nok) {
       var self2 = this;
       return factorySpace(
         effects,
@@ -47544,7 +47544,7 @@ var require_list = __commonJS({
         self2.parser.constructs.disable.null.indexOf("codeIndented") > -1 ? void 0 : 4 + 1
       );
       function afterPrefix(code) {
-        return markdownSpace(code) || !prefixSize(self2.events, "listItemPrefixWhitespace") ? nok(code) : ok(code);
+        return markdownSpace(code) || !prefixSize(self2.events, "listItemPrefixWhitespace") ? nok(code) : ok2(code);
       }
     }
     module.exports = list;
@@ -47603,7 +47603,7 @@ var require_setext_underline = __commonJS({
       events.push(["exit", heading, context]);
       return events;
     }
-    function tokenizeSetextUnderline(effects, ok, nok) {
+    function tokenizeSetextUnderline(effects, ok2, nok) {
       var self2 = this;
       var index = self2.events.length;
       var marker;
@@ -47635,7 +47635,7 @@ var require_setext_underline = __commonJS({
       function closingSequenceEnd(code) {
         if (code === null || markdownLineEnding(code)) {
           effects.exit("setextHeadingLine");
-          return ok(code);
+          return ok2(code);
         }
         return nok(code);
       }
@@ -48759,7 +48759,7 @@ var require_syntax5 = __commonJS({
       var fenceConstruct = { tokenize: tokenizeFence, partial: true };
       var buffer;
       return { tokenize: tokenizeFrontmatter, concrete: true };
-      function tokenizeFrontmatter(effects, ok, nok) {
+      function tokenizeFrontmatter(effects, ok2, nok) {
         var self2 = this;
         return start;
         function start(code) {
@@ -48801,10 +48801,10 @@ var require_syntax5 = __commonJS({
         }
         function after(code) {
           effects.exit(name);
-          return ok(code);
+          return ok2(code);
         }
       }
-      function tokenizeFence(effects, ok, nok) {
+      function tokenizeFence(effects, ok2, nok) {
         var bufferIndex = 0;
         return start;
         function start(code) {
@@ -48842,7 +48842,7 @@ var require_syntax5 = __commonJS({
         function fenceEnd(code) {
           if (code === -5 || code === -4 || code === -3 || code === null) {
             effects.exit(fenceType);
-            return ok(code);
+            return ok2(code);
           }
           return nok(code);
         }
@@ -49007,7 +49007,7 @@ var require_factory_space4 = __commonJS({
   "node_modules/micromark-extension-footnote/node_modules/micromark/dist/tokenize/factory-space.js"(exports, module) {
     "use strict";
     var markdownSpace = require_markdown_space4();
-    function spaceFactory(effects, ok, type, max) {
+    function spaceFactory(effects, ok2, type, max) {
       var limit = max ? max - 1 : Infinity;
       var size = 0;
       return start;
@@ -49016,7 +49016,7 @@ var require_factory_space4 = __commonJS({
           effects.enter(type);
           return prefix(code);
         }
-        return ok(code);
+        return ok2(code);
       }
       function prefix(code) {
         if (markdownSpace(code) && size++ < limit) {
@@ -49024,7 +49024,7 @@ var require_factory_space4 = __commonJS({
           return prefix;
         }
         effects.exit(type);
-        return ok(code);
+        return ok2(code);
       }
     }
     module.exports = spaceFactory;
@@ -49041,10 +49041,10 @@ var require_partial_blank_line2 = __commonJS({
       tokenize: tokenizePartialBlankLine,
       partial: true
     };
-    function tokenizePartialBlankLine(effects, ok, nok) {
+    function tokenizePartialBlankLine(effects, ok2, nok) {
       return factorySpace(effects, afterWhitespace, "linePrefix");
       function afterWhitespace(code) {
-        return code === null || markdownLineEnding(code) ? ok(code) : nok(code);
+        return code === null || markdownLineEnding(code) ? ok2(code) : nok(code);
       }
     }
     module.exports = partialBlankLine;
@@ -49152,12 +49152,12 @@ var require_resolve_all3 = __commonJS({
     function resolveAll(constructs, events, context) {
       var called = [];
       var index = -1;
-      var resolve;
+      var resolve2;
       while (++index < constructs.length) {
-        resolve = constructs[index].resolveAll;
-        if (resolve && called.indexOf(resolve) < 0) {
-          events = resolve(events, context);
-          called.push(resolve);
+        resolve2 = constructs[index].resolveAll;
+        if (resolve2 && called.indexOf(resolve2) < 0) {
+          events = resolve2(events, context);
+          called.push(resolve2);
         }
       }
       return events;
@@ -49270,7 +49270,7 @@ var require_micromark_extension_footnote = __commonJS({
       chunkedSplice(events, index, events.length - index, note);
       return events;
     }
-    function tokenizeFootnoteCall(effects, ok, nok) {
+    function tokenizeFootnoteCall(effects, ok2, nok) {
       var self2 = this;
       var defined = self2.parser.footnotes || (self2.parser.footnotes = []);
       var size = 0;
@@ -49325,10 +49325,10 @@ var require_micromark_extension_footnote = __commonJS({
         effects.consume(code);
         effects.exit("footnoteCallLabelMarker");
         effects.exit("footnoteCall");
-        return ok;
+        return ok2;
       }
     }
-    function tokenizeNoteStart(effects, ok, nok) {
+    function tokenizeNoteStart(effects, ok2, nok) {
       return start;
       function start(code) {
         if (code !== 94) return nok(code);
@@ -49344,10 +49344,10 @@ var require_micromark_extension_footnote = __commonJS({
         effects.consume(code);
         effects.exit("inlineNoteStartMarker");
         effects.exit("inlineNoteStart");
-        return ok;
+        return ok2;
       }
     }
-    function tokenizeNoteEnd(effects, ok, nok) {
+    function tokenizeNoteEnd(effects, ok2, nok) {
       var self2 = this;
       return start;
       function start(code) {
@@ -49367,10 +49367,10 @@ var require_micromark_extension_footnote = __commonJS({
         effects.consume(code);
         effects.exit("inlineNoteEndMarker");
         effects.exit("inlineNoteEnd");
-        return ok;
+        return ok2;
       }
     }
-    function tokenizeDefinitionStart(effects, ok, nok) {
+    function tokenizeDefinitionStart(effects, ok2, nok) {
       var self2 = this;
       var defined = self2.parser.footnotes || (self2.parser.footnotes = []);
       var identifier;
@@ -49469,17 +49469,17 @@ var require_micromark_extension_footnote = __commonJS({
         if (defined.indexOf(identifier) < 0) {
           defined.push(identifier);
         }
-        return ok(code);
+        return ok2(code);
       }
     }
-    function tokenizeDefinitionContinuation(effects, ok, nok) {
+    function tokenizeDefinitionContinuation(effects, ok2, nok) {
       var self2 = this;
       return effects.check(blank, onBlank, notBlank);
       function onBlank(code) {
         if (self2.containerState.initialBlankLine) {
           self2.containerState.furtherBlankLines = true;
         }
-        return ok(code);
+        return ok2(code);
       }
       function notBlank(code) {
         if (self2.containerState.furtherBlankLines || !(code === -2 || code === -1 || code === 32)) {
@@ -49487,17 +49487,17 @@ var require_micromark_extension_footnote = __commonJS({
         }
         self2.containerState.initialBlankLine = void 0;
         self2.containerState.furtherBlankLines = void 0;
-        return effects.attempt(indent, ok, nok)(code);
+        return effects.attempt(indent, ok2, nok)(code);
       }
     }
     function footnoteDefinitionEnd(effects) {
       effects.exit("footnoteDefinition");
     }
-    function tokenizeIndent(effects, ok, nok) {
+    function tokenizeIndent(effects, ok2, nok) {
       var self2 = this;
       return createSpace(effects, afterPrefix, "footnoteDefinitionIndent", 5);
       function afterPrefix(code) {
-        return prefixSize(self2.events, "footnoteDefinitionIndent") === 4 ? ok(code) : nok(code);
+        return prefixSize(self2.events, "footnoteDefinitionIndent") === 4 ? ok2(code) : nok(code);
       }
     }
   }
@@ -55540,7 +55540,7 @@ var require_path_to_glob_pattern = __commonJS({
       const normalizedFilePath = path_1.default.normalize(filePath);
       return normalizedFilePath.replace(/\\/g, "/");
     }
-    var isDirectory = (filepath) => {
+    var isDirectory2 = (filepath) => {
       try {
         return fs_1.default.statSync(filepath).isDirectory();
       } catch (error62) {
@@ -55562,7 +55562,7 @@ var require_path_to_glob_pattern = __commonJS({
       return function(filePath) {
         let newPath = filePath;
         const resolvedPath = path_1.default.resolve(cwd, filePath);
-        if (isDirectory(resolvedPath)) {
+        if (isDirectory2(resolvedPath)) {
           newPath = filePath.replace(/[/\\]$/, "") + suffix;
         }
         return convertPathToPosix(newPath);
@@ -58876,9 +58876,9 @@ var require_dist4 = __commonJS({
       return callbacks.get(key) ?? [];
     }
     async function enqueue(key) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve2, reject) => {
         addCallbackToKey(key, {
-          resolve,
+          resolve: resolve2,
           reject
         });
       });
@@ -59000,7 +59000,7 @@ var require_dist4 = __commonJS({
         "deserialize"
       ].every((method) => typeof keyv$1[method] === "function");
     }
-    function isObject2(value) {
+    function isObject3(value) {
       return value !== null && typeof value === "object" && !Array.isArray(value);
     }
     function lessThan(number1, number22) {
@@ -59123,7 +59123,7 @@ var require_dist4 = __commonJS({
     function runIfFn(valueOrFunction, ...arguments_) {
       return typeof valueOrFunction === "function" ? valueOrFunction(...arguments_) : valueOrFunction;
     }
-    var sleep2 = async (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    var sleep2 = async (ms) => new Promise((resolve2) => setTimeout(resolve2, ms));
     var nodeCacheStatsEventMap = {
       set: (stats, key) => {
         stats.increment("sets");
@@ -59689,7 +59689,7 @@ var require_dist4 = __commonJS({
     exports.hashToNumber = hashToNumber;
     exports.hashToNumberSync = hashToNumberSync;
     exports.isKeyvInstance = isKeyvInstance;
-    exports.isObject = isObject2;
+    exports.isObject = isObject3;
     exports.lessThan = lessThan;
     exports.nodeCacheStatsEventMap = nodeCacheStatsEventMap;
     exports.resolvePerStoreTtl = resolvePerStoreTtl;
@@ -63927,13 +63927,13 @@ var require_dist9 = __commonJS({
       default: () => FileEntryDefault
     });
     module.exports = __toCommonJS(index_exports);
-    var import_node_crypto = __toESM3(__require("crypto"), 1);
-    var import_node_fs3 = __toESM3(__require("fs"), 1);
-    var import_node_path4 = __toESM3(__require("path"), 1);
+    var import_node_crypto2 = __toESM3(__require("crypto"), 1);
+    var import_node_fs4 = __toESM3(__require("fs"), 1);
+    var import_node_path9 = __toESM3(__require("path"), 1);
     var import_flat_cache = require_dist8();
     function createFromFile(filePath, useCheckSum, currentWorkingDirectory) {
-      const fname = import_node_path4.default.basename(filePath);
-      const directory = import_node_path4.default.dirname(filePath);
+      const fname = import_node_path9.default.basename(filePath);
+      const directory = import_node_path9.default.dirname(filePath);
       return create(fname, directory, useCheckSum, currentWorkingDirectory);
     }
     function create(cacheId, cacheDirectory, useCheckSum, currentWorkingDirectory) {
@@ -63948,7 +63948,7 @@ var require_dist9 = __commonJS({
       const fileEntryCache = new FileEntryCache(options);
       if (cacheDirectory) {
         const cachePath = `${cacheDirectory}/${cacheId}`;
-        if (import_node_fs3.default.existsSync(cachePath)) {
+        if (import_node_fs4.default.existsSync(cachePath)) {
           fileEntryCache.cache = (0, import_flat_cache.createFromFile)(cachePath, options.cache);
         }
       }
@@ -64062,7 +64062,7 @@ var require_dist9 = __commonJS({
        * @return {String}          content hash digest
        */
       getHash(buffer) {
-        return import_node_crypto.default.createHash(this._hashAlgorithm).update(buffer).digest("hex");
+        return import_node_crypto2.default.createHash(this._hashAlgorithm).update(buffer).digest("hex");
       }
       /**
        * Create the key for the file path used for caching.
@@ -64091,7 +64091,7 @@ var require_dist9 = __commonJS({
        * @returns {boolean} if the file path is a relative path, false otherwise
        */
       isRelativePath(filePath) {
-        return !import_node_path4.default.isAbsolute(filePath);
+        return !import_node_path9.default.isAbsolute(filePath);
       }
       /**
        * Delete the cache file from the disk
@@ -64174,13 +64174,13 @@ var require_dist9 = __commonJS({
         const useCheckSumValue = options?.useCheckSum ?? this._useCheckSum;
         const useModifiedTimeValue = options?.useModifiedTime ?? this._useModifiedTime;
         try {
-          fstat = import_node_fs3.default.statSync(filePath);
+          fstat = import_node_fs4.default.statSync(filePath);
           result.meta = {
             size: fstat.size
           };
           result.meta.mtime = fstat.mtime.getTime();
           if (useCheckSumValue) {
-            const buffer = import_node_fs3.default.readFileSync(filePath);
+            const buffer = import_node_fs4.default.readFileSync(filePath);
             result.meta.hash = this.getHash(buffer);
           }
         } catch (error62) {
@@ -64309,7 +64309,7 @@ var require_dist9 = __commonJS({
       getAbsolutePath(filePath, options) {
         if (this.isRelativePath(filePath)) {
           const currentWorkingDirectory = options?.currentWorkingDirectory ?? this._currentWorkingDirectory ?? process.cwd();
-          filePath = import_node_path4.default.resolve(currentWorkingDirectory, filePath);
+          filePath = import_node_path9.default.resolve(currentWorkingDirectory, filePath);
         }
         return filePath;
       }
@@ -64435,8 +64435,8 @@ var require_separate_by_availability = __commonJS({
       const availableFiles = [];
       const unAvailableFiles = [];
       files.forEach((filePath) => {
-        const extname = node_path_1.default.extname(filePath) || node_path_1.default.basename(filePath);
-        if (extensions.indexOf(extname) === -1) {
+        const extname2 = node_path_1.default.extname(filePath) || node_path_1.default.basename(filePath);
+        if (extensions.indexOf(extname2) === -1) {
           unAvailableFiles.push(filePath);
         } else {
           availableFiles.push(filePath);
@@ -64856,7 +64856,7 @@ var require_util3 = __commonJS({
     exports.randomString = randomString2;
     exports.esc = esc2;
     exports.slugify = slugify2;
-    exports.isObject = isObject2;
+    exports.isObject = isObject3;
     exports.isPlainObject = isPlainObject3;
     exports.shallowClone = shallowClone2;
     exports.numKeys = numKeys2;
@@ -65088,7 +65088,7 @@ var require_util3 = __commonJS({
     }
     exports.captureStackTrace = "captureStackTrace" in Error ? Error.captureStackTrace : (..._args) => {
     };
-    function isObject2(data) {
+    function isObject3(data) {
       return typeof data === "object" && data !== null && !Array.isArray(data);
     }
     exports.allowsEval = cached2(() => {
@@ -65107,7 +65107,7 @@ var require_util3 = __commonJS({
       }
     });
     function isPlainObject3(o) {
-      if (isObject2(o) === false)
+      if (isObject3(o) === false)
         return false;
       const ctor = o.constructor;
       if (ctor === void 0)
@@ -65115,7 +65115,7 @@ var require_util3 = __commonJS({
       if (typeof ctor !== "function")
         return true;
       const prot = ctor.prototype;
-      if (isObject2(prot) === false)
+      if (isObject3(prot) === false)
         return false;
       if (Object.prototype.hasOwnProperty.call(prot, "isPrototypeOf") === false) {
         return false;
@@ -65628,10 +65628,10 @@ var require_util3 = __commonJS({
               Object.defineProperty(this, key, { configurable: true, writable: true, value });
             broke2 = broke2 || outer;
             return value;
-          } catch (err) {
+          } catch (err2) {
             delete this[key];
             broke2 = broke2 || outer;
-            throw err;
+            throw err2;
           }
         },
         set(value) {
@@ -66378,8 +66378,8 @@ var require_regexes = __commonJS({
     }
     exports.ipv4 = /^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$/;
     exports.ipv6 = /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$/;
-    var mac3 = (delimiter) => {
-      const escapedDelim = util.escapeRegex(delimiter ?? ":");
+    var mac3 = (delimiter2) => {
+      const escapedDelim = util.escapeRegex(delimiter2 ?? ":");
       return new RegExp(`^(?:[0-9A-F]{2}${escapedDelim}){5}[0-9A-F]{2}$|^(?:[0-9a-f]{2}${escapedDelim}){5}[0-9a-f]{2}$`);
     };
     exports.mac = mac3;
@@ -68086,7 +68086,7 @@ var require_schemas = __commonJS({
         }
         return propValues;
       });
-      const isObject2 = util.isObject;
+      const isObject3 = util.isObject;
       const catchall = def.catchall;
       let value;
       const memo3 = core.globalConfig.memoizer;
@@ -68094,7 +68094,7 @@ var require_schemas = __commonJS({
       inst._zod.parse = (payload, ctx) => {
         value ?? (value = _normalized.value);
         const input2 = payload.value;
-        if (!isObject2(input2)) {
+        if (!isObject3(input2)) {
           payload.issues.push({
             expected: "object",
             code: "invalid_type",
@@ -68230,7 +68230,7 @@ var require_schemas = __commonJS({
         return doc.compile();
       };
       let fastpass;
-      const isObject2 = util.isObject;
+      const isObject3 = util.isObject;
       const jit = !core.globalConfig.jitless;
       const allowsEval2 = util.allowsEval;
       const fastEnabled = jit && allowsEval2.value;
@@ -68239,7 +68239,7 @@ var require_schemas = __commonJS({
       inst._zod.parse = (payload, ctx) => {
         value ?? (value = _normalized.value);
         const input2 = payload.value;
-        if (!isObject2(input2)) {
+        if (!isObject3(input2)) {
           payload.issues.push({
             expected: "object",
             code: "invalid_type",
@@ -69644,7 +69644,7 @@ var require_memoizer = __commonJS({
     var NONE2 = 0;
     var ASSUMED2 = 1;
     var PROVEN2 = 2;
-    function isRecursive2(inst, stack, resolve) {
+    function isRecursive2(inst, stack, resolve2) {
       const cached2 = recursive2.get(inst);
       if (cached2 !== void 0)
         return cached2 ? PROVEN2 : NONE2;
@@ -69654,7 +69654,7 @@ var require_memoizer = __commonJS({
       let result = NONE2;
       const check2 = (child) => {
         if (result !== PROVEN2 && child?._zod) {
-          const answer = isRecursive2(child, stack, resolve);
+          const answer = isRecursive2(child, stack, resolve2);
           if (answer > result)
             result = answer;
         }
@@ -69665,7 +69665,7 @@ var require_memoizer = __commonJS({
           const desc = Object.getOwnPropertyDescriptor(sh, key);
           if (spread && !desc.enumerable)
             continue;
-          const child = desc.get ? ASSUMED2 : desc.value?._zod ? isRecursive2(desc.value, stack, resolve) : NONE2;
+          const child = desc.get ? ASSUMED2 : desc.value?._zod ? isRecursive2(desc.value, stack, resolve2) : NONE2;
           if (child > answer)
             answer = child;
         }
@@ -69729,7 +69729,7 @@ var require_memoizer = __commonJS({
           break;
         // `$ZodLazy` caches its inner on the def, so a resolved edge is followed exactly
         case "lazy": {
-          const inner = def._cachedInner ?? (resolve ? inst._zod.innerType : void 0);
+          const inner = def._cachedInner ?? (resolve2 ? inst._zod.innerType : void 0);
           merge2(inner ? isRecursive2(inner, stack, false) : ASSUMED2);
           break;
         }
@@ -80067,9 +80067,9 @@ var require_compile = __commonJS({
         const clone2 = withParser2(schema, parser);
         clone2._zod.bag.validator = compileValidator2(schema, parser);
         return clone2;
-      } catch (err) {
+      } catch (err2) {
         if (options?.strict)
-          throw err;
+          throw err2;
         return schema;
       }
     }
@@ -80159,8 +80159,8 @@ ${code}
       try {
         const factory = new F(...constantNames, factoryCode);
         fn = factory(...constantValues);
-      } catch (err) {
-        throw new ZodCompileUnsupportedError2(`this schema (generated code failed to evaluate: ${err.message})`);
+      } catch (err2) {
+        throw new ZodCompileUnsupportedError2(`this schema (generated code failed to evaluate: ${err2.message})`);
       }
       if (options?.debug) {
         fn.code = fullCode;
@@ -80198,9 +80198,9 @@ ${code}
       const varCounter = ctx.varCounter;
       try {
         return generateCheck2(doc, ctx, schema, accessor, needsValue);
-      } catch (err) {
-        if (!(err instanceof ZodCompileUnsupportedError2) || !err.islandable)
-          throw err;
+      } catch (err2) {
+        if (!(err2 instanceof ZodCompileUnsupportedError2) || !err2.islandable)
+          throw err2;
         doc.content.length = contentLen;
         if (ctx.constants.size > constantCount) {
           const trailing = Array.from(ctx.constants.keys()).slice(constantCount);
@@ -87426,7 +87426,7 @@ var require_visit = __commonJS({
         return h ? h(node2, rewritten) : node2;
       };
       const cache = /* @__PURE__ */ new Map();
-      function run(s) {
+      function run2(s) {
         const cached2 = cache.get(s);
         if (cached2 === RESOLVING2) {
           return new schemas.$ZodLazy({
@@ -87452,21 +87452,21 @@ var require_visit = __commonJS({
             let changed = false;
             const newShape = {};
             for (const k of keys) {
-              const mapped = run(oldShape[k]);
+              const mapped = run2(oldShape[k]);
               if (mapped !== oldShape[k])
                 changed = true;
               newShape[k] = mapped;
             }
             let newCatchall = def.catchall;
             if (def.catchall) {
-              newCatchall = run(def.catchall);
+              newCatchall = run2(def.catchall);
               if (newCatchall !== def.catchall)
                 changed = true;
             }
             return changed ? (0, util_js_1.clone)(s, { ...def, shape: newShape, catchall: newCatchall }) : s;
           }
           case "array": {
-            const mapped = run(def.element);
+            const mapped = run2(def.element);
             return mapped === def.element ? s : (0, util_js_1.clone)(s, { ...def, element: mapped });
           }
           case "tuple": {
@@ -87474,14 +87474,14 @@ var require_visit = __commonJS({
             let changed = false;
             const newItems = [];
             for (const item of oldItems) {
-              const mapped = run(item);
+              const mapped = run2(item);
               if (mapped !== item)
                 changed = true;
               newItems.push(mapped);
             }
             let newRest = def.rest;
             if (def.rest) {
-              newRest = run(def.rest);
+              newRest = run2(def.rest);
               if (newRest !== def.rest)
                 changed = true;
             }
@@ -87489,12 +87489,12 @@ var require_visit = __commonJS({
           }
           case "record":
           case "map": {
-            const newKey = run(def.keyType);
-            const newVal = run(def.valueType);
+            const newKey = run2(def.keyType);
+            const newVal = run2(def.valueType);
             return newKey === def.keyType && newVal === def.valueType ? s : (0, util_js_1.clone)(s, { ...def, keyType: newKey, valueType: newVal });
           }
           case "set": {
-            const newVal = run(def.valueType);
+            const newVal = run2(def.valueType);
             return newVal === def.valueType ? s : (0, util_js_1.clone)(s, { ...def, valueType: newVal });
           }
           case "union": {
@@ -87502,7 +87502,7 @@ var require_visit = __commonJS({
             let changed = false;
             const newOptions = [];
             for (const opt of oldOptions) {
-              const mapped = run(opt);
+              const mapped = run2(opt);
               if (mapped !== opt)
                 changed = true;
               newOptions.push(mapped);
@@ -87510,8 +87510,8 @@ var require_visit = __commonJS({
             return changed ? (0, util_js_1.clone)(s, { ...def, options: newOptions }) : s;
           }
           case "intersection": {
-            const newLeft = run(def.left);
-            const newRight = run(def.right);
+            const newLeft = run2(def.left);
+            const newRight = run2(def.right);
             return newLeft === def.left && newRight === def.right ? s : (0, util_js_1.clone)(s, { ...def, left: newLeft, right: newRight });
           }
           case "optional":
@@ -87523,23 +87523,23 @@ var require_visit = __commonJS({
           case "nonoptional":
           case "promise":
           case "success": {
-            const newInner = run(def.innerType);
+            const newInner = run2(def.innerType);
             return newInner === def.innerType ? s : (0, util_js_1.clone)(s, { ...def, innerType: newInner });
           }
           case "pipe": {
-            const newIn = run(def.in);
-            const newOut = run(def.out);
+            const newIn = run2(def.in);
+            const newOut = run2(def.out);
             return newIn === def.in && newOut === def.out ? s : (0, util_js_1.clone)(s, { ...def, in: newIn, out: newOut });
           }
           case "function": {
-            const newInput = run(def.input);
-            const newOutput = run(def.output);
+            const newInput = run2(def.input);
+            const newOutput = run2(def.output);
             return newInput === def.input && newOutput === def.output ? s : (0, util_js_1.clone)(s, { ...def, input: newInput, output: newOutput });
           }
           case "lazy": {
             const original = def.getter;
             const { _cachedInner, ...rest } = def;
-            return (0, util_js_1.clone)(s, { ...rest, getter: () => run(original()) });
+            return (0, util_js_1.clone)(s, { ...rest, getter: () => run2(original()) });
           }
           // A leaf by choice: `parts` are regex fragments, not data positions.
           case "template_literal":
@@ -87570,7 +87570,7 @@ var require_visit = __commonJS({
           }
         }
       }
-      return run(schema);
+      return run2(schema);
     }
     (function() {
       var keys = Object.getOwnPropertyNames(exports);
@@ -94244,14 +94244,14 @@ var require_src_CgFsfg3E = __commonJS({
       return `Multi-round-trip request '${method}' still required input after ${maxRounds} rounds (inputRequired.maxRounds)`;
     }
     function sleep2(ms, signal) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve2, reject) => {
         if (signal?.aborted) {
           reject(signal.reason instanceof SdkError2 ? signal.reason : new SdkError2(SdkErrorCode2.RequestTimeout, String(signal.reason)));
           return;
         }
         const timer = setTimeout(() => {
           signal?.removeEventListener("abort", onAbort);
-          resolve();
+          resolve2();
         }, ms);
         const onAbort = () => {
           clearTimeout(timer);
@@ -94518,8 +94518,8 @@ var require_src_CgFsfg3E = __commonJS({
       };
     }
     function codecResultValidator2(codec2, method) {
-      const probe = codec2.validateResult(method, void 0);
-      if (!probe.ok && probe.reason === "not-in-era") return void 0;
+      const probe2 = codec2.validateResult(method, void 0);
+      if (!probe2.ok && probe2.reason === "not-in-era") return void 0;
       return { "~standard": {
         version: 1,
         vendor: "mcp-wire-codec",
@@ -95045,7 +95045,7 @@ var require_src_CgFsfg3E = __commonJS({
         const flowStartedAt = Date.now();
         let onAbort;
         let cleanupMessageId;
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve2, reject) => {
           const earlyReject = (error62) => {
             reject(error62);
           };
@@ -95114,7 +95114,7 @@ var require_src_CgFsfg3E = __commonJS({
             }
             if (decoded.kind === "invalid") return reject(decoded.error);
             if (decoded.kind === "input_required") {
-              if (options?.allowInputRequired === true) return resolve(manualInputRequiredValue2(decoded));
+              if (options?.allowInputRequired === true) return resolve2(manualInputRequiredValue2(decoded));
               const flow = {
                 codec: codec2,
                 request,
@@ -95126,11 +95126,11 @@ var require_src_CgFsfg3E = __commonJS({
                   params
                 }, resultSchema, legOptions)
               };
-              return resolve(this._resolveNonCompleteResult(decoded, flow));
+              return resolve2(this._resolveNonCompleteResult(decoded, flow));
             }
             const result = decoded.result;
             validateStandardSchema2(resultSchema, result).then((parseResult) => {
-              if (parseResult.success) resolve(parseResult.data);
+              if (parseResult.success) resolve2(parseResult.data);
               else reject(new SdkError2(SdkErrorCode2.InvalidResult, `Invalid result for ${request.method}: ${parseResult.error}`));
             }, reject);
           });
@@ -97415,21 +97415,21 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
       exports2.resetErrorsCount = resetErrorsCount;
       function extendErrors({ gen, keyword, schemaValue, data, errsCount, it }) {
         if (errsCount === void 0) throw new Error("ajv implementation error");
-        const err = gen.name("err");
+        const err2 = gen.name("err");
         gen.forRange("i", errsCount, names_1.default.errors, (i) => {
-          gen.const(err, (0, codegen_1._)`${names_1.default.vErrors}[${i}]`);
-          gen.if((0, codegen_1._)`${err}.instancePath === undefined`, () => gen.assign((0, codegen_1._)`${err}.instancePath`, (0, codegen_1.strConcat)(names_1.default.instancePath, it.errorPath)));
-          gen.assign((0, codegen_1._)`${err}.schemaPath`, (0, codegen_1.str)`${it.errSchemaPath}/${keyword}`);
+          gen.const(err2, (0, codegen_1._)`${names_1.default.vErrors}[${i}]`);
+          gen.if((0, codegen_1._)`${err2}.instancePath === undefined`, () => gen.assign((0, codegen_1._)`${err2}.instancePath`, (0, codegen_1.strConcat)(names_1.default.instancePath, it.errorPath)));
+          gen.assign((0, codegen_1._)`${err2}.schemaPath`, (0, codegen_1.str)`${it.errSchemaPath}/${keyword}`);
           if (it.opts.verbose) {
-            gen.assign((0, codegen_1._)`${err}.schema`, schemaValue);
-            gen.assign((0, codegen_1._)`${err}.data`, data);
+            gen.assign((0, codegen_1._)`${err2}.schema`, schemaValue);
+            gen.assign((0, codegen_1._)`${err2}.data`, data);
           }
         });
       }
       exports2.extendErrors = extendErrors;
       function addError(gen, errObj) {
-        const err = gen.const("err", errObj);
-        gen.if((0, codegen_1._)`${names_1.default.vErrors} === null`, () => gen.assign(names_1.default.vErrors, (0, codegen_1._)`[${err}]`), (0, codegen_1._)`${names_1.default.vErrors}.push(${err})`);
+        const err2 = gen.const("err", errObj);
+        gen.if((0, codegen_1._)`${names_1.default.vErrors} === null`, () => gen.assign(names_1.default.vErrors, (0, codegen_1._)`[${err2}]`), (0, codegen_1._)`${names_1.default.vErrors}.push(${err2})`);
         gen.code((0, codegen_1._)`${names_1.default.errors}++`);
       }
       function returnErrors(it, errs) {
@@ -98856,7 +98856,7 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
         ref = (0, resolve_1.resolveUrl)(this.opts.uriResolver, baseId, ref);
         const schOrFunc = root.refs[ref];
         if (schOrFunc) return schOrFunc;
-        let _sch = resolve.call(this, root, ref);
+        let _sch = resolve2.call(this, root, ref);
         if (_sch === void 0) {
           const schema = (_a3 = root.localRefs) === null || _a3 === void 0 ? void 0 : _a3[ref];
           const { schemaId } = this.opts;
@@ -98882,7 +98882,7 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
       function sameSchemaEnv(s1, s2) {
         return s1.schema === s2.schema && s1.root === s2.root && s1.baseId === s2.baseId;
       }
-      function resolve(root, ref) {
+      function resolve2(root, ref) {
         let sch;
         while (typeof (sch = this.refs[ref]) == "string") ref = sch;
         return sch || this.schemas[ref] || resolveSchema.call(this, root, ref);
@@ -99332,7 +99332,7 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
         else if (typeof uri === "object") uri = parse3(serialize(uri, options), options);
         return uri;
       }
-      function resolve(baseURI, relativeURI, options) {
+      function resolve2(baseURI, relativeURI, options) {
         const schemelessOptions = options ? Object.assign({ scheme: "null" }, options) : { scheme: "null" };
         const resolved = resolveComponent(parse3(baseURI, schemelessOptions), parse3(relativeURI, schemelessOptions), schemelessOptions, true);
         schemelessOptions.skipEscape = true;
@@ -99506,7 +99506,7 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
       const fastUri = {
         SCHEMES,
         normalize,
-        resolve,
+        resolve: resolve2,
         resolveComponent,
         equal,
         serialize,
@@ -103886,9 +103886,9 @@ data: ${JSON.stringify({
         return { scopes: requiredScopes };
       };
     }
-    async function findScopeChallenge2(requests, authInfo, resolve) {
+    async function findScopeChallenge2(requests, authInfo, resolve2) {
       for (const request of requests) {
-        const challenge = await resolve({
+        const challenge = await resolve2({
           request,
           ...authInfo !== void 0 && { authInfo }
         });
@@ -105524,15 +105524,15 @@ var require_dist10 = __commonJS({
         };
         if (require_src22.isJSONRPCRequest(message)) {
           this._requestId = message.id;
-          let resolve;
+          let resolve2;
           let reject;
           const promise2 = new Promise((promiseResolve, promiseReject) => {
-            resolve = promiseResolve;
+            resolve2 = promiseResolve;
             reject = promiseReject;
           });
           this._deferredResponse = {
             promise: promise2,
-            resolve,
+            resolve: resolve2,
             reject,
             settled: false
           };
@@ -106161,9 +106161,9 @@ data:
           const streamId = crypto.randomUUID();
           const initRequest = messages.find((m) => require_src22.isInitializeRequest(m));
           const clientProtocolVersion = initRequest ? initRequest.params.protocolVersion : req.headers.get("mcp-protocol-version") ?? _modelcontextprotocol_core_internal.DEFAULT_NEGOTIATED_PROTOCOL_VERSION;
-          if (this._enableJsonResponse) return new Promise((resolve) => {
+          if (this._enableJsonResponse) return new Promise((resolve2) => {
             this._streamMapping.set(streamId, {
-              resolveJson: resolve,
+              resolveJson: resolve2,
               cleanup: () => {
                 this._streamMapping.delete(streamId);
               }
@@ -107181,7 +107181,7 @@ var require_stdio = __commonJS({
       }
       send(message) {
         if (this._closed) return Promise.reject(/* @__PURE__ */ new Error("StdioServerTransport is closed"));
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve2, reject) => {
           const json2 = require_src22.serializeMessage(message);
           let settled = false;
           const onError = (error62) => {
@@ -107196,14 +107196,14 @@ var require_stdio = __commonJS({
             settled = true;
             this._stdout.off("error", onError);
             this._stdout.off("drain", onDrain);
-            resolve();
+            resolve2();
           };
           this._stdout.once("error", onError);
           if (this._stdout.write(json2)) {
             if (settled) return;
             settled = true;
             this._stdout.off("error", onError);
-            resolve();
+            resolve2();
           } else if (!settled) this._stdout.once("drain", onDrain);
         });
       }
@@ -107257,14 +107257,14 @@ var require_stdio = __commonJS({
       */
       async whenRequestsAnswered(timeoutMs) {
         if (this._closed || this._pendingRequests.size === 0) return true;
-        return await new Promise((resolve) => {
+        return await new Promise((resolve2) => {
           const waiter = () => {
             clearTimeout(timer);
-            resolve(true);
+            resolve2(true);
           };
           const timer = setTimeout(() => {
             this._drainWaiters = this._drainWaiters.filter((pending) => pending !== waiter);
-            resolve(false);
+            resolve2(false);
           }, timeoutMs);
           this._drainWaiters.push(waiter);
         });
@@ -108130,7 +108130,7 @@ var require_lib11 = __commonJS({
     });
     exports.default = void 0;
     var _TextlintRuleNoZeroWidthSpacesError = require_TextlintRuleNoZeroWidthSpacesError();
-    function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+    function asyncGeneratorStep(gen, resolve2, reject, _next, _throw, key, arg) {
       try {
         var info = gen[key](arg);
         var value = info.value;
@@ -108139,7 +108139,7 @@ var require_lib11 = __commonJS({
         return;
       }
       if (info.done) {
-        resolve(value);
+        resolve2(value);
       } else {
         Promise.resolve(value).then(_next, _throw);
       }
@@ -108147,13 +108147,13 @@ var require_lib11 = __commonJS({
     function _asyncToGenerator(fn) {
       return function() {
         var self2 = this, args = arguments;
-        return new Promise(function(resolve, reject) {
+        return new Promise(function(resolve2, reject) {
           var gen = fn.apply(self2, args);
           function _next(value) {
-            asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+            asyncGeneratorStep(gen, resolve2, reject, _next, _throw, "next", value);
           }
-          function _throw(err) {
-            asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+          function _throw(err2) {
+            asyncGeneratorStep(gen, resolve2, reject, _next, _throw, "throw", err2);
           }
           _next(void 0);
         });
@@ -108194,9 +108194,9 @@ var require_lib11 = __commonJS({
   }
 });
 
-// rules/prose-punctuation/index.cjs
-var require_prose_punctuation = __commonJS({
-  "rules/prose-punctuation/index.cjs"(exports, module) {
+// node_modules/textlint-rule-prose-punctuation/index.cjs
+var require_textlint_rule_prose_punctuation = __commonJS({
+  "node_modules/textlint-rule-prose-punctuation/index.cjs"(exports, module) {
     module.exports = function(context) {
       const { Syntax, RuleError, report, getSource } = context;
       let protectedDepth = 0;
@@ -110263,9 +110263,9 @@ var require_write_good2 = __commonJS({
   }
 });
 
-// rules/ja-document-style/index.cjs
-var require_ja_document_style = __commonJS({
-  "rules/ja-document-style/index.cjs"(exports, module) {
+// node_modules/textlint-rule-ja-document-style/index.cjs
+var require_textlint_rule_ja_document_style = __commonJS({
+  "node_modules/textlint-rule-ja-document-style/index.cjs"(exports, module) {
     module.exports = function(context) {
       const { Syntax, RuleError, report, getSource } = context;
       let protectedDepth = 0;
@@ -110965,16 +110965,16 @@ var require_implementation = __commonJS({
         }
       };
       keysShim = function keys(object2) {
-        var isObject2 = object2 !== null && typeof object2 === "object";
+        var isObject3 = object2 !== null && typeof object2 === "object";
         var isFunction = toStr.call(object2) === "[object Function]";
         var isArguments = isArgs(object2);
-        var isString = isObject2 && toStr.call(object2) === "[object String]";
+        var isString2 = isObject3 && toStr.call(object2) === "[object String]";
         var theKeys = [];
-        if (!isObject2 && !isFunction && !isArguments) {
+        if (!isObject3 && !isFunction && !isArguments) {
           throw new TypeError("Object.keys called on a non-object");
         }
         var skipProto = hasProtoEnumBug && isFunction;
-        if (isString && object2.length > 0 && !has.call(object2, 0)) {
+        if (isString2 && object2.length > 0 && !has.call(object2, 0)) {
           for (var i = 0; i < object2.length; ++i) {
             theKeys.push(String(i));
           }
@@ -122634,13 +122634,13 @@ var require_lib13 = __commonJS({
         }
         return super.getExpression();
       }
-      parseExportSpecifier(node2, isString, isInTypeExport, isMaybeTypeOnly) {
-        if (!isString && isMaybeTypeOnly) {
+      parseExportSpecifier(node2, isString2, isInTypeExport, isMaybeTypeOnly) {
+        if (!isString2 && isMaybeTypeOnly) {
           this.parseTypeOnlyImportExportSpecifier(node2, false, isInTypeExport);
           return this.finishNode(node2, "ExportSpecifier");
         }
         node2.exportKind = "value";
-        return super.parseExportSpecifier(node2, isString, isInTypeExport, isMaybeTypeOnly);
+        return super.parseExportSpecifier(node2, isString2, isInTypeExport, isMaybeTypeOnly);
       }
       parseImportSpecifier(specifier, importedIsString, isInTypeOnlyImport, isMaybeTypeOnly, bindingType) {
         if (!importedIsString && isMaybeTypeOnly) {
@@ -126589,17 +126589,17 @@ var require_lib13 = __commonJS({
             if (this.eat(8)) break;
           }
           const isMaybeTypeOnly = this.isContextual(130);
-          const isString = this.match(134);
+          const isString2 = this.match(134);
           const node2 = this.startNode();
           node2.local = this.parseModuleExportName();
-          nodes.push(this.parseExportSpecifier(node2, isString, isInTypeExport, isMaybeTypeOnly));
+          nodes.push(this.parseExportSpecifier(node2, isString2, isInTypeExport, isMaybeTypeOnly));
         }
         return nodes;
       }
-      parseExportSpecifier(node2, isString, isInTypeExport, isMaybeTypeOnly) {
+      parseExportSpecifier(node2, isString2, isInTypeExport, isMaybeTypeOnly) {
         if (this.eatContextual(93)) {
           node2.exported = this.parseModuleExportName();
-        } else if (isString) {
+        } else if (isString2) {
           node2.exported = this.cloneStringLiteral(node2.local);
         } else if (!node2.exported) {
           node2.exported = this.cloneIdentifier(node2.local);
@@ -127088,7 +127088,7 @@ var require_common4 = __commonJS({
     function isNothing(subject) {
       return typeof subject === "undefined" || subject === null;
     }
-    function isObject2(subject) {
+    function isObject3(subject) {
       return typeof subject === "object" && subject !== null;
     }
     function toArray(sequence) {
@@ -127118,7 +127118,7 @@ var require_common4 = __commonJS({
       return number4 === 0 && Number.NEGATIVE_INFINITY === 1 / number4;
     }
     module.exports.isNothing = isNothing;
-    module.exports.isObject = isObject2;
+    module.exports.isObject = isObject3;
     module.exports.toArray = toArray;
     module.exports.repeat = repeat;
     module.exports.isNegativeZero = isNegativeZero;
@@ -128141,7 +128141,7 @@ var require_function = __commonJS({
           return false;
         }
         return true;
-      } catch (err) {
+      } catch (err2) {
         return false;
       }
     }
@@ -137410,7 +137410,7 @@ var require_lodash3 = __commonJS({
       return -1;
     }
     function baseIsNative(value) {
-      if (!isObject2(value) || isMasked(value)) {
+      if (!isObject3(value) || isMasked(value)) {
         return false;
       }
       var pattern = isFunction(value) || isHostObject(value) ? reIsNative : reIsHostCtor;
@@ -137494,10 +137494,10 @@ var require_lodash3 = __commonJS({
       return value === other || value !== value && other !== other;
     }
     function isFunction(value) {
-      var tag = isObject2(value) ? objectToString.call(value) : "";
+      var tag = isObject3(value) ? objectToString.call(value) : "";
       return tag == funcTag || tag == genTag;
     }
-    function isObject2(value) {
+    function isObject3(value) {
       var type = typeof value;
       return !!value && (type == "object" || type == "function");
     }
@@ -137738,7 +137738,7 @@ var require_lodash4 = __commonJS({
       return -1;
     }
     function baseIsNative(value) {
-      if (!isObject2(value) || isMasked(value)) {
+      if (!isObject3(value) || isMasked(value)) {
         return false;
       }
       var pattern = isFunction(value) || isHostObject(value) ? reIsNative : reIsHostCtor;
@@ -137822,10 +137822,10 @@ var require_lodash4 = __commonJS({
       return value === other || value !== value && other !== other;
     }
     function isFunction(value) {
-      var tag = isObject2(value) ? objectToString.call(value) : "";
+      var tag = isObject3(value) ? objectToString.call(value) : "";
       return tag == funcTag || tag == genTag;
     }
-    function isObject2(value) {
+    function isObject3(value) {
       var type = typeof value;
       return !!value && (type == "object" || type == "function");
     }
@@ -138248,7 +138248,7 @@ var require_lodash5 = __commonJS({
       if (value === other) {
         return true;
       }
-      if (value == null || other == null || !isObject2(value) && !isObjectLike(other)) {
+      if (value == null || other == null || !isObject3(value) && !isObjectLike(other)) {
         return value !== value && other !== other;
       }
       return baseIsEqualDeep(value, other, baseIsEqual, customizer, bitmask, stack);
@@ -138314,7 +138314,7 @@ var require_lodash5 = __commonJS({
       return true;
     }
     function baseIsNative(value) {
-      if (!isObject2(value) || isMasked(value)) {
+      if (!isObject3(value) || isMasked(value)) {
         return false;
       }
       var pattern = isFunction(value) || isHostObject(value) ? reIsNative : reIsHostCtor;
@@ -138440,8 +138440,8 @@ var require_lodash5 = __commonJS({
           if (index >= ordersLength) {
             return result;
           }
-          var order = orders[index];
-          return result * (order == "desc" ? -1 : 1);
+          var order2 = orders[index];
+          return result * (order2 == "desc" ? -1 : 1);
         }
       }
       return object2.index - other.index;
@@ -138666,7 +138666,7 @@ var require_lodash5 = __commonJS({
       return !!length && (typeof value == "number" || reIsUint.test(value)) && (value > -1 && value % 1 == 0 && value < length);
     }
     function isIterateeCall(value, index, object2) {
-      if (!isObject2(object2)) {
+      if (!isObject3(object2)) {
         return false;
       }
       var type = typeof index;
@@ -138697,7 +138697,7 @@ var require_lodash5 = __commonJS({
       return value === proto;
     }
     function isStrictComparable(value) {
-      return value === value && !isObject2(value);
+      return value === value && !isObject3(value);
     }
     function matchesStrictComparable(key, srcValue) {
       return function(object2) {
@@ -138781,13 +138781,13 @@ var require_lodash5 = __commonJS({
       return isObjectLike(value) && isArrayLike(value);
     }
     function isFunction(value) {
-      var tag = isObject2(value) ? objectToString.call(value) : "";
+      var tag = isObject3(value) ? objectToString.call(value) : "";
       return tag == funcTag || tag == genTag;
     }
     function isLength(value) {
       return typeof value == "number" && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
     }
-    function isObject2(value) {
+    function isObject3(value) {
       var type = typeof value;
       return !!value && (type == "object" || type == "function");
     }
@@ -139259,8 +139259,8 @@ var require_Deferred = __commonJS({
       /* @__PURE__ */ (function() {
         function Deferred2() {
           var _this = this;
-          this.promise = new Promise(function(resolve, reject) {
-            _this.resolve = resolve;
+          this.promise = new Promise(function(resolve2, reject) {
+            _this.resolve = resolve2;
             _this.reject = reject;
           });
         }
@@ -139676,7 +139676,7 @@ var require_async = __commonJS({
           fn.call(this, args, callback);
         };
       };
-      function isObject2(value) {
+      function isObject3(value) {
         var type = typeof value;
         return value != null && (type == "object" || type == "function");
       }
@@ -139710,11 +139710,11 @@ var require_async = __commonJS({
           } catch (e) {
             return callback(e);
           }
-          if (isObject2(result) && typeof result.then === "function") {
+          if (isObject3(result) && typeof result.then === "function") {
             result.then(function(value) {
               invokeCallback(callback, null, value);
-            }, function(err) {
-              invokeCallback(callback, err.message ? err : new Error(err));
+            }, function(err2) {
+              invokeCallback(callback, err2.message ? err2 : new Error(err2));
             });
           } else {
             callback(null, result);
@@ -139798,7 +139798,7 @@ var require_async = __commonJS({
       var genTag = "[object GeneratorFunction]";
       var proxyTag = "[object Proxy]";
       function isFunction(value) {
-        if (!isObject2(value)) {
+        if (!isObject3(value)) {
           return false;
         }
         var tag = baseGetTag(value);
@@ -140013,11 +140013,11 @@ var require_async = __commonJS({
           var done = false;
           var running = 0;
           var looping = false;
-          function iterateeCallback(err, value) {
+          function iterateeCallback(err2, value) {
             running -= 1;
-            if (err) {
+            if (err2) {
               done = true;
-              callback(err);
+              callback(err2);
             } else if (value === breakLoop || done && running <= 0) {
               done = true;
               return callback(null);
@@ -140058,9 +140058,9 @@ var require_async = __commonJS({
         if (length === 0) {
           callback(null);
         }
-        function iteratorCallback(err, value) {
-          if (err) {
-            callback(err);
+        function iteratorCallback(err2, value) {
+          if (err2) {
+            callback(err2);
           } else if (++completed === length || value === breakLoop) {
             callback(null);
           }
@@ -140087,12 +140087,12 @@ var require_async = __commonJS({
         var _iteratee = wrapAsync(iteratee);
         eachfn(arr, function(value, _, callback2) {
           var index2 = counter++;
-          _iteratee(value, function(err, v) {
+          _iteratee(value, function(err2, v) {
             results[index2] = v;
-            callback2(err);
+            callback2(err2);
           });
-        }, function(err) {
-          callback(err, results);
+        }, function(err2) {
+          callback(err2, results);
         });
       }
       var map2 = doParallel(_asyncMap);
@@ -140213,8 +140213,8 @@ var require_async = __commonJS({
             return callback(null, results);
           }
           while (readyTasks.length && runningTasks < concurrency) {
-            var run = readyTasks.shift();
-            run();
+            var run2 = readyTasks.shift();
+            run2();
           }
         }
         function addListener(taskName, fn) {
@@ -140233,12 +140233,12 @@ var require_async = __commonJS({
         }
         function runTask(key, task) {
           if (hasError) return;
-          var taskCallback = onlyOnce(function(err, result) {
+          var taskCallback = onlyOnce(function(err2, result) {
             runningTasks--;
             if (arguments.length > 2) {
               result = slice(arguments, 1);
             }
-            if (err) {
+            if (err2) {
               var safeResults = {};
               baseForOwn(results, function(val, rkey) {
                 safeResults[rkey] = val;
@@ -140246,7 +140246,7 @@ var require_async = __commonJS({
               safeResults[key] = result;
               hasError = true;
               listeners = /* @__PURE__ */ Object.create(null);
-              callback(err, safeResults);
+              callback(err2, safeResults);
             } else {
               results[key] = result;
               taskComplete(key);
@@ -140561,7 +140561,7 @@ var require_async = __commonJS({
           }
         }
         function _next(tasks) {
-          return function(err) {
+          return function(err2) {
             numRunning -= 1;
             for (var i = 0, l = tasks.length; i < l; i++) {
               var task = tasks[i];
@@ -140572,8 +140572,8 @@ var require_async = __commonJS({
                 workersList.splice(index2, 1);
               }
               task.callback.apply(task, arguments);
-              if (err != null) {
-                q.error(err, task.data);
+              if (err2 != null) {
+                q.error(err2, task.data);
               }
             }
             if (numRunning <= q.concurrency - q.buffer) {
@@ -140671,12 +140671,12 @@ var require_async = __commonJS({
         callback = once(callback || noop);
         var _iteratee = wrapAsync(iteratee);
         eachOfSeries(coll, function(x, i, callback2) {
-          _iteratee(memo3, x, function(err, v) {
+          _iteratee(memo3, x, function(err2, v) {
             memo3 = v;
-            callback2(err);
+            callback2(err2);
           });
-        }, function(err) {
-          callback(err, memo3);
+        }, function(err2) {
+          callback(err2, memo3);
         });
       }
       function seq() {
@@ -140694,13 +140694,13 @@ var require_async = __commonJS({
             _functions,
             args,
             function(newargs, fn, cb2) {
-              fn.apply(that, newargs.concat(function(err) {
+              fn.apply(that, newargs.concat(function(err2) {
                 var nextargs = slice(arguments, 1);
-                cb2(err, nextargs);
+                cb2(err2, nextargs);
               }));
             },
-            function(err, results) {
-              cb.apply(that, [err].concat(results));
+            function(err2, results) {
+              cb.apply(that, [err2].concat(results));
             }
           );
         };
@@ -140713,18 +140713,18 @@ var require_async = __commonJS({
         callback = callback || noop;
         var _iteratee = wrapAsync(iteratee);
         mapLimit(coll, limit, function(val, callback2) {
-          _iteratee(val, function(err) {
-            if (err) return callback2(err);
+          _iteratee(val, function(err2) {
+            if (err2) return callback2(err2);
             return callback2(null, slice(arguments, 1));
           });
-        }, function(err, mapResults) {
+        }, function(err2, mapResults) {
           var result = [];
           for (var i = 0; i < mapResults.length; i++) {
             if (mapResults[i]) {
               result = _concat.apply(result, mapResults[i]);
             }
           }
-          return callback(err, result);
+          return callback(err2, result);
         });
       };
       var concat = doLimit(concatLimit, Infinity);
@@ -140746,9 +140746,9 @@ var require_async = __commonJS({
           var testPassed = false;
           var testResult;
           eachfn(arr, function(value, _, callback) {
-            iteratee(value, function(err, result) {
-              if (err) {
-                callback(err);
+            iteratee(value, function(err2, result) {
+              if (err2) {
+                callback(err2);
               } else if (check2(result) && !testResult) {
                 testPassed = true;
                 testResult = getResult(true, value);
@@ -140757,9 +140757,9 @@ var require_async = __commonJS({
                 callback();
               }
             });
-          }, function(err) {
-            if (err) {
-              cb(err);
+          }, function(err2) {
+            if (err2) {
+              cb(err2);
             } else {
               cb(null, testPassed ? testResult : getResult(false));
             }
@@ -140775,12 +140775,12 @@ var require_async = __commonJS({
       function consoleFunc(name) {
         return function(fn) {
           var args = slice(arguments, 1);
-          args.push(function(err) {
+          args.push(function(err2) {
             var args2 = slice(arguments, 1);
             if (typeof console === "object") {
-              if (err) {
+              if (err2) {
                 if (console.error) {
-                  console.error(err);
+                  console.error(err2);
                 }
               } else if (console[name]) {
                 arrayEach(args2, function(x) {
@@ -140797,14 +140797,14 @@ var require_async = __commonJS({
         callback = onlyOnce(callback || noop);
         var _fn = wrapAsync(fn);
         var _test = wrapAsync(test);
-        function next(err) {
-          if (err) return callback(err);
+        function next(err2) {
+          if (err2) return callback(err2);
           var args = slice(arguments, 1);
           args.push(check2);
           _test.apply(this, args);
         }
-        function check2(err, truth) {
-          if (err) return callback(err);
+        function check2(err2, truth) {
+          if (err2) return callback(err2);
           if (!truth) return callback(null);
           _fn(next);
         }
@@ -140813,8 +140813,8 @@ var require_async = __commonJS({
       function doWhilst(iteratee, test, callback) {
         callback = onlyOnce(callback || noop);
         var _iteratee = wrapAsync(iteratee);
-        var next = function(err) {
-          if (err) return callback(err);
+        var next = function(err2) {
+          if (err2) return callback(err2);
           var args = slice(arguments, 1);
           if (test.apply(this, args)) return _iteratee(next);
           callback.apply(null, [null].concat(args));
@@ -140830,12 +140830,12 @@ var require_async = __commonJS({
         callback = onlyOnce(callback || noop);
         var _fn = wrapAsync(fn);
         var _test = wrapAsync(test);
-        function next(err) {
-          if (err) return callback(err);
+        function next(err2) {
+          if (err2) return callback(err2);
           _test(check2);
         }
-        function check2(err, truth) {
-          if (err) return callback(err);
+        function check2(err2, truth) {
+          if (err2) return callback(err2);
           if (!truth) return callback(null);
           _fn(next);
         }
@@ -140885,12 +140885,12 @@ var require_async = __commonJS({
       function filterArray(eachfn, arr, iteratee, callback) {
         var truthValues = new Array(arr.length);
         eachfn(arr, function(x, index2, callback2) {
-          iteratee(x, function(err, v) {
+          iteratee(x, function(err2, v) {
             truthValues[index2] = !!v;
-            callback2(err);
+            callback2(err2);
           });
-        }, function(err) {
-          if (err) return callback(err);
+        }, function(err2) {
+          if (err2) return callback(err2);
           var results = [];
           for (var i = 0; i < arr.length; i++) {
             if (truthValues[i]) results.push(arr[i]);
@@ -140901,9 +140901,9 @@ var require_async = __commonJS({
       function filterGeneric(eachfn, coll, iteratee, callback) {
         var results = [];
         eachfn(coll, function(x, index2, callback2) {
-          iteratee(x, function(err, v) {
-            if (err) {
-              callback2(err);
+          iteratee(x, function(err2, v) {
+            if (err2) {
+              callback2(err2);
             } else {
               if (v) {
                 results.push({ index: index2, value: x });
@@ -140911,9 +140911,9 @@ var require_async = __commonJS({
               callback2();
             }
           });
-        }, function(err) {
-          if (err) {
-            callback(err);
+        }, function(err2) {
+          if (err2) {
+            callback(err2);
           } else {
             callback(null, arrayMap(results.sort(function(a, b) {
               return a.index - b.index;
@@ -140931,8 +140931,8 @@ var require_async = __commonJS({
       function forever(fn, errback) {
         var done = onlyOnce(errback || noop);
         var task = wrapAsync(ensureAsync(fn));
-        function next(err) {
-          if (err) return done(err);
+        function next(err2) {
+          if (err2) return done(err2);
           task(next);
         }
         next();
@@ -140941,11 +140941,11 @@ var require_async = __commonJS({
         callback = callback || noop;
         var _iteratee = wrapAsync(iteratee);
         mapLimit(coll, limit, function(val, callback2) {
-          _iteratee(val, function(err, key) {
-            if (err) return callback2(err);
+          _iteratee(val, function(err2, key) {
+            if (err2) return callback2(err2);
             return callback2(null, { key, val });
           });
-        }, function(err, mapResults) {
+        }, function(err2, mapResults) {
           var result = {};
           var hasOwnProperty3 = Object.prototype.hasOwnProperty;
           for (var i = 0; i < mapResults.length; i++) {
@@ -140959,7 +140959,7 @@ var require_async = __commonJS({
               }
             }
           }
-          return callback(err, result);
+          return callback(err2, result);
         });
       };
       var groupBy = doLimit(groupByLimit, Infinity);
@@ -140970,13 +140970,13 @@ var require_async = __commonJS({
         var newObj = {};
         var _iteratee = wrapAsync(iteratee);
         eachOfLimit(obj, limit, function(val, key, next) {
-          _iteratee(val, key, function(err, result) {
-            if (err) return next(err);
+          _iteratee(val, key, function(err2, result) {
+            if (err2) return next(err2);
             newObj[key] = result;
             next();
           });
-        }, function(err) {
-          callback(err, newObj);
+        }, function(err2) {
+          callback(err2, newObj);
         });
       }
       var mapValues = doLimit(mapValuesLimit, Infinity);
@@ -141027,15 +141027,15 @@ var require_async = __commonJS({
         callback = callback || noop;
         var results = isArrayLike(tasks) ? [] : {};
         eachfn(tasks, function(task, key, callback2) {
-          wrapAsync(task)(function(err, result) {
+          wrapAsync(task)(function(err2, result) {
             if (arguments.length > 2) {
               result = slice(arguments, 1);
             }
             results[key] = result;
-            callback2(err);
+            callback2(err2);
           });
-        }, function(err) {
-          callback(err, results);
+        }, function(err2) {
+          callback(err2, results);
         });
       }
       function parallelLimit(tasks, callback) {
@@ -141133,8 +141133,8 @@ var require_async = __commonJS({
       }
       function reject$1(eachfn, arr, iteratee, callback) {
         _filter(eachfn, arr, function(value, cb) {
-          iteratee(value, function(err, v) {
-            cb(err, !v);
+          iteratee(value, function(err2, v) {
+            cb(err2, !v);
           });
         }, callback);
       }
@@ -141177,8 +141177,8 @@ var require_async = __commonJS({
         var _task = wrapAsync(task);
         var attempt = 1;
         function retryAttempt() {
-          _task(function(err) {
-            if (err && attempt++ < options.times && (typeof options.errorFilter != "function" || options.errorFilter(err))) {
+          _task(function(err2) {
+            if (err2 && attempt++ < options.times && (typeof options.errorFilter != "function" || options.errorFilter(err2))) {
               setTimeout(retryAttempt, options.intervalFunc(attempt));
             } else {
               callback.apply(null, arguments);
@@ -141210,12 +141210,12 @@ var require_async = __commonJS({
       function sortBy(coll, iteratee, callback) {
         var _iteratee = wrapAsync(iteratee);
         map2(coll, function(x, callback2) {
-          _iteratee(x, function(err, criteria) {
-            if (err) return callback2(err);
+          _iteratee(x, function(err2, criteria) {
+            if (err2) return callback2(err2);
             callback2(null, { value: x, criteria });
           });
-        }, function(err, results) {
-          if (err) return callback(err);
+        }, function(err2, results) {
+          if (err2) return callback(err2);
           callback(null, arrayMap(results.sort(comparator), baseProperty("value")));
         });
         function comparator(left, right) {
@@ -141274,8 +141274,8 @@ var require_async = __commonJS({
         var _iteratee = wrapAsync(iteratee);
         eachOf(coll, function(v, k, cb) {
           _iteratee(accumulator, v, k, cb);
-        }, function(err) {
-          callback(err, accumulator);
+        }, function(err2) {
+          callback(err2, accumulator);
         });
       }
       function tryEach(tasks, callback) {
@@ -141283,14 +141283,14 @@ var require_async = __commonJS({
         var result;
         callback = callback || noop;
         eachSeries(tasks, function(task, callback2) {
-          wrapAsync(task)(function(err, res) {
+          wrapAsync(task)(function(err2, res) {
             if (arguments.length > 2) {
               result = slice(arguments, 1);
             } else {
               result = res;
             }
-            error62 = err;
-            callback2(!err);
+            error62 = err2;
+            callback2(!err2);
           });
         }, function() {
           callback(error62, result);
@@ -141305,8 +141305,8 @@ var require_async = __commonJS({
         callback = onlyOnce(callback || noop);
         var _iteratee = wrapAsync(iteratee);
         if (!test()) return callback(null);
-        var next = function(err) {
-          if (err) return callback(err);
+        var next = function(err2) {
+          if (err2) return callback(err2);
           if (test()) return _iteratee(next);
           var args = slice(arguments, 1);
           callback.apply(null, [null].concat(args));
@@ -141328,8 +141328,8 @@ var require_async = __commonJS({
           args.push(onlyOnce(next));
           task.apply(null, args);
         }
-        function next(err) {
-          if (err || taskIndex === tasks.length) {
+        function next(err2) {
+          if (err2 || taskIndex === tasks.length) {
             return callback.apply(null, arguments);
           }
           nextTask(slice(arguments, 1));
@@ -142703,15 +142703,15 @@ var require_DictionaryLoader = __commonJS({
         // Trie
         function(callback) {
           async.map(["base.dat.gz", "check.dat.gz"], function(filename, _callback) {
-            loadArrayBuffer(path4.join(dic_path, filename), function(err, buffer) {
-              if (err) {
-                return _callback(err);
+            loadArrayBuffer(path4.join(dic_path, filename), function(err2, buffer) {
+              if (err2) {
+                return _callback(err2);
               }
               _callback(null, buffer);
             });
-          }, function(err, buffers) {
-            if (err) {
-              return callback(err);
+          }, function(err2, buffers) {
+            if (err2) {
+              return callback(err2);
             }
             var base_buffer = new Int32Array(buffers[0]);
             var check_buffer = new Int32Array(buffers[1]);
@@ -142722,15 +142722,15 @@ var require_DictionaryLoader = __commonJS({
         // Token info dictionaries
         function(callback) {
           async.map(["tid.dat.gz", "tid_pos.dat.gz", "tid_map.dat.gz"], function(filename, _callback) {
-            loadArrayBuffer(path4.join(dic_path, filename), function(err, buffer) {
-              if (err) {
-                return _callback(err);
+            loadArrayBuffer(path4.join(dic_path, filename), function(err2, buffer) {
+              if (err2) {
+                return _callback(err2);
               }
               _callback(null, buffer);
             });
-          }, function(err, buffers) {
-            if (err) {
-              return callback(err);
+          }, function(err2, buffers) {
+            if (err2) {
+              return callback(err2);
             }
             var token_info_buffer = new Uint8Array(buffers[0]);
             var pos_buffer = new Uint8Array(buffers[1]);
@@ -142741,9 +142741,9 @@ var require_DictionaryLoader = __commonJS({
         },
         // Connection cost matrix
         function(callback) {
-          loadArrayBuffer(path4.join(dic_path, "cc.dat.gz"), function(err, buffer) {
-            if (err) {
-              return callback(err);
+          loadArrayBuffer(path4.join(dic_path, "cc.dat.gz"), function(err2, buffer) {
+            if (err2) {
+              return callback(err2);
             }
             var cc_buffer = new Int16Array(buffer);
             dic.loadConnectionCosts(cc_buffer);
@@ -142753,15 +142753,15 @@ var require_DictionaryLoader = __commonJS({
         // Unknown dictionaries
         function(callback) {
           async.map(["unk.dat.gz", "unk_pos.dat.gz", "unk_map.dat.gz", "unk_char.dat.gz", "unk_compat.dat.gz", "unk_invoke.dat.gz"], function(filename, _callback) {
-            loadArrayBuffer(path4.join(dic_path, filename), function(err, buffer) {
-              if (err) {
-                return _callback(err);
+            loadArrayBuffer(path4.join(dic_path, filename), function(err2, buffer) {
+              if (err2) {
+                return _callback(err2);
               }
               _callback(null, buffer);
             });
-          }, function(err, buffers) {
-            if (err) {
-              return callback(err);
+          }, function(err2, buffers) {
+            if (err2) {
+              return callback(err2);
             }
             var unk_buffer = new Uint8Array(buffers[0]);
             var unk_pos_buffer = new Uint8Array(buffers[1]);
@@ -142773,8 +142773,8 @@ var require_DictionaryLoader = __commonJS({
             callback(null);
           });
         }
-      ], function(err) {
-        load_callback(err, dic);
+      ], function(err2) {
+        load_callback(err2, dic);
       });
     };
     module.exports = DictionaryLoader;
@@ -142793,13 +142793,13 @@ var require_NodeDictionaryLoader = __commonJS({
     }
     NodeDictionaryLoader.prototype = Object.create(DictionaryLoader.prototype);
     NodeDictionaryLoader.prototype.loadArrayBuffer = function(file2, callback) {
-      fs3.readFile(file2, function(err, buffer) {
-        if (err) {
-          return callback(err);
+      fs3.readFile(file2, function(err2, buffer) {
+        if (err2) {
+          return callback(err2);
         }
-        node_zlib.gunzip(buffer, function(err2, decompressed) {
-          if (err2) {
-            return callback(err2);
+        node_zlib.gunzip(buffer, function(err22, decompressed) {
+          if (err22) {
+            return callback(err22);
           }
           var typed_array = new Uint8Array(decompressed);
           callback(null, typed_array.buffer);
@@ -142825,8 +142825,8 @@ var require_TokenizerBuilder = __commonJS({
     }
     TokenizerBuilder.prototype.build = function(callback) {
       var loader = new DictionaryLoader(this.dic_path);
-      loader.load(function(err, dic) {
-        callback(err, new Tokenizer(dic));
+      loader.load(function(err2, dic) {
+        callback(err2, new Tokenizer(dic));
       });
     };
     module.exports = TokenizerBuilder;
@@ -143055,9 +143055,9 @@ var require_kuromojin = __commonJS({
         return deferred.promise;
       }
       isLoading = true;
-      kuromoji_1.default.builder(options).build(function(err, tokenizer) {
-        if (err) {
-          return deferred.reject(err);
+      kuromoji_1.default.builder(options).build(function(err2, tokenizer) {
+        if (err2) {
+          return deferred.reject(err2);
         }
         _tokenizer = tokenizer;
         deferred.resolve(tokenizer);
@@ -143108,7 +143108,7 @@ var require_max_ten = __commonJS({
     var _kuromojin = require_lib16();
     var _sentenceSplitter = require_sentence_splitter();
     var _textlintUtilToString = require_dist11();
-    function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+    function asyncGeneratorStep(gen, resolve2, reject, _next, _throw, key, arg) {
       try {
         var info = gen[key](arg);
         var value = info.value;
@@ -143117,7 +143117,7 @@ var require_max_ten = __commonJS({
         return;
       }
       if (info.done) {
-        resolve(value);
+        resolve2(value);
       } else {
         Promise.resolve(value).then(_next, _throw);
       }
@@ -143125,13 +143125,13 @@ var require_max_ten = __commonJS({
     function _asyncToGenerator(fn) {
       return function() {
         var self2 = this, args = arguments;
-        return new Promise(function(resolve, reject) {
+        return new Promise(function(resolve2, reject) {
           var gen = fn.apply(self2, args);
           function _next(value) {
-            asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+            asyncGeneratorStep(gen, resolve2, reject, _next, _throw, "next", value);
           }
-          function _throw(err) {
-            asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+          function _throw(err2) {
+            asyncGeneratorStep(gen, resolve2, reject, _next, _throw, "throw", err2);
           }
           _next(void 0);
         });
@@ -144006,7 +144006,7 @@ var require_no_doubled_conjunction = __commonJS({
     var _textlintRuleHelper = require_lib12();
     var _kuromojin = require_lib16();
     var _sentenceSplitter = require_sentence_splitter();
-    function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+    function asyncGeneratorStep(gen, resolve2, reject, _next, _throw, key, arg) {
       try {
         var info = gen[key](arg);
         var value = info.value;
@@ -144015,7 +144015,7 @@ var require_no_doubled_conjunction = __commonJS({
         return;
       }
       if (info.done) {
-        resolve(value);
+        resolve2(value);
       } else {
         Promise.resolve(value).then(_next, _throw);
       }
@@ -144023,13 +144023,13 @@ var require_no_doubled_conjunction = __commonJS({
     function _asyncToGenerator(fn) {
       return function() {
         var self2 = this, args = arguments;
-        return new Promise(function(resolve, reject) {
+        return new Promise(function(resolve2, reject) {
           var gen = fn.apply(self2, args);
           function _next(value) {
-            asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+            asyncGeneratorStep(gen, resolve2, reject, _next, _throw, "next", value);
           }
-          function _throw(err) {
-            asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+          function _throw(err2) {
+            asyncGeneratorStep(gen, resolve2, reject, _next, _throw, "throw", err2);
           }
           _next(void 0);
         });
@@ -144855,7 +144855,7 @@ var require_no_doubled_joshi = __commonJS({
     var _kuromojin = require_lib16();
     var _tokenUtils = require_token_utils();
     var _textlintUtilToString = require_dist11();
-    function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+    function asyncGeneratorStep(gen, resolve2, reject, _next, _throw, key, arg) {
       try {
         var info = gen[key](arg);
         var value = info.value;
@@ -144864,7 +144864,7 @@ var require_no_doubled_joshi = __commonJS({
         return;
       }
       if (info.done) {
-        resolve(value);
+        resolve2(value);
       } else {
         Promise.resolve(value).then(_next, _throw);
       }
@@ -144872,13 +144872,13 @@ var require_no_doubled_joshi = __commonJS({
     function _asyncToGenerator(fn) {
       return function() {
         var self2 = this, args = arguments;
-        return new Promise(function(resolve, reject) {
+        return new Promise(function(resolve2, reject) {
           var gen = fn.apply(self2, args);
           function _next(value) {
-            asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+            asyncGeneratorStep(gen, resolve2, reject, _next, _throw, "next", value);
           }
-          function _throw(err) {
-            asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+          function _throw(err2) {
+            asyncGeneratorStep(gen, resolve2, reject, _next, _throw, "throw", err2);
           }
           _next(void 0);
         });
@@ -145687,7 +145687,7 @@ var require_safe_regex = __commonJS({
       else if (typeof re !== "string") re = String(re);
       try {
         re = parse3(re);
-      } catch (err) {
+      } catch (err2) {
         return false;
       }
       var reps = 0;
@@ -145700,15 +145700,15 @@ var require_safe_regex = __commonJS({
         }
         if (node2.options) {
           for (var i = 0, len = node2.options.length; i < len; i++) {
-            var ok = walk({ stack: node2.options[i] }, starHeight);
-            if (!ok) return false;
+            var ok2 = walk({ stack: node2.options[i] }, starHeight);
+            if (!ok2) return false;
           }
         }
         var stack = node2.stack || node2.value && node2.value.stack;
         if (!stack) return true;
         for (var i = 0; i < stack.length; i++) {
-          var ok = walk(stack[i], starHeight);
-          if (!ok) return false;
+          var ok2 = walk(stack[i], starHeight);
+          if (!ok2) return false;
         }
         return true;
       })(re, 0);
@@ -145723,7 +145723,7 @@ var require_safe_regex = __commonJS({
 var require_isobject = __commonJS({
   "node_modules/isobject/index.js"(exports, module) {
     "use strict";
-    module.exports = function isObject2(val) {
+    module.exports = function isObject3(val) {
       return val != null && typeof val === "object" && Array.isArray(val) === false;
     };
   }
@@ -145855,9 +145855,9 @@ var require_define_property = __commonJS({
 var require_is_plain_object = __commonJS({
   "node_modules/is-plain-object/index.js"(exports, module) {
     "use strict";
-    var isObject2 = require_isobject();
+    var isObject3 = require_isobject();
     function isObjectObject(o) {
-      return isObject2(o) === true && Object.prototype.toString.call(o) === "[object Object]";
+      return isObject3(o) === true && Object.prototype.toString.call(o) === "[object Object]";
     }
     module.exports = function isPlainObject3(o) {
       var ctor, prot;
@@ -145927,15 +145927,15 @@ var require_extend_shallow = __commonJS({
       if (obj === null || typeof obj === "undefined") {
         throw new TypeError("Cannot convert undefined or null to object");
       }
-      if (!isObject2(obj)) {
+      if (!isObject3(obj)) {
         obj = {};
       }
       for (var i = 1; i < arguments.length; i++) {
         var val = arguments[i];
-        if (isString(val)) {
+        if (isString2(val)) {
           val = toObject(val);
         }
-        if (isObject2(val)) {
+        if (isObject3(val)) {
           assign(obj, val);
           assignSymbols(obj, val);
         }
@@ -145949,7 +145949,7 @@ var require_extend_shallow = __commonJS({
         }
       }
     }
-    function isString(val) {
+    function isString2(val) {
       return val && typeof val === "string";
     }
     function toObject(str) {
@@ -145959,7 +145959,7 @@ var require_extend_shallow = __commonJS({
       }
       return obj;
     }
-    function isObject2(val) {
+    function isObject3(val) {
       return val && typeof val === "object" || isExtendable(val);
     }
     function hasOwn(obj, key) {
@@ -146065,17 +146065,17 @@ var require_to_regex = __commonJS({
         if (opts.safe === true && safe(regex) === false) {
           throw new Error("potentially unsafe regular expression: " + regex.source);
         }
-      } catch (err) {
+      } catch (err2) {
         if (opts.strictErrors === true || opts.safe === true) {
-          err.key = key;
-          err.pattern = pattern;
-          err.originalOptions = options;
-          err.createdOptions = opts;
-          throw err;
+          err2.key = key;
+          err2.pattern = pattern;
+          err2.originalOptions = options;
+          err2.createdOptions = opts;
+          throw err2;
         }
         try {
           regex = new RegExp("^" + pattern.replace(/(\W)/g, "\\$1") + "$");
-        } catch (err2) {
+        } catch (err3) {
           regex = /.^/;
         }
       }
@@ -148428,7 +148428,10 @@ var require_textlint_rule_preset_ja_technical_writing = __commonJS({
 });
 
 // ../src/cli.ts
-import { readFile } from "node:fs/promises";
+import { readFile as readFile2 } from "node:fs/promises";
+import { homedir } from "node:os";
+import { dirname, join as join5 } from "node:path";
+import { fileURLToPath as fileURLToPath3 } from "node:url";
 
 // ../src/check.ts
 var import_textlint = __toESM(require_src19());
@@ -148437,9 +148440,9 @@ var import_textlint2 = __toESM(require_src19());
 
 // ../src/rules.ts
 var import_textlint_rule_no_zero_width_spaces = __toESM(require_lib11());
-var import_textlint_rule_prose_punctuation = __toESM(require_prose_punctuation());
+var import_textlint_rule_prose_punctuation = __toESM(require_textlint_rule_prose_punctuation());
 var import_textlint_rule_write_good = __toESM(require_write_good2());
-var import_textlint_rule_ja_document_style = __toESM(require_ja_document_style());
+var import_textlint_rule_ja_document_style = __toESM(require_textlint_rule_ja_document_style());
 var import_textlint_rule_preset_ja_technical_writing = __toESM(require_textlint_rule_preset_ja_technical_writing());
 var ruleModules = {
   "no-zero-width-spaces": import_textlint_rule_no_zero_width_spaces.default,
@@ -148613,6 +148616,581 @@ async function lintText({ text, language, genre, filename = "input.md" }) {
   const result = await linter.lintText(text, filename);
   const formatter = await (0, import_textlint2.loadLinterFormatter)({ formatterName: "stylish" });
   return { result, output: formatter.format([result]) };
+}
+
+// ../src/install/plan.ts
+import { stat } from "node:fs/promises";
+import { basename, join as join4 } from "node:path";
+
+// ../src/hosts.ts
+var hosts = [
+  {
+    id: "claude",
+    displayName: "Claude Code",
+    installedVersion: "2.1.286",
+    pluginFormat: ".claude-plugin/plugin.json with marketplace.json; plugin skills supported",
+    pluginSkills: "yes",
+    pluginCommands: { install: "claude plugin install <plugin[@marketplace]>", remove: "claude plugin uninstall <plugin>", list: "claude plugin list" },
+    mcpCommands: { add: "claude mcp add <name> <commandOrUrl> [args...]", remove: "claude mcp remove <name>", listOrGet: "claude mcp list | claude mcp get <name>" },
+    configDirectoryEnv: "CLAUDE_CONFIG_DIR",
+    configDirectory: (home) => `${home}/.claude`,
+    globalInstructionsFile: (home) => `${home}/.claude/CLAUDE.md`,
+    outputStyleSupport: "yes",
+    identityEnvironmentVariables: ["CLAUDECODE"],
+    verified: true,
+    evidence: "Captured: absolute-path claude.exe --version => 2.1.286 (Claude Code); claude plugin --help lists install/uninstall/list; claude mcp --help lists add/remove/list/get. Official docs: https://docs.anthropic.com/en/docs/claude-code/plugins ; https://docs.anthropic.com/en/docs/claude-code/mcp ; https://docs.anthropic.com/en/docs/claude-code/settings ; https://docs.anthropic.com/en/docs/claude-code/cli-usage"
+  },
+  {
+    id: "codex",
+    displayName: "Codex CLI",
+    installedVersion: "0.159.3",
+    pluginFormat: "Portable plugin.json and skills/; .codex-plugin/plugin.json compatibility format",
+    pluginSkills: "yes",
+    pluginCommands: { install: "codex plugin add <plugin>", remove: "codex plugin remove <plugin>", list: "codex plugin list" },
+    mcpCommands: { add: "codex mcp add <name> [options]", remove: "codex mcp remove <name>", listOrGet: "codex mcp list | codex mcp get <name>" },
+    configDirectoryEnv: "CODEX_HOME",
+    configDirectory: (home) => `${home}/.codex`,
+    globalInstructionsFile: (home) => `${home}/.codex/AGENTS.md`,
+    outputStyleSupport: "unknown",
+    identityEnvironmentVariables: ["CODEX_SESSION_ID", "CODEX_THREAD_ID"],
+    verified: true,
+    evidence: "Captured: codex --version => codex-cli 0.159.3; codex plugin --help lists add/remove/list; codex mcp --help lists add/remove/list/get. Official docs: https://developers.openai.com/plugins/build/plugins ; https://developers.openai.com/learn/docs-mcp ; https://developers.openai.com/codex/config-reference/"
+  },
+  {
+    id: "copilot",
+    displayName: "GitHub Copilot CLI",
+    installedVersion: "1.0.90",
+    pluginFormat: "Agent Plugins root plugin.json; legacy .plugin/plugin.json or .claude-plugin/plugin.json; skills supported",
+    pluginSkills: "yes",
+    pluginCommands: { install: "copilot plugin install <spec>", remove: "copilot plugin uninstall <name>", list: "copilot plugin list" },
+    mcpCommands: { add: "copilot mcp add <name> [options]", remove: "copilot mcp remove <name>", listOrGet: "copilot mcp list | copilot mcp get <name>" },
+    configDirectoryEnv: "COPILOT_HOME",
+    configDirectory: (home) => `${home}/.copilot`,
+    globalInstructionsFile: (home) => `${home}/.copilot/copilot-instructions.md`,
+    outputStyleSupport: "unknown",
+    identityEnvironmentVariables: [],
+    verified: false,
+    evidence: "Captured: absolute-path copilot.exe --version => GitHub Copilot CLI 1.0.90; plugin --help lists install/uninstall/list; mcp --help lists add/remove/list/get. Official docs: https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-plugin-reference ; https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference ; https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference"
+  },
+  {
+    id: "opencode",
+    displayName: "opencode",
+    installedVersion: "1.18.34",
+    pluginFormat: "opencode.json plugin entries or plugin files in .opencode/plugins/ or ~/.config/opencode/plugins/; skill files supported",
+    pluginSkills: "yes",
+    pluginCommands: { install: "opencode plugin <npm-module> [-g]", remove: "Remove the plugin entry from opencode.json", list: "No plugin list command shown by opencode --help" },
+    mcpCommands: { add: "opencode mcp add [name]", remove: "Remove the mcp entry from opencode.json", listOrGet: "opencode mcp list" },
+    configDirectoryEnv: "OPENCODE_CONFIG_DIR",
+    configDirectory: (home) => `${home}/.config/opencode`,
+    globalInstructionsFile: (home) => `${home}/.config/opencode/AGENTS.md`,
+    outputStyleSupport: "unknown",
+    identityEnvironmentVariables: [],
+    verified: false,
+    evidence: "Captured after retry through the installed scoop shim: opencode --version => 1.18.34; opencode --help lists plugin; mcp --help lists add/list only. Official docs: https://dev.opencode.ai/docs/config/ ; https://dev.opencode.ai/docs/plugins/ ; https://dev.opencode.ai/docs/skills/ ; https://dev.opencode.ai/docs/mcp-servers/"
+  },
+  {
+    id: "antigravity",
+    displayName: "Antigravity CLI",
+    installedVersion: "1.2.14",
+    pluginFormat: "plugin.json directory bundle; skills/ with SKILL.md supported",
+    pluginSkills: "yes",
+    pluginCommands: { install: "agy plugin install <target>", remove: "agy plugin uninstall <name>", list: "agy plugin list" },
+    mcpCommands: { add: "agy mcp add <name> [flags]", remove: "agy mcp remove <name>", listOrGet: "agy mcp list" },
+    configDirectoryEnv: null,
+    configDirectory: (home) => `${home}/.gemini/antigravity-cli`,
+    globalInstructionsFile: (home) => `${home}/.gemini/antigravity-cli/GEMINI.md`,
+    outputStyleSupport: "unknown",
+    identityEnvironmentVariables: [],
+    verified: false,
+    evidence: "Captured: absolute-path agy.exe --version => 1.2.14; agy --help and plugin/mcp --help list the recorded command families. Official docs: https://www.antigravity.google/docs/cli/features ; https://www.antigravity.google/docs/cli/reference/ ; https://www.antigravity.google/docs/plugins?tab=cli ; https://www.antigravity.google/docs/cli/gcli-migration/"
+  }
+];
+
+// ../src/install/fsutil.ts
+import { createHash } from "node:crypto";
+import { readFile, readdir } from "node:fs/promises";
+import { join } from "node:path";
+var ok = (value) => ({ ok: true, value });
+var err = (error62) => ({ ok: false, error: error62 });
+function detectEol(text) {
+  const index = text.indexOf("\n");
+  return index > 0 && text[index - 1] === "\r" ? "\r\n" : "\n";
+}
+function isMissing(error62) {
+  return error62?.code === "ENOENT";
+}
+async function readText(path4) {
+  let bytes;
+  try {
+    bytes = await readFile(path4);
+  } catch (error62) {
+    if (isMissing(error62)) return void 0;
+    throw error62;
+  }
+  const bom = bytes.length >= 3 && bytes[0] === 239 && bytes[1] === 187 && bytes[2] === 191;
+  const text = bytes.toString("utf8", bom ? 3 : 0);
+  return { text, eol: detectEol(text), bom, trailingNewline: text.endsWith("\n") };
+}
+function sha256(data) {
+  return createHash("sha256").update(data).digest("hex");
+}
+async function sha256File(path4) {
+  try {
+    return sha256(await readFile(path4));
+  } catch (error62) {
+    if (isMissing(error62)) return void 0;
+    throw error62;
+  }
+}
+async function listFiles(root, relative = "") {
+  const entries = await readdir(join(root, relative), { withFileTypes: true });
+  const files = [];
+  for (const entry of entries) {
+    const child = relative ? `${relative}/${entry.name}` : entry.name;
+    if (entry.isDirectory()) files.push(...await listFiles(root, child));
+    else if (entry.isFile()) files.push(child);
+  }
+  return files;
+}
+async function digestTree(root) {
+  let files;
+  try {
+    files = await listFiles(root);
+  } catch (error62) {
+    if (isMissing(error62)) return void 0;
+    throw error62;
+  }
+  files.sort();
+  const hash2 = createHash("sha256");
+  for (const file2 of files) hash2.update(`${file2}\0${await sha256File(join(root, file2))}
+`);
+  return hash2.digest("hex");
+}
+
+// ../src/install/block.ts
+var BEGIN_PATTERN = /<!-- clear-writing-kit:begin\b[^>]*-->/g;
+var END_MARKER = "<!-- clear-writing-kit:end -->";
+function allIndexes(text, pattern) {
+  const indexes = [];
+  if (typeof pattern === "string") {
+    for (let from = text.indexOf(pattern); from >= 0; from = text.indexOf(pattern, from + pattern.length)) indexes.push({ index: from, length: pattern.length });
+  } else {
+    for (const match2 of text.matchAll(pattern)) indexes.push({ index: match2.index ?? 0, length: match2[0].length });
+  }
+  return indexes;
+}
+function findBlock(text) {
+  const begins = allIndexes(text, BEGIN_PATTERN);
+  const ends = allIndexes(text, END_MARKER);
+  if (begins.length > 1 || ends.length > 1) throw new Error("The file contains more than one clear-writing-kit block. Remove the extra block by hand.");
+  if (begins.length === 0 && ends.length === 0) return void 0;
+  if (begins.length !== 1 || ends.length !== 1 || ends[0].index < begins[0].index) {
+    throw new Error("The clear-writing-kit block markers are unpaired. Fix the markers by hand.");
+  }
+  const start = begins[0].index;
+  const end = ends[0].index + ends[0].length;
+  return { start, end, text: text.slice(start, end) };
+}
+function upsertBlock(text, block) {
+  const normalized = block.replace(/\r\n/g, "\n").replace(/^\n+|\n+$/g, "");
+  const markers = findBlock(normalized);
+  if (!markers || markers.start !== 0 || markers.end !== normalized.length) {
+    throw new Error("The block must start with the begin marker and end with the end marker, with no other kit markers.");
+  }
+  const eol = detectEol(text);
+  const styled = normalized.replace(/\n/g, eol);
+  const existing = findBlock(text);
+  if (existing) {
+    const next = text.slice(0, existing.start) + styled + text.slice(existing.end);
+    return { text: next, changed: next !== text };
+  }
+  if (text === "") return { text: styled + eol, changed: true };
+  const trailing = (/(?:\r?\n)*$/.exec(text)?.[0] ?? "").split("\n").length - 1;
+  return { text: text + eol.repeat(Math.max(0, 2 - trailing)) + styled + eol, changed: true };
+}
+
+// ../src/install/manifest.ts
+import { join as join2 } from "node:path";
+var emptyManifest = () => ({ version: null, files: [], cli: [], completedSteps: [] });
+var manifestPath = (home) => join2(home, ".clear-writing-kit", "install-manifest.json");
+var isObject = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
+var isString = (value) => typeof value === "string";
+function parseManifest(text) {
+  const invalid = err("The install manifest is not valid. Fix or remove it before continuing.");
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    return invalid;
+  }
+  if (!isObject(data) || !(data.version === null || isString(data.version))) return invalid;
+  const { files, cli, completedSteps } = data;
+  if (!Array.isArray(files) || !Array.isArray(cli) || !Array.isArray(completedSteps)) return invalid;
+  const filesValid = files.every((entry) => isObject(entry) && isString(entry.path) && isString(entry.sha256) && /^[0-9a-f]{64}$/.test(entry.sha256));
+  const cliValid = cli.every((entry) => isObject(entry) && isString(entry.host) && isString(entry.kind) && isString(entry.name) && isString(entry.fingerprint));
+  if (!filesValid || !cliValid || !completedSteps.every(isString)) return invalid;
+  return ok({
+    version: data.version,
+    files: files.map(({ path: path4, sha256: sha2562 }) => ({ path: path4, sha256: sha2562 })),
+    cli: cli.map(({ host, kind, name, fingerprint }) => ({ host, kind, name, fingerprint })),
+    completedSteps: [...completedSteps]
+  });
+}
+async function readManifest(home) {
+  const file2 = await readText(manifestPath(home));
+  return file2 ? parseManifest(file2.text) : ok(emptyManifest());
+}
+
+// ../src/install/identity.ts
+function present(env, name) {
+  return Object.prototype.hasOwnProperty.call(env, name) ? Boolean(env[name]) : Boolean(env === process.env && env[name]);
+}
+function resolveHost(agentArg, env) {
+  if (!agentArg) return err(`--agent is required. Use one of: ${hosts.map((host2) => host2.id).join(", ")}.`);
+  const host = hosts.find((candidate) => candidate.id === agentArg);
+  if (!host) return err(`Unknown --agent "${agentArg}". Use one of: ${hosts.map((candidate) => candidate.id).join(", ")}.`);
+  const own2 = host.identityEnvironmentVariables.filter((name) => present(env, name));
+  if (host.identityEnvironmentVariables.length > 0 && own2.length === 0) {
+    return err(`Host mismatch: --agent ${host.id} requires one of ${host.identityEnvironmentVariables.join(", ")}, and none is set.`);
+  }
+  if (own2.length === 0) {
+    const other = hosts.find((candidate) => candidate.id !== host.id && candidate.identityEnvironmentVariables.some((name) => present(env, name)));
+    if (other) {
+      const names = other.identityEnvironmentVariables.filter((name) => present(env, name));
+      return err(`Host mismatch: --agent ${host.id} was requested, but ${names.join(", ")} indicates ${other.id}.`);
+    }
+  }
+  return ok(host);
+}
+
+// ../src/install/spawn.ts
+import { spawn } from "node:child_process";
+import { statSync } from "node:fs";
+import { delimiter, extname, isAbsolute, join as join3, resolve } from "node:path";
+var isWindows = () => process.platform === "win32";
+function envValue(env, name) {
+  if (!isWindows()) return env[name];
+  const key = Object.keys(env).find((candidate) => candidate.toLowerCase() === name.toLowerCase());
+  return key === void 0 ? void 0 : env[key];
+}
+function isFile(path4) {
+  try {
+    const stats = statSync(path4);
+    return stats.isFile() && (isWindows() || (stats.mode & 73) !== 0);
+  } catch {
+    return false;
+  }
+}
+function which(name, env = process.env) {
+  const extensions = isWindows() ? (envValue(env, "PATHEXT") ?? ".COM;.EXE;.BAT;.CMD").split(";").filter(Boolean).map((extension) => extension.toLowerCase()) : [""];
+  const hasExecutableExtension = isWindows() && extensions.includes(extname(name).toLowerCase());
+  const names = hasExecutableExtension || !isWindows() ? [name] : extensions.map((extension) => name + extension);
+  const directories = /[\\/]/.test(name) ? [""] : (envValue(env, "PATH") ?? "").split(delimiter).map((directory) => directory.replace(/^"|"$/g, "")).filter(Boolean);
+  for (const directory of directories) {
+    for (const candidate of names) {
+      const path4 = directory ? join3(directory, candidate) : candidate;
+      if (isFile(path4)) return isAbsolute(path4) ? path4 : resolve(path4);
+    }
+  }
+  return void 0;
+}
+function quoteForCmd(argument) {
+  if (/["%\r\n\0]/.test(argument)) return void 0;
+  return `"${argument.replace(/(\\+)$/, "$1$1")}"`;
+}
+function run(command, args, options = {}) {
+  return new Promise((resolvePromise) => {
+    const viaCmd = isWindows() && /\.(cmd|bat)$/i.test(command);
+    let file2 = command;
+    let spawnArgs = [...args];
+    if (viaCmd) {
+      const quoted = [command, ...args].map(quoteForCmd);
+      if (quoted.includes(void 0)) {
+        resolvePromise({ code: -1, stdout: "", stderr: "An argument contains a character that cmd.exe cannot carry unchanged." });
+        return;
+      }
+      file2 = envValue(options.env ?? process.env, "ComSpec") ?? "cmd.exe";
+      spawnArgs = ["/d", "/s", "/c", `"${quoted.join(" ")}"`];
+    }
+    let stdout = "";
+    let stderr = "";
+    let settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolvePromise(result);
+    };
+    const child = spawn(file2, spawnArgs, {
+      cwd: options.cwd,
+      env: options.env,
+      stdio: [options.input === void 0 ? "ignore" : "pipe", "pipe", "pipe"],
+      windowsHide: true,
+      windowsVerbatimArguments: viaCmd
+    });
+    const timer = setTimeout(() => {
+      child.kill();
+      finish({ code: -1, stdout, stderr: `${stderr}Timed out after ${options.timeoutMs ?? 3e4} ms.` });
+    }, options.timeoutMs ?? 3e4);
+    child.stdout?.setEncoding("utf8").on("data", (chunk) => {
+      stdout += chunk;
+    });
+    child.stderr?.setEncoding("utf8").on("data", (chunk) => {
+      stderr += chunk;
+    });
+    child.on("error", (error62) => finish({ code: -1, stdout, stderr: error62.message }));
+    child.on("close", (code) => finish({ code: code ?? -1, stdout, stderr }));
+    if (options.input !== void 0) child.stdin?.on("error", () => {
+    }).end(options.input);
+  });
+}
+
+// ../src/install/runtime.ts
+var order = ["node", "deno", "bun"];
+function parseVersion(output2) {
+  const match2 = /(\d+)\.(\d+)\.(\d+)/.exec(output2);
+  return match2 ? { text: match2[0], major: Number(match2[1]), minor: Number(match2[2]) } : void 0;
+}
+async function probe(kind, env) {
+  const path4 = which(kind, env);
+  if (!path4) return { kind, qualifies: false, reason: "not on PATH" };
+  const result = await run(path4, ["--version"], { env });
+  const version2 = result.code === 0 ? parseVersion(result.stdout) : void 0;
+  if (!version2) return { kind, path: path4, qualifies: false, reason: "version could not be read" };
+  const qualifies = kind === "node" ? version2.major > 20 || version2.major === 20 && version2.minor >= 18 : kind === "deno" ? version2.major >= 2 : true;
+  const required2 = kind === "node" ? "needs >= 20.18" : "needs >= 2";
+  return { kind, path: path4, version: version2.text, qualifies, reason: qualifies ? void 0 : `version ${version2.text} ${required2}` };
+}
+async function probeRuntimes(env, stopAtFirst = false) {
+  const probes = [];
+  for (const kind of order) {
+    const result = await probe(kind, env);
+    probes.push(result);
+    if (stopAtFirst && result.qualifies) break;
+  }
+  return probes;
+}
+function pickRuntime(probes) {
+  const chosen = probes.find((candidate) => candidate.qualifies && candidate.path && candidate.version);
+  if (chosen?.path && chosen.version) {
+    return ok({ kind: chosen.kind, command: chosen.path, args: chosen.kind === "deno" ? ["run", "-A"] : [], version: chosen.version });
+  }
+  const detail = probes.map((candidate) => `${candidate.kind}: ${candidate.reason ?? "not usable"}`).join("; ");
+  return err(`No qualifying runtime on PATH. Install Node >= 20.18, Deno >= 2, or Bun. Found: ${detail}.`);
+}
+
+// ../src/install/plan.ts
+var MCP_NAME = "clear-writing-kit-textlint";
+var PLUGIN_NAME = "clear-writing-kit";
+var OUTPUT_STYLE = "clear-writing-kit";
+var LEGACY_SKILL = "accurate-answer";
+var fail = (kind, message) => ({ status: "error", kind, message });
+var normalizePath = (text) => text.replace(/\\+/g, "/");
+var hostBinary = (host) => host.mcpCommands.add.split(" ")[0];
+async function isDirectory(path4) {
+  try {
+    return (await stat(path4)).isDirectory();
+  } catch {
+    return false;
+  }
+}
+function lineDiff(before, after) {
+  const table = Array.from({ length: before.length + 1 }, () => new Array(after.length + 1).fill(0));
+  for (let i2 = before.length - 1; i2 >= 0; i2--) {
+    for (let j2 = after.length - 1; j2 >= 0; j2--) {
+      table[i2][j2] = before[i2] === after[j2] ? table[i2 + 1][j2 + 1] + 1 : Math.max(table[i2 + 1][j2], table[i2][j2 + 1]);
+    }
+  }
+  const diff = [];
+  let i = 0;
+  let j = 0;
+  while (i < before.length || j < after.length) {
+    if (i < before.length && j < after.length && before[i] === after[j]) {
+      i++;
+      j++;
+    } else if (j < after.length && (i === before.length || table[i][j + 1] >= table[i + 1][j])) diff.push(`+ ${after[j++]}`);
+    else diff.push(`- ${before[i++]}`);
+  }
+  return diff;
+}
+function blockVersion(blockText) {
+  return /<!-- clear-writing-kit:begin v=([^ >]+) -->/.exec(blockText)?.[1];
+}
+function manifestDigest(manifest) {
+  const files = [...manifest.files].sort((a, b) => a.path.localeCompare(b.path));
+  const cli = [...manifest.cli].sort((a, b) => `${a.host}${a.kind}${a.name}`.localeCompare(`${b.host}${b.kind}${b.name}`));
+  return sha256(JSON.stringify({ version: manifest.version, files, cli }));
+}
+function foreignBlocksNaming(text) {
+  const names = [];
+  for (const match2 of text.matchAll(/<!--\s*([\w.-]+):begin\b[^>]*-->([\s\S]*?)<!--\s*\1:end\s*-->/g)) {
+    if (match2[1] !== "clear-writing-kit" && match2[2].includes(LEGACY_SKILL)) names.push(match2[1]);
+  }
+  return names;
+}
+function manualSteps(host, home, env) {
+  const configDirectory = host.configDirectoryEnv && env[host.configDirectoryEnv] || host.configDirectory(home);
+  return [
+    `Plugin: ${host.pluginCommands.install}, with the clear-writing-kit plugin from this repository.`,
+    `MCP: ${host.mcpCommands.add}, registering ${MCP_NAME} with the launcher command from INSTALL.md.`,
+    `Instruction block: add the contents of install/agents-block.md to ${join4(configDirectory, basename(host.globalInstructionsFile(home)))}.`,
+    `${host.displayName} is not verified, so \`install apply\` refuses to run for it.`
+  ];
+}
+async function readHostState(host, env, launcher, runtime) {
+  const binary = which(hostBinary(host), env);
+  if (!binary) return fail("state", `The ${host.displayName} command "${hostBinary(host)}" is not on PATH, so its plugin and MCP state cannot be read.`);
+  const plugins = await run(binary, ["plugin", "list"], { env });
+  if (plugins.code !== 0) return fail("state", `"${hostBinary(host)} plugin list" failed with exit code ${plugins.code}.`);
+  const plugin = new RegExp(`(^|[^\\w-])${PLUGIN_NAME}(?![\\w-])`, "m").test(plugins.stdout) ? "installed" : "absent";
+  const entry = await run(binary, ["mcp", "get", MCP_NAME], { env });
+  if (entry.code === -1) return fail("state", `"${hostBinary(host)} mcp get" could not run.`);
+  const shown = normalizePath(entry.stdout + entry.stderr);
+  const mcp = entry.code !== 0 ? "absent" : shown.includes(normalizePath(launcher)) && shown.includes(normalizePath(runtime.command)) ? "current" : "different";
+  return { plugin, mcp };
+}
+async function computePlan(ctx) {
+  const resolved = resolveHost(ctx.agent, ctx.env);
+  if (!resolved.ok) return fail(resolved.error.startsWith("Host mismatch") ? "mismatch" : "usage", resolved.error);
+  const host = resolved.value;
+  const hostSummary = { id: host.id, displayName: host.displayName };
+  if (!host.verified) return { status: "manual", host: hostSummary, manualSteps: manualSteps(host, ctx.home, ctx.env) };
+  const probes = await probeRuntimes(ctx.env);
+  const runtime = pickRuntime(probes);
+  if (!runtime.ok) return fail("runtime", runtime.error);
+  const manifest = await readManifest(ctx.home);
+  if (!manifest.ok) return fail("manifest", manifest.error);
+  const version2 = blockVersion(ctx.blockText);
+  if (!version2) return fail("block", "The instruction block has no begin marker with a version.");
+  const payloadDigest = await digestTree(ctx.payloadDir);
+  if (!payloadDigest) return fail("state", "The payload directory is missing.");
+  const home = ctx.home;
+  const kitDirectory = join4(home, ".clear-writing-kit");
+  const versionDirectory = join4(kitDirectory, version2);
+  const launcher = join4(kitDirectory, "cwk.mjs");
+  const configDirectory = host.configDirectoryEnv && ctx.env[host.configDirectoryEnv] || host.configDirectory(home);
+  const instructionsPath = join4(configDirectory, basename(host.globalInstructionsFile(home)));
+  const state = await readHostState(host, ctx.env, launcher, runtime.value);
+  if ("status" in state) return state;
+  const steps = [];
+  const targetStates = {};
+  const installedDigest = await digestTree(versionDirectory);
+  const launcherDigest = await sha256File(launcher);
+  const payloadState = installedDigest === void 0 ? "absent" : installedDigest === payloadDigest ? launcherDigest ? "current" : "launcher-missing" : "different";
+  targetStates.payload = `${payloadState}:${installedDigest ?? ""}:${launcherDigest ?? ""}`;
+  steps.push({
+    id: "payload",
+    action: payloadState === "current" ? "none" : payloadState === "absent" ? "create" : "update",
+    target: versionDirectory,
+    summary: `Copy the payload to ${versionDirectory} and point ${launcher} at it.`,
+    diff: payloadState === "current" ? [] : [`+ payload ${payloadDigest.slice(0, 12)} in ${versionDirectory}`, `+ launcher ${launcher}`]
+  });
+  targetStates.plugin = state.plugin;
+  steps.push({
+    id: "plugin",
+    action: state.plugin === "installed" ? "none" : "create",
+    target: `${host.id} plugin ${PLUGIN_NAME}`,
+    summary: `Install the ${PLUGIN_NAME} plugin through "${hostBinary(host)} plugin".`,
+    diff: state.plugin === "installed" ? [] : [`+ plugin ${PLUGIN_NAME}`]
+  });
+  const registration = [runtime.value.command, ...runtime.value.args, launcher, "mcp"];
+  targetStates.mcp = state.mcp;
+  steps.push({
+    id: "mcp",
+    action: state.mcp === "current" ? "none" : state.mcp === "absent" ? "create" : "update",
+    target: `${host.id} mcp ${MCP_NAME}`,
+    summary: `Register ${MCP_NAME} through "${hostBinary(host)} mcp".`,
+    diff: state.mcp === "current" ? [] : [
+      ...state.mcp === "different" ? [`- mcp ${MCP_NAME} (existing entry does not match)`] : [],
+      `+ mcp ${MCP_NAME}: ${registration.join(" ")}`
+    ]
+  });
+  const instructions = await readText(instructionsPath);
+  const instructionText = instructions?.text ?? "";
+  let upserted;
+  try {
+    upserted = upsertBlock(instructionText, ctx.blockText);
+  } catch (error62) {
+    return fail("block", `${instructionsPath}: ${error62 instanceof Error ? error62.message : String(error62)}`);
+  }
+  const oldBlock = findBlock(instructionText);
+  const newBlock = findBlock(upserted.text);
+  targetStates.block = instructions ? sha256(instructionText) : "absent";
+  steps.push({
+    id: "block",
+    action: !upserted.changed ? "none" : oldBlock ? "update" : "create",
+    target: instructionsPath,
+    summary: `${oldBlock ? "Replace" : "Add"} the clear-writing-kit block in ${instructionsPath}${instructions ? ` (${instructions.eol === "\r\n" ? "CRLF" : "LF"}${instructions.bom ? ", BOM kept" : ""})` : " (new file)"}.`,
+    diff: lineDiff(oldBlock ? oldBlock.text.split(/\r?\n/) : [], newBlock ? newBlock.text.split(/\r?\n/) : [])
+  });
+  const conflicts = [];
+  if (host.outputStyleSupport === "yes") {
+    const settingsPath = join4(configDirectory, "settings.json");
+    const settings = await readText(settingsPath);
+    let current;
+    if (settings) {
+      try {
+        const parsed = JSON.parse(settings.text);
+        current = typeof parsed === "object" && parsed !== null ? parsed.outputStyle : void 0;
+      } catch {
+        return fail("state", `${settingsPath} is not valid JSON.`);
+      }
+    }
+    const shown = (value) => JSON.stringify(typeof value === "string" ? value.slice(0, 64) : typeof value);
+    targetStates["output-style"] = current === void 0 ? "unset" : shown(current);
+    steps.push({
+      id: "output-style",
+      action: current === OUTPUT_STYLE ? "none" : current === void 0 ? "create" : "update",
+      target: `${settingsPath} outputStyle`,
+      summary: `Set outputStyle to "${OUTPUT_STYLE}" in ${settingsPath}.`,
+      diff: current === OUTPUT_STYLE ? [] : [...current === void 0 ? [] : [`- "outputStyle": ${shown(current)}`], `+ "outputStyle": ${JSON.stringify(OUTPUT_STYLE)}`]
+    });
+    if (current !== void 0 && current !== OUTPUT_STYLE) {
+      conflicts.push({ kind: "output-style", target: settingsPath, detail: `outputStyle is ${shown(current)}, not "${OUTPUT_STYLE}".` });
+    }
+  }
+  for (const directory of /* @__PURE__ */ new Set([join4(home, ".agents", "skills", LEGACY_SKILL), join4(configDirectory, "skills", LEGACY_SKILL)])) {
+    if (await isDirectory(directory)) conflicts.push({ kind: "skill", target: directory, detail: `The ${LEGACY_SKILL} skill directory exists.` });
+  }
+  for (const name of foreignBlocksNaming(instructionText)) {
+    conflicts.push({ kind: "instruction-block", target: instructionsPath, detail: `The "${name}" block names ${LEGACY_SKILL}.` });
+  }
+  const hash2 = sha256(JSON.stringify({
+    installerVersion: version2,
+    payloadDigest,
+    host: host.id,
+    runtime: { command: runtime.value.command, args: runtime.value.args },
+    manifest: manifestDigest(manifest.value),
+    targets: steps.map((step) => ({ id: step.id, action: step.action, target: step.target, state: targetStates[step.id] })),
+    conflicts: conflicts.map((conflict) => ({ kind: conflict.kind, target: conflict.target }))
+  }));
+  const hostsFound = hosts.map((candidate) => ({ id: candidate.id, found: which(hostBinary(candidate), ctx.env) !== void 0 }));
+  return { status: "ready", plan: { host: hostSummary, version: version2, hostsFound, runtimes: probes, runtime: runtime.value, steps, conflicts, payloadDigest, targetStates, hash: hash2 } };
+}
+function formatPlan(outcome) {
+  if (outcome.status === "error") return `Error: ${outcome.message}
+No plan hash.
+`;
+  if (outcome.status === "manual") {
+    return [`Host: ${outcome.host.id} (${outcome.host.displayName}), unverified`, "Manual steps:", ...outcome.manualSteps.map((step, index) => `${index + 1}. ${step}`), "No plan hash.", ""].join("\n");
+  }
+  const { plan } = outcome;
+  const lines = [
+    `Clear Writing Kit install plan, version ${plan.version}`,
+    `Requesting host: ${plan.host.id} (${plan.host.displayName})`,
+    `Hosts found: ${plan.hostsFound.filter((host) => host.found).map((host) => host.id).join(", ") || "none"}`,
+    "Runtimes:",
+    ...plan.runtimes.map((probe2) => `  ${probe2.kind}: ${probe2.qualifies ? `${probe2.version} at ${probe2.path}` : probe2.reason}${probe2.kind === plan.runtime.kind ? " (selected)" : ""}`),
+    "Conflicts:",
+    ...plan.conflicts.length ? plan.conflicts.map((conflict) => `  [${conflict.kind}] ${conflict.target}: ${conflict.detail} The installer keeps it.`) : ["  none"],
+    "Steps:"
+  ];
+  plan.steps.forEach((step, index) => {
+    lines.push(step.action === "none" ? `${index + 1}. ${step.id}: none. Already current.` : `${index + 1}. ${step.id}: ${step.action}. ${step.summary}`);
+    for (const line of step.diff) lines.push(`     ${line}`);
+  });
+  lines.push(`Plan hash: ${plan.hash}`, "");
+  return lines.join("\n");
 }
 
 // node_modules/@modelcontextprotocol/server/dist/chunk-Br0eD_fh.mjs
@@ -149296,7 +149874,7 @@ __export(util_exports, {
   hexToUint8Array: () => hexToUint8Array,
   hide: () => hide,
   installLazyProp: () => installLazyProp,
-  isObject: () => isObject,
+  isObject: () => isObject2,
   isPlainObject: () => isPlainObject,
   issue: () => issue,
   joinValues: () => joinValues,
@@ -149520,7 +150098,7 @@ function slugify(input2) {
 }
 var captureStackTrace = "captureStackTrace" in Error ? Error.captureStackTrace : (..._args) => {
 };
-function isObject(data) {
+function isObject2(data) {
   return typeof data === "object" && data !== null && !Array.isArray(data);
 }
 var allowsEval = /* @__PURE__ */ cached(() => {
@@ -149539,7 +150117,7 @@ var allowsEval = /* @__PURE__ */ cached(() => {
   }
 });
 function isPlainObject(o) {
-  if (isObject(o) === false)
+  if (isObject2(o) === false)
     return false;
   const ctor = o.constructor;
   if (ctor === void 0)
@@ -149547,7 +150125,7 @@ function isPlainObject(o) {
   if (typeof ctor !== "function")
     return true;
   const prot = ctor.prototype;
-  if (isObject(prot) === false)
+  if (isObject2(prot) === false)
     return false;
   if (Object.prototype.hasOwnProperty.call(prot, "isPrototypeOf") === false) {
     return false;
@@ -150059,10 +150637,10 @@ function defineLazyInternal(inst, key, compute) {
           Object.defineProperty(this, key, { configurable: true, writable: true, value });
         broke = broke || outer;
         return value;
-      } catch (err) {
+      } catch (err2) {
         delete this[key];
         broke = broke || outer;
-        throw err;
+        throw err2;
       }
     },
     set(value) {
@@ -150669,8 +151247,8 @@ function emoji() {
 }
 var ipv4 = /^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$/;
 var ipv6 = /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$/;
-var mac = (delimiter) => {
-  const escapedDelim = escapeRegex(delimiter ?? ":");
+var mac = (delimiter2) => {
+  const escapedDelim = escapeRegex(delimiter2 ?? ":");
   return new RegExp(`^(?:[0-9A-F]{2}${escapedDelim}){5}[0-9A-F]{2}$|^(?:[0-9a-f]{2}${escapedDelim}){5}[0-9a-f]{2}$`);
 };
 var cidrv4 = /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\/([0-9]|[1-2][0-9]|3[0-2])$/;
@@ -152195,7 +152773,7 @@ var $ZodObject = /* @__PURE__ */ $constructor("$ZodObject", (inst, def) => {
     }
     return propValues;
   });
-  const isObject2 = isObject;
+  const isObject3 = isObject2;
   const catchall = def.catchall;
   let value;
   const memo3 = globalConfig.memoizer;
@@ -152203,7 +152781,7 @@ var $ZodObject = /* @__PURE__ */ $constructor("$ZodObject", (inst, def) => {
   inst._zod.parse = (payload, ctx) => {
     value ?? (value = _normalized.value);
     const input2 = payload.value;
-    if (!isObject2(input2)) {
+    if (!isObject3(input2)) {
       payload.issues.push({
         expected: "object",
         code: "invalid_type",
@@ -152339,7 +152917,7 @@ var $ZodObjectJIT = /* @__PURE__ */ $constructor("$ZodObjectJIT", (inst, def) =>
     return doc.compile();
   };
   let fastpass;
-  const isObject2 = isObject;
+  const isObject3 = isObject2;
   const jit = !globalConfig.jitless;
   const allowsEval2 = allowsEval;
   const fastEnabled = jit && allowsEval2.value;
@@ -152348,7 +152926,7 @@ var $ZodObjectJIT = /* @__PURE__ */ $constructor("$ZodObjectJIT", (inst, def) =>
   inst._zod.parse = (payload, ctx) => {
     value ?? (value = _normalized.value);
     const input2 = payload.value;
-    if (!isObject2(input2)) {
+    if (!isObject3(input2)) {
       payload.issues.push({
         expected: "object",
         code: "invalid_type",
@@ -152556,7 +153134,7 @@ var $ZodDiscriminatedUnion = /* @__PURE__ */ $constructor("$ZodDiscriminatedUnio
   const disc = cached(() => discriminatorMap(def));
   inst._zod.parse = (payload, ctx) => {
     const input2 = payload.value;
-    if (!isObject(input2)) {
+    if (!isObject2(input2)) {
       payload.issues.push({
         code: "invalid_type",
         expected: "object",
@@ -153698,7 +154276,7 @@ var recursive = /* @__PURE__ */ new WeakMap();
 var NONE = 0;
 var ASSUMED = 1;
 var PROVEN = 2;
-function isRecursive(inst, stack, resolve) {
+function isRecursive(inst, stack, resolve2) {
   const cached2 = recursive.get(inst);
   if (cached2 !== void 0)
     return cached2 ? PROVEN : NONE;
@@ -153708,7 +154286,7 @@ function isRecursive(inst, stack, resolve) {
   let result = NONE;
   const check2 = (child) => {
     if (result !== PROVEN && child?._zod) {
-      const answer = isRecursive(child, stack, resolve);
+      const answer = isRecursive(child, stack, resolve2);
       if (answer > result)
         result = answer;
     }
@@ -153719,7 +154297,7 @@ function isRecursive(inst, stack, resolve) {
       const desc = Object.getOwnPropertyDescriptor(sh, key);
       if (spread && !desc.enumerable)
         continue;
-      const child = desc.get ? ASSUMED : desc.value?._zod ? isRecursive(desc.value, stack, resolve) : NONE;
+      const child = desc.get ? ASSUMED : desc.value?._zod ? isRecursive(desc.value, stack, resolve2) : NONE;
       if (child > answer)
         answer = child;
     }
@@ -153783,7 +154361,7 @@ function isRecursive(inst, stack, resolve) {
       break;
     // `$ZodLazy` caches its inner on the def, so a resolved edge is followed exactly
     case "lazy": {
-      const inner = def._cachedInner ?? (resolve ? inst._zod.innerType : void 0);
+      const inner = def._cachedInner ?? (resolve2 ? inst._zod.innerType : void 0);
       merge2(inner ? isRecursive(inner, stack, false) : ASSUMED);
       break;
     }
@@ -161602,9 +162180,9 @@ function compile(schema, options) {
     const clone2 = withParser(schema, parser);
     clone2._zod.bag.validator = compileValidator(schema, parser);
     return clone2;
-  } catch (err) {
+  } catch (err2) {
     if (options?.strict)
-      throw err;
+      throw err2;
     return schema;
   }
 }
@@ -161694,8 +162272,8 @@ ${code}
   try {
     const factory = new F(...constantNames, factoryCode);
     fn = factory(...constantValues);
-  } catch (err) {
-    throw new ZodCompileUnsupportedError(`this schema (generated code failed to evaluate: ${err.message})`);
+  } catch (err2) {
+    throw new ZodCompileUnsupportedError(`this schema (generated code failed to evaluate: ${err2.message})`);
   }
   if (options?.debug) {
     fn.code = fullCode;
@@ -161733,9 +162311,9 @@ function compileChild(doc, ctx, schema, accessor, needsValue = true) {
   const varCounter = ctx.varCounter;
   try {
     return generateCheck(doc, ctx, schema, accessor, needsValue);
-  } catch (err) {
-    if (!(err instanceof ZodCompileUnsupportedError) || !err.islandable)
-      throw err;
+  } catch (err2) {
+    if (!(err2 instanceof ZodCompileUnsupportedError) || !err2.islandable)
+      throw err2;
     doc.content.length = contentLen;
     if (ctx.constants.size > constantCount) {
       const trailing = Array.from(ctx.constants.keys()).slice(constantCount);
@@ -168126,7 +168704,7 @@ function visit(schema, fnOrHandlers) {
     return h ? h(node2, rewritten) : node2;
   };
   const cache = /* @__PURE__ */ new Map();
-  function run(s) {
+  function run2(s) {
     const cached2 = cache.get(s);
     if (cached2 === RESOLVING) {
       return new $ZodLazy({
@@ -168152,21 +168730,21 @@ function visit(schema, fnOrHandlers) {
         let changed = false;
         const newShape = {};
         for (const k of keys) {
-          const mapped = run(oldShape[k]);
+          const mapped = run2(oldShape[k]);
           if (mapped !== oldShape[k])
             changed = true;
           newShape[k] = mapped;
         }
         let newCatchall = def.catchall;
         if (def.catchall) {
-          newCatchall = run(def.catchall);
+          newCatchall = run2(def.catchall);
           if (newCatchall !== def.catchall)
             changed = true;
         }
         return changed ? clone(s, { ...def, shape: newShape, catchall: newCatchall }) : s;
       }
       case "array": {
-        const mapped = run(def.element);
+        const mapped = run2(def.element);
         return mapped === def.element ? s : clone(s, { ...def, element: mapped });
       }
       case "tuple": {
@@ -168174,14 +168752,14 @@ function visit(schema, fnOrHandlers) {
         let changed = false;
         const newItems = [];
         for (const item of oldItems) {
-          const mapped = run(item);
+          const mapped = run2(item);
           if (mapped !== item)
             changed = true;
           newItems.push(mapped);
         }
         let newRest = def.rest;
         if (def.rest) {
-          newRest = run(def.rest);
+          newRest = run2(def.rest);
           if (newRest !== def.rest)
             changed = true;
         }
@@ -168189,12 +168767,12 @@ function visit(schema, fnOrHandlers) {
       }
       case "record":
       case "map": {
-        const newKey = run(def.keyType);
-        const newVal = run(def.valueType);
+        const newKey = run2(def.keyType);
+        const newVal = run2(def.valueType);
         return newKey === def.keyType && newVal === def.valueType ? s : clone(s, { ...def, keyType: newKey, valueType: newVal });
       }
       case "set": {
-        const newVal = run(def.valueType);
+        const newVal = run2(def.valueType);
         return newVal === def.valueType ? s : clone(s, { ...def, valueType: newVal });
       }
       case "union": {
@@ -168202,7 +168780,7 @@ function visit(schema, fnOrHandlers) {
         let changed = false;
         const newOptions = [];
         for (const opt of oldOptions) {
-          const mapped = run(opt);
+          const mapped = run2(opt);
           if (mapped !== opt)
             changed = true;
           newOptions.push(mapped);
@@ -168210,8 +168788,8 @@ function visit(schema, fnOrHandlers) {
         return changed ? clone(s, { ...def, options: newOptions }) : s;
       }
       case "intersection": {
-        const newLeft = run(def.left);
-        const newRight = run(def.right);
+        const newLeft = run2(def.left);
+        const newRight = run2(def.right);
         return newLeft === def.left && newRight === def.right ? s : clone(s, { ...def, left: newLeft, right: newRight });
       }
       case "optional":
@@ -168223,23 +168801,23 @@ function visit(schema, fnOrHandlers) {
       case "nonoptional":
       case "promise":
       case "success": {
-        const newInner = run(def.innerType);
+        const newInner = run2(def.innerType);
         return newInner === def.innerType ? s : clone(s, { ...def, innerType: newInner });
       }
       case "pipe": {
-        const newIn = run(def.in);
-        const newOut = run(def.out);
+        const newIn = run2(def.in);
+        const newOut = run2(def.out);
         return newIn === def.in && newOut === def.out ? s : clone(s, { ...def, in: newIn, out: newOut });
       }
       case "function": {
-        const newInput = run(def.input);
-        const newOutput = run(def.output);
+        const newInput = run2(def.input);
+        const newOutput = run2(def.output);
         return newInput === def.input && newOutput === def.output ? s : clone(s, { ...def, input: newInput, output: newOutput });
       }
       case "lazy": {
         const original = def.getter;
         const { _cachedInner, ...rest } = def;
-        return clone(s, { ...rest, getter: () => run(original()) });
+        return clone(s, { ...rest, getter: () => run2(original()) });
       }
       // A leaf by choice: `parts` are regex fragments, not data positions.
       case "template_literal":
@@ -168270,7 +168848,7 @@ function visit(schema, fnOrHandlers) {
       }
     }
   }
-  return run(schema);
+  return run2(schema);
 }
 
 // node_modules/zod/v4/classic/deep-partial.js
@@ -172638,14 +173216,14 @@ function inputRequiredRoundsExceededMessage(method, maxRounds) {
   return `Multi-round-trip request '${method}' still required input after ${maxRounds} rounds (inputRequired.maxRounds)`;
 }
 function sleep(ms, signal) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve2, reject) => {
     if (signal?.aborted) {
       reject(signal.reason instanceof SdkError ? signal.reason : new SdkError(SdkErrorCode.RequestTimeout, String(signal.reason)));
       return;
     }
     const timer = setTimeout(() => {
       signal?.removeEventListener("abort", onAbort);
-      resolve();
+      resolve2();
     }, ms);
     const onAbort = () => {
       clearTimeout(timer);
@@ -172912,8 +173490,8 @@ function liftWireOnlyMaterial(message, kind) {
   };
 }
 function codecResultValidator(codec2, method) {
-  const probe = codec2.validateResult(method, void 0);
-  if (!probe.ok && probe.reason === "not-in-era") return void 0;
+  const probe2 = codec2.validateResult(method, void 0);
+  if (!probe2.ok && probe2.reason === "not-in-era") return void 0;
   return { "~standard": {
     version: 1,
     vendor: "mcp-wire-codec",
@@ -173436,7 +174014,7 @@ var Protocol = class {
     const flowStartedAt = Date.now();
     let onAbort;
     let cleanupMessageId;
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve2, reject) => {
       const earlyReject = (error62) => {
         reject(error62);
       };
@@ -173505,7 +174083,7 @@ var Protocol = class {
         }
         if (decoded.kind === "invalid") return reject(decoded.error);
         if (decoded.kind === "input_required") {
-          if (options?.allowInputRequired === true) return resolve(manualInputRequiredValue(decoded));
+          if (options?.allowInputRequired === true) return resolve2(manualInputRequiredValue(decoded));
           const flow = {
             codec: codec2,
             request,
@@ -173517,11 +174095,11 @@ var Protocol = class {
               params
             }, resultSchema, legOptions)
           };
-          return resolve(this._resolveNonCompleteResult(decoded, flow));
+          return resolve2(this._resolveNonCompleteResult(decoded, flow));
         }
         const result = decoded.result;
         validateStandardSchema(resultSchema, result).then((parseResult) => {
-          if (parseResult.success) resolve(parseResult.data);
+          if (parseResult.success) resolve2(parseResult.data);
           else reject(new SdkError(SdkErrorCode.InvalidResult, `Invalid result for ${request.method}: ${parseResult.error}`));
         }, reject);
       });
@@ -174992,21 +175570,21 @@ var require_errors3 = /* @__PURE__ */ __commonJSMin(((exports) => {
   exports.resetErrorsCount = resetErrorsCount;
   function extendErrors({ gen, keyword, schemaValue, data, errsCount, it }) {
     if (errsCount === void 0) throw new Error("ajv implementation error");
-    const err = gen.name("err");
+    const err2 = gen.name("err");
     gen.forRange("i", errsCount, names_1.default.errors, (i) => {
-      gen.const(err, (0, codegen_1._)`${names_1.default.vErrors}[${i}]`);
-      gen.if((0, codegen_1._)`${err}.instancePath === undefined`, () => gen.assign((0, codegen_1._)`${err}.instancePath`, (0, codegen_1.strConcat)(names_1.default.instancePath, it.errorPath)));
-      gen.assign((0, codegen_1._)`${err}.schemaPath`, (0, codegen_1.str)`${it.errSchemaPath}/${keyword}`);
+      gen.const(err2, (0, codegen_1._)`${names_1.default.vErrors}[${i}]`);
+      gen.if((0, codegen_1._)`${err2}.instancePath === undefined`, () => gen.assign((0, codegen_1._)`${err2}.instancePath`, (0, codegen_1.strConcat)(names_1.default.instancePath, it.errorPath)));
+      gen.assign((0, codegen_1._)`${err2}.schemaPath`, (0, codegen_1.str)`${it.errSchemaPath}/${keyword}`);
       if (it.opts.verbose) {
-        gen.assign((0, codegen_1._)`${err}.schema`, schemaValue);
-        gen.assign((0, codegen_1._)`${err}.data`, data);
+        gen.assign((0, codegen_1._)`${err2}.schema`, schemaValue);
+        gen.assign((0, codegen_1._)`${err2}.data`, data);
       }
     });
   }
   exports.extendErrors = extendErrors;
   function addError(gen, errObj) {
-    const err = gen.const("err", errObj);
-    gen.if((0, codegen_1._)`${names_1.default.vErrors} === null`, () => gen.assign(names_1.default.vErrors, (0, codegen_1._)`[${err}]`), (0, codegen_1._)`${names_1.default.vErrors}.push(${err})`);
+    const err2 = gen.const("err", errObj);
+    gen.if((0, codegen_1._)`${names_1.default.vErrors} === null`, () => gen.assign(names_1.default.vErrors, (0, codegen_1._)`[${err2}]`), (0, codegen_1._)`${names_1.default.vErrors}.push(${err2})`);
     gen.code((0, codegen_1._)`${names_1.default.errors}++`);
   }
   function returnErrors(it, errs) {
@@ -176433,7 +177011,7 @@ var require_compile2 = /* @__PURE__ */ __commonJSMin(((exports) => {
     ref = (0, resolve_1.resolveUrl)(this.opts.uriResolver, baseId, ref);
     const schOrFunc = root.refs[ref];
     if (schOrFunc) return schOrFunc;
-    let _sch = resolve.call(this, root, ref);
+    let _sch = resolve2.call(this, root, ref);
     if (_sch === void 0) {
       const schema = (_a3 = root.localRefs) === null || _a3 === void 0 ? void 0 : _a3[ref];
       const { schemaId } = this.opts;
@@ -176459,7 +177037,7 @@ var require_compile2 = /* @__PURE__ */ __commonJSMin(((exports) => {
   function sameSchemaEnv(s1, s2) {
     return s1.schema === s2.schema && s1.root === s2.root && s1.baseId === s2.baseId;
   }
-  function resolve(root, ref) {
+  function resolve2(root, ref) {
     let sch;
     while (typeof (sch = this.refs[ref]) == "string") ref = sch;
     return sch || this.schemas[ref] || resolveSchema.call(this, root, ref);
@@ -176909,7 +177487,7 @@ var require_fast_uri = /* @__PURE__ */ __commonJSMin(((exports, module) => {
     else if (typeof uri === "object") uri = parse3(serialize(uri, options), options);
     return uri;
   }
-  function resolve(baseURI, relativeURI, options) {
+  function resolve2(baseURI, relativeURI, options) {
     const schemelessOptions = options ? Object.assign({ scheme: "null" }, options) : { scheme: "null" };
     const resolved = resolveComponent(parse3(baseURI, schemelessOptions), parse3(relativeURI, schemelessOptions), schemelessOptions, true);
     schemelessOptions.skipEscape = true;
@@ -177083,7 +177661,7 @@ var require_fast_uri = /* @__PURE__ */ __commonJSMin(((exports, module) => {
   const fastUri = {
     SCHEMES,
     normalize,
-    resolve,
+    resolve: resolve2,
     resolveComponent,
     equal,
     serialize,
@@ -182326,7 +182904,7 @@ var StdioServerTransport = class {
   }
   send(message) {
     if (this._closed) return Promise.reject(/* @__PURE__ */ new Error("StdioServerTransport is closed"));
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve2, reject) => {
       const json2 = serializeMessage(message);
       let settled = false;
       const onError = (error62) => {
@@ -182341,14 +182919,14 @@ var StdioServerTransport = class {
         settled = true;
         this._stdout.off("error", onError);
         this._stdout.off("drain", onDrain);
-        resolve();
+        resolve2();
       };
       this._stdout.once("error", onError);
       if (this._stdout.write(json2)) {
         if (settled) return;
         settled = true;
         this._stdout.off("error", onError);
-        resolve();
+        resolve2();
       } else if (!settled) this._stdout.once("drain", onDrain);
     });
   }
@@ -182391,12 +182969,60 @@ async function runMcpServer() {
 }
 
 // ../src/cli.ts
+var installUsage = [
+  "Usage: cwk install <plan|apply|verify|uninstall> --agent <claude|codex|copilot|opencode|antigravity>",
+  "",
+  "  plan       Show what the installer would change and print a plan hash. Writes nothing.",
+  "  apply      Apply a plan. Requires --plan-hash from a plan run.",
+  "  verify     Check an installation.",
+  "  uninstall  Remove what the installer installed.",
+  ""
+].join("\n");
+async function runInstall(args) {
+  const subcommand = args.shift();
+  if (subcommand === "--help" || subcommand === "-h" || subcommand !== void 0 && args.includes("--help")) {
+    process.stdout.write(installUsage);
+    return 0;
+  }
+  if (subcommand === "apply" || subcommand === "verify" || subcommand === "uninstall") {
+    process.stderr.write(`"cwk install ${subcommand}" is not available in this build.
+`);
+    return 2;
+  }
+  if (subcommand !== "plan") {
+    process.stderr.write(installUsage);
+    return 2;
+  }
+  const flag = args.indexOf("--agent");
+  const agent = flag >= 0 ? args[flag + 1] : void 0;
+  const extra = args.filter((_, index) => index !== flag && index !== flag + 1);
+  if (extra.length) {
+    process.stderr.write(`Unknown argument: ${extra[0]}
+${installUsage}`);
+    return 2;
+  }
+  const payloadDir = dirname(fileURLToPath3(import.meta.url));
+  let blockText;
+  try {
+    blockText = await readFile2(join5(payloadDir, "..", "install", "agents-block.md"), "utf8");
+  } catch {
+    process.stderr.write("Cannot read install/agents-block.md next to the payload. Run the installer from the repository checkout.\n");
+    return 1;
+  }
+  const outcome = await computePlan({ agent, env: process.env, home: homedir(), payloadDir, blockText });
+  process.stdout.write(formatPlan(outcome));
+  return outcome.status === "ready" ? 0 : 1;
+}
 async function main() {
   const args = process.argv.slice(2);
   const command = args.shift();
   if (command === "mcp") {
     if (args.length) throw new Error("Usage: cwk mcp");
     await runMcpServer();
+    return;
+  }
+  if (command === "install") {
+    process.exitCode = await runInstall(args);
     return;
   }
   if (command !== "check") throw new Error("Usage: cwk check --language <language> --genre <genre> [--stdin [--stdin-filename <name>] | files...]");
@@ -182413,9 +183039,9 @@ async function main() {
   if (args.includes("--stdin-filename")) stdinFilename = take("--stdin-filename");
   if (stdin && args.length) throw new Error("Use either --stdin or file paths");
   if (stdin) {
-    const text = await new Promise((resolve, reject) => {
+    const text = await new Promise((resolve2, reject) => {
       let data = "";
-      process.stdin.setEncoding("utf8").on("data", (chunk) => data += chunk).on("end", () => resolve(data)).on("error", reject);
+      process.stdin.setEncoding("utf8").on("data", (chunk) => data += chunk).on("end", () => resolve2(data)).on("error", reject);
     });
     const { result, output: output2 } = await lintText({ text, language, genre, filename: stdinFilename });
     if (output2) process.stdout.write(output2);
@@ -182423,7 +183049,7 @@ async function main() {
     return;
   }
   if (!args.length) throw new Error("Provide --stdin or at least one file path");
-  const texts = await Promise.all(args.map(async (filename) => ({ filename, text: await readFile(filename, "utf8") })));
+  const texts = await Promise.all(args.map(async (filename) => ({ filename, text: await readFile2(filename, "utf8") })));
   let failed = false;
   for (const item of texts) {
     const { result, output: output2 } = await lintText({ ...item, language, genre });

@@ -192,10 +192,10 @@ Workflow: IMPLEMENT
 Step: 5 of 7
 Last activity: 2026-10-02 — T-07 independent test and audit passed at f7c5bbf. Plugin manifests are ready. Installer plan is next.
 Next step: Run T-08 install plan implementation through the owner-authorized no-sandbox Claude executor.
-Current Task:
-Task Base Commit: ee542298ea85b242a6abab95e625dad29197af9c
-Task Final Commit: f7c5bbfd8021f5ba96ce81e9a6b8d37a354cd18e
-Test Retry Count: 1
+Current Task: T-08
+Task Base Commit: e7d2860a6ea66c381d2c167d40902b28e6116d13
+Task Final Commit:
+Test Retry Count: 0
 Review Retry Count: 0
 
 ### Deviations
@@ -244,6 +244,12 @@ Dispatch: phase=test task=T-07 role=TESTER executor=agy model=gemini-3.8-flash s
 T-07 independent retest: TP-10 PASS at f7c5bbfd8021f5ba96ce81e9a6b8d37a354cd18e, with unchanged HEAD and no production edits. Claude details lists coding-agent-writing and zero MCP servers. Codex plugin is installed and enabled with the declared skill in its cache. Python artifacts 12/12 and checker regressions 26/26 passed. TP-09 remains deferred until T-09 delivers apply.
 
 Dispatch: phase=audit task=T-07 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=a6701ea4-278f-41fc-b051-67c06b8c9547 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-07/1790912102-409811200-000000-T-07-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
+
+T-08 task-quality check: The task specifies the read-only plan behavior, module ownership, injected home/environment boundary, exact host identity checks, runtime version thresholds, duplicate-marker and invalid-manifest failures, sanitized diffs, deterministic plan hash, unverified-host refusal, and rebuilt payload. Reuse the typed host table and generated instruction block. No real-home installs, apply behavior, or independent test code belongs to the implementation. Test rows requiring later apply/verify/uninstall commands must stay explicitly NotRun until those prerequisites land.
+
+Dispatch: phase=implement task=T-08 role=CODER executor=claude model=claude-sonnet-5-5 state=completed session_id=6cc22352-d293-40d6-8ac0-eba2a111ea6f log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-08/1790912349-828652900-000000-T-08-implement-claude.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+T-08 implementation probes are preliminary evidence only. Independent tests must cover runtime preference fixtures, unverified-host manual steps, exact identity mismatch scenarios including inherited CODEX_SESSION_ID/CODEX_THREAD_ID inside Claude Code, sanitized diffs, target-state hash binding, and config token redaction. The implementer noted inherited Codex variables can pass --agent codex inside Claude Code. Resolve any confirmed failure within the T-08 identity module scope. Never alter the completed host table merely to bypass a boundary gate.
 
 New prompt. Source approval and planning reviews are carried forward. T-03 is the payload gate. If it returns stop, T-05 onward cannot start. Human review occurs once after all automated tasks and goal-backward verification. T-01 implementation dispatch completed and was committed. Working tree was clean at b4700fa before this test cursor update. Boundary verification passed. Independent testing and audit have not run. Generated bundle whitespace warnings come from embedded dependency strings and remain unchanged to preserve build reproducibility.
 
