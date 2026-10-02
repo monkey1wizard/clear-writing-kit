@@ -37,7 +37,7 @@
 
 | Plan | Source Plan | Last Session | Stopped At | Next Step | Context |
 | --- | --- | --- | --- | --- | --- |
-| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-10 independent test PASS and audit CLEAR at 8c93c76 | Run T-11 install uninstall implementation | T-01 through T-10 complete. Temporary no-sandbox Claude CODER route active for this invocation. Restore original route on handback. Uninstall lifecycle branches remain mandatory. Two full npm test failures predate T-10 and remain unresolved. |
+| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-11 implementation recovery interrupted because pinned gal.exe is unavailable | Restore pinned GAL or explicitly approve a new executable binding, then run pipeline-preflight and resume T-11 repair | T-01 through T-10 complete. T-11 native Codex uninstall test failed. Claude repair dispatch returned provider 429 without code changes. Recovery dispatch has not started. CODER route restored to codex, but the no-sandbox constraint still applies. T-12 and goal verification remain pending. Two existing full npm test failures remain unresolved. |
 
 ## Session Execution Context
 

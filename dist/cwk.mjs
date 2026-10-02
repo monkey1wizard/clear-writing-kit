@@ -183289,7 +183289,7 @@ async function pruneEmpty(directory, stop) {
 }
 async function clearOutputStyle(path4, value, backupDir) {
   const file2 = await readText(path4);
-  if (!file2) return "absent";
+  if (!file2) return { result: "absent" };
   let data;
   try {
     data = JSON.parse(file2.text);
@@ -183298,19 +183298,19 @@ async function clearOutputStyle(path4, value, backupDir) {
   }
   if (typeof data !== "object" || data === null || Array.isArray(data)) throw new Error(`${path4} does not hold a JSON object.`);
   const current = data.outputStyle;
-  if (current === void 0) return "absent";
-  if (current !== value) return "different";
+  if (current === void 0) return { result: "absent" };
+  if (current !== value) return { result: "different" };
   const { members: members2, open: open2, close } = topLevelMembers(file2.text);
   const index = members2.map((member) => member.key).lastIndexOf("outputStyle");
   let next;
   if (members2.length === 1) {
-    if (file2.text === `{
+    if (file2.text.replace(/\r\n/g, "\n") === `{
   "outputStyle": ${JSON.stringify(value)}
 }
 `) {
-      await backup(path4, backupDir);
+      const copy2 = await backup(path4, backupDir);
       await rm3(path4, { force: true });
-      return "file-removed";
+      return { result: "file-removed", backup: copy2 };
     }
     next = file2.text.slice(0, open2 + 1) + file2.text.slice(close);
   } else if (index < members2.length - 1) {
@@ -183319,9 +183319,9 @@ async function clearOutputStyle(path4, value, backupDir) {
     next = file2.text.slice(0, members2[index - 1].valueEnd) + file2.text.slice(members2[index].valueEnd);
   }
   JSON.parse(next);
-  await backup(path4, backupDir);
+  const copy = await backup(path4, backupDir);
   await writeTextAtomic(path4, next, { bom: file2.bom });
-  return "cleared";
+  return { result: "cleared", backup: copy };
 }
 async function uninstall(ctx) {
   const resolved = resolveHost(ctx.agent, ctx.env);
@@ -183404,7 +183404,8 @@ async function uninstall(ctx) {
           removed.push({ target, detail: "The host has no such plugin. Nothing to remove." });
           continue;
         }
-        const result = await run(binary, ["plugin", host.id === "codex" ? "remove" : "uninstall", PLUGIN_NAME], { env: ctx.env, timeoutMs: 12e4 });
+        const pluginTarget = host.id === "codex" ? `${PLUGIN_NAME}@${PLUGIN_NAME}` : PLUGIN_NAME;
+        const result = await run(binary, ["plugin", host.id === "codex" ? "remove" : "uninstall", pluginTarget], { env: ctx.env, timeoutMs: 12e4 });
         if (result.code !== 0) fail3(limit2(`"plugin remove" exited with code ${result.code}. ${(result.stdout + result.stderr).trim()}`));
         else removed.push({ target, detail: "Removed through the host remove command." });
       }
@@ -183449,7 +183450,8 @@ async function uninstall(ctx) {
   if (host.outputStyleSupport === "yes" && manifest.completedSteps.includes("output-style")) {
     const settingsPath = join7(configDirectory, "settings.json");
     try {
-      const result = await clearOutputStyle(settingsPath, OUTPUT_STYLE, backupDir);
+      const { result, backup: copy } = await clearOutputStyle(settingsPath, OUTPUT_STYLE, backupDir);
+      if (copy) backups.push(copy);
       if (result === "different") kept.push({ target: `${settingsPath} outputStyle`, detail: `outputStyle is not "${OUTPUT_STYLE}" now. It was changed after install.` });
       else if (result !== "absent") removed.push({ target: `${settingsPath} outputStyle`, detail: result === "file-removed" ? "Removed. The file held nothing else, so it was deleted." : "Removed. Other settings are unchanged." });
     } catch (error62) {

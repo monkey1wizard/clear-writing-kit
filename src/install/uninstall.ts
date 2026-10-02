@@ -44,9 +44,9 @@ async function pruneEmpty(directory: string, stop: string) {
  * Only that member goes. Key order, indentation, line endings, and the BOM of the other members stay.
  * A file that holds only the member `setOutputStyle` wrote into a new file is deleted. The old file goes to the backup directory first.
  */
-async function clearOutputStyle(path: string, value: string, backupDir: string): Promise<"cleared" | "file-removed" | "absent" | "different"> {
+async function clearOutputStyle(path: string, value: string, backupDir: string): Promise<{ result: "cleared" | "file-removed" | "absent" | "different"; backup?: string }> {
   const file = await readText(path);
-  if (!file) return "absent";
+  if (!file) return { result: "absent" };
   let data: unknown;
   try {
     data = JSON.parse(file.text);
@@ -55,19 +55,16 @@ async function clearOutputStyle(path: string, value: string, backupDir: string):
   }
   if (typeof data !== "object" || data === null || Array.isArray(data)) throw new Error(`${path} does not hold a JSON object.`);
   const current = (data as Record<string, unknown>).outputStyle;
-  if (current === undefined) return "absent";
-  if (current !== value) return "different";
+  if (current === undefined) return { result: "absent" };
+  if (current !== value) return { result: "different" };
   const { members, open, close } = topLevelMembers(file.text);
   const index = members.map(member => member.key).lastIndexOf("outputStyle");
   let next: string;
   if (members.length === 1) {
-    if (file.text === `{
-  "outputStyle": ${JSON.stringify(value)}
-}
-`) {
-      await backup(path, backupDir);
+    if (file.text.replace(/\r\n/g, "\n") === `{\n  "outputStyle": ${JSON.stringify(value)}\n}\n`) {
+      const copy = await backup(path, backupDir);
       await rm(path, { force: true });
-      return "file-removed";
+      return { result: "file-removed", backup: copy };
     }
     next = file.text.slice(0, open + 1) + file.text.slice(close);
   } else if (index < members.length - 1) {
@@ -76,9 +73,9 @@ async function clearOutputStyle(path: string, value: string, backupDir: string):
     next = file.text.slice(0, members[index - 1].valueEnd) + file.text.slice(members[index].valueEnd);
   }
   JSON.parse(next);
-  await backup(path, backupDir);
+  const copy = await backup(path, backupDir);
   await writeTextAtomic(path, next, { bom: file.bom });
-  return "cleared";
+  return { result: "cleared", backup: copy };
 }
 
 /**
@@ -138,7 +135,8 @@ export async function uninstall(ctx: PlanContext): Promise<UninstallOutcome> {
         const listed = await run(binary, ["plugin", "list"], { env: ctx.env });
         if (listed.code !== 0) { fail(`"${hostBinary(host)} plugin list" failed with exit code ${listed.code}.`); continue; }
         if (!new RegExp(`(^|[^\\w-])${PLUGIN_NAME}(?![\\w-])`, "m").test(listed.stdout)) { removed.push({ target, detail: "The host has no such plugin. Nothing to remove." }); continue; }
-        const result = await run(binary, ["plugin", host.id === "codex" ? "remove" : "uninstall", PLUGIN_NAME], { env: ctx.env, timeoutMs: 120000 });
+        const pluginTarget = host.id === "codex" ? `${PLUGIN_NAME}@${PLUGIN_NAME}` : PLUGIN_NAME;
+        const result = await run(binary, ["plugin", host.id === "codex" ? "remove" : "uninstall", pluginTarget], { env: ctx.env, timeoutMs: 120000 });
         if (result.code !== 0) fail(limit(`"plugin remove" exited with code ${result.code}. ${(result.stdout + result.stderr).trim()}`));
         else removed.push({ target, detail: "Removed through the host remove command." });
       }
@@ -173,7 +171,8 @@ export async function uninstall(ctx: PlanContext): Promise<UninstallOutcome> {
   if (host.outputStyleSupport === "yes" && manifest.completedSteps.includes("output-style")) {
     const settingsPath = join(configDirectory, "settings.json");
     try {
-      const result = await clearOutputStyle(settingsPath, OUTPUT_STYLE, backupDir);
+      const { result, backup: copy } = await clearOutputStyle(settingsPath, OUTPUT_STYLE, backupDir);
+      if (copy) backups.push(copy);
       if (result === "different") kept.push({ target: `${settingsPath} outputStyle`, detail: `outputStyle is not "${OUTPUT_STYLE}" now. It was changed after install.` });
       else if (result !== "absent") removed.push({ target: `${settingsPath} outputStyle`, detail: result === "file-removed" ? "Removed. The file held nothing else, so it was deleted." : "Removed. Other settings are unchanged." });
     } catch (error) {
