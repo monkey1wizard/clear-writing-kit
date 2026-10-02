@@ -24,9 +24,9 @@ clear-writing-kit is a multilingual writing-quality toolkit for coding agents, W
 ```json
 {
   "command": [
-    "npm --prefix writing test",
+    "cmd.exe /d /c npm --prefix writing test",
     "python -m unittest discover -s tests -v",
-    "npm --prefix writing run lint"
+    "cmd.exe /d /c npm --prefix writing run lint"
   ]
 }
 ```
@@ -55,6 +55,14 @@ The repository has one maintained rule source and several generated or projected
 - Installer writes are atomic and backup-aware. Uninstall removes only exact hash or fingerprint matches and retains ambiguous, changed, unreadable, or still-shared items.
 - MCP registration is performed through each host CLI. Plugin manifests do not declare an MCP server.
 - `dist/` is committed and must equal a fresh `npm --prefix writing run build`.
+
+## Response Style
+
+- Lead with the answer, decision, or required action.
+- Preserve material facts, conditions, scope limits, and genuine uncertainty.
+- Use concise paragraphs and flat lists. Keep commands, paths, identifiers, and product names unchanged.
+- Match the user's language. For Traditional Chinese, use natural Taiwan usage and keep technical identifiers in English.
+- For reviews, report findings first in severity order with file and line evidence.
 
 ## Project Language
 
