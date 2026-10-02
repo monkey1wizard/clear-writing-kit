@@ -7,13 +7,14 @@ import { lintText } from "./check.js";
 import { applyPlan, formatApply } from "./install/apply.js";
 import { computePlan, formatPlan } from "./install/plan.js";
 import { runMcpServer } from "./mcp.js";
+import { formatVerify, verifyInstall } from "./install/verify.js";
 
 const installUsage = [
   "Usage: cwk install <plan|apply|verify|uninstall> --agent <claude|codex|copilot|opencode|antigravity>",
   "",
   "  plan       Show what the installer would change and print a plan hash. Writes nothing.",
   "  apply      Apply a plan. Requires --plan-hash from a plan run.",
-  "  verify     Check an installation.",
+  "  verify     Start the registered MCP server and check the installation. Writes nothing.",
   "  uninstall  Remove what the installer installed.",
   ""
 ].join("\n");
@@ -24,11 +25,11 @@ async function runInstall(args: string[]): Promise<number> {
     process.stdout.write(installUsage);
     return 0;
   }
-  if (subcommand === "verify" || subcommand === "uninstall") {
+  if (subcommand === "uninstall") {
     process.stderr.write(`"cwk install ${subcommand}" is not available in this build.\n`);
     return 2;
   }
-  if (subcommand !== "plan" && subcommand !== "apply") {
+  if (subcommand !== "plan" && subcommand !== "apply" && subcommand !== "verify") {
     process.stderr.write(installUsage);
     return 2;
   }
@@ -59,6 +60,11 @@ ${installUsage}`);
     const applied = await applyPlan(context, planHash);
     process.stdout.write(formatApply(applied));
     return applied.status === "applied" ? 0 : 1;
+  }
+  if (subcommand === "verify") {
+    const verified = await verifyInstall(context);
+    process.stdout.write(formatVerify(verified));
+    return verified.status === "pass" ? 0 : 1;
   }
   const outcome = await computePlan(context);
   process.stdout.write(formatPlan(outcome));

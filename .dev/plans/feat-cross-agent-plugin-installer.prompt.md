@@ -192,9 +192,9 @@ Workflow: IMPLEMENT
 Step: 5 of 7
 Last activity: 2026-10-02 — T-09 independent tests PASS and audit CLEAR at 6d53fe2. Approved-plan application is ready.
 Next step: Run T-10 install verify implementation through the owner-authorized no-sandbox Claude executor.
-Current Task:
-Task Base Commit: 9f43372c13a3b466eba62c717884ecef58330833
-Task Final Commit: 6d53fe2cf9f87dbe9d101b6207d2a922b22ee7b3
+Current Task: T-10
+Task Base Commit: 66887d4317a3d09161a3cde3a70ef3d95d29ca1c
+Task Final Commit:
 Test Retry Count: 0
 Review Retry Count: 0
 
@@ -289,6 +289,31 @@ Dispatch: phase=test task=T-09 role=TESTER executor=agy model=gemini-3.8-flash s
 T-09 independent test: PASS at 6d53fe2cf9f87dbe9d101b6207d2a922b22ee7b3 with unchanged HEAD and no production edits. TP-05, TP-09, TP-14, TP-15, TP-17 apply branch, TP-18 through TP-23, TP-28 through TP-30, TP-32, TP-33, and TP-35 through TP-37 are covered. Verify/uninstall branches remain NotRun at T-10/T-11. Audit must assess failure reporting and manifest custody as well as write scope, backups, launcher upgrades, and atomic writes. The implementation notes that a stale opaque plan hash reports candidate targets rather than identifying one exact changed target.
 
 Dispatch: phase=audit task=T-09 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=c9ce8c6a-9874-4c2b-9e35-f9595c971600 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-09/1790914625-291669300-000000-T-09-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
+
+T-10 task-quality check: The task owns verify.ts, CLI wiring, and rebuilt dist only. Query the host CLI for the actual registered command, launch that command, and speak initialize/tools-list/tools-call JSON-RPC over stdio without a client package. Require exactly one lintText tool and findings from en-US, zh-TW, and ja-JP probes, bounded by 30-second call timeouts. Missing dictionary, process/transport failure, missing tool, empty findings, stale outputStyle, invalid block count/size, and duplicate writing skill must yield incomplete and non-zero. Record every failed or skipped check. Preserve token redaction and injected home/environment conventions. No real-home install, test authoring, or behavior changes to earlier installer modules belong to this phase.
+
+Dispatch: phase=implement task=T-10 role=CODER executor=claude model=claude-sonnet-5-5 state=completed session_id=c5679713-4f7d-46da-8ef5-e1676cdeb807 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-10/1790914893-531151200-000000-T-10-implement-claude.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+#### Retry Handoff — T-10 / IMPLEMENT
+
+- Status: RESOLVED
+- Problem: Boundary check failed on src/install/plan.ts and src/install/spawn.ts. Scope correction is required before commit, test, or audit.
+- Evidence:
+  - Test Results: not-applicable. Implementation probes report two npm test failures that require independent investigation.
+  - Review Results: not-applicable
+  - Security Review: not-applicable
+- Attempts:
+  1. 2026-10-02 — Initial implementation completed at unchanged base 66887d4.
+     - Result: verify works on Node fixture probes, but extracted conflict helper and interactive process helper change prior modules outside the task allowlist. The executor also stashed output for a baseline comparison. This changed execution-prompt line endings from LF to CRLF and caused the binary prompt-drift warning. Raw git diff against the pre-dispatch copy has no semantic changes, and HEAD is unchanged.
+     - Validation: boundary-check overall fail on plan.ts and spawn.ts. Prompt digests differ due to line endings.
+     - Commit: none
+  2. 2026-10-02 — Completed scope correction at unchanged base 66887d4.
+     - Result: Conflict-check and interactive-process logic moved into verify.ts. No net diff in plan.ts or spawn.ts, no stash, no HEAD drift, and no execution-prompt edits in this round. Payload rebuilt.
+     - Validation: completed Claude session 1f6c21d4-ee73-472e-b51e-42738867c415 and boundary-check overall pass.
+     - Commit: none
+- Next human step: Scope correction resolved. Orchestrator must commit the allowlisted implementation, then TESTER must independently verify it and investigate the two reported npm test failures.
+
+Dispatch: phase=implement task=T-10 role=CODER executor=claude model=claude-sonnet-5-5 state=completed session_id=1f6c21d4-ee73-472e-b51e-42738867c415 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-10/1790915337-506734400-000000-T-10-implement-claude.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
 
 New prompt. Source approval and planning reviews are carried forward. T-03 is the payload gate. If it returns stop, T-05 onward cannot start. Human review occurs once after all automated tasks and goal-backward verification. T-01 implementation dispatch completed and was committed. Working tree was clean at b4700fa before this test cursor update. Boundary verification passed. Independent testing and audit have not run. Generated bundle whitespace warnings come from embedded dependency strings and remain unchanged to preserve build reproducibility.
 

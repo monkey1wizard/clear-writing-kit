@@ -810,13 +810,13 @@ var require_checkstyle = __commonJS({
   "node_modules/@textlint/linter-formatter/lib/src/formatters/checkstyle.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    function getMessageType(message) {
-      const messageWithFatal = message;
-      if (messageWithFatal.fatal || message.severity === 2) {
+    function getMessageType(message2) {
+      const messageWithFatal = message2;
+      if (messageWithFatal.fatal || message2.severity === 2) {
         return "error";
-      } else if (message.severity === 1) {
+      } else if (message2.severity === 1) {
         return "warning";
-      } else if (message.severity === 3) {
+      } else if (message2.severity === 3) {
         return "info";
       } else {
         return "warning";
@@ -847,8 +847,8 @@ var require_checkstyle = __commonJS({
       results.forEach(function(result) {
         const messages = result.messages;
         output2 += `<file name="${xmlEscape(result.filePath)}">`;
-        messages.forEach(function(message) {
-          output2 += `<error line="${xmlEscape(message.line)}" column="${xmlEscape(message.column)}" severity="${xmlEscape(getMessageType(message))}" message="${xmlEscape(message.message)}${message.ruleId ? ` (${xmlEscape(message.ruleId)})` : ""}" source="${message.ruleId ? xmlEscape(`eslint.rules.${message.ruleId}`) : ""}" />`;
+        messages.forEach(function(message2) {
+          output2 += `<error line="${xmlEscape(message2.line)}" column="${xmlEscape(message2.column)}" severity="${xmlEscape(getMessageType(message2))}" message="${xmlEscape(message2.message)}${message2.ruleId ? ` (${xmlEscape(message2.ruleId)})` : ""}" source="${message2.ruleId ? xmlEscape(`eslint.rules.${message2.ruleId}`) : ""}" />`;
         });
         output2 += "</file>";
       });
@@ -864,12 +864,12 @@ var require_compact = __commonJS({
   "node_modules/@textlint/linter-formatter/lib/src/formatters/compact.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    function getMessageType(message) {
-      if (message.fatal || message.severity === 2) {
+    function getMessageType(message2) {
+      if (message2.fatal || message2.severity === 2) {
         return "Error";
-      } else if (message.severity === 1) {
+      } else if (message2.severity === 1) {
         return "Warning";
-      } else if (message.severity === 3) {
+      } else if (message2.severity === 3) {
         return "Info";
       } else {
         return "Warning";
@@ -880,13 +880,13 @@ var require_compact = __commonJS({
       results.forEach(function(result) {
         const messages = result.messages;
         total += messages.length;
-        messages.forEach(function(message) {
+        messages.forEach(function(message2) {
           output2 += `${result.filePath}: `;
-          output2 += `line ${message.line || 0}`;
-          output2 += `, col ${message.column || 0}`;
-          output2 += `, ${getMessageType(message)}`;
-          output2 += ` - ${message.message}`;
-          output2 += message.ruleId ? ` (${message.ruleId})` : "";
+          output2 += `line ${message2.line || 0}`;
+          output2 += `, col ${message2.column || 0}`;
+          output2 += `, ${getMessageType(message2)}`;
+          output2 += ` - ${message2.message}`;
+          output2 += message2.ruleId ? ` (${message2.ruleId})` : "";
           output2 += "\n";
         });
       });
@@ -906,12 +906,12 @@ var require_github = __commonJS({
   "node_modules/@textlint/linter-formatter/lib/src/formatters/github.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    function getMessageType(message) {
-      if (message.fatal || message.severity === 2) {
+    function getMessageType(message2) {
+      if (message2.fatal || message2.severity === 2) {
         return "error";
-      } else if (message.severity === 1) {
+      } else if (message2.severity === 1) {
         return "warning";
-      } else if (message.severity === 3) {
+      } else if (message2.severity === 3) {
         return "notice";
       } else {
         return "warning";
@@ -926,17 +926,17 @@ var require_github = __commonJS({
         }
         output2 += `::group::${result.filePath}
 `;
-        messages.forEach(function(message) {
-          output2 += `::${getMessageType(message)} `;
+        messages.forEach(function(message2) {
+          output2 += `::${getMessageType(message2)} `;
           output2 += `file=${result.filePath},`;
-          output2 += `line=${message.loc.start.line || 1},`;
-          output2 += `endLine=${message.loc.end.line || message.loc.start.line || 1},`;
-          output2 += `col=${message.loc.start.column || 1},`;
-          output2 += `endColumn=${message.loc.end.column || message.loc.start.column || 1},`;
-          output2 += `title=TextLint${message.ruleId ? ` [${message.ruleId}]` : ""}::`;
-          output2 += `${message.message.trim()}`;
-          output2 += ` | ${message.loc.start.line || 1}:`;
-          output2 += `${message.loc.start.column || 1}`;
+          output2 += `line=${message2.loc.start.line || 1},`;
+          output2 += `endLine=${message2.loc.end.line || message2.loc.start.line || 1},`;
+          output2 += `col=${message2.loc.start.column || 1},`;
+          output2 += `endColumn=${message2.loc.end.column || message2.loc.start.column || 1},`;
+          output2 += `title=TextLint${message2.ruleId ? ` [${message2.ruleId}]` : ""}::`;
+          output2 += `${message2.message.trim()}`;
+          output2 += ` | ${message2.loc.start.line || 1}:`;
+          output2 += `${message2.loc.start.column || 1}`;
           output2 += "\n";
         });
         output2 += "::endgroup::\n";
@@ -4264,7 +4264,7 @@ var require_lodash = __commonJS({
           }
           return mapped.length && mapped[0] === arrays[0] ? baseIntersection(mapped, undefined2, comparator) : [];
         });
-        function join8(array2, separator) {
+        function join9(array2, separator) {
           return array2 == null ? "" : nativeJoin.call(array2, separator);
         }
         function last(array2) {
@@ -5573,22 +5573,22 @@ var require_lodash = __commonJS({
         var snakeCase = createCompounder(function(result2, word, index) {
           return result2 + (index ? "_" : "") + word.toLowerCase();
         });
-        function split(string4, separator, limit2) {
-          if (limit2 && typeof limit2 != "number" && isIterateeCall(string4, separator, limit2)) {
-            separator = limit2 = undefined2;
+        function split(string4, separator, limit3) {
+          if (limit3 && typeof limit3 != "number" && isIterateeCall(string4, separator, limit3)) {
+            separator = limit3 = undefined2;
           }
-          limit2 = limit2 === undefined2 ? MAX_ARRAY_LENGTH : limit2 >>> 0;
-          if (!limit2) {
+          limit3 = limit3 === undefined2 ? MAX_ARRAY_LENGTH : limit3 >>> 0;
+          if (!limit3) {
             return [];
           }
           string4 = toString(string4);
           if (string4 && (typeof separator == "string" || separator != null && !isRegExp(separator))) {
             separator = baseToString(separator);
             if (!separator && hasUnicode(string4)) {
-              return castSlice(stringToArray(string4), 0, limit2);
+              return castSlice(stringToArray(string4), 0, limit3);
             }
           }
-          return string4.split(separator, limit2);
+          return string4.split(separator, limit3);
         }
         var startCase = createCompounder(function(result2, word, index) {
           return result2 + (index ? " " : "") + upperFirst(word);
@@ -6188,7 +6188,7 @@ var require_lodash = __commonJS({
         lodash.isUndefined = isUndefined;
         lodash.isWeakMap = isWeakMap;
         lodash.isWeakSet = isWeakSet;
-        lodash.join = join8;
+        lodash.join = join9;
         lodash.kebabCase = kebabCase;
         lodash.last = last;
         lodash.lastIndexOf = lastIndexOf;
@@ -6461,8 +6461,8 @@ var require_jslint_xml = __commonJS({
       results.forEach(function(result) {
         const messages = result.messages;
         output2 += `<file name="${result.filePath}">`;
-        messages.forEach(function(message) {
-          output2 += `<issue line="${message.line}" char="${message.column}" evidence="" reason="${lodash_1.default.escape(message.message || "")}${message.ruleId ? ` (${message.ruleId})` : ""}" />`;
+        messages.forEach(function(message2) {
+          output2 += `<issue line="${message2.line}" char="${message2.column}" evidence="" reason="${lodash_1.default.escape(message2.message || "")}${message2.ruleId ? ` (${message2.ruleId})` : ""}" />`;
         });
         output2 += "</file>";
       });
@@ -6495,12 +6495,12 @@ var require_junit = __commonJS({
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     var lodash_1 = __importDefault(require_lodash());
-    function getMessageType(message) {
-      if (message.fatal || message.severity === 2) {
+    function getMessageType(message2) {
+      if (message2.fatal || message2.severity === 2) {
         return "Error";
-      } else if (message.severity === 1) {
+      } else if (message2.severity === 1) {
         return "Warning";
-      } else if (message.severity === 3) {
+      } else if (message2.severity === 3) {
         return "Info";
       } else {
         return "Warning";
@@ -6516,16 +6516,16 @@ var require_junit = __commonJS({
           output2 += `<testsuite package="org.eslint" time="0" tests="${messages.length}" errors="${messages.length}" name="${result.filePath}">
 `;
         }
-        messages.forEach(function(message) {
-          const fatal = message.fatal;
+        messages.forEach(function(message2) {
+          const fatal = message2.fatal;
           const type = fatal ? "error" : "failure";
-          output2 += `<testcase time="0" name="org.eslint.${message.ruleId || "unknown"}">`;
-          output2 += `<${type} message="${lodash_1.default.escape(message.message || "")}">`;
+          output2 += `<testcase time="0" name="org.eslint.${message2.ruleId || "unknown"}">`;
+          output2 += `<${type} message="${lodash_1.default.escape(message2.message || "")}">`;
           output2 += "<![CDATA[";
-          output2 += `line ${message.line || 0}, col `;
-          output2 += `${message.column || 0}, ${getMessageType(message)}`;
-          output2 += ` - ${lodash_1.default.escape(message.message || "")}`;
-          output2 += message.ruleId ? ` (${message.ruleId})` : "";
+          output2 += `line ${message2.line || 0}, col `;
+          output2 += `${message2.column || 0}, ${getMessageType(message2)}`;
+          output2 += ` - ${lodash_1.default.escape(message2.message || "")}`;
+          output2 += message2.ruleId ? ` (${message2.ruleId})` : "";
           output2 += "]]>";
           output2 += `</${type}>`;
           output2 += "</testcase>\n";
@@ -7078,21 +7078,21 @@ var require_pretty_error = __commonJS({
     var summaryColor = "yellow";
     var greenColor = "green";
     var template = (0, style_format_1.default)("{grey}{ruleId}: {red}{title}{reset}\n{grey}{filename}{reset}\n    {red}{paddingForLineNo}  {v}{reset}\n    {grey}{previousLineNo}. {previousLine}{reset}\n    {reset}{failingLineNo}. {failingLine}{reset}\n    {grey}{nextLineNo}. {nextLine}{reset}\n    {red}{paddingForLineNo}  {^}{reset}\n");
-    function failingCode(code, message) {
+    function failingCode(code, message2) {
       const result = [];
       const lines = code.split("\n");
-      let i = message.line - 3;
-      while (++i < message.line + 1) {
-        if (i + 1 !== message.line) {
+      let i = message2.line - 3;
+      while (++i < message2.line + 1) {
+        if (i + 1 !== message2.line) {
           result.push({
-            line: message.line - (message.line - i - 1),
+            line: message2.line - (message2.line - i - 1),
             code: lines[i]
           });
           continue;
         }
         result.push({
-          line: message.line,
-          col: message.column,
+          line: message2.line,
+          col: message2.column,
           code: lines[i],
           failed: true
         });
@@ -7113,19 +7113,19 @@ var require_pretty_error = __commonJS({
       }
       return result + ch;
     }
-    function prettyError(code, filePath, message) {
+    function prettyError(code, filePath, message2) {
       if (!code) {
         return;
       }
-      const parsed = failingCode(code, message);
+      const parsed = failingCode(code, message2);
       const previousLineNo = String(parsed[0].line);
       const failingLineNo = String(parsed[1].line);
       const nextLineNo = String(parsed[2].line);
       const linumlen = Math.max(previousLineNo.length, failingLineNo.length, nextLineNo.length);
       return (0, format_text_1.default)(template, {
-        ruleId: message.ruleId,
-        title: message.message,
-        filename: `${filePath}:${message.line}:${message.column}`,
+        ruleId: message2.ruleId,
+        title: message2.message,
+        filename: `${filePath}:${message2.line}:${message2.column}`,
         previousLine: parsed[0].code ? parsed[0].code : "",
         previousLineNo: previousLineNo.padStart(linumlen),
         previousColNo: parsed[0].col,
@@ -7155,22 +7155,22 @@ var require_pretty_error = __commonJS({
           return;
         }
         total += messages.length;
-        messages.forEach(function(message) {
-          const fixableIcon = message.fix ? (0, node_util_1.styleText)([greenColor, "bold"], "\u2713 ") : "";
-          if (message.fix) {
+        messages.forEach(function(message2) {
+          const fixableIcon = message2.fix ? (0, node_util_1.styleText)([greenColor, "bold"], "\u2713 ") : "";
+          if (message2.fix) {
             totalFixable++;
           }
-          const fatal = message.fatal;
-          if (fatal || message.severity === 2) {
+          const fatal = message2.fatal;
+          if (fatal || message2.severity === 2) {
             errors++;
-          } else if (message.severity === 1) {
+          } else if (message2.severity === 1) {
             warnings++;
-          } else if (message.severity === 3) {
+          } else if (message2.severity === 3) {
             infos++;
           } else {
             warnings++;
           }
-          const r = fixableIcon + prettyError(code, result.filePath, message);
+          const r = fixableIcon + prettyError(code, result.filePath, message2);
           if (r) {
             output2 += `${r}
 `;
@@ -7316,21 +7316,21 @@ var require_stylish = __commonJS({
         total += messages.length;
         output2 += `${(0, node_util_1.styleText)("underline", result.filePath)}
 `;
-        output2 += `${(0, text_table_1.default)(messages.map(function(message) {
+        output2 += `${(0, text_table_1.default)(messages.map(function(message2) {
           let messageType;
-          const fixableIcon = message.fix ? (0, node_util_1.styleText)([greenColor, "bold"], "\u2713 ") : "";
-          if (message.fix) {
+          const fixableIcon = message2.fix ? (0, node_util_1.styleText)([greenColor, "bold"], "\u2713 ") : "";
+          if (message2.fix) {
             totalFixable++;
           }
-          const fatal = message.fatal;
-          if (fatal || message.severity === 2) {
+          const fatal = message2.fatal;
+          if (fatal || message2.severity === 2) {
             messageType = fixableIcon + (0, node_util_1.styleText)("red", "error");
             summaryColor = "red";
             errors++;
-          } else if (message.severity === 1) {
+          } else if (message2.severity === 1) {
             messageType = fixableIcon + (0, node_util_1.styleText)("yellow", "warning");
             warnings++;
-          } else if (message.severity === 3) {
+          } else if (message2.severity === 3) {
             messageType = fixableIcon + (0, node_util_1.styleText)("green", "info");
             infos++;
           } else {
@@ -7339,11 +7339,11 @@ var require_stylish = __commonJS({
           }
           return [
             "",
-            message.line || 0,
-            message.column || 0,
+            message2.line || 0,
+            message2.column || 0,
             messageType,
-            message.message.replace(/\.$/, ""),
-            (0, node_util_1.styleText)("gray", message.ruleId || "")
+            message2.message.replace(/\.$/, ""),
+            (0, node_util_1.styleText)("gray", message2.ruleId || "")
           ];
         }), {
           align: ["", "r", "l"],
@@ -12990,19 +12990,19 @@ var require_table2 = __commonJS({
         (0, node_util_1.styleText)("bold", "Message"),
         (0, node_util_1.styleText)("bold", "Rule ID")
       ]);
-      messages.forEach(function(message) {
+      messages.forEach(function(message2) {
         let messageType;
-        const fatal = message.fatal;
-        if (fatal || message.severity === 2) {
+        const fatal = message2.fatal;
+        if (fatal || message2.severity === 2) {
           messageType = (0, node_util_1.styleText)("red", "error");
-        } else if (message.severity === 1) {
+        } else if (message2.severity === 1) {
           messageType = (0, node_util_1.styleText)("yellow", "warning");
-        } else if (message.severity === 3) {
+        } else if (message2.severity === 3) {
           messageType = (0, node_util_1.styleText)("green", "info");
         } else {
           messageType = (0, node_util_1.styleText)("yellow", "warning");
         }
-        rows.push([message.line || 0, message.column || 0, messageType, message.message, message.ruleId || ""]);
+        rows.push([message2.line || 0, message2.column || 0, messageType, message2.message, message2.ruleId || ""]);
       });
       const output2 = (0, table_1.table)(rows, {
         columns: {
@@ -13057,13 +13057,13 @@ ${drawTable(result.messages)}`;
       let warningCount = 0;
       let infoCount = 0;
       report.forEach(function(fileReport) {
-        fileReport.messages.forEach(function(message) {
-          const fatal = message.fatal;
-          if (fatal || message.severity === 2) {
+        fileReport.messages.forEach(function(message2) {
+          const fatal = message2.fatal;
+          if (fatal || message2.severity === 2) {
             errorCount++;
-          } else if (message.severity === 1) {
+          } else if (message2.severity === 1) {
             warningCount++;
-          } else if (message.severity === 3) {
+          } else if (message2.severity === 3) {
             infoCount++;
           }
         });
@@ -13154,8 +13154,8 @@ var require_exception = __commonJS({
     "use strict";
     function formatError2(exception, compact) {
       let where = "";
-      const message = exception.reason || "(unknown reason)";
-      if (!exception.mark) return message;
+      const message2 = exception.reason || "(unknown reason)";
+      if (!exception.mark) return message2;
       if (exception.mark.name) {
         where += 'in "' + exception.mark.name + '" ';
       }
@@ -13163,7 +13163,7 @@ var require_exception = __commonJS({
       if (!compact && exception.mark.snippet) {
         where += "\n\n" + exception.mark.snippet;
       }
-      return message + " " + where;
+      return message2 + " " + where;
     }
     function YAMLException(reason, mark) {
       Error.call(this);
@@ -14228,7 +14228,7 @@ var require_loader = __commonJS({
       this.documents = [];
       this.anchorMapTransactions = [];
     }
-    function generateError(state, message) {
+    function generateError(state, message2) {
       const mark = {
         name: state.filename,
         buffer: state.input.slice(0, -1),
@@ -14238,14 +14238,14 @@ var require_loader = __commonJS({
         column: state.position - state.lineStart
       };
       mark.snippet = makeSnippet(mark);
-      return new YAMLException(message, mark);
+      return new YAMLException(message2, mark);
     }
-    function throwError(state, message) {
-      throw generateError(state, message);
+    function throwError(state, message2) {
+      throw generateError(state, message2);
     }
-    function throwWarning(state, message) {
+    function throwWarning(state, message2) {
       if (state.onWarning) {
-        state.onWarning.call(null, generateError(state, message));
+        state.onWarning.call(null, generateError(state, message2));
       }
     }
     function storeAnchor(state, name, value) {
@@ -16156,12 +16156,12 @@ var require_tap = __commonJS({
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     var js_yaml_1 = __importDefault(require_js_yaml());
-    function getMessageType(message) {
-      if (message.fatal || message.severity === 2) {
+    function getMessageType(message2) {
+      if (message2.fatal || message2.severity === 2) {
         return "error";
-      } else if (message.severity === 1) {
+      } else if (message2.severity === 1) {
         return "warning";
-      } else if (message.severity === 3) {
+      } else if (message2.severity === 3) {
         return "info";
       } else {
         return "warning";
@@ -16186,14 +16186,14 @@ ${prefix}`);
         let diagnostics = {};
         if (messages.length > 0) {
           testResult = "not ok";
-          messages.forEach(function(message) {
+          messages.forEach(function(message2) {
             const diagnostic = {
-              message: message.message,
-              severity: getMessageType(message),
+              message: message2.message,
+              severity: getMessageType(message2),
               data: {
-                line: message.line || 0,
-                column: message.column || 0,
-                ruleId: message.ruleId || ""
+                line: message2.line || 0,
+                column: message2.column || 0,
+                ruleId: message2.ruleId || ""
               }
             };
             if ("message" in diagnostics) {
@@ -16223,12 +16223,12 @@ var require_unix = __commonJS({
   "node_modules/@textlint/linter-formatter/lib/src/formatters/unix.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    function getMessageType(message) {
-      if (message.fatal || message.severity === 2) {
+    function getMessageType(message2) {
+      if (message2.fatal || message2.severity === 2) {
         return "Error";
-      } else if (message.severity === 1) {
+      } else if (message2.severity === 1) {
         return "Warning";
-      } else if (message.severity === 3) {
+      } else if (message2.severity === 3) {
         return "Info";
       } else {
         return "Warning";
@@ -16239,12 +16239,12 @@ var require_unix = __commonJS({
       results.forEach(function(result) {
         const messages = result.messages;
         total += messages.length;
-        messages.forEach(function(message) {
+        messages.forEach(function(message2) {
           output2 += `${result.filePath}:`;
-          output2 += `${message.line || 0}:`;
-          output2 += `${message.column || 0}:`;
-          output2 += ` ${message.message} `;
-          output2 += `[${getMessageType(message)}${message.ruleId ? `/${message.ruleId}` : ""}]`;
+          output2 += `${message2.line || 0}:`;
+          output2 += `${message2.column || 0}:`;
+          output2 += ` ${message2.message} `;
+          output2 += `[${getMessageType(message2)}${message2.ruleId ? `/${message2.ruleId}` : ""}]`;
           output2 += "\n";
         });
       });
@@ -16367,8 +16367,8 @@ var require_compats = __commonJS({
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = default_1;
-    function getMessageType(message) {
-      if (message.fatal || message.severity === 2) {
+    function getMessageType(message2) {
+      if (message2.fatal || message2.severity === 2) {
         return "Error";
       } else {
         return "Warning";
@@ -16380,14 +16380,14 @@ var require_compats = __commonJS({
       results.forEach((result) => {
         const messages = result.applyingMessages;
         total += messages.length;
-        messages.forEach((message) => {
+        messages.forEach((message2) => {
           output2 += "Fixed\u2714 ";
           output2 += `${result.filePath}: `;
-          output2 += `line ${message.line || 0}`;
-          output2 += `, col ${message.column || 0}`;
-          output2 += `, ${getMessageType(message)}`;
-          output2 += ` - ${message.message}`;
-          output2 += message.ruleId ? ` (${message.ruleId})` : "";
+          output2 += `line ${message2.line || 0}`;
+          output2 += `, col ${message2.column || 0}`;
+          output2 += `, ${getMessageType(message2)}`;
+          output2 += ` - ${message2.message}`;
+          output2 += message2.ruleId ? ` (${message2.ruleId})` : "";
           output2 += "\n";
         });
       });
@@ -18503,13 +18503,13 @@ var require_stylish2 = __commonJS({
         }
         const messages = result.applyingMessages;
         const remainingMessages = result.remainingMessages;
-        remainingMessages.forEach(function(message) {
-          const fatal = message.fatal;
-          if (fatal || message.severity === 2) {
+        remainingMessages.forEach(function(message2) {
+          const fatal = message2.fatal;
+          if (fatal || message2.severity === 2) {
             errors++;
-          } else if (message.severity === 1) {
+          } else if (message2.severity === 1) {
             warnings++;
-          } else if (message.severity === 3) {
+          } else if (message2.severity === 3) {
             infos++;
           }
         });
@@ -18518,16 +18518,16 @@ var require_stylish2 = __commonJS({
         }
         output2 += `${(0, node_util_1.styleText)("underline", result.filePath)}
 `;
-        output2 += `${(0, text_table_1.default)(messages.map(function(message) {
+        output2 += `${(0, text_table_1.default)(messages.map(function(message2) {
           totalFixed++;
           const messageType = (0, node_util_1.styleText)([greenColor, "bold"], "\u2714 ");
           return [
             "",
-            message.line || 0,
-            message.column || 0,
+            message2.line || 0,
+            message2.column || 0,
             messageType,
-            message.message.replace(/\.$/, ""),
-            (0, node_util_1.styleText)("gray", message.ruleId || "")
+            message2.message.replace(/\.$/, ""),
+            (0, node_util_1.styleText)("gray", message2.ruleId || "")
           ];
         }), {
           align: ["", "r", "l"],
@@ -19707,7 +19707,7 @@ var require_Obj = __commonJS({
 var require_Str = __commonJS({
   "node_modules/prelude-ls/lib/Str.js"(exports, module) {
     var split;
-    var join8;
+    var join9;
     var lines;
     var unlines;
     var words;
@@ -19722,7 +19722,7 @@ var require_Str = __commonJS({
     split = curry$(function(sep, str) {
       return str.split(sep);
     });
-    join8 = curry$(function(sep, xs) {
+    join9 = curry$(function(sep, xs) {
       return xs.join(sep);
     });
     lines = function(str) {
@@ -19781,7 +19781,7 @@ var require_Str = __commonJS({
     };
     module.exports = {
       split,
-      join: join8,
+      join: join9,
       lines,
       unlines,
       words,
@@ -22313,22 +22313,22 @@ var require_logger = __commonJS({
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Logger = void 0;
     var Logger = class {
-      static log(...message) {
-        console.log(...message);
+      static log(...message2) {
+        console.log(...message2);
       }
       /**
        * Write to stdout without appending a newline.
        * Use this for formatter output where the trailing newline must match
        * the original content (e.g. fixed-result with --stdin).
        */
-      static write(message) {
-        process.stdout.write(message);
+      static write(message2) {
+        process.stdout.write(message2);
       }
-      static warn(...message) {
-        console.warn(...message);
+      static warn(...message2) {
+        console.warn(...message2);
       }
-      static deprecate(message) {
-        const templateDeprecatedionMessage = `textlint: ${message}
+      static deprecate(message2) {
+        const templateDeprecatedionMessage = `textlint: ${message2}
 
 You can control this deprecation message by Node.js command-line flags.
 
@@ -22341,8 +22341,8 @@ If the NODE_OPTIONS=--trace-deprecation is used, the deprecation warning is prin
           type: "DeprecationWarning"
         });
       }
-      static error(...message) {
-        console.error(...message);
+      static error(...message2) {
+        console.error(...message2);
       }
     };
     exports.Logger = Logger;
@@ -22867,13 +22867,13 @@ ${frame}`;
     function index(rawLines, lineNumber, colNumber, opts = {}) {
       if (!deprecationWarningShown) {
         deprecationWarningShown = true;
-        const message = "Passing lineNumber and colNumber is deprecated to @babel/code-frame. Please use `codeFrameColumns`.";
+        const message2 = "Passing lineNumber and colNumber is deprecated to @babel/code-frame. Please use `codeFrameColumns`.";
         if (process.emitWarning) {
-          process.emitWarning(message, "DeprecationWarning");
+          process.emitWarning(message2, "DeprecationWarning");
         } else {
-          const deprecationError = new Error(message);
+          const deprecationError = new Error(message2);
           deprecationError.name = "DeprecationWarning";
-          console.warn(new Error(message));
+          console.warn(new Error(message2));
         }
       }
       colNumber = Math.max(colNumber, 0);
@@ -22974,8 +22974,8 @@ var init_parse_json = __esm({
 ${codeFrame}
 ` : ""}`;
       }
-      set message(message) {
-        this.#message = message;
+      set message(message2) {
+        this.#message = message2;
       }
       #getCodeFrame(highlightCode) {
         if (!this.#jsonParseError) {
@@ -23003,8 +23003,8 @@ ${codeFrame}
         return this.#rawCodeFrame;
       }
     };
-    getErrorLocation = (string4, message) => {
-      const match2 = message.match(/in JSON at position (?<index>\d+)(?: \(line (?<line>\d+) column (?<column>\d+)\))?$/);
+    getErrorLocation = (string4, message2) => {
+      const match2 = message2.match(/in JSON at position (?<index>\d+)(?: \(line (?<line>\d+) column (?<column>\d+)\))?$/);
       if (!match2) {
         return;
       }
@@ -23014,7 +23014,7 @@ ${codeFrame}
       }
       return indexToPosition(string4, Number(index), { oneBased: true });
     };
-    addCodePointToUnexpectedToken = (message) => message.replace(
+    addCodePointToUnexpectedToken = (message2) => message2.replace(
       // TODO[engine:node@>=20]: The token always quoted after Node.js 20
       /(?<=^Unexpected token )(?<quote>')?(.)\k<quote>/,
       (_, _quote, token) => `"${token}"(${getCodePoint(token)})`
@@ -28538,8 +28538,8 @@ var require_parse4 = __commonJS({
       }
       return c2;
     }
-    function syntaxError(message) {
-      const err2 = new SyntaxError(message);
+    function syntaxError(message2) {
+      const err2 = new SyntaxError(message2);
       err2.lineNumber = line;
       err2.columnNumber = column;
       return err2;
@@ -28829,8 +28829,8 @@ var require_exception2 = __commonJS({
     "use strict";
     function formatError2(exception, compact) {
       let where = "";
-      const message = exception.reason || "(unknown reason)";
-      if (!exception.mark) return message;
+      const message2 = exception.reason || "(unknown reason)";
+      if (!exception.mark) return message2;
       if (exception.mark.name) {
         where += 'in "' + exception.mark.name + '" ';
       }
@@ -28838,7 +28838,7 @@ var require_exception2 = __commonJS({
       if (!compact && exception.mark.snippet) {
         where += "\n\n" + exception.mark.snippet;
       }
-      return message + " " + where;
+      return message2 + " " + where;
     }
     function YAMLException(reason, mark) {
       Error.call(this);
@@ -29903,7 +29903,7 @@ var require_loader2 = __commonJS({
       this.documents = [];
       this.anchorMapTransactions = [];
     }
-    function generateError(state, message) {
+    function generateError(state, message2) {
       const mark = {
         name: state.filename,
         buffer: state.input.slice(0, -1),
@@ -29913,14 +29913,14 @@ var require_loader2 = __commonJS({
         column: state.position - state.lineStart
       };
       mark.snippet = makeSnippet(mark);
-      return new YAMLException(message, mark);
+      return new YAMLException(message2, mark);
     }
-    function throwError(state, message) {
-      throw generateError(state, message);
+    function throwError(state, message2) {
+      throw generateError(state, message2);
     }
-    function throwWarning(state, message) {
+    function throwWarning(state, message2) {
       if (state.onWarning) {
-        state.onWarning.call(null, generateError(state, message));
+        state.onWarning.call(null, generateError(state, message2));
       }
     }
     function storeAnchor(state, name, value) {
@@ -31876,7 +31876,7 @@ var require_rc_config_loader = __commonJS({
       const extensions = Object.keys(loaderByExt);
       while (extensions.length) {
         const ext = extensions.shift();
-        const configLocation = join8(parts, configFileName + ext);
+        const configLocation = join9(parts, configFileName + ext);
         if (!fs_1.default.existsSync(configLocation)) {
           continue;
         }
@@ -31905,7 +31905,7 @@ var require_rc_config_loader = __commonJS({
         }
       }
       if (packageJSON) {
-        const pkgJSONLoc = join8(parts, "package.json");
+        const pkgJSONLoc = join9(parts, "package.json");
         if (fs_1.default.existsSync(pkgJSONLoc)) {
           const pkgJSON = json5_1.default.parse(readFile3(pkgJSONLoc));
           if (pkgJSON[packageJSONFieldName]) {
@@ -31924,7 +31924,7 @@ var require_rc_config_loader = __commonJS({
     function splitPath(x) {
       return path_1.default.resolve(x || "").split(path_1.default.sep);
     }
-    function join8(parts, filename) {
+    function join9(parts, filename) {
       return path_1.default.resolve(parts.join(path_1.default.sep) + path_1.default.sep, filename);
     }
     function loadJSConfigFile(filePath, suppress) {
@@ -32796,14 +32796,14 @@ var require_src9 = __commonJS({
         (0, exports.setFeature)("core.runningTester", status);
       }
     };
-    function throwWithoutExperimental(message) {
+    function throwWithoutExperimental(message2) {
       if (exports.coreFlags.runningCLI && !exports.coreFlags.experimental) {
-        throw Error(message);
+        throw Error(message2);
       }
     }
-    function throwIfTesting(message) {
+    function throwIfTesting(message2) {
       if (exports.coreFlags.runningTester) {
-        throw Error(message);
+        throw Error(message2);
       }
     }
   }
@@ -32937,8 +32937,8 @@ You can not set { index, line, column, padding } at same time.
        * @param [details] - the object has padding and fix info
        * @constructor
        */
-      constructor(message, details) {
-        this.message = message;
+      constructor(message2, details) {
+        this.message = message2;
         if (typeof details === "object") {
           assertTextlintRuleErrorDetail(details);
           this.line = details.line;
@@ -33050,9 +33050,9 @@ var require_invariant = __commonJS({
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.invariant = invariant;
-    function invariant(condition, message) {
+    function invariant(condition, message2) {
       if (!condition)
-        throw new Error(message);
+        throw new Error(message2);
     }
   }
 });
@@ -33344,14 +33344,14 @@ var require_logger2 = __commonJS({
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Logger = class {
-      static log(...message) {
-        console.log(...message);
+      static log(...message2) {
+        console.log(...message2);
       }
-      static warn(...message) {
-        console.warn(...message);
+      static warn(...message2) {
+        console.warn(...message2);
       }
-      static error(...message) {
-        console.error(...message);
+      static error(...message2) {
+        console.error(...message2);
       }
     };
     exports.default = Logger;
@@ -33883,7 +33883,7 @@ var require_textlint_core_task = __commonJS({
         const shouldIgnore = (args) => {
           const { ruleId, range, optional: optional2 } = args;
           (0, invariant_js_1.invariant)(typeof range[0] !== "undefined" && typeof range[1] !== "undefined" && range[0] >= 0 && range[1] >= 0, `ignoreRange should have actual range: ${range}`);
-          const message = {
+          const message2 = {
             type: MessageType_js_1.default.ignore,
             ruleId,
             range,
@@ -33891,7 +33891,7 @@ var require_textlint_core_task = __commonJS({
             // This ruleId should be normalized, because the user can report any value
             ignoringRuleId: optional2.ruleId ? (0, utils_1.normalizeTextlintKeyPath)(optional2.ruleId) : "*"
           };
-          this.emit(_TextLintCoreTask.events.message, message);
+          this.emit(_TextLintCoreTask.events.message, message2);
         };
         return shouldIgnore;
       }
@@ -33910,7 +33910,7 @@ var require_textlint_core_task = __commonJS({
           });
           const { suggestions } = (0, source_location_js_1.resolveSuggestionsLocation)({ node: node2, ruleError });
           debug("%s report %s", ruleId, ruleError);
-          const message = {
+          const message2 = {
             type: MessageType_js_1.default.lint,
             ruleId,
             message: ruleError.message,
@@ -33926,9 +33926,9 @@ var require_textlint_core_task = __commonJS({
           };
           if (!(ruleError instanceof TextlintRuleErrorImpl_js_1.TextlintRuleErrorImpl)) {
             const data = ruleError;
-            message.data = data;
+            message2.data = data;
           }
-          this.emit(_TextLintCoreTask.events.message, message);
+          this.emit(_TextLintCoreTask.events.message, message2);
         };
         return reportFunction;
       }
@@ -34192,8 +34192,8 @@ var require_task_runner = __commonJS({
       static process(task) {
         return new Promise((resolve2, reject) => {
           const messages = [];
-          task.on(textlint_core_task_js_1.default.events.message, (message) => {
-            messages.push(message);
+          task.on(textlint_core_task_js_1.default.events.message, (message2) => {
+            messages.push(message2);
           });
           task.on(textlint_core_task_js_1.default.events.error, (error62) => {
             reject(error62);
@@ -34632,12 +34632,12 @@ var require_source_code_fixer = __commonJS({
     function revertSourceCode(sourceCode, applyingMessages) {
       debug("Restore applied fixes");
       let text = sourceCode.text;
-      applyingMessages.forEach((message) => {
+      applyingMessages.forEach((message2) => {
         const newSource = {
           text,
           hasBOM: sourceCode.hasBOM
         };
-        const result = applyFixesToSourceCode(newSource, [message]);
+        const result = applyFixesToSourceCode(newSource, [message2]);
         text = result.output;
       });
       return text;
@@ -34964,20 +34964,20 @@ var require_filter_ignored_process = __commonJS({
       return start <= range[0] && range[1] <= end;
     };
     function filterMessages(messages = []) {
-      const lintingMessages = messages.filter((message) => {
-        return message.type === MessageType_js_1.default.lint;
+      const lintingMessages = messages.filter((message2) => {
+        return message2.type === MessageType_js_1.default.lint;
       });
-      const ignoreMessages = messages.filter((message) => {
-        return message.type === MessageType_js_1.default.ignore;
+      const ignoreMessages = messages.filter((message2) => {
+        return message2.type === MessageType_js_1.default.ignore;
       });
-      return lintingMessages.filter((message) => {
+      return lintingMessages.filter((message2) => {
         return !ignoreMessages.some((ignoreMessage) => {
-          const isInIgnoringRange = isContainedRange({ range: message.range, ignoredRange: ignoreMessage.range });
+          const isInIgnoringRange = isContainedRange({ range: message2.range, ignoredRange: ignoreMessage.range });
           if (isInIgnoringRange && ignoreMessage.ignoringRuleId) {
             if (ignoreMessage.ignoringRuleId === "*") {
               return true;
             }
-            return message.ruleId === ignoreMessage.ignoringRuleId;
+            return message2.ruleId === ignoreMessage.ignoringRuleId;
           }
           return isInIgnoringRange;
         });
@@ -34996,10 +34996,10 @@ var require_filter_duplicated_process = __commonJS({
       return aMessage.range[0] === bMessage.range[0] && aMessage.range[1] === bMessage.range[1] && aMessage.severity === bMessage.severity && aMessage.message === bMessage.message;
     };
     function filterDuplicatedMessages(messages = []) {
-      return messages.filter((message, index) => {
+      return messages.filter((message2, index) => {
         const restMessages = messages.slice(index + 1);
         return !restMessages.some((restMessage) => {
-          return isEqualMessage(message, restMessage);
+          return isEqualMessage(message2, restMessage);
         });
       });
     }
@@ -35016,8 +35016,8 @@ var require_filter_severity_process = __commonJS({
     exports.default = createSeverityFilter;
     var TextlintRuleSeverityLevelKeys_js_1 = require_TextlintRuleSeverityLevelKeys();
     function filterWarningMessages(messages = []) {
-      return messages.filter((message) => {
-        return message.severity === TextlintRuleSeverityLevelKeys_js_1.TextlintRuleSeverityLevelKeys.error;
+      return messages.filter((message2) => {
+        return message2.severity === TextlintRuleSeverityLevelKeys_js_1.TextlintRuleSeverityLevelKeys.error;
       });
     }
     function through(messages = []) {
@@ -36156,8 +36156,8 @@ var require_src13 = __commonJS({
     var unist_test_js_1 = require_unist_test();
     var debug_1 = __importDefault(require_src());
     var debug = (0, debug_1.default)("textlint/ast-tester");
-    var createMessage = ({ node: node2, message }) => {
-      return `${message}
+    var createMessage = ({ node: node2, message: message2 }) => {
+      return `${message2}
 ${JSON.stringify(node2, null, 4)}`;
     };
     function isTxtAST(node2) {
@@ -36284,12 +36284,12 @@ var require_createDummyTextLintResult = __commonJS({
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.createDummyTextLintResult = void 0;
-    var createDummyTextLintResult = (message, filePath) => {
+    var createDummyTextLintResult = (message2, filePath) => {
       return {
         filePath: filePath !== null && filePath !== void 0 ? filePath : "<Unknown>",
         messages: [
           {
-            message,
+            message: message2,
             type: "lint",
             loc: {
               start: {
@@ -36341,11 +36341,11 @@ var require_textlint_kernel = __commonJS({
     var parse_by_plugin_js_1 = require_parse_by_plugin();
     var createDummyTextLintResult_js_1 = require_createDummyTextLintResult();
     var debug = (0, debug_1.default)("textlint:kernel");
-    function addingAtFileNameToError(fileName, message) {
+    function addingAtFileNameToError(fileName, message2) {
       if (!fileName) {
-        return message;
+        return message2;
       }
-      return `${message}
+      return `${message2}
 at ${fileName}`;
     }
     var TextlintKernel = class {
@@ -37932,10 +37932,10 @@ var require_core3 = __commonJS({
     function getBasename() {
       return typeof this.path === "string" ? p.basename(this.path) : void 0;
     }
-    function setBasename(basename4) {
-      assertNonEmpty(basename4, "basename");
-      assertPart(basename4, "basename");
-      this.path = p.join(this.dirname || "", basename4);
+    function setBasename(basename5) {
+      assertNonEmpty(basename5, "basename");
+      assertPart(basename5, "basename");
+      this.path = p.join(this.dirname || "", basename5);
     }
     function getExtname() {
       return typeof this.path === "string" ? p.extname(this.path) : void 0;
@@ -37991,28 +37991,28 @@ var require_lib10 = __commonJS({
     var VMessage = require_vfile_message();
     var VFile = require_core3();
     module.exports = VFile;
-    VFile.prototype.message = message;
+    VFile.prototype.message = message2;
     VFile.prototype.info = info;
-    VFile.prototype.fail = fail2;
-    function message(reason, position, origin) {
-      var message2 = new VMessage(reason, position, origin);
+    VFile.prototype.fail = fail3;
+    function message2(reason, position, origin) {
+      var message3 = new VMessage(reason, position, origin);
       if (this.path) {
-        message2.name = this.path + ":" + message2.name;
-        message2.file = this.path;
+        message3.name = this.path + ":" + message3.name;
+        message3.file = this.path;
       }
-      message2.fatal = false;
-      this.messages.push(message2);
-      return message2;
+      message3.fatal = false;
+      this.messages.push(message3);
+      return message3;
     }
-    function fail2() {
-      var message2 = this.message.apply(this, arguments);
-      message2.fatal = true;
-      throw message2;
+    function fail3() {
+      var message3 = this.message.apply(this, arguments);
+      message3.fatal = true;
+      throw message3;
     }
     function info() {
-      var message2 = this.message.apply(this, arguments);
-      message2.fatal = null;
-      return message2;
+      var message3 = this.message.apply(this, arguments);
+      message3.fatal = null;
+      return message3;
     }
   }
 });
@@ -39739,7 +39739,7 @@ var require_factory_space = __commonJS({
     "use strict";
     var markdownSpace = require_markdown_space();
     function spaceFactory(effects, ok2, type, max) {
-      var limit2 = max ? max - 1 : Infinity;
+      var limit3 = max ? max - 1 : Infinity;
       var size = 0;
       return start;
       function start(code) {
@@ -39750,7 +39750,7 @@ var require_factory_space = __commonJS({
         return ok2(code);
       }
       function prefix(code) {
-        if (markdownSpace(code) && size++ < limit2) {
+        if (markdownSpace(code) && size++ < limit3) {
           effects.consume(code);
           return prefix;
         }
@@ -40209,7 +40209,7 @@ var require_factory_space2 = __commonJS({
     "use strict";
     var markdownSpace = require_markdown_space2();
     function spaceFactory(effects, ok2, type, max) {
-      var limit2 = max ? max - 1 : Infinity;
+      var limit3 = max ? max - 1 : Infinity;
       var size = 0;
       return start;
       function start(code) {
@@ -40220,7 +40220,7 @@ var require_factory_space2 = __commonJS({
         return ok2(code);
       }
       function prefix(code) {
-        if (markdownSpace(code) && size++ < limit2) {
+        if (markdownSpace(code) && size++ < limit3) {
           effects.consume(code);
           return prefix;
         }
@@ -41319,7 +41319,7 @@ var require_factory_space3 = __commonJS({
     "use strict";
     var markdownSpace = require_markdown_space3();
     function spaceFactory(effects, ok2, type, max) {
-      var limit2 = max ? max - 1 : Infinity;
+      var limit3 = max ? max - 1 : Infinity;
       var size = 0;
       return start;
       function start(code) {
@@ -41330,7 +41330,7 @@ var require_factory_space3 = __commonJS({
         return ok2(code);
       }
       function prefix(code) {
-        if (markdownSpace(code) && size++ < limit2) {
+        if (markdownSpace(code) && size++ < limit3) {
           effects.consume(code);
           return prefix;
         }
@@ -45705,7 +45705,7 @@ var require_factory_destination = __commonJS({
     var markdownLineEndingOrSpace = require_markdown_line_ending_or_space3();
     var markdownLineEnding = require_markdown_line_ending2();
     function destinationFactory(effects, ok2, nok, type, literalType, literalMarkerType, rawType, stringType, max) {
-      var limit2 = max || Infinity;
+      var limit3 = max || Infinity;
       var balance = 0;
       return start;
       function start(code) {
@@ -45764,7 +45764,7 @@ var require_factory_destination = __commonJS({
       }
       function destinationRaw(code) {
         if (code === 40) {
-          if (++balance > limit2) return nok(code);
+          if (++balance > limit3) return nok(code);
           effects.consume(code);
           return destinationRaw;
         }
@@ -49008,7 +49008,7 @@ var require_factory_space4 = __commonJS({
     "use strict";
     var markdownSpace = require_markdown_space4();
     function spaceFactory(effects, ok2, type, max) {
-      var limit2 = max ? max - 1 : Infinity;
+      var limit3 = max ? max - 1 : Infinity;
       var size = 0;
       return start;
       function start(code) {
@@ -49019,7 +49019,7 @@ var require_factory_space4 = __commonJS({
         return ok2(code);
       }
       function prefix(code) {
-        if (markdownSpace(code) && size++ < limit2) {
+        if (markdownSpace(code) && size++ < limit3) {
           effects.consume(code);
           return prefix;
         }
@@ -55540,7 +55540,7 @@ var require_path_to_glob_pattern = __commonJS({
       const normalizedFilePath = path_1.default.normalize(filePath);
       return normalizedFilePath.replace(/\\/g, "/");
     }
-    var isDirectory2 = (filepath) => {
+    var isDirectory3 = (filepath) => {
       try {
         return fs_1.default.statSync(filepath).isDirectory();
       } catch (error62) {
@@ -55562,7 +55562,7 @@ var require_path_to_glob_pattern = __commonJS({
       return function(filePath) {
         let newPath = filePath;
         const resolvedPath = path_1.default.resolve(cwd, filePath);
-        if (isDirectory2(resolvedPath)) {
+        if (isDirectory3(resolvedPath)) {
           newPath = filePath.replace(/[/\\]$/, "") + suffix;
         }
         return convertPathToPosix(newPath);
@@ -56064,41 +56064,41 @@ var require_node2 = __commonJS({
         if (!this._logger) {
           return;
         }
-        let message;
+        let message2;
         if (typeof data === "string") {
-          message = data;
+          message2 = data;
         } else if (Array.isArray(data) && data.length > 0 && data[0] instanceof Error) {
-          message = data[0].message;
+          message2 = data[0].message;
         } else if (data instanceof Error) {
-          message = data.message;
+          message2 = data.message;
         } else if (Array.isArray(data) && data.length > 0 && typeof data[0]?.message === "string") {
-          message = data[0].message;
+          message2 = data[0].message;
         } else {
-          message = JSON.stringify(data);
+          message2 = JSON.stringify(data);
         }
         switch (eventName) {
           case "error": {
-            this._logger.error?.(message, { event: eventName, data });
+            this._logger.error?.(message2, { event: eventName, data });
             break;
           }
           case "warn": {
-            this._logger.warn?.(message, { event: eventName, data });
+            this._logger.warn?.(message2, { event: eventName, data });
             break;
           }
           case "trace": {
-            this._logger.trace?.(message, { event: eventName, data });
+            this._logger.trace?.(message2, { event: eventName, data });
             break;
           }
           case "debug": {
-            this._logger.debug?.(message, { event: eventName, data });
+            this._logger.debug?.(message2, { event: eventName, data });
             break;
           }
           case "fatal": {
-            this._logger.fatal?.(message, { event: eventName, data });
+            this._logger.fatal?.(message2, { event: eventName, data });
             break;
           }
           default: {
-            this._logger.info?.(message, { event: eventName, data });
+            this._logger.info?.(message2, { event: eventName, data });
             break;
           }
         }
@@ -56232,8 +56232,8 @@ var require_node2 = __commonJS({
        */
       checkDeprecatedHook(event) {
         if (this._deprecatedHooks.has(event)) {
-          const message = this._deprecatedHooks.get(event);
-          const warningMessage = `Hook "${event}" is deprecated${message ? `: ${message}` : ""}`;
+          const message2 = this._deprecatedHooks.get(event);
+          const warningMessage = `Hook "${event}" is deprecated${message2 ? `: ${message2}` : ""}`;
           this.emit("warn", { hook: event, message: warningMessage });
           return this._allowDeprecated;
         }
@@ -56380,10 +56380,10 @@ var require_node2 = __commonJS({
             try {
               await handler(...arguments_);
             } catch (error62) {
-              const message = `${event}: ${error62.message}`;
-              this.emit("error", new Error(message));
+              const message2 = `${event}: ${error62.message}`;
+              this.emit("error", new Error(message2));
               if (this._throwOnHookError) {
-                throw new Error(message);
+                throw new Error(message2);
               }
             }
           }
@@ -56413,10 +56413,10 @@ var require_node2 = __commonJS({
             try {
               handler(...arguments_);
             } catch (error62) {
-              const message = `${event}: ${error62.message}`;
-              this.emit("error", new Error(message));
+              const message2 = `${event}: ${error62.message}`;
+              this.emit("error", new Error(message2));
               if (this._throwOnHookError) {
-                throw new Error(message);
+                throw new Error(message2);
               }
             }
           }
@@ -59515,8 +59515,8 @@ var require_dist4 = __commonJS({
       * @param {KeyStatField} [field] - Optionally rank by one counter (e.g. "hits")
       * @returns {StatsKeyEntry[]}
       */
-      mostUsedKeys(limit2 = 100, field) {
-        return this.sortedKeyEntries(field, "desc").slice(0, limit2);
+      mostUsedKeys(limit3 = 100, field) {
+        return this.sortedKeyEntries(field, "desc").slice(0, limit3);
       }
       /**
       * The least-used keys, sorted ascending. Sorts by total recorded operations,
@@ -59528,8 +59528,8 @@ var require_dist4 = __commonJS({
       * @param {KeyStatField} [field] - Optionally rank by one counter (e.g. "gets")
       * @returns {StatsKeyEntry[]}
       */
-      leastUsedKeys(limit2 = 100, field) {
-        return this.sortedKeyEntries(field, "asc").slice(0, limit2);
+      leastUsedKeys(limit3 = 100, field) {
+        return this.sortedKeyEntries(field, "asc").slice(0, limit3);
       }
       /**
       * @param {string} key - The key to look up
@@ -60828,45 +60828,45 @@ var require_node4 = __commonJS({
       */
       sendToEventLogger(eventName, data) {
         if (!this._eventLogger) return;
-        let message;
-        if (typeof data === "string") message = data;
-        else if (Array.isArray(data) && data.length > 0 && data[0] instanceof Error) message = data[0].message;
-        else if (data instanceof Error) message = data.message;
-        else if (Array.isArray(data) && data.length > 0 && typeof data[0]?.message === "string") message = data[0].message;
-        else message = JSON.stringify(data);
+        let message2;
+        if (typeof data === "string") message2 = data;
+        else if (Array.isArray(data) && data.length > 0 && data[0] instanceof Error) message2 = data[0].message;
+        else if (data instanceof Error) message2 = data.message;
+        else if (Array.isArray(data) && data.length > 0 && typeof data[0]?.message === "string") message2 = data[0].message;
+        else message2 = JSON.stringify(data);
         switch (eventName) {
           case "error":
-            this._eventLogger.error?.(message, {
+            this._eventLogger.error?.(message2, {
               event: eventName,
               data
             });
             break;
           case "warn":
-            this._eventLogger.warn?.(message, {
+            this._eventLogger.warn?.(message2, {
               event: eventName,
               data
             });
             break;
           case "trace":
-            this._eventLogger.trace?.(message, {
+            this._eventLogger.trace?.(message2, {
               event: eventName,
               data
             });
             break;
           case "debug":
-            this._eventLogger.debug?.(message, {
+            this._eventLogger.debug?.(message2, {
               event: eventName,
               data
             });
             break;
           case "fatal":
-            this._eventLogger.fatal?.(message, {
+            this._eventLogger.fatal?.(message2, {
               event: eventName,
               data
             });
             break;
           default:
-            this._eventLogger.info?.(message, {
+            this._eventLogger.info?.(message2, {
               event: eventName,
               data
             });
@@ -61267,9 +61267,9 @@ var require_node4 = __commonJS({
         if (eventHandlers) for (const hook of [...eventHandlers]) try {
           await hook.handler(...arguments_);
         } catch (error62) {
-          const message = `${event}: ${error62.message}`;
-          this.emit("error", new Error(message));
-          if (this._throwOnHookError) throw new Error(message);
+          const message2 = `${event}: ${error62.message}`;
+          this.emit("error", new Error(message2));
+          if (this._throwOnHookError) throw new Error(message2);
         }
       }
       /**
@@ -61291,9 +61291,9 @@ var require_node4 = __commonJS({
           try {
             hook.handler(...arguments_);
           } catch (error62) {
-            const message = `${event}: ${error62.message}`;
-            this.emit("error", new Error(message));
-            if (this._throwOnHookError) throw new Error(message);
+            const message2 = `${event}: ${error62.message}`;
+            this.emit("error", new Error(message2));
+            if (this._throwOnHookError) throw new Error(message2);
           }
         }
       }
@@ -61406,8 +61406,8 @@ var require_node4 = __commonJS({
       */
       checkDeprecatedHook(event) {
         if (this._deprecatedHooks.has(event)) {
-          const message = this._deprecatedHooks.get(event);
-          const warningMessage = `Hook "${event}" is deprecated${message ? `: ${message}` : ""}`;
+          const message2 = this._deprecatedHooks.get(event);
+          const warningMessage = `Hook "${event}" is deprecated${message2 ? `: ${message2}` : ""}`;
           this.emit("warn", {
             hook: event,
             message: warningMessage
@@ -61476,9 +61476,9 @@ var require_dist6 = __commonJS({
       * @param {Message} message The message to publish.
       * @returns {Promise<void>} A promise that resolves when all handlers have been called.
       */
-      async publish(topic, message) {
+      async publish(topic, message2) {
         const messageWithProvider = {
-          ...message,
+          ...message2,
           providerId: this._id
         };
         const subscriptions = this._subscriptions.get(topic) ?? [];
@@ -61897,11 +61897,11 @@ var require_dist6 = __commonJS({
       * @param {string} topic - The topic to publish to.
       * @param {Message} message - The message to publish.
       */
-      async publish(topic, message) {
+      async publish(topic, message2) {
         try {
           const context = {
             topic,
-            message
+            message: message2
           };
           await this.hook("before:publish", context);
           const promises = this._messageProviders.map(async (provider) => provider.publish(context.topic, context.message));
@@ -62166,12 +62166,12 @@ var require_dist7 = __commonJS({
         this._cacheId = cacheId;
         const setEvent = this.getPrefixedEvent("cache:set");
         const deleteEvent = this.getPrefixedEvent("cache:delete");
-        this._qified.subscribe(setEvent, { handler: async (message) => {
-          const data = message.data;
+        this._qified.subscribe(setEvent, { handler: async (message2) => {
+          const data = message2.data;
           if (data.cacheId !== cacheId) await storage.set(data.key, data.value, data.ttl);
         } });
-        this._qified.subscribe(deleteEvent, { handler: async (message) => {
-          const data = message.data;
+        this._qified.subscribe(deleteEvent, { handler: async (message2) => {
+          const data = message2.data;
           if (data.cacheId !== cacheId) await storage.delete(data.key);
         } });
       }
@@ -63929,11 +63929,11 @@ var require_dist9 = __commonJS({
     module.exports = __toCommonJS(index_exports);
     var import_node_crypto2 = __toESM3(__require("crypto"), 1);
     var import_node_fs5 = __toESM3(__require("fs"), 1);
-    var import_node_path11 = __toESM3(__require("path"), 1);
+    var import_node_path12 = __toESM3(__require("path"), 1);
     var import_flat_cache = require_dist8();
     function createFromFile(filePath, useCheckSum, currentWorkingDirectory) {
-      const fname = import_node_path11.default.basename(filePath);
-      const directory = import_node_path11.default.dirname(filePath);
+      const fname = import_node_path12.default.basename(filePath);
+      const directory = import_node_path12.default.dirname(filePath);
       return create(fname, directory, useCheckSum, currentWorkingDirectory);
     }
     function create(cacheId, cacheDirectory, useCheckSum, currentWorkingDirectory) {
@@ -64091,7 +64091,7 @@ var require_dist9 = __commonJS({
        * @returns {boolean} if the file path is a relative path, false otherwise
        */
       isRelativePath(filePath) {
-        return !import_node_path11.default.isAbsolute(filePath);
+        return !import_node_path12.default.isAbsolute(filePath);
       }
       /**
        * Delete the cache file from the disk
@@ -64309,7 +64309,7 @@ var require_dist9 = __commonJS({
       getAbsolutePath(filePath, options) {
         if (this.isRelativePath(filePath)) {
           const currentWorkingDirectory = options?.currentWorkingDirectory ?? this._currentWorkingDirectory ?? process.cwd();
-          filePath = import_node_path11.default.resolve(currentWorkingDirectory, filePath);
+          filePath = import_node_path12.default.resolve(currentWorkingDirectory, filePath);
         }
         return filePath;
       }
@@ -65408,8 +65408,8 @@ var require_util3 = __commonJS({
         return iss;
       });
     }
-    function unwrapMessage2(message) {
-      return typeof message === "string" ? message : message?.message;
+    function unwrapMessage2(message2) {
+      return typeof message2 === "string" ? message2 : message2?.message;
     }
     function attachSchema2(issues, start, inst) {
       var _a3;
@@ -65427,7 +65427,7 @@ var require_util3 = __commonJS({
           iss.schema = iss.inst;
       }
       const schemaError = iss.schema !== iss.inst ? iss.schema?._zod.def?.error : void 0;
-      const message = iss.message ? iss.message : unwrapMessage2(iss.inst?._zod.def?.error?.(iss)) ?? unwrapMessage2(schemaError?.(iss)) ?? unwrapMessage2(ctx?.error?.(iss)) ?? unwrapMessage2(config2.customError?.(iss)) ?? unwrapMessage2(config2.localeError?.(iss)) ?? "Invalid input";
+      const message2 = iss.message ? iss.message : unwrapMessage2(iss.inst?._zod.def?.error?.(iss)) ?? unwrapMessage2(schemaError?.(iss)) ?? unwrapMessage2(ctx?.error?.(iss)) ?? unwrapMessage2(config2.customError?.(iss)) ?? unwrapMessage2(config2.localeError?.(iss)) ?? "Invalid input";
       const full = {};
       for (const k of Object.keys(iss)) {
         if (k === "inst" || k === "schema" || k === "continue" || k === "input" || k === "__proto__")
@@ -65435,7 +65435,7 @@ var require_util3 = __commonJS({
         full[k] = iss[k];
       }
       full.path ?? (full.path = []);
-      full.message = message;
+      full.message = message2;
       if (ctx?.reportInput) {
         full.input = iss.input;
       }
@@ -80040,8 +80040,8 @@ var require_compile = __commonJS({
     exports.INVALID = Symbol.for("zod.compile.invalid");
     var FALLBACK_FLAG2 = Symbol.for("zod.compile.fallback");
     var ZodCompileAsyncError2 = class extends Error {
-      constructor(message = "z.compile does not support async refinements, transforms, or checks") {
-        super(message);
+      constructor(message2 = "z.compile does not support async refinements, transforms, or checks") {
+        super(message2);
         this.name = "ZodCompileAsyncError";
       }
     };
@@ -82945,12 +82945,12 @@ var require_to_json_schema = __commonJS({
         external: params?.external ?? void 0
       };
     }
-    function handleUnrepresentable2(schema, ctx, json2, params, message) {
-      const result = typeof ctx.unrepresentable === "function" ? ctx.unrepresentable({ zodSchema: schema, path: params.path, message }) : ctx.unrepresentable;
+    function handleUnrepresentable2(schema, ctx, json2, params, message2) {
+      const result = typeof ctx.unrepresentable === "function" ? ctx.unrepresentable({ zodSchema: schema, path: params.path, message: message2 }) : ctx.unrepresentable;
       if (result === "any")
         return false;
       if (result === void 0 || result === "throw")
-        throw new Error(message);
+        throw new Error(message2);
       Object.assign(json2, result);
       return true;
     }
@@ -84037,8 +84037,8 @@ var require_json_schema_processors = __commonJS({
           bySchema.set(entry.schema, entry);
       }
       const rewrites = /* @__PURE__ */ new Map();
-      for (const record2 of pendingRecords2.get(ctx) ?? []) {
-        const seen = ctx.seen.get(record2);
+      for (const record3 of pendingRecords2.get(ctx) ?? []) {
+        const seen = ctx.seen.get(record3);
         const names = (seen?.def ?? seen?.schema)?.propertyNames;
         if (!names || names === true || rewrites.has(names))
           continue;
@@ -84898,7 +84898,7 @@ var require_schemas2 = __commonJS({
     exports.discriminatedUnion = discriminatedUnion2;
     exports.intersection = intersection2;
     exports.tuple = tuple2;
-    exports.record = record2;
+    exports.record = record3;
     exports.partialRecord = partialRecord2;
     exports.looseRecord = looseRecord2;
     exports.map = map2;
@@ -85921,7 +85921,7 @@ var require_schemas2 = __commonJS({
       inst.keyType = def.keyType;
       inst.valueType = def.valueType;
     });
-    function record2(keyType, valueType, params) {
+    function record3(keyType, valueType, params) {
       if (!valueType || !valueType._zod) {
         return new exports.ZodRecord({
           type: "record",
@@ -86397,7 +86397,7 @@ var require_schemas2 = __commonJS({
     exports.stringbool = stringbool2;
     function json2(params) {
       const jsonSchema = lazy2(() => {
-        return union2([string4(params), number4(), boolean4(), _null4(), array2(jsonSchema), record2(string4(), jsonSchema)]);
+        return union2([string4(params), number4(), boolean4(), _null4(), array2(jsonSchema), record3(string4(), jsonSchema)]);
       });
       return jsonSchema;
     }
@@ -90550,8 +90550,8 @@ var require_src_CgFsfg3E = __commonJS({
         if (typeof this !== "function") throw new TypeError("isInstance must be called on the class (e.g. `SdkError.isInstance(value)`); for callbacks use `v => SdkError.isInstance(v)`");
         return brandedHasInstance2(this, value);
       }
-      constructor(code, message, errorUri) {
-        super(message);
+      constructor(code, message2, errorUri) {
+        super(message2);
         this.code = code;
         this.errorUri = errorUri;
         this.name = "OAuthError";
@@ -90627,8 +90627,8 @@ var require_src_CgFsfg3E = __commonJS({
       * failure as `{ cause }` so it is reachable through the `Error.cause` chain that
       * loggers and error trackers walk.
       */
-      constructor(code, message, data, options) {
-        super(message, options);
+      constructor(code, message2, data, options) {
+        super(message2, options);
         this.code = code;
         this.data = data;
         this.name = "SdkError";
@@ -90642,8 +90642,8 @@ var require_src_CgFsfg3E = __commonJS({
       /**
       * @param options - Standard `ErrorOptions`, forwarded to `Error` (see {@linkcode SdkError}).
       */
-      constructor(code, message, data, options) {
-        super(code, message, data, options);
+      constructor(code, message2, data, options) {
+        super(code, message2, data, options);
         this.name = "SdkHttpError";
       }
       get status() {
@@ -92848,8 +92848,8 @@ var require_src_CgFsfg3E = __commonJS({
         if (typeof this !== "function") throw new TypeError("isInstance must be called on the class (e.g. `SdkError.isInstance(value)`); for callbacks use `v => SdkError.isInstance(v)`");
         return brandedHasInstance2(this, value);
       }
-      constructor(code, message, data) {
-        super(message);
+      constructor(code, message2, data) {
+        super(message2);
         this.code = code;
         this.data = data;
         this.name = "ProtocolError";
@@ -92858,35 +92858,35 @@ var require_src_CgFsfg3E = __commonJS({
       /**
       * Factory method to create the appropriate error type based on the error code and data
       */
-      static fromError(code, message, data) {
+      static fromError(code, message2, data) {
         if (code === ProtocolErrorCode2.UrlElicitationRequired && data) {
           const errorData = data;
-          if (errorData.elicitations) return new UrlElicitationRequiredError2(errorData.elicitations, message);
+          if (errorData.elicitations) return new UrlElicitationRequiredError2(errorData.elicitations, message2);
         }
         if (code === ProtocolErrorCode2.UnsupportedProtocolVersion && data) {
           const errorData = data;
           if (Array.isArray(errorData.supported) && typeof errorData.requested === "string") return new UnsupportedProtocolVersionError2({
             supported: errorData.supported,
             requested: errorData.requested
-          }, message);
+          }, message2);
         }
         if (code === ProtocolErrorCode2.InvalidParams || code === ProtocolErrorCode2.ResourceNotFound) {
           const errorData = data;
-          if (typeof errorData?.uri === "string" && (code === ProtocolErrorCode2.ResourceNotFound || Object.keys(errorData).length === 1)) return new ResourceNotFoundError2(errorData.uri, message);
+          if (typeof errorData?.uri === "string" && (code === ProtocolErrorCode2.ResourceNotFound || Object.keys(errorData).length === 1)) return new ResourceNotFoundError2(errorData.uri, message2);
         }
         if (code === ProtocolErrorCode2.MissingRequiredClientCapability && data) {
           const errorData = data;
-          if (errorData.requiredCapabilities !== null && typeof errorData.requiredCapabilities === "object" && !Array.isArray(errorData.requiredCapabilities)) return new MissingRequiredClientCapabilityError2({ requiredCapabilities: errorData.requiredCapabilities }, message);
+          if (errorData.requiredCapabilities !== null && typeof errorData.requiredCapabilities === "object" && !Array.isArray(errorData.requiredCapabilities)) return new MissingRequiredClientCapabilityError2({ requiredCapabilities: errorData.requiredCapabilities }, message2);
         }
-        return new ProtocolError4(code, message, data);
+        return new ProtocolError4(code, message2, data);
       }
     };
     var ResourceNotFoundError2 = class extends ProtocolError3 {
       static {
         Object.defineProperty(this, "mcpBrand", { value: "mcp.ResourceNotFoundError" });
       }
-      constructor(uri, message = `Resource not found: ${uri}`) {
-        super(ProtocolErrorCode2.InvalidParams, message, { uri });
+      constructor(uri, message2 = `Resource not found: ${uri}`) {
+        super(ProtocolErrorCode2.InvalidParams, message2, { uri });
       }
       /** The URI that was requested and not found. */
       get uri() {
@@ -92897,8 +92897,8 @@ var require_src_CgFsfg3E = __commonJS({
       static {
         Object.defineProperty(this, "mcpBrand", { value: "mcp.UrlElicitationRequiredError" });
       }
-      constructor(elicitations, message = `URL elicitation${elicitations.length > 1 ? "s" : ""} required`) {
-        super(ProtocolErrorCode2.UrlElicitationRequired, message, { elicitations });
+      constructor(elicitations, message2 = `URL elicitation${elicitations.length > 1 ? "s" : ""} required`) {
+        super(ProtocolErrorCode2.UrlElicitationRequired, message2, { elicitations });
       }
       get elicitations() {
         return this.data?.elicitations ?? [];
@@ -92908,8 +92908,8 @@ var require_src_CgFsfg3E = __commonJS({
       static {
         Object.defineProperty(this, "mcpBrand", { value: "mcp.UnsupportedProtocolVersionError" });
       }
-      constructor(data, message = `Unsupported protocol version: ${data.requested}`) {
-        super(ProtocolErrorCode2.UnsupportedProtocolVersion, message, data);
+      constructor(data, message2 = `Unsupported protocol version: ${data.requested}`) {
+        super(ProtocolErrorCode2.UnsupportedProtocolVersion, message2, data);
       }
       /**
       * Protocol versions the receiver supports.
@@ -92928,8 +92928,8 @@ var require_src_CgFsfg3E = __commonJS({
       static {
         Object.defineProperty(this, "mcpBrand", { value: "mcp.MissingRequiredClientCapabilityError" });
       }
-      constructor(data, message = `Missing required client capabilities: ${Object.keys(data.requiredCapabilities).join(", ")}`) {
-        super(ProtocolErrorCode2.MissingRequiredClientCapability, message, data);
+      constructor(data, message2 = `Missing required client capabilities: ${Object.keys(data.requiredCapabilities).join(", ")}`) {
+        super(ProtocolErrorCode2.MissingRequiredClientCapability, message2, data);
       }
       /**
       * The capabilities the server requires from the client to process the
@@ -94478,17 +94478,17 @@ var require_src_CgFsfg3E = __commonJS({
       _modelcontextprotocol_core_internal.LOG_LEVEL_META_KEY
     ];
     var RETRY_PARAMS_KEYS2 = ["inputResponses", "requestState"];
-    function liftWireOnlyMaterial2(message, kind) {
-      const params = message.params;
+    function liftWireOnlyMaterial2(message2, kind) {
+      const params = message2.params;
       if (!isPlainObject$12(params)) return {
-        message,
+        message: message2,
         lifted: {}
       };
       const meta3 = params._meta;
       const envelopeKeys = isPlainObject$12(meta3) ? RESERVED_ENVELOPE_META_KEYS2.filter((key) => key in meta3) : [];
       const retryKeys = kind === "request" ? RETRY_PARAMS_KEYS2.filter((key) => key in params) : [];
       if (envelopeKeys.length === 0 && retryKeys.length === 0) return {
-        message,
+        message: message2,
         lifted: {}
       };
       const lifted = {};
@@ -94511,7 +94511,7 @@ var require_src_CgFsfg3E = __commonJS({
       }
       return {
         message: {
-          ...message,
+          ...message2,
           params: nextParams
         },
         lifted
@@ -94639,12 +94639,12 @@ var require_src_CgFsfg3E = __commonJS({
       * byte-identical. User-supplied `_meta` keys are spread last so they win
       * over the auto-attached envelope keys.
       */
-      _envelopeOutbound(message) {
+      _envelopeOutbound(message2) {
         const envelope = this._outboundMetaEnvelope();
-        if (envelope === void 0) return message;
-        const params = message.params ?? {};
+        if (envelope === void 0) return message2;
+        const params = message2.params ?? {};
         return {
-          ...message,
+          ...message2,
           params: {
             ...params,
             _meta: {
@@ -94743,12 +94743,12 @@ var require_src_CgFsfg3E = __commonJS({
           this._onerror(error62);
         };
         const _onmessage = this._transport?.onmessage;
-        this._transport.onmessage = (message, extra) => {
-          _onmessage?.(message, extra);
-          if (isJSONRPCResultResponse2(message) || isJSONRPCErrorResponse2(message)) this._onresponse(message);
-          else if (isJSONRPCRequest2(message)) this._onrequest(message, extra);
-          else if (isJSONRPCNotification2(message)) this._onnotification(message, extra);
-          else this._onerror(/* @__PURE__ */ new Error(`Unknown message type: ${JSON.stringify(message)}`));
+        this._transport.onmessage = (message2, extra) => {
+          _onmessage?.(message2, extra);
+          if (isJSONRPCResultResponse2(message2) || isJSONRPCErrorResponse2(message2)) this._onresponse(message2);
+          else if (isJSONRPCRequest2(message2)) this._onrequest(message2, extra);
+          else if (isJSONRPCNotification2(message2)) this._onnotification(message2, extra);
+          else this._onerror(/* @__PURE__ */ new Error(`Unknown message type: ${JSON.stringify(message2)}`));
         };
         transport.setSupportedProtocolVersions?.(this._supportedProtocolVersions);
         await this._transport.start();
@@ -94810,13 +94810,13 @@ var require_src_CgFsfg3E = __commonJS({
           return;
         }
         const capturedTransport = this._transport;
-        const sendErrorResponse = (code, message, data) => {
+        const sendErrorResponse = (code, message2, data) => {
           const errorResponse = {
             jsonrpc: "2.0",
             id: request.id,
             error: {
               code,
-              message,
+              message: message2,
               ...data !== void 0 && { data }
             }
           };
@@ -95422,8 +95422,8 @@ var require_src_CgFsfg3E = __commonJS({
     function deserializeMessage2(line) {
       return _modelcontextprotocol_core_internal.JSONRPCMessageSchema.parse(JSON.parse(line));
     }
-    function serializeMessage2(message) {
-      return JSON.stringify(message) + "\n";
+    function serializeMessage2(message2) {
+      return JSON.stringify(message2) + "\n";
     }
     var TOOL_NAME_REGEX2 = /^[A-Za-z0-9._-]{1,128}$/;
     function validateToolName2(name) {
@@ -95727,11 +95727,11 @@ var require_src_CgFsfg3E = __commonJS({
       * Sends a message with optional auth info.
       * This is useful for testing authentication scenarios.
       */
-      async send(message, options) {
+      async send(message2, options) {
         if (!this._otherTransport) throw new SdkError2(SdkErrorCode2.NotConnected, "Not connected");
-        if (this._otherTransport.onmessage) this._otherTransport.onmessage(message, { authInfo: options?.authInfo });
+        if (this._otherTransport.onmessage) this._otherTransport.onmessage(message2, { authInfo: options?.authInfo });
         else this._otherTransport._messageQueue.push({
-          message,
+          message: message2,
           extra: { authInfo: options?.authInfo }
         });
       }
@@ -97469,11 +97469,11 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
         if (schemaPath) schPath = (0, codegen_1.str)`${schPath}${(0, util_1.getErrorPath)(schemaPath, util_1.Type.Str)}`;
         return [E.schemaPath, schPath];
       }
-      function extraErrorProps(cxt, { params, message }, keyValues) {
+      function extraErrorProps(cxt, { params, message: message2 }, keyValues) {
         const { keyword, data, schemaValue, it } = cxt;
         const { opts, propertyName, topSchemaRef, schemaPath } = it;
         keyValues.push([E.keyword, keyword], [E.params, typeof params == "function" ? params(cxt) : params || (0, codegen_1._)`{}`]);
-        if (opts.messages) keyValues.push([E.message, typeof message == "function" ? message(cxt) : message]);
+        if (opts.messages) keyValues.push([E.message, typeof message2 == "function" ? message2(cxt) : message2]);
         if (opts.verbose) keyValues.push([E.schema, schemaValue], [E.parentSchema, (0, codegen_1._)`${topSchemaRef}${schemaPath}`], [names_1.default.data, data]);
         if (propertyName) keyValues.push([E.propertyName, propertyName]);
       }
@@ -98197,11 +98197,11 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
         "enum",
         "const"
       ]);
-      function inlineRef(schema, limit2 = true) {
+      function inlineRef(schema, limit3 = true) {
         if (typeof schema == "boolean") return true;
-        if (limit2 === true) return !hasRef(schema);
-        if (!limit2) return false;
-        return countKeys(schema) <= limit2;
+        if (limit3 === true) return !hasRef(schema);
+        if (!limit3) return false;
+        return countKeys(schema) <= limit3;
       }
       exports2.inlineRef = inlineRef;
       const REF_KEYWORDS = /* @__PURE__ */ new Set([
@@ -99797,9 +99797,9 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
           }
           const valid = this.validate($schema, schema);
           if (!valid && throwOrLogError) {
-            const message = "schema is invalid: " + this.errorsText();
-            if (this.opts.validateSchema === "log") this.logger.error(message);
-            else throw new Error(message);
+            const message2 = "schema is invalid: " + this.errorsText();
+            if (this.opts.validateSchema === "log") this.logger.error(message2);
+            else throw new Error(message2);
           }
           return valid;
         }
@@ -103439,12 +103439,12 @@ var require_mcp_DUcCQSTW = __commonJS({
       }
     }
     var DEFAULT_MAX_SUBSCRIPTIONS2 = 1024;
-    function jsonRpcError(id, code, message) {
+    function jsonRpcError(id, code, message2) {
       return Response.json({
         jsonrpc: "2.0",
         error: {
           code,
-          message
+          message: message2
         },
         id
       }, { status: 200 });
@@ -103461,8 +103461,8 @@ var require_mcp_DUcCQSTW = __commonJS({
         }
       };
     }
-    function parseListenFilter(message) {
-      const outcome = require_src22.codecForVersion(require_src22.MODERN_WIRE_REVISION).validateRequest("subscriptions/listen", message);
+    function parseListenFilter(message2) {
+      const outcome = require_src22.codecForVersion(require_src22.MODERN_WIRE_REVISION).validateRequest("subscriptions/listen", message2);
       return outcome.ok ? outcome.value.params?.notifications : void 0;
     }
     function createListenRouter2(options) {
@@ -103470,15 +103470,15 @@ var require_mcp_DUcCQSTW = __commonJS({
       const maxSubscriptions = options.maxSubscriptions ?? DEFAULT_MAX_SUBSCRIPTIONS2;
       const keepAliveMs = options.keepAliveMs ?? DEFAULT_SSE_KEEP_ALIVE_MS2;
       const open2 = /* @__PURE__ */ new Set();
-      function serve(message, signal, capabilities, serverInfo) {
+      function serve(message2, signal, capabilities, serverInfo) {
         if (open2.size >= maxSubscriptions) {
           onerror?.(/* @__PURE__ */ new Error(`subscriptions/listen refused: subscription limit reached (${maxSubscriptions})`));
-          return jsonRpcError(message.id, -32603, "Subscription limit reached");
+          return jsonRpcError(message2.id, -32603, "Subscription limit reached");
         }
-        const filter = parseListenFilter(message);
-        if (filter === void 0) return jsonRpcError(message.id, -32602, "Invalid params: 'notifications' is required and must be a valid SubscriptionFilter");
+        const filter = parseListenFilter(message2);
+        if (filter === void 0) return jsonRpcError(message2.id, -32602, "Invalid params: 'notifications' is required and must be a valid SubscriptionFilter");
         const honored = honoredSubset(filter, capabilities);
-        const subscriptionId = message.id;
+        const subscriptionId = message2.id;
         const encoder = new TextEncoder();
         let controller;
         let closed = false;
@@ -103631,31 +103631,31 @@ data: ${JSON.stringify({
       * open (deliver unadvertised types); the entry guarantees capabilities are
       * set before any listen request is routed here.
       */
-      serve(message) {
+      serve(message2) {
         if (this._serverCapabilities === void 0) throw new Error("StdioListenRouter.serve() called before setServerCapabilities(); refusing to honor a filter without capabilities");
         if (this._subs.size >= this._maxSubscriptions) return {
           jsonrpc: "2.0",
-          id: message.id,
+          id: message2.id,
           error: {
             code: -32603,
             message: "Subscription limit reached"
           }
         };
-        const filter = parseListenFilter(message);
+        const filter = parseListenFilter(message2);
         if (filter === void 0) return {
           jsonrpc: "2.0",
-          id: message.id,
+          id: message2.id,
           error: {
             code: -32602,
             message: "Invalid params: 'notifications' is required and must be a valid SubscriptionFilter"
           }
         };
         const honored = honoredSubset(filter, this._serverCapabilities);
-        this._subs.set(message.id, honored);
+        this._subs.set(message2.id, honored);
         return stampSubscriptionId({
           method: "notifications/subscriptions/acknowledged",
           params: { notifications: honored }
-        }, message.id);
+        }, message2.id);
       }
       /**
       * Tear down one subscription (inbound `notifications/cancelled`). Returns
@@ -103674,15 +103674,15 @@ data: ${JSON.stringify({
       * - For any other outbound message, returns `'passthrough'` (the entry
       *   forwards it as-is).
       */
-      routeOutbound(message) {
-        if (!CHANGE_NOTIFICATION_METHODS.has(message.method)) return "passthrough";
-        const uriParam = message.params?.["uri"];
+      routeOutbound(message2) {
+        if (!CHANGE_NOTIFICATION_METHODS.has(message2.method)) return "passthrough";
+        const uriParam = message2.params?.["uri"];
         const uri = typeof uriParam === "string" ? uriParam : void 0;
-        const event = notificationToServerEvent(message.method, uri);
+        const event = notificationToServerEvent(message2.method, uri);
         const out = [];
         for (const [subscriptionId, filter] of this._subs) if (listenFilterAccepts(filter, event)) out.push(stampSubscriptionId({
-          method: message.method,
-          params: message.params ?? {}
+          method: message2.method,
+          params: message2.params ?? {}
         }, subscriptionId));
         return out;
       }
@@ -103936,15 +103936,15 @@ data: ${JSON.stringify({
       const hex3 = [...bytes].map((byte) => byte.toString(16).padStart(2, "0")).join("");
       return `${hex3.slice(0, 8)}-${hex3.slice(8, 12)}-${hex3.slice(12, 16)}-${hex3.slice(16, 20)}-${hex3.slice(20)}`;
     }
-    function legacyShimFailure2(method, message) {
+    function legacyShimFailure2(method, message2) {
       if (method === "tools/call") return {
         content: [{
           type: "text",
-          text: message
+          text: message2
         }],
         isError: true
       };
-      throw new require_src22.ProtocolError(require_src22.ProtocolErrorCode.InternalError, message);
+      throw new require_src22.ProtocolError(require_src22.ProtocolErrorCode.InternalError, message2);
     }
     var LegacyInputRequiredShim2 = class {
       constructor(_host) {
@@ -105507,7 +105507,7 @@ var require_dist10 = __commonJS({
       * transport is closed before a response was produced (for example because
       * the client disconnected).
       */
-      async handleMessage(message, extra) {
+      async handleMessage(message2, extra) {
         if (this._used) throw new Error("PerRequestHTTPServerTransport serves exactly one exchange; construct a new transport per request");
         if (!this._started || this.onmessage === void 0) throw new Error("PerRequestHTTPServerTransport is not connected: connect a server to this transport before handling a message");
         if (this._closed) throw new Error("PerRequestHTTPServerTransport is closed");
@@ -105522,8 +105522,8 @@ var require_dist10 = __commonJS({
           ...extra?.request !== void 0 && { request: extra.request },
           ...extra?.authInfo !== void 0 && { authInfo: extra.authInfo }
         };
-        if (require_src22.isJSONRPCRequest(message)) {
-          this._requestId = message.id;
+        if (require_src22.isJSONRPCRequest(message2)) {
+          this._requestId = message2.id;
           let resolve2;
           let reject;
           const promise2 = new Promise((promiseResolve, promiseReject) => {
@@ -105543,31 +105543,31 @@ var require_dist10 = __commonJS({
           }
           this._dispatchWindowOpen = true;
           try {
-            this.onmessage(message, messageExtra);
+            this.onmessage(message2, messageExtra);
           } finally {
             this._dispatchWindowOpen = false;
           }
           if (this._responseMode === "sse" && !this._closed && !this._deferredResponse.settled) this.upgradeToSse();
           return promise2;
         }
-        this.onmessage(message, messageExtra);
+        this.onmessage(message2, messageExtra);
         return new Response(null, { status: 202 });
       }
-      async send(message, options) {
+      async send(message2, options) {
         if (this._closed) return;
-        const isResponse = require_src22.isJSONRPCResultResponse(message) || require_src22.isJSONRPCErrorResponse(message);
-        const relatedId = isResponse ? message.id : options?.relatedRequestId;
+        const isResponse = require_src22.isJSONRPCResultResponse(message2) || require_src22.isJSONRPCErrorResponse(message2);
+        const relatedId = isResponse ? message2.id : options?.relatedRequestId;
         if (this._requestId === void 0 || relatedId === void 0 || relatedId !== this._requestId) {
-          if (isResponse) this.onerror?.(/* @__PURE__ */ new Error(`Received a response for an unknown request id: ${String(message.id)}`));
+          if (isResponse) this.onerror?.(/* @__PURE__ */ new Error(`Received a response for an unknown request id: ${String(message2.id)}`));
           return;
         }
         if (isResponse) {
           if (this._terminalDelivered) return;
           this._terminalDelivered = true;
-          const errorCode = require_src22.isJSONRPCErrorResponse(message) ? message.error.code : void 0;
+          const errorCode = require_src22.isJSONRPCErrorResponse(message2) ? message2.error.code : void 0;
           const ladderStatus = errorCode !== void 0 && (this._dispatchWindowOpen || errorCode === require_src22.ProtocolErrorCode.MissingRequiredClientCapability) ? require_src22.LADDER_ERROR_HTTP_STATUS[errorCode] : void 0;
           if (ladderStatus !== void 0 && this._sse === void 0) {
-            this.settleResponse(Response.json(message, {
+            this.settleResponse(Response.json(message2, {
               status: ladderStatus,
               headers: { "Content-Type": "application/json" }
             }));
@@ -105576,11 +105576,11 @@ var require_dist10 = __commonJS({
           }
           if (this._sse !== void 0 || this._responseMode === "sse") {
             if (this._sse === void 0) this.upgradeToSse();
-            this.writeMessageFrame(message);
+            this.writeMessageFrame(message2);
             this.finalizeStream();
             return;
           }
-          this.settleResponse(Response.json(message, {
+          this.settleResponse(Response.json(message2, {
             status: 200,
             headers: { "Content-Type": "application/json" }
           }));
@@ -105589,7 +105589,7 @@ var require_dist10 = __commonJS({
         }
         if (this._responseMode === "json") return;
         if (this._sse === void 0) this.upgradeToSse();
-        this.writeMessageFrame(message);
+        this.writeMessageFrame(message2);
       }
       /**
       * Writes an SSE comment frame (a keep-alive heartbeat). Dropped when the
@@ -105663,9 +105663,9 @@ var require_dist10 = __commonJS({
         }
         queueMicrotask(() => void this.close());
       }
-      writeMessageFrame(message) {
+      writeMessageFrame(message2) {
         this.writeFrame(`event: message
-data: ${JSON.stringify(message)}
+data: ${JSON.stringify(message2)}
 
 `);
       }
@@ -105678,14 +105678,14 @@ data: ${JSON.stringify(message)}
         }
       }
     };
-    async function invoke(server, message, ctx) {
+    async function invoke(server, message2, ctx) {
       const transport = new PerRequestHTTPServerTransport({
         classification: ctx.classification,
         ...ctx.responseMode !== void 0 && { responseMode: ctx.responseMode },
         ...ctx.keepAliveMs !== void 0 && { keepAliveMs: ctx.keepAliveMs }
       });
       await server.connect(transport);
-      return transport.handleMessage(message, {
+      return transport.handleMessage(message2, {
         ...ctx.request !== void 0 && { request: ctx.request },
         ...ctx.authInfo !== void 0 && { authInfo: ctx.authInfo }
       });
@@ -105798,10 +105798,10 @@ data: ${JSON.stringify(message)}
       /**
       * Helper to create a JSON error response
       */
-      createJsonErrorResponse(status, code, message, options) {
+      createJsonErrorResponse(status, code, message2, options) {
         const error62 = {
           code,
-          message
+          message: message2
         };
         if (options?.data !== void 0) error62.data = options.data;
         return Response.json({
@@ -105818,7 +105818,7 @@ data: ${JSON.stringify(message)}
       }
       async _checkScopeChallenge(messages, authInfo) {
         if (!this._scopeChallengeResolver) return;
-        const challenge = await require_mcp.findScopeChallenge(messages.filter((message) => require_src22.isJSONRPCRequest(message)), authInfo, this._scopeChallengeResolver);
+        const challenge = await require_mcp.findScopeChallenge(messages.filter((message2) => require_src22.isJSONRPCRequest(message2)), authInfo, this._scopeChallengeResolver);
         return challenge === void 0 ? void 0 : require_mcp.createScopeChallengeResponse(challenge, require_mcp.scopeChallengeResourceMetadataUrl(authInfo));
       }
       /**
@@ -105998,9 +105998,9 @@ data:
             }
           });
           const replayedEventIds = /* @__PURE__ */ new Set();
-          replayedStreamId = await this._eventStore.replayEventsAfter(lastEventId, { send: async (eventId, message) => {
+          replayedStreamId = await this._eventStore.replayEventsAfter(lastEventId, { send: async (eventId, message2) => {
             replayedEventIds.add(eventId);
-            if (!this.writeSSEEvent(streamController, encoder, message, eventId)) try {
+            if (!this.writeSSEEvent(streamController, encoder, message2, eventId)) try {
               streamController.close();
             } catch {
             }
@@ -106045,13 +106045,13 @@ data:
       /**
       * Writes an event to an SSE stream via controller with proper formatting
       */
-      writeSSEEvent(controller, encoder, message, eventId) {
+      writeSSEEvent(controller, encoder, message2, eventId) {
         try {
           let eventData = `event: message
 `;
           if (eventId) eventData += `id: ${eventId}
 `;
-          eventData += `data: ${JSON.stringify(message)}
+          eventData += `data: ${JSON.stringify(message2)}
 
 `;
           controller.enqueue(encoder.encode(eventData));
@@ -106100,9 +106100,9 @@ data:
           if (options?.parsedBody === void 0) try {
             const body = await readRequestBody(req, this._maxRequestBodySize);
             if (body.tooLarge) {
-              const message = requestBodyTooLargeMessage(this._maxRequestBodySize);
-              this.onerror?.(new Error(message));
-              return this.createJsonErrorResponse(413, -32e3, message);
+              const message2 = requestBodyTooLargeMessage(this._maxRequestBodySize);
+              this.onerror?.(new Error(message2));
+              return this.createJsonErrorResponse(413, -32e3, message2);
             }
             rawMessage = JSON.parse(body.text);
           } catch (error62) {
@@ -106152,7 +106152,7 @@ data:
           }
           if (scopeChallengeResponse) return scopeChallengeResponse;
           if (!messages.some((element) => require_src22.isJSONRPCRequest(element))) {
-            for (const message of messages) this.onmessage?.(message, {
+            for (const message2 of messages) this.onmessage?.(message2, {
               authInfo: options?.authInfo,
               request
             });
@@ -106168,8 +106168,8 @@ data:
                 this._streamMapping.delete(streamId);
               }
             });
-            for (const message of messages) if (require_src22.isJSONRPCRequest(message)) this._requestToStreamMapping.set(message.id, streamId);
-            for (const message of messages) this.onmessage?.(message, {
+            for (const message2 of messages) if (require_src22.isJSONRPCRequest(message2)) this._requestToStreamMapping.set(message2.id, streamId);
+            for (const message2 of messages) this.onmessage?.(message2, {
               authInfo: options?.authInfo,
               request
             });
@@ -106193,7 +106193,7 @@ data:
             "X-Accel-Buffering": "no"
           };
           if (this.sessionId !== void 0) headers["mcp-session-id"] = this.sessionId;
-          for (const message of messages) if (require_src22.isJSONRPCRequest(message)) {
+          for (const message2 of messages) if (require_src22.isJSONRPCRequest(message2)) {
             this._streamMapping.set(streamId, {
               controller: streamController,
               encoder,
@@ -106206,21 +106206,21 @@ data:
                 }
               }
             });
-            this._requestToStreamMapping.set(message.id, streamId);
+            this._requestToStreamMapping.set(message2.id, streamId);
           }
           await this.writePrimingEvent(streamController, encoder, streamId, clientProtocolVersion);
-          for (const message of messages) {
+          for (const message2 of messages) {
             let closeSSEStream;
             let closeStandaloneSSEStream;
-            if (require_src22.isJSONRPCRequest(message) && this._eventStore && this.supportsEmptySSEData(clientProtocolVersion)) {
+            if (require_src22.isJSONRPCRequest(message2) && this._eventStore && this.supportsEmptySSEData(clientProtocolVersion)) {
               closeSSEStream = () => {
-                this.closeSSEStream(message.id);
+                this.closeSSEStream(message2.id);
               };
               closeStandaloneSSEStream = () => {
                 this.closeStandaloneSSEStream();
               };
             }
-            this.onmessage?.(message, {
+            this.onmessage?.(message2, {
               authInfo: options?.authInfo,
               request,
               closeSSEStream,
@@ -106320,16 +106320,16 @@ data:
         const stream = this._streamMapping.get(this._standaloneSseStreamId);
         if (stream) stream.cleanup();
       }
-      async send(message, options) {
+      async send(message2, options) {
         let requestId = options?.relatedRequestId;
-        if (require_src22.isJSONRPCResultResponse(message) || require_src22.isJSONRPCErrorResponse(message)) requestId = message.id;
+        if (require_src22.isJSONRPCResultResponse(message2) || require_src22.isJSONRPCErrorResponse(message2)) requestId = message2.id;
         if (requestId === void 0) {
-          if (require_src22.isJSONRPCResultResponse(message) || require_src22.isJSONRPCErrorResponse(message)) throw new Error("Cannot send a response on a standalone SSE stream unless resuming a previous client request");
+          if (require_src22.isJSONRPCResultResponse(message2) || require_src22.isJSONRPCErrorResponse(message2)) throw new Error("Cannot send a response on a standalone SSE stream unless resuming a previous client request");
           let eventId;
-          if (this._eventStore) eventId = await this._eventStore.storeEvent(this._standaloneSseStreamId, message);
+          if (this._eventStore) eventId = await this._eventStore.storeEvent(this._standaloneSseStreamId, message2);
           const standaloneSse = this._streamMapping.get(this._standaloneSseStreamId);
           if (standaloneSse === void 0) return;
-          if (standaloneSse.controller && standaloneSse.encoder && (eventId === void 0 || !standaloneSse.replayedEventIds?.has(eventId))) this.writeSSEEvent(standaloneSse.controller, standaloneSse.encoder, message, eventId);
+          if (standaloneSse.controller && standaloneSse.encoder && (eventId === void 0 || !standaloneSse.replayedEventIds?.has(eventId))) this.writeSSEEvent(standaloneSse.controller, standaloneSse.encoder, message2, eventId);
           return;
         }
         const streamId = this._requestToStreamMapping.get(requestId);
@@ -106338,13 +106338,13 @@ data:
         if (!this._enableJsonResponse) {
           let eventId;
           if (this._eventStore) {
-            eventId = await this._eventStore.storeEvent(streamId, message);
+            eventId = await this._eventStore.storeEvent(streamId, message2);
             stream = this._streamMapping.get(streamId);
           }
-          if (stream?.controller && stream?.encoder && (eventId === void 0 || !stream.replayedEventIds?.has(eventId))) this.writeSSEEvent(stream.controller, stream.encoder, message, eventId);
+          if (stream?.controller && stream?.encoder && (eventId === void 0 || !stream.replayedEventIds?.has(eventId))) this.writeSSEEvent(stream.controller, stream.encoder, message2, eventId);
         }
-        if (require_src22.isJSONRPCResultResponse(message) || require_src22.isJSONRPCErrorResponse(message)) {
-          this._requestResponseMap.set(requestId, message);
+        if (require_src22.isJSONRPCResultResponse(message2) || require_src22.isJSONRPCErrorResponse(message2)) {
+          this._requestResponseMap.set(requestId, message2);
           const relatedIds = [...this._requestToStreamMapping.entries()].filter(([_, sid]) => sid === streamId).map(([id]) => id);
           if (relatedIds.every((id) => this._requestResponseMap.has(id))) {
             if (!stream) {
@@ -106391,12 +106391,12 @@ data:
       if (typeof method !== "string") return null;
       return typeof id === "string" || typeof id === "number" ? id : null;
     }
-    function jsonRpcErrorResponse(httpStatus, code, message, data, id = null) {
+    function jsonRpcErrorResponse(httpStatus, code, message2, data, id = null) {
       return Response.json({
         jsonrpc: "2.0",
         error: {
           code,
-          message,
+          message: message2,
           ...data !== void 0 && { data }
         },
         id
@@ -107160,9 +107160,9 @@ var require_stdio = __commonJS({
       }
       processReadBuffer() {
         while (true) try {
-          const message = this._readBuffer.readMessage();
-          if (message === null) break;
-          this.onmessage?.(message);
+          const message2 = this._readBuffer.readMessage();
+          if (message2 === null) break;
+          this.onmessage?.(message2);
         } catch (error62) {
           this.onerror?.(error62);
         }
@@ -107179,10 +107179,10 @@ var require_stdio = __commonJS({
         this._readBuffer.clear();
         this.onclose?.();
       }
-      send(message) {
+      send(message2) {
         if (this._closed) return Promise.reject(/* @__PURE__ */ new Error("StdioServerTransport is closed"));
         return new Promise((resolve2, reject) => {
-          const json2 = require_src22.serializeMessage(message);
+          const json2 = require_src22.serializeMessage(message2);
           let settled = false;
           const onError = (error62) => {
             if (settled) return;
@@ -107224,27 +107224,27 @@ var require_stdio = __commonJS({
       }
       async start() {
       }
-      async send(message, options) {
-        if (require_src22.isJSONRPCResultResponse(message) || require_src22.isJSONRPCErrorResponse(message)) {
-          const { id } = message;
+      async send(message2, options) {
+        if (require_src22.isJSONRPCResultResponse(message2) || require_src22.isJSONRPCErrorResponse(message2)) {
+          const { id } = message2;
           if (id !== void 0) this._settle(id);
         }
         if (this._closed) return;
-        if (this._outboundIntercept?.(message) === "handled") return;
-        return this._wire.send(message, options);
+        if (this._outboundIntercept?.(message2) === "handled") return;
+        return this._wire.send(message2, options);
       }
       setProtocolVersion = (version2) => {
         this._wire.setProtocolVersion?.(version2);
       };
       /** Forwards one inbound message to the connected instance. */
-      deliver(message, extra) {
+      deliver(message2, extra) {
         if (this._closed) return;
-        if (require_src22.isJSONRPCRequest(message)) this._pendingRequests.add(message.id);
-        else if (require_src22.isJSONRPCNotification(message) && message.method === "notifications/cancelled") {
-          const cancelledId = message.params?.requestId;
+        if (require_src22.isJSONRPCRequest(message2)) this._pendingRequests.add(message2.id);
+        else if (require_src22.isJSONRPCNotification(message2) && message2.method === "notifications/cancelled") {
+          const cancelledId = message2.params?.requestId;
           if (cancelledId !== void 0) this._settle(cancelledId);
         }
-        this.onmessage?.(message, extra);
+        this.onmessage?.(message2, extra);
       }
       /**
       * Resolves once every request delivered to the instance has been answered
@@ -107290,9 +107290,9 @@ var require_stdio = __commonJS({
         for (const waiter of waiters) waiter();
       }
     };
-    function classifyOpeningMessage(message) {
-      const params = message.params;
-      if (message.method === "initialize" && !require_src22.carriesValidModernEnvelopeClaim(params)) {
+    function classifyOpeningMessage(message2) {
+      const params = message2.params;
+      if (message2.method === "initialize" && !require_src22.carriesValidModernEnvelopeClaim(params)) {
         const requestedVersion = params !== null && typeof params === "object" && typeof params.protocolVersion === "string" ? params.protocolVersion : void 0;
         return {
           kind: "legacy",
@@ -107337,19 +107337,19 @@ var require_stdio = __commonJS({
         } catch {
         }
       };
-      const writeErrorResponse = (id, code, message, data) => wire.send({
+      const writeErrorResponse = (id, code, message2, data) => wire.send({
         jsonrpc: "2.0",
         id,
         error: {
           code,
-          message,
+          message: message2,
           ...data !== void 0 && { data }
         }
       }).catch((error62) => reportError(toError(error62)));
       const listenRouter = new require_mcp.StdioListenRouter(options.maxSubscriptions ?? require_mcp.DEFAULT_MAX_SUBSCRIPTIONS);
-      const modernOutboundIntercept = (message) => {
-        if (!require_src22.isJSONRPCNotification(message)) return void 0;
-        const routed = listenRouter.routeOutbound(message);
+      const modernOutboundIntercept = (message2) => {
+        if (!require_src22.isJSONRPCNotification(message2)) return void 0;
+        const routed = listenRouter.routeOutbound(message2);
         if (routed === "passthrough") return void 0;
         for (const stamped of routed) wire.send({
           jsonrpc: "2.0",
@@ -107357,18 +107357,18 @@ var require_stdio = __commonJS({
         }).catch((error62) => reportError(toError(error62)));
         return "handled";
       };
-      const tryServeListen = async (message) => {
-        if (require_src22.isJSONRPCRequest(message) && message.method === "subscriptions/listen") {
-          const meta3 = require_src22.requestMetaOf(message.params);
-          const issue2 = require_src22.hasEnvelopeClaim(message.params) ? (meta3 === void 0 ? [] : require_src22.validateEnvelopeMeta(meta3))[0] : {
+      const tryServeListen = async (message2) => {
+        if (require_src22.isJSONRPCRequest(message2) && message2.method === "subscriptions/listen") {
+          const meta3 = require_src22.requestMetaOf(message2.params);
+          const issue2 = require_src22.hasEnvelopeClaim(message2.params) ? (meta3 === void 0 ? [] : require_src22.validateEnvelopeMeta(meta3))[0] : {
             key: "_meta",
             problem: "the per-request envelope is required on protocol revision 2026-07-28"
           };
-          const claimedVersion = require_src22.envelopeClaimVersion(message.params);
+          const claimedVersion = require_src22.envelopeClaimVersion(message2.params);
           let reply;
           if (issue2 !== void 0) reply = {
             jsonrpc: "2.0",
-            id: message.id,
+            id: message2.id,
             error: {
               code: -32602,
               message: `Invalid _meta envelope: ${issue2.key}: ${issue2.problem}`
@@ -107381,14 +107381,14 @@ var require_stdio = __commonJS({
             });
             reply = {
               jsonrpc: "2.0",
-              id: message.id,
+              id: message2.id,
               error: {
                 code: error62.code,
                 message: error62.message,
                 data: error62.data
               }
             };
-          } else reply = listenRouter.serve(message);
+          } else reply = listenRouter.serve(message2);
           await wire.send("error" in reply ? reply : {
             jsonrpc: "2.0",
             method: reply.method,
@@ -107396,8 +107396,8 @@ var require_stdio = __commonJS({
           }).catch((error62) => reportError(toError(error62)));
           return true;
         }
-        if (require_src22.isJSONRPCNotification(message) && message.method === "notifications/cancelled") {
-          const cancelledId = message.params?.requestId;
+        if (require_src22.isJSONRPCNotification(message2) && message2.method === "notifications/cancelled") {
+          const cancelledId = message2.params?.requestId;
           if (cancelledId !== void 0 && listenRouter.cancel(cancelledId)) return true;
         }
         return false;
@@ -107443,44 +107443,44 @@ var require_stdio = __commonJS({
           discarding = void 0;
         }
       };
-      const processMessage = async (message) => {
+      const processMessage = async (message2) => {
         if (state.phase === "closed") return;
         if (state.phase === "pinned") {
-          if (state.era === "modern" && require_src22.isJSONRPCRequest(message) && message.method === "initialize" && !require_src22.carriesValidModernEnvelopeClaim(message.params)) {
-            await answerLegacyRejection(message, "initialize", message.params !== null && typeof message.params === "object" && typeof message.params.protocolVersion === "string" ? message.params.protocolVersion : void 0);
+          if (state.era === "modern" && require_src22.isJSONRPCRequest(message2) && message2.method === "initialize" && !require_src22.carriesValidModernEnvelopeClaim(message2.params)) {
+            await answerLegacyRejection(message2, "initialize", message2.params !== null && typeof message2.params === "object" && typeof message2.params.protocolVersion === "string" ? message2.params.protocolVersion : void 0);
             return;
           }
-          if (state.era === "modern" && await tryServeListen(message)) return;
+          if (state.era === "modern" && await tryServeListen(message2)) return;
           if (isTornDown()) return;
-          state.instance.channel.deliver(message);
+          state.instance.channel.deliver(message2);
           return;
         }
-        if (!require_src22.isJSONRPCRequest(message) && !require_src22.isJSONRPCNotification(message)) {
+        if (!require_src22.isJSONRPCRequest(message2) && !require_src22.isJSONRPCNotification(message2)) {
           reportError(/* @__PURE__ */ new Error("Discarded a JSON-RPC response received before the connection negotiated an era"));
           return;
         }
-        const opening = classifyOpeningMessage(message);
+        const opening = classifyOpeningMessage(message2);
         switch (opening.kind) {
           case "invalid-envelope": {
             const detail = `Invalid _meta envelope for protocol revision 2026-07-28: ${opening.issue.key}: ${opening.issue.problem}`;
-            if (require_src22.isJSONRPCRequest(message)) await writeErrorResponse(message.id, require_src22.ProtocolErrorCode.InvalidParams, detail, { envelope: opening.issue });
+            if (require_src22.isJSONRPCRequest(message2)) await writeErrorResponse(message2.id, require_src22.ProtocolErrorCode.InvalidParams, detail, { envelope: opening.issue });
             else reportError(/* @__PURE__ */ new Error(`Discarded a notification with a malformed envelope: ${detail}`));
             return;
           }
           case "unsupported-revision":
-            if (require_src22.isJSONRPCRequest(message)) {
+            if (require_src22.isJSONRPCRequest(message2)) {
               const error62 = new require_src22.UnsupportedProtocolVersionError({
                 supported: [...require_src22.SUPPORTED_MODERN_PROTOCOL_VERSIONS],
                 requested: opening.requested
               });
               reportError(error62);
-              await writeErrorResponse(message.id, error62.code, error62.message, error62.data);
+              await writeErrorResponse(message2.id, error62.code, error62.message, error62.data);
             } else reportError(/* @__PURE__ */ new Error(`Discarded a notification claiming unsupported protocol revision ${opening.requested}`));
             return;
           case "modern":
-            if (require_src22.isJSONRPCRequest(message) && message.method === "server/discover") {
+            if (require_src22.isJSONRPCRequest(message2) && message2.method === "server/discover") {
               if (state.phase === "probe") {
-                state.instance.channel.deliver(message, { classification: opening.classification });
+                state.instance.channel.deliver(message2, { classification: opening.classification });
                 return;
               }
               const instance = await connectInstance("modern", opening.revision);
@@ -107492,12 +107492,12 @@ var require_stdio = __commonJS({
                 phase: "probe",
                 instance
               };
-              instance.channel.deliver(message, { classification: opening.classification });
+              instance.channel.deliver(message2, { classification: opening.classification });
               return;
             }
             if (state.phase === "probe") {
-              if (require_src22.isJSONRPCNotification(message)) {
-                state.instance.channel.deliver(message, { classification: opening.classification });
+              if (require_src22.isJSONRPCNotification(message2)) {
+                state.instance.channel.deliver(message2, { classification: opening.classification });
                 return;
               }
               state = {
@@ -107517,13 +107517,13 @@ var require_stdio = __commonJS({
                 instance
               };
             }
-            if (await tryServeListen(message)) return;
+            if (await tryServeListen(message2)) return;
             if (isTornDown()) return;
-            state.instance.channel.deliver(message, { classification: opening.classification });
+            state.instance.channel.deliver(message2, { classification: opening.classification });
             return;
           case "legacy": {
             if (legacyMode === "reject") {
-              if (require_src22.isJSONRPCRequest(message)) await answerLegacyRejection(message, opening.reason, opening.requestedVersion);
+              if (require_src22.isJSONRPCRequest(message2)) await answerLegacyRejection(message2, opening.reason, opening.requestedVersion);
               return;
             }
             if (state.phase === "probe") {
@@ -107541,7 +107541,7 @@ var require_stdio = __commonJS({
               era: "legacy",
               instance
             };
-            state.instance.channel.deliver(message);
+            state.instance.channel.deliver(message2);
             return;
           }
         }
@@ -107553,11 +107553,11 @@ var require_stdio = __commonJS({
         pumping = true;
         try {
           while (queue.length > 0) {
-            const message = queue.shift();
+            const message2 = queue.shift();
             try {
-              await processMessage(message);
+              await processMessage(message2);
             } catch (error62) {
-              if (require_src22.isJSONRPCRequest(message)) await writeErrorResponse(message.id, require_src22.ProtocolErrorCode.InternalError, "Internal server error");
+              if (require_src22.isJSONRPCRequest(message2)) await writeErrorResponse(message2.id, require_src22.ProtocolErrorCode.InternalError, "Internal server error");
               reportError(toError(error62));
             }
           }
@@ -107574,8 +107574,8 @@ var require_stdio = __commonJS({
         if (current.phase === "probe" || current.phase === "pinned") await current.instance.product.close().catch((error62) => reportError(toError(error62)));
         await wire.close().catch((error62) => reportError(toError(error62)));
       };
-      wire.onmessage = (message) => {
-        queue.push(message);
+      wire.onmessage = (message2) => {
+        queue.push(message2);
         pump();
       };
       wire.onerror = (error62) => {
@@ -108033,7 +108033,7 @@ var require_cli = __commonJS({
                 return 0;
               }
               const hasErrorMessage = results.some((result) => {
-                return result.remainingMessages.some((message) => message.severity === SeverityLevel_js_1.SeverityLevel.error);
+                return result.remainingMessages.some((message2) => message2.severity === SeverityLevel_js_1.SeverityLevel.error);
               });
               return hasErrorMessage ? 1 : 0;
             } else {
@@ -108052,7 +108052,7 @@ var require_cli = __commonJS({
                 return 0;
               }
               const hasErrorMessage = results.some((result) => {
-                return result.messages.some((message) => message.severity === SeverityLevel_js_1.SeverityLevel.error);
+                return result.messages.some((message2) => message2.severity === SeverityLevel_js_1.SeverityLevel.error);
               });
               return hasErrorMessage ? 1 : 0;
             } else {
@@ -110246,9 +110246,9 @@ var require_write_good2 = __commonJS({
           suggestions.forEach((suggestion) => {
             var {
               index,
-              reason: message
+              reason: message2
             } = suggestion;
-            report(node2, new RuleError(message, {
+            report(node2, new RuleError(message2, {
               index
             }));
           });
@@ -110407,17 +110407,17 @@ var require__ = __commonJS({
           matches
         }) => {
           matches.forEach((match2) => {
-            let message;
+            let message2;
             if (desumasu) {
-              message = `\u672C\u6587\u3092\u5E38\u4F53(\u3067\u3042\u308B\u8ABF)\u306B\u7D71\u4E00\u3057\u3066\u4E0B\u3055\u3044\u3002
+              message2 = `\u672C\u6587\u3092\u5E38\u4F53(\u3067\u3042\u308B\u8ABF)\u306B\u7D71\u4E00\u3057\u3066\u4E0B\u3055\u3044\u3002
 \u672C\u6587\u306E\u6587\u4F53\u306F\u3001\u656C\u4F53(\u3067\u3059\u307E\u3059\u8ABF)\u3042\u308B\u3044\u306F\u5E38\u4F53(\u3067\u3042\u308B\u8ABF)\u306E\u3069\u3061\u3089\u304B\u3067\u7D71\u4E00\u3057\u307E\u3059\u3002
 "${match2.value}"\u304C\u656C\u4F53(\u3067\u3059\u307E\u3059\u8ABF)\u3067\u3059\u3002`;
             } else if (dearu) {
-              message = `\u672C\u6587\u3092\u656C\u4F53(\u3067\u3059\u307E\u3059\u8ABF)\u306B\u7D71\u4E00\u3057\u3066\u4E0B\u3055\u3044\u3002
+              message2 = `\u672C\u6587\u3092\u656C\u4F53(\u3067\u3059\u307E\u3059\u8ABF)\u306B\u7D71\u4E00\u3057\u3066\u4E0B\u3055\u3044\u3002
 \u672C\u6587\u306E\u6587\u4F53\u306F\u3001\u656C\u4F53(\u3067\u3059\u307E\u3059\u8ABF)\u3042\u308B\u3044\u306F\u5E38\u4F53(\u3067\u3042\u308B\u8ABF)\u306E\u3069\u3061\u3089\u304B\u3067\u7D71\u4E00\u3057\u307E\u3059\u3002
 "${match2.value}"\u304C\u5E38\u4F53(\u3067\u3042\u308B\u8ABF)\u3067\u3059\u3002`;
             }
-            report(node2, new RuleError(message, {
+            report(node2, new RuleError(message2, {
               line: match2.lineNumber - 1,
               column: match2.columnIndex
             }));
@@ -110564,15 +110564,15 @@ var require__3 = __commonJS({
         shouldUsePoint
       }) {
         nodeList.forEach((node2) => {
-          let message;
+          let message2;
           if (shouldUsePoint) {
-            message = `\u7B87\u6761\u66F8\u304D\u306E\u6587\u672B\u306B\u53E5\u70B9(\u3002)\u3092\u4ED8\u3051\u3066\u4E0B\u3055\u3044\u3002
+            message2 = `\u7B87\u6761\u66F8\u304D\u306E\u6587\u672B\u306B\u53E5\u70B9(\u3002)\u3092\u4ED8\u3051\u3066\u4E0B\u3055\u3044\u3002
 \u7B87\u6761\u66F8\u304D\u306E\u6587\u672B\u306B\u53E5\u70B9(\u3002)\u3092\u4ED8\u3051\u308B\u304B\u3092\u7D71\u4E00\u3057\u307E\u3059\u3002`;
           } else {
-            message = `\u7B87\u6761\u66F8\u304D\u306E\u6587\u672B\u304B\u3089\u53E5\u70B9(\u3002)\u3092\u5916\u3057\u3066\u4E0B\u3055\u3044\u3002
+            message2 = `\u7B87\u6761\u66F8\u304D\u306E\u6587\u672B\u304B\u3089\u53E5\u70B9(\u3002)\u3092\u5916\u3057\u3066\u4E0B\u3055\u3044\u3002
 \u7B87\u6761\u66F8\u304D\u306E\u6587\u672B\u306B\u53E5\u70B9(\u3002)\u3092\u4ED8\u3051\u308B\u304B\u3092\u7D71\u4E00\u3057\u307E\u3059\u3002`;
           }
-          report(node2, new RuleError(message));
+          report(node2, new RuleError(message2));
         });
       }
       function reportDesumaruDearuResult(list, {
@@ -110584,17 +110584,17 @@ var require__3 = __commonJS({
           matches
         }) => {
           matches.forEach((match2) => {
-            let message;
+            let message2;
             if (desumasu) {
-              message = `\u7B87\u6761\u66F8\u304D\u3092\u656C\u4F53(\u3067\u3059\u307E\u3059\u8ABF)\u306B\u7D71\u4E00\u3057\u3066\u4E0B\u3055\u3044\u3002
+              message2 = `\u7B87\u6761\u66F8\u304D\u3092\u656C\u4F53(\u3067\u3059\u307E\u3059\u8ABF)\u306B\u7D71\u4E00\u3057\u3066\u4E0B\u3055\u3044\u3002
 \u3072\u3068\u307E\u3068\u307E\u308A\u306E\u7B87\u6761\u66F8\u304D\u3067\u306F\u3001\u656C\u4F53\u3068\u5E38\u4F53\u3092\u6DF7\u5728\u3055\u305B\u307E\u305B\u3093\u3002
 "${match2.value}"\u304C\u5E38\u4F53(\u3067\u3042\u308B\u8ABF)\u3067\u3059\u3002`;
             } else if (dearu) {
-              message = `\u7B87\u6761\u66F8\u304D\u3092\u5E38\u4F53(\u3067\u3042\u308B\u8ABF)\u306B\u7D71\u4E00\u3057\u3066\u4E0B\u3055\u3044\u3002
+              message2 = `\u7B87\u6761\u66F8\u304D\u3092\u5E38\u4F53(\u3067\u3042\u308B\u8ABF)\u306B\u7D71\u4E00\u3057\u3066\u4E0B\u3055\u3044\u3002
 \u3072\u3068\u307E\u3068\u307E\u308A\u306E\u7B87\u6761\u66F8\u304D\u3067\u306F\u3001\u656C\u4F53\u3068\u5E38\u4F53\u3092\u6DF7\u5728\u3055\u305B\u307E\u305B\u3093\u3002
 "${match2.value}"\u304C\u656C\u4F53(\u3067\u3059\u307E\u3059\u8ABF)\u3067\u3059\u3002`;
             }
-            report(node2, new RuleError(message, {
+            report(node2, new RuleError(message2, {
               line: match2.lineNumber - 1,
               column: match2.columnIndex
             }));
@@ -110707,17 +110707,17 @@ var require__4 = __commonJS({
           matches
         }) => {
           matches.forEach((match2) => {
-            let message;
+            let message2;
             if (desumasu) {
-              message = `\u56F3\u8868\u306E\u30AD\u30E3\u30D7\u30B7\u30E7\u30F3\u3092\u656C\u4F53(\u3067\u3059\u307E\u3059\u8ABF)\u306B\u7D71\u4E00\u3057\u3066\u4E0B\u3055\u3044\u3002
+              message2 = `\u56F3\u8868\u306E\u30AD\u30E3\u30D7\u30B7\u30E7\u30F3\u3092\u656C\u4F53(\u3067\u3059\u307E\u3059\u8ABF)\u306B\u7D71\u4E00\u3057\u3066\u4E0B\u3055\u3044\u3002
 \u56F3\u8868\u306E\u30AD\u30E3\u30D7\u30B7\u30E7\u30F3\u5185\u3067\u656C\u4F53\u3001\u5E38\u4F53\u3092\u6DF7\u5728\u3055\u305B\u306A\u3044\u3053\u3068\u304C\u91CD\u8981\u3067\u3059\u3002
 "${match2.value}"\u304C\u5E38\u4F53(\u3067\u3042\u308B\u8ABF)\u3067\u3059\u3002`;
             } else if (dearu) {
-              message = `\u56F3\u8868\u306E\u30AD\u30E3\u30D7\u30B7\u30E7\u30F3\u3092\u5E38\u4F53(\u3067\u3042\u308B\u8ABF)\u306B\u7D71\u4E00\u3057\u3066\u4E0B\u3055\u3044\u3002
+              message2 = `\u56F3\u8868\u306E\u30AD\u30E3\u30D7\u30B7\u30E7\u30F3\u3092\u5E38\u4F53(\u3067\u3042\u308B\u8ABF)\u306B\u7D71\u4E00\u3057\u3066\u4E0B\u3055\u3044\u3002
 \u56F3\u8868\u306E\u30AD\u30E3\u30D7\u30B7\u30E7\u30F3\u5185\u3067\u656C\u4F53\u3001\u5E38\u4F53\u3092\u6DF7\u5728\u3055\u305B\u306A\u3044\u3053\u3068\u304C\u91CD\u8981\u3067\u3059\u3002
 "${match2.value}"\u304C\u656C\u4F53(\u3067\u3059\u307E\u3059\u8ABF)\u3067\u3059\u3002`;
             }
-            report(node2, new RuleError(message, {
+            report(node2, new RuleError(message2, {
               line: match2.lineNumber - 1,
               column: match2.columnIndex + imagePaddingLet
             }));
@@ -112883,9 +112883,9 @@ var require_lib13 = __commonJS({
         Object.defineProperty(error62, "message", {
           configurable: true,
           get() {
-            const message = `${toMessage(details)} (${loc.line}:${loc.column})`;
-            this.message = message;
-            return message;
+            const message2 = `${toMessage(details)} (${loc.line}:${loc.column})`;
+            this.message = message2;
+            return message2;
           },
           set(value) {
             Object.defineProperty(this, "message", {
@@ -112909,9 +112909,9 @@ var require_lib13 = __commonJS({
         } : typeof template === "function" ? {
           message: template
         } : template, {
-          message
+          message: message2
         } = _ref, rest = _objectWithoutPropertiesLoose(_ref, _excluded);
-        const toMessage = typeof message === "string" ? () => message : message;
+        const toMessage = typeof message2 === "string" ? () => message2 : message2;
         ParseErrorConstructors[reasonCode] = toParseErrorConstructor(Object.assign({
           code: "BABEL_PARSER_SYNTAX_ERROR",
           reasonCode,
@@ -128309,18 +128309,18 @@ var require_loader4 = __commonJS({
       this.totalMergeKeys = 0;
       this.documents = [];
     }
-    function generateError(state, message) {
+    function generateError(state, message2) {
       return new YAMLException(
-        message,
+        message2,
         new Mark(state.filename, state.input, state.position, state.line, state.position - state.lineStart)
       );
     }
-    function throwError(state, message) {
-      throw generateError(state, message);
+    function throwError(state, message2) {
+      throw generateError(state, message2);
     }
-    function throwWarning(state, message) {
+    function throwWarning(state, message2) {
       if (state.onWarning) {
-        state.onWarning.call(null, generateError(state, message));
+        state.onWarning.call(null, generateError(state, message2));
       }
     }
     var directiveHandlers = {
@@ -132922,8 +132922,8 @@ var require_pair_checker = __commonJS({
             node: node2,
             symbol: symbol2
           }) => {
-            let message = symbol2 === left ? `${left}\u306E\u5BFE\u3068\u306A\u308B${right}\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093\u3002${left}${right}` : `${right}\u306E\u5BFE\u3068\u306A\u308B${left}\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093\u3002${left}${right}`;
-            report(node2, new RuleError(message, {
+            let message2 = symbol2 === left ? `${left}\u306E\u5BFE\u3068\u306A\u308B${right}\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093\u3002${left}${right}` : `${right}\u306E\u5BFE\u3068\u306A\u308B${left}\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093\u3002${left}${right}`;
+            report(node2, new RuleError(message2, {
               index
             }));
           });
@@ -133497,29 +133497,29 @@ var require_logger3 = __commonJS({
       }
       console.log("sentence-splitter: " + offset, current);
     }
-    function nodeLog(message, sourceCode) {
+    function nodeLog(message2, sourceCode) {
       if (!isDebug) {
         return;
       }
       if (!sourceCode) {
-        console.log("sentence-splitter: " + message);
+        console.log("sentence-splitter: " + message2);
         return;
       }
       const currentNode = sourceCode.readNode();
       if (!currentNode) {
-        console.log("sentence-splitter: " + message);
+        console.log("sentence-splitter: " + message2);
         return;
       }
       const RowLength = 50;
       const currentChar = (sourceCode.read() || "").replace(/\n/g, "\\n");
       const nodeValue = currentNode.raw.replace(/\n/g, "\\n");
-      console.log("sentence-splitter: " + sourceCode.offset + " " + message + " |" + currentChar + "| " + " ".repeat(RowLength - currentChar.length - message.length) + nodeValue);
+      console.log("sentence-splitter: " + sourceCode.offset + " " + message2 + " |" + currentChar + "| " + " ".repeat(RowLength - currentChar.length - message2.length) + nodeValue);
     }
-    function debugLog(...message) {
+    function debugLog(...message2) {
       if (!isDebug) {
         return;
       }
-      console.log("sentence-splitter: ", ...message.map((m) => {
+      console.log("sentence-splitter: ", ...message2.map((m) => {
         return typeof m === "string" ? m.replace(/\n/g, "\\n") : m;
       }));
     }
@@ -140003,10 +140003,10 @@ var require_async = __commonJS({
           callFn.apply(this, arguments);
         };
       }
-      function _eachOfLimit(limit2) {
+      function _eachOfLimit(limit3) {
         return function(obj, iteratee, callback) {
           callback = once(callback || noop);
-          if (limit2 <= 0 || !obj) {
+          if (limit3 <= 0 || !obj) {
             return callback(null);
           }
           var nextElem = iterator(obj);
@@ -140027,7 +140027,7 @@ var require_async = __commonJS({
           }
           function replenish() {
             looping = true;
-            while (running < limit2 && !done) {
+            while (running < limit3 && !done) {
               var elem = nextElem();
               if (elem === null) {
                 done = true;
@@ -140044,12 +140044,12 @@ var require_async = __commonJS({
           replenish();
         };
       }
-      function eachOfLimit(coll, limit2, iteratee, callback) {
-        _eachOfLimit(limit2)(coll, wrapAsync(iteratee), callback);
+      function eachOfLimit(coll, limit3, iteratee, callback) {
+        _eachOfLimit(limit3)(coll, wrapAsync(iteratee), callback);
       }
-      function doLimit(fn, limit2) {
+      function doLimit(fn, limit3) {
         return function(iterable, iteratee, callback) {
-          return fn(iterable, limit2, iteratee, callback);
+          return fn(iterable, limit3, iteratee, callback);
         };
       }
       function eachOfArrayLike(coll, iteratee, callback) {
@@ -140098,8 +140098,8 @@ var require_async = __commonJS({
       var map2 = doParallel(_asyncMap);
       var applyEach = applyEach$1(map2);
       function doParallelLimit(fn) {
-        return function(obj, limit2, iteratee, callback) {
-          return fn(_eachOfLimit(limit2), obj, wrapAsync(iteratee), callback);
+        return function(obj, limit3, iteratee, callback) {
+          return fn(_eachOfLimit(limit3), obj, wrapAsync(iteratee), callback);
         };
       }
       var mapLimit = doParallelLimit(_asyncMap);
@@ -140709,10 +140709,10 @@ var require_async = __commonJS({
         return seq.apply(null, slice(arguments).reverse());
       };
       var _concat = Array.prototype.concat;
-      var concatLimit = function(coll, limit2, iteratee, callback) {
+      var concatLimit = function(coll, limit3, iteratee, callback) {
         callback = callback || noop;
         var _iteratee = wrapAsync(iteratee);
-        mapLimit(coll, limit2, function(val, callback2) {
+        mapLimit(coll, limit3, function(val, callback2) {
           _iteratee(val, function(err2) {
             if (err2) return callback2(err2);
             return callback2(null, slice(arguments, 1));
@@ -140849,8 +140849,8 @@ var require_async = __commonJS({
       function eachLimit(coll, iteratee, callback) {
         eachOf(coll, _withoutIndex(wrapAsync(iteratee)), callback);
       }
-      function eachLimit$1(coll, limit2, iteratee, callback) {
-        _eachOfLimit(limit2)(coll, _withoutIndex(wrapAsync(iteratee)), callback);
+      function eachLimit$1(coll, limit3, iteratee, callback) {
+        _eachOfLimit(limit3)(coll, _withoutIndex(wrapAsync(iteratee)), callback);
       }
       var eachSeries = doLimit(eachLimit$1, 1);
       function ensureAsync(fn) {
@@ -140937,10 +140937,10 @@ var require_async = __commonJS({
         }
         next();
       }
-      var groupByLimit = function(coll, limit2, iteratee, callback) {
+      var groupByLimit = function(coll, limit3, iteratee, callback) {
         callback = callback || noop;
         var _iteratee = wrapAsync(iteratee);
-        mapLimit(coll, limit2, function(val, callback2) {
+        mapLimit(coll, limit3, function(val, callback2) {
           _iteratee(val, function(err2, key) {
             if (err2) return callback2(err2);
             return callback2(null, { key, val });
@@ -140965,11 +140965,11 @@ var require_async = __commonJS({
       var groupBy = doLimit(groupByLimit, Infinity);
       var groupBySeries = doLimit(groupByLimit, 1);
       var log = consoleFunc("log");
-      function mapValuesLimit(obj, limit2, iteratee, callback) {
+      function mapValuesLimit(obj, limit3, iteratee, callback) {
         callback = once(callback || noop);
         var newObj = {};
         var _iteratee = wrapAsync(iteratee);
-        eachOfLimit(obj, limit2, function(val, key, next) {
+        eachOfLimit(obj, limit3, function(val, key, next) {
           _iteratee(val, key, function(err2, result) {
             if (err2) return next(err2);
             newObj[key] = result;
@@ -141041,8 +141041,8 @@ var require_async = __commonJS({
       function parallelLimit(tasks, callback) {
         _parallel(eachOf, tasks, callback);
       }
-      function parallelLimit$1(tasks, limit2, callback) {
-        _parallel(_eachOfLimit(limit2), tasks, callback);
+      function parallelLimit$1(tasks, limit3, callback) {
+        _parallel(_eachOfLimit(limit3), tasks, callback);
       }
       var queue$1 = function(worker, concurrency) {
         var _worker = wrapAsync(worker);
@@ -141258,9 +141258,9 @@ var require_async = __commonJS({
         }
         return result;
       }
-      function timeLimit(count, limit2, iteratee, callback) {
+      function timeLimit(count, limit3, iteratee, callback) {
         var _iteratee = wrapAsync(iteratee);
-        mapLimit(baseRange(0, count, 1), limit2, _iteratee, callback);
+        mapLimit(baseRange(0, count, 1), limit3, _iteratee, callback);
       }
       var times = doLimit(timeLimit, Infinity);
       var timesSeries = doLimit(timeLimit, 1);
@@ -141691,8 +141691,8 @@ var require_doublearray = __commonJS({
         this.bc = newBC(initial_size);
         this.keys = [];
       }
-      DoubleArrayBuilder.prototype.append = function(key, record2) {
-        this.keys.push({ k: key, v: record2 });
+      DoubleArrayBuilder.prototype.append = function(key, record3) {
+        this.keys.push({ k: key, v: record3 });
         return this;
       };
       DoubleArrayBuilder.prototype.build = function(keys, sorted) {
@@ -146840,14 +146840,14 @@ var require_morpheme_match = __commonJS({
         }
         if (currentTokenPosition === tokenCount) {
           var tokens = matchTokens.slice();
-          var skipped = matchSkipped.slice();
+          var skipped2 = matchSkipped.slice();
           currentTokenPosition = 0;
           matchTokens.length = 0;
           matchSkipped.length = 0;
           return {
             match: true,
             tokens,
-            skipped
+            skipped: skipped2
           };
         }
         return {
@@ -146909,7 +146909,7 @@ var require_morpheme_match_all = __commonJS({
         var matchResults = [];
         actualTokens.forEach(function(actualToken) {
           expectors.forEach(function(expector) {
-            var _a3 = expector.match(actualToken), match2 = _a3.match, tokens = _a3.tokens, skipped = _a3.skipped;
+            var _a3 = expector.match(actualToken), match2 = _a3.match, tokens = _a3.tokens, skipped2 = _a3.skipped;
             if (!match2) {
               return;
             }
@@ -146917,7 +146917,7 @@ var require_morpheme_match_all = __commonJS({
             matchResults.push({
               tokens,
               index,
-              skipped,
+              skipped: skipped2,
               dict: expector.dict
             });
           });
@@ -146960,8 +146960,8 @@ var require_textlint_rule_ja_no_weak_phrase = __commonJS({
               var firstToken = matchResult.tokens[0];
               var lastToken = matchResult.tokens[matchResult.tokens.length - 1];
               var firstWordIndex = Math.max(firstToken.word_position - 1, 0);
-              var message = matchResult.dict.message;
-              report(node2, new RuleError(message, {
+              var message2 = matchResult.dict.message;
+              report(node2, new RuleError(message2, {
                 index: firstWordIndex
               }));
             });
@@ -147065,11 +147065,11 @@ var require_morpheme_match_textlint = __commonJS({
       return resultText;
     };
     var _createMessage = function(_a3) {
-      var message = _a3.message, matcherTokens = _a3.matcherTokens, actualTokens = _a3.actualTokens;
-      if (!message) {
+      var message2 = _a3.message, matcherTokens = _a3.matcherTokens, actualTokens = _a3.actualTokens;
+      if (!message2) {
         throw new Error("message should defined");
       }
-      return replaceWithCaptureTokens(message, matcherTokens, actualTokens);
+      return replaceWithCaptureTokens(message2, matcherTokens, actualTokens);
     };
     var _createExpected = function(_a3) {
       var expected = _a3.expected, matcherTokens = _a3.matcherTokens, actualTokens = _a3.actualTokens;
@@ -147091,7 +147091,7 @@ var require_morpheme_match_textlint = __commonJS({
             var lastToken = matchResult.tokens[matchResult.tokens.length - 1];
             var firstWordIndex = Math.max(firstToken.word_position - 1, 0);
             var lastWorkIndex = Math.max(lastToken.word_position - 1, 0);
-            var message = createMessage({
+            var message2 = createMessage({
               dict: matchResult.dict,
               message: matchResult.dict.message,
               matcherTokens: matchResult.dict.tokens,
@@ -147104,7 +147104,7 @@ var require_morpheme_match_textlint = __commonJS({
               actualTokens: matchResult.tokens
             });
             return {
-              message,
+              message: message2,
               expected,
               dict: matchResult.dict,
               index: firstWordIndex,
@@ -147901,7 +147901,7 @@ var require_lib19 = __commonJS({
       var {
         expected,
         matcherTokens,
-        skipped,
+        skipped: skipped2,
         actualTokens
       } = _ref;
       if (!expected) {
@@ -147911,7 +147911,7 @@ var require_lib19 = __commonJS({
       var actualTokenIndex = 0;
       for (var _index = 0; _index < matcherTokens.length; _index++) {
         var token = matcherTokens[_index];
-        if (skipped[_index]) {
+        if (skipped2[_index]) {
           resultText = replaceAll(resultText, token._capture, "");
           continue;
         }
@@ -147931,13 +147931,13 @@ var require_lib19 = __commonJS({
         id,
         text,
         matcherTokens,
-        skipped,
+        skipped: skipped2,
         actualTokens
       } = _ref2;
       var resultText = text;
       var actualTokenIndex = 0;
       matcherTokens.forEach((token, index) => {
-        if (skipped[index]) {
+        if (skipped2[index]) {
           resultText = replaceAll(resultText, token._capture, "");
           return;
         }
@@ -147989,7 +147989,7 @@ var require_lib19 = __commonJS({
                 var lastToken = matchResult.tokens[matchResult.tokens.length - 1];
                 var firstWordIndex = source.originalIndexFromIndex(Math.max(firstToken.word_position - 1, 0)) || 0;
                 var lastWordIndex = source.originalIndexFromIndex(Math.max(lastToken.word_position - 1, 0)) || 0;
-                var message = createMessage({
+                var message2 = createMessage({
                   id: matchResult.dict.id,
                   text: matchResult.dict.message,
                   matcherTokens: matchResult.dict.tokens,
@@ -148005,12 +148005,12 @@ var require_lib19 = __commonJS({
                 var hasFixableResult = expected && tokensToString(matchResult.tokens) !== expected;
                 if (expected && hasFixableResult) {
                   var wordLength = lastToken.surface_form.length;
-                  report(node2, new RuleError(message, {
+                  report(node2, new RuleError(message2, {
                     index: firstWordIndex,
                     fix: fixer.replaceTextRange([firstWordIndex, lastWordIndex + wordLength], expected)
                   }));
                 } else {
-                  report(node2, new RuleError(message, {
+                  report(node2, new RuleError(message2, {
                     index: firstWordIndex
                   }));
                 }
@@ -148430,7 +148430,7 @@ var require_textlint_rule_preset_ja_technical_writing = __commonJS({
 // ../src/cli.ts
 import { readFile as readFile2 } from "node:fs/promises";
 import { homedir } from "node:os";
-import { dirname as dirname4, join as join7 } from "node:path";
+import { dirname as dirname4, join as join8 } from "node:path";
 import { fileURLToPath as fileURLToPath3 } from "node:url";
 
 // ../src/check.ts
@@ -149065,7 +149065,7 @@ var MCP_NAME = "clear-writing-kit-textlint";
 var PLUGIN_NAME = "clear-writing-kit";
 var OUTPUT_STYLE = "clear-writing-kit";
 var LEGACY_SKILL = "accurate-answer";
-var fail = (kind, message) => ({ status: "error", kind, message });
+var fail = (kind, message2) => ({ status: "error", kind, message: message2 });
 var normalizePath = (text) => text.replace(/\\+/g, "/");
 var hostBinary = (host) => host.mcpCommands.add.split(" ")[0];
 async function isDirectory(path4) {
@@ -150701,8 +150701,8 @@ function prefixIssues(path4, issues) {
     return iss;
   });
 }
-function unwrapMessage(message) {
-  return typeof message === "string" ? message : message?.message;
+function unwrapMessage(message2) {
+  return typeof message2 === "string" ? message2 : message2?.message;
 }
 function attachSchema(issues, start, inst) {
   var _a3;
@@ -150720,7 +150720,7 @@ function finalizeIssue(iss, ctx, config2) {
       iss.schema = iss.inst;
   }
   const schemaError = iss.schema !== iss.inst ? iss.schema?._zod.def?.error : void 0;
-  const message = iss.message ? iss.message : unwrapMessage(iss.inst?._zod.def?.error?.(iss)) ?? unwrapMessage(schemaError?.(iss)) ?? unwrapMessage(ctx?.error?.(iss)) ?? unwrapMessage(config2.customError?.(iss)) ?? unwrapMessage(config2.localeError?.(iss)) ?? "Invalid input";
+  const message2 = iss.message ? iss.message : unwrapMessage(iss.inst?._zod.def?.error?.(iss)) ?? unwrapMessage(schemaError?.(iss)) ?? unwrapMessage(ctx?.error?.(iss)) ?? unwrapMessage(config2.customError?.(iss)) ?? unwrapMessage(config2.localeError?.(iss)) ?? "Invalid input";
   const full = {};
   for (const k of Object.keys(iss)) {
     if (k === "inst" || k === "schema" || k === "continue" || k === "input" || k === "__proto__")
@@ -150728,7 +150728,7 @@ function finalizeIssue(iss, ctx, config2) {
     full[k] = iss[k];
   }
   full.path ?? (full.path = []);
-  full.message = message;
+  full.message = message2;
   if (ctx?.reportInput) {
     full.input = iss.input;
   }
@@ -162439,8 +162439,8 @@ var globalRegistry = globalThis.__zod_globalRegistry;
 var INVALID = Symbol.for("zod.compile.invalid");
 var FALLBACK_FLAG = Symbol.for("zod.compile.fallback");
 var ZodCompileAsyncError = class extends Error {
-  constructor(message = "z.compile does not support async refinements, transforms, or checks") {
-    super(message);
+  constructor(message2 = "z.compile does not support async refinements, transforms, or checks") {
+    super(message2);
     this.name = "ZodCompileAsyncError";
   }
 };
@@ -165132,12 +165132,12 @@ function initializeContext(params) {
     external: params?.external ?? void 0
   };
 }
-function handleUnrepresentable(schema, ctx, json2, params, message) {
-  const result = typeof ctx.unrepresentable === "function" ? ctx.unrepresentable({ zodSchema: schema, path: params.path, message }) : ctx.unrepresentable;
+function handleUnrepresentable(schema, ctx, json2, params, message2) {
+  const result = typeof ctx.unrepresentable === "function" ? ctx.unrepresentable({ zodSchema: schema, path: params.path, message: message2 }) : ctx.unrepresentable;
   if (result === "any")
     return false;
   if (result === void 0 || result === "throw")
-    throw new Error(message);
+    throw new Error(message2);
   Object.assign(json2, result);
   return true;
 }
@@ -166138,8 +166138,8 @@ function rewriteKeyNames(ctx) {
       bySchema.set(entry.schema, entry);
   }
   const rewrites = /* @__PURE__ */ new Map();
-  for (const record2 of pendingRecords.get(ctx) ?? []) {
-    const seen = ctx.seen.get(record2);
+  for (const record3 of pendingRecords.get(ctx) ?? []) {
+    const seen = ctx.seen.get(record3);
     const names = (seen?.def ?? seen?.schema)?.propertyNames;
     if (!names || names === true || rewrites.has(names))
       continue;
@@ -170188,8 +170188,8 @@ var OAuthError = class OAuthError2 extends Error {
     if (typeof this !== "function") throw new TypeError("isInstance must be called on the class (e.g. `SdkError.isInstance(value)`); for callbacks use `v => SdkError.isInstance(v)`");
     return brandedHasInstance(this, value);
   }
-  constructor(code, message, errorUri) {
-    super(message);
+  constructor(code, message2, errorUri) {
+    super(message2);
     this.code = code;
     this.errorUri = errorUri;
     this.name = "OAuthError";
@@ -170265,8 +170265,8 @@ var SdkError = class extends Error {
   * failure as `{ cause }` so it is reachable through the `Error.cause` chain that
   * loggers and error trackers walk.
   */
-  constructor(code, message, data, options) {
-    super(message, options);
+  constructor(code, message2, data, options) {
+    super(message2, options);
     this.code = code;
     this.data = data;
     this.name = "SdkError";
@@ -170280,8 +170280,8 @@ var SdkHttpError = class extends SdkError {
   /**
   * @param options - Standard `ErrorOptions`, forwarded to `Error` (see {@linkcode SdkError}).
   */
-  constructor(code, message, data, options) {
-    super(code, message, data, options);
+  constructor(code, message2, data, options) {
+    super(code, message2, data, options);
     this.name = "SdkHttpError";
   }
   get status() {
@@ -172464,8 +172464,8 @@ var ProtocolError = class ProtocolError2 extends Error {
     if (typeof this !== "function") throw new TypeError("isInstance must be called on the class (e.g. `SdkError.isInstance(value)`); for callbacks use `v => SdkError.isInstance(v)`");
     return brandedHasInstance(this, value);
   }
-  constructor(code, message, data) {
-    super(message);
+  constructor(code, message2, data) {
+    super(message2);
     this.code = code;
     this.data = data;
     this.name = "ProtocolError";
@@ -172474,35 +172474,35 @@ var ProtocolError = class ProtocolError2 extends Error {
   /**
   * Factory method to create the appropriate error type based on the error code and data
   */
-  static fromError(code, message, data) {
+  static fromError(code, message2, data) {
     if (code === ProtocolErrorCode.UrlElicitationRequired && data) {
       const errorData = data;
-      if (errorData.elicitations) return new UrlElicitationRequiredError(errorData.elicitations, message);
+      if (errorData.elicitations) return new UrlElicitationRequiredError(errorData.elicitations, message2);
     }
     if (code === ProtocolErrorCode.UnsupportedProtocolVersion && data) {
       const errorData = data;
       if (Array.isArray(errorData.supported) && typeof errorData.requested === "string") return new UnsupportedProtocolVersionError({
         supported: errorData.supported,
         requested: errorData.requested
-      }, message);
+      }, message2);
     }
     if (code === ProtocolErrorCode.InvalidParams || code === ProtocolErrorCode.ResourceNotFound) {
       const errorData = data;
-      if (typeof errorData?.uri === "string" && (code === ProtocolErrorCode.ResourceNotFound || Object.keys(errorData).length === 1)) return new ResourceNotFoundError(errorData.uri, message);
+      if (typeof errorData?.uri === "string" && (code === ProtocolErrorCode.ResourceNotFound || Object.keys(errorData).length === 1)) return new ResourceNotFoundError(errorData.uri, message2);
     }
     if (code === ProtocolErrorCode.MissingRequiredClientCapability && data) {
       const errorData = data;
-      if (errorData.requiredCapabilities !== null && typeof errorData.requiredCapabilities === "object" && !Array.isArray(errorData.requiredCapabilities)) return new MissingRequiredClientCapabilityError({ requiredCapabilities: errorData.requiredCapabilities }, message);
+      if (errorData.requiredCapabilities !== null && typeof errorData.requiredCapabilities === "object" && !Array.isArray(errorData.requiredCapabilities)) return new MissingRequiredClientCapabilityError({ requiredCapabilities: errorData.requiredCapabilities }, message2);
     }
-    return new ProtocolError2(code, message, data);
+    return new ProtocolError2(code, message2, data);
   }
 };
 var ResourceNotFoundError = class extends ProtocolError {
   static {
     Object.defineProperty(this, "mcpBrand", { value: "mcp.ResourceNotFoundError" });
   }
-  constructor(uri, message = `Resource not found: ${uri}`) {
-    super(ProtocolErrorCode.InvalidParams, message, { uri });
+  constructor(uri, message2 = `Resource not found: ${uri}`) {
+    super(ProtocolErrorCode.InvalidParams, message2, { uri });
   }
   /** The URI that was requested and not found. */
   get uri() {
@@ -172513,8 +172513,8 @@ var UrlElicitationRequiredError = class extends ProtocolError {
   static {
     Object.defineProperty(this, "mcpBrand", { value: "mcp.UrlElicitationRequiredError" });
   }
-  constructor(elicitations, message = `URL elicitation${elicitations.length > 1 ? "s" : ""} required`) {
-    super(ProtocolErrorCode.UrlElicitationRequired, message, { elicitations });
+  constructor(elicitations, message2 = `URL elicitation${elicitations.length > 1 ? "s" : ""} required`) {
+    super(ProtocolErrorCode.UrlElicitationRequired, message2, { elicitations });
   }
   get elicitations() {
     return this.data?.elicitations ?? [];
@@ -172524,8 +172524,8 @@ var UnsupportedProtocolVersionError = class extends ProtocolError {
   static {
     Object.defineProperty(this, "mcpBrand", { value: "mcp.UnsupportedProtocolVersionError" });
   }
-  constructor(data, message = `Unsupported protocol version: ${data.requested}`) {
-    super(ProtocolErrorCode.UnsupportedProtocolVersion, message, data);
+  constructor(data, message2 = `Unsupported protocol version: ${data.requested}`) {
+    super(ProtocolErrorCode.UnsupportedProtocolVersion, message2, data);
   }
   /**
   * Protocol versions the receiver supports.
@@ -172544,8 +172544,8 @@ var MissingRequiredClientCapabilityError = class extends ProtocolError {
   static {
     Object.defineProperty(this, "mcpBrand", { value: "mcp.MissingRequiredClientCapabilityError" });
   }
-  constructor(data, message = `Missing required client capabilities: ${Object.keys(data.requiredCapabilities).join(", ")}`) {
-    super(ProtocolErrorCode.MissingRequiredClientCapability, message, data);
+  constructor(data, message2 = `Missing required client capabilities: ${Object.keys(data.requiredCapabilities).join(", ")}`) {
+    super(ProtocolErrorCode.MissingRequiredClientCapability, message2, data);
   }
   /**
   * The capabilities the server requires from the client to process the
@@ -173734,17 +173734,17 @@ var RESERVED_ENVELOPE_META_KEYS = [
   LOG_LEVEL_META_KEY
 ];
 var RETRY_PARAMS_KEYS = ["inputResponses", "requestState"];
-function liftWireOnlyMaterial(message, kind) {
-  const params = message.params;
+function liftWireOnlyMaterial(message2, kind) {
+  const params = message2.params;
   if (!isPlainObject$1(params)) return {
-    message,
+    message: message2,
     lifted: {}
   };
   const meta3 = params._meta;
   const envelopeKeys = isPlainObject$1(meta3) ? RESERVED_ENVELOPE_META_KEYS.filter((key) => key in meta3) : [];
   const retryKeys = kind === "request" ? RETRY_PARAMS_KEYS.filter((key) => key in params) : [];
   if (envelopeKeys.length === 0 && retryKeys.length === 0) return {
-    message,
+    message: message2,
     lifted: {}
   };
   const lifted = {};
@@ -173767,7 +173767,7 @@ function liftWireOnlyMaterial(message, kind) {
   }
   return {
     message: {
-      ...message,
+      ...message2,
       params: nextParams
     },
     lifted
@@ -173892,12 +173892,12 @@ var Protocol = class {
   * byte-identical. User-supplied `_meta` keys are spread last so they win
   * over the auto-attached envelope keys.
   */
-  _envelopeOutbound(message) {
+  _envelopeOutbound(message2) {
     const envelope = this._outboundMetaEnvelope();
-    if (envelope === void 0) return message;
-    const params = message.params ?? {};
+    if (envelope === void 0) return message2;
+    const params = message2.params ?? {};
     return {
-      ...message,
+      ...message2,
       params: {
         ...params,
         _meta: {
@@ -173996,12 +173996,12 @@ var Protocol = class {
       this._onerror(error62);
     };
     const _onmessage = this._transport?.onmessage;
-    this._transport.onmessage = (message, extra) => {
-      _onmessage?.(message, extra);
-      if (isJSONRPCResultResponse(message) || isJSONRPCErrorResponse(message)) this._onresponse(message);
-      else if (isJSONRPCRequest(message)) this._onrequest(message, extra);
-      else if (isJSONRPCNotification(message)) this._onnotification(message, extra);
-      else this._onerror(/* @__PURE__ */ new Error(`Unknown message type: ${JSON.stringify(message)}`));
+    this._transport.onmessage = (message2, extra) => {
+      _onmessage?.(message2, extra);
+      if (isJSONRPCResultResponse(message2) || isJSONRPCErrorResponse(message2)) this._onresponse(message2);
+      else if (isJSONRPCRequest(message2)) this._onrequest(message2, extra);
+      else if (isJSONRPCNotification(message2)) this._onnotification(message2, extra);
+      else this._onerror(/* @__PURE__ */ new Error(`Unknown message type: ${JSON.stringify(message2)}`));
     };
     transport.setSupportedProtocolVersions?.(this._supportedProtocolVersions);
     await this._transport.start();
@@ -174063,13 +174063,13 @@ var Protocol = class {
       return;
     }
     const capturedTransport = this._transport;
-    const sendErrorResponse = (code, message, data) => {
+    const sendErrorResponse = (code, message2, data) => {
       const errorResponse = {
         jsonrpc: "2.0",
         id: request.id,
         error: {
           code,
-          message,
+          message: message2,
           ...data !== void 0 && { data }
         }
       };
@@ -174656,8 +174656,8 @@ var ReadBuffer = class {
 function deserializeMessage(line) {
   return JSONRPCMessageSchema.parse(JSON.parse(line));
 }
-function serializeMessage(message) {
-  return JSON.stringify(message) + "\n";
+function serializeMessage(message2) {
+  return JSON.stringify(message2) + "\n";
 }
 var TOOL_NAME_REGEX = /^[A-Za-z0-9._-]{1,128}$/;
 function validateToolName(name) {
@@ -175908,11 +175908,11 @@ var require_errors3 = /* @__PURE__ */ __commonJSMin(((exports) => {
     if (schemaPath) schPath = (0, codegen_1.str)`${schPath}${(0, util_1.getErrorPath)(schemaPath, util_1.Type.Str)}`;
     return [E.schemaPath, schPath];
   }
-  function extraErrorProps(cxt, { params, message }, keyValues) {
+  function extraErrorProps(cxt, { params, message: message2 }, keyValues) {
     const { keyword, data, schemaValue, it } = cxt;
     const { opts, propertyName, topSchemaRef, schemaPath } = it;
     keyValues.push([E.keyword, keyword], [E.params, typeof params == "function" ? params(cxt) : params || (0, codegen_1._)`{}`]);
-    if (opts.messages) keyValues.push([E.message, typeof message == "function" ? message(cxt) : message]);
+    if (opts.messages) keyValues.push([E.message, typeof message2 == "function" ? message2(cxt) : message2]);
     if (opts.verbose) keyValues.push([E.schema, schemaValue], [E.parentSchema, (0, codegen_1._)`${topSchemaRef}${schemaPath}`], [names_1.default.data, data]);
     if (propertyName) keyValues.push([E.propertyName, propertyName]);
   }
@@ -176636,11 +176636,11 @@ var require_resolve = /* @__PURE__ */ __commonJSMin(((exports) => {
     "enum",
     "const"
   ]);
-  function inlineRef(schema, limit2 = true) {
+  function inlineRef(schema, limit3 = true) {
     if (typeof schema == "boolean") return true;
-    if (limit2 === true) return !hasRef(schema);
-    if (!limit2) return false;
-    return countKeys(schema) <= limit2;
+    if (limit3 === true) return !hasRef(schema);
+    if (!limit3) return false;
+    return countKeys(schema) <= limit3;
   }
   exports.inlineRef = inlineRef;
   const REF_KEYWORDS = /* @__PURE__ */ new Set([
@@ -178236,9 +178236,9 @@ var require_core$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
       }
       const valid = this.validate($schema, schema);
       if (!valid && throwOrLogError) {
-        const message = "schema is invalid: " + this.errorsText();
-        if (this.opts.validateSchema === "log") this.logger.error(message);
-        else throw new Error(message);
+        const message2 = "schema is invalid: " + this.errorsText();
+        if (this.opts.validateSchema === "log") this.logger.error(message2);
+        else throw new Error(message2);
       }
       return valid;
     }
@@ -181778,15 +181778,15 @@ function syntheticElicitationId() {
   const hex3 = [...bytes].map((byte) => byte.toString(16).padStart(2, "0")).join("");
   return `${hex3.slice(0, 8)}-${hex3.slice(8, 12)}-${hex3.slice(12, 16)}-${hex3.slice(16, 20)}-${hex3.slice(20)}`;
 }
-function legacyShimFailure(method, message) {
+function legacyShimFailure(method, message2) {
   if (method === "tools/call") return {
     content: [{
       type: "text",
-      text: message
+      text: message2
     }],
     isError: true
   };
-  throw new ProtocolError(ProtocolErrorCode.InternalError, message);
+  throw new ProtocolError(ProtocolErrorCode.InternalError, message2);
 }
 var LegacyInputRequiredShim = class {
   constructor(_host) {
@@ -183167,9 +183167,9 @@ var StdioServerTransport = class {
   }
   processReadBuffer() {
     while (true) try {
-      const message = this._readBuffer.readMessage();
-      if (message === null) break;
-      this.onmessage?.(message);
+      const message2 = this._readBuffer.readMessage();
+      if (message2 === null) break;
+      this.onmessage?.(message2);
     } catch (error62) {
       this.onerror?.(error62);
     }
@@ -183186,10 +183186,10 @@ var StdioServerTransport = class {
     this._readBuffer.clear();
     this.onclose?.();
   }
-  send(message) {
+  send(message2) {
     if (this._closed) return Promise.reject(/* @__PURE__ */ new Error("StdioServerTransport is closed"));
     return new Promise((resolve2, reject) => {
-      const json2 = serializeMessage(message);
+      const json2 = serializeMessage(message2);
       let settled = false;
       const onError = (error62) => {
         if (settled) return;
@@ -183230,10 +183230,10 @@ function createMcpServer() {
   }, async ({ text, language, genre, filename }) => {
     try {
       const { result } = await lintText({ text, language, genre, filename });
-      const findings = result.messages.map(({ type, ruleId, message, line, column, endLine, endColumn, severity }) => ({
+      const findings = result.messages.map(({ type, ruleId, message: message2, line, column, endLine, endColumn, severity }) => ({
         type,
         ruleId,
-        message,
+        message: message2,
         line,
         column,
         endLine,
@@ -183252,13 +183252,348 @@ async function runMcpServer() {
   await server.connect(new StdioServerTransport());
 }
 
+// ../src/install/verify.ts
+import { spawn as spawn2 } from "node:child_process";
+import { stat as stat2 } from "node:fs/promises";
+import { basename as basename4, join as join7 } from "node:path";
+var CALL_TIMEOUT_MS = 3e4;
+var BLOCK_LIMIT_BYTES = 2048;
+var DETAIL_LIMIT = 300;
+var PROTOCOL_VERSION = "2025-06-18";
+var FIXTURES = [
+  { language: "en-US", text: "alpha; beta" },
+  { language: "zh-TW", text: "alpha; beta" },
+  { language: "ja-JP", text: "\u7D50\u679C\u3092\u8AAC\u660E\u3057\u307E\u3059\u3002\n\n- \u30C6\u30B9\u30C8\u3092\u5B9F\u884C\u3057\u307E\u3059\u3002\n\n\u51E6\u7406\u306F\u5B8C\u4E86\u3057\u3066\u3044\u307E\u305B\u3093\u3002\n" }
+];
+var limit2 = (text) => text.length > DETAIL_LIMIT ? `${text.slice(0, DETAIL_LIMIT)}... (truncated)` : text;
+var message = (error62) => error62 instanceof Error ? error62.message : String(error62);
+var slashes = (text) => text.replace(/\\/g, "/");
+var hostBinary3 = (host) => host.mcpCommands.add.split(" ")[0];
+var LEGACY_SKILL2 = "accurate-answer";
+var CMD_LIMIT_MESSAGE = "An argument contains a character that cmd.exe cannot carry unchanged.";
+var isWindows2 = () => process.platform === "win32";
+function envValue2(env, name) {
+  if (!isWindows2()) return env[name];
+  const key = Object.keys(env).find((candidate) => candidate.toLowerCase() === name.toLowerCase());
+  return key === void 0 ? void 0 : env[key];
+}
+function quoteForCmd2(argument) {
+  if (/["%\r\n\0]/.test(argument)) return void 0;
+  return `"${argument.replace(/(\\+)$/, "$1$1")}"`;
+}
+function startInteractive(command, args, env) {
+  const viaCmd = isWindows2() && /\.(cmd|bat)$/i.test(command);
+  let file2 = command;
+  let spawnArgs = [...args];
+  if (viaCmd) {
+    const quoted = [command, ...args].map(quoteForCmd2);
+    if (quoted.includes(void 0)) return { ok: false, error: CMD_LIMIT_MESSAGE };
+    file2 = envValue2(env, "ComSpec") ?? "cmd.exe";
+    spawnArgs = ["/d", "/s", "/c", `"${quoted.join(" ")}"`];
+  }
+  try {
+    const child = spawn2(file2, spawnArgs, {
+      env,
+      stdio: ["pipe", "pipe", "pipe"],
+      windowsHide: true,
+      windowsVerbatimArguments: viaCmd
+    });
+    return { ok: true, child };
+  } catch (error62) {
+    return { ok: false, error: error62 instanceof Error ? error62.message : String(error62) };
+  }
+}
+async function isDirectory2(path4) {
+  try {
+    return (await stat2(path4)).isDirectory();
+  } catch {
+    return false;
+  }
+}
+function foreignBlocksNaming2(text) {
+  const names = [];
+  for (const match2 of text.matchAll(/<!--\s*([\w.-]+):begin\b[^>]*-->([\s\S]*?)<!--\s*\1:end\s*-->/g)) {
+    if (match2[1] !== "clear-writing-kit" && match2[2].includes(LEGACY_SKILL2)) names.push(match2[1]);
+  }
+  return names;
+}
+async function findLegacyConflicts(home, configDirectory, instructionsPath, instructionText) {
+  const conflicts = [];
+  for (const directory of /* @__PURE__ */ new Set([join7(home, ".agents", "skills", LEGACY_SKILL2), join7(configDirectory, "skills", LEGACY_SKILL2)])) {
+    if (await isDirectory2(directory)) conflicts.push({ kind: "skill", target: directory, detail: `The ${LEGACY_SKILL2} skill directory exists.` });
+  }
+  for (const name of foreignBlocksNaming2(instructionText)) {
+    conflicts.push({ kind: "instruction-block", target: instructionsPath, detail: `The "${name}" block names ${LEGACY_SKILL2}.` });
+  }
+  return conflicts;
+}
+function parseRegistration(text, launcher) {
+  const command = /^\s*command:\s*(.+?)\s*$/im.exec(text)?.[1];
+  const argsText = /^\s*args:\s*(.*?)\s*$/im.exec(text)?.[1];
+  if (!command || argsText === void 0) return "The host output has no command and arguments lines.";
+  if (argsText.startsWith("[")) {
+    try {
+      const parsed = JSON.parse(argsText);
+      if (Array.isArray(parsed) && parsed.every((item) => typeof item === "string")) return { command, args: parsed };
+    } catch {
+    }
+  }
+  const index = slashes(argsText).indexOf(slashes(launcher));
+  if (index < 0) return "The registered arguments do not name the installed launcher.";
+  const before = argsText.slice(0, index).trim().split(/\s+/).filter(Boolean);
+  const after = argsText.slice(index + launcher.length).trim().split(/\s+/).filter(Boolean);
+  if (after.length !== 1 || after[0] !== "mcp") return "The registered arguments do not end with the launcher and mcp.";
+  return { command, args: [...before, argsText.slice(index, index + launcher.length), "mcp"] };
+}
+var McpSession = class {
+  constructor(child, timeoutMs) {
+    this.child = child;
+    this.timeoutMs = timeoutMs;
+    child.stdout?.setEncoding("utf8").on("data", (chunk) => this.read(chunk));
+    child.stderr?.resume();
+    child.stdin?.on("error", () => {
+    });
+    child.on("error", (error62) => this.fail(new Error(`The server could not start: ${error62.message}`)));
+    child.on("close", (code) => this.fail(new Error(`The server exited with code ${code ?? "none"}.`)));
+  }
+  buffer = "";
+  nextId = 1;
+  closed;
+  pending = /* @__PURE__ */ new Map();
+  read(chunk) {
+    this.buffer += chunk;
+    for (let newline = this.buffer.indexOf("\n"); newline >= 0; newline = this.buffer.indexOf("\n")) {
+      const line = this.buffer.slice(0, newline).trim();
+      this.buffer = this.buffer.slice(newline + 1);
+      if (!line) continue;
+      let parsed;
+      try {
+        parsed = JSON.parse(line);
+      } catch {
+        continue;
+      }
+      const waiting = typeof parsed.id === "number" ? this.pending.get(parsed.id) : void 0;
+      if (!waiting || "method" in parsed) continue;
+      this.pending.delete(parsed.id);
+      clearTimeout(waiting.timer);
+      waiting.resolve(parsed);
+    }
+  }
+  fail(error62) {
+    this.closed ??= error62;
+    for (const [id, waiting] of this.pending) {
+      clearTimeout(waiting.timer);
+      waiting.reject(error62);
+      this.pending.delete(id);
+    }
+  }
+  /** Sends one request. The promise rejects on a timeout or when the server exits. A JSON-RPC error reply resolves with its `error` member. */
+  request(method, params) {
+    if (this.closed) return Promise.reject(this.closed);
+    const id = this.nextId++;
+    return new Promise((resolve2, reject) => {
+      const timer = setTimeout(() => {
+        this.pending.delete(id);
+        reject(new Error(`No answer to ${method} within ${this.timeoutMs} ms.`));
+      }, this.timeoutMs);
+      this.pending.set(id, { resolve: resolve2, reject, timer });
+      this.child.stdin?.write(`${JSON.stringify({ jsonrpc: "2.0", id, method, params })}
+`);
+    });
+  }
+  notify(method) {
+    this.child.stdin?.write(`${JSON.stringify({ jsonrpc: "2.0", method })}
+`);
+  }
+  close() {
+    this.fail(new Error("The session is closed."));
+    this.child.stdin?.end();
+    this.child.kill();
+  }
+};
+var record2 = (value) => typeof value === "object" && value !== null && !Array.isArray(value) ? value : void 0;
+function countFindings(reply) {
+  const error62 = record2(reply.error);
+  if (error62) return `The server answered with an error: ${limit2(String(error62.message ?? "unknown"))}`;
+  const result = record2(reply.result);
+  if (!result) return "The reply has no result.";
+  const content = Array.isArray(result.content) ? record2(result.content[0]) : void 0;
+  if (result.isError === true) return `The tool reported an error: ${limit2(String(content?.text ?? "unknown"))}`;
+  const structured = record2(result.structuredContent)?.findings;
+  if (Array.isArray(structured)) return structured.length;
+  try {
+    const parsed = JSON.parse(String(content?.text ?? ""));
+    if (Array.isArray(parsed)) return parsed.length;
+  } catch {
+  }
+  return "The result has no findings list.";
+}
+var pass = (id, detail) => ({ id, status: "pass", detail });
+var fail2 = (id, detail) => ({ id, status: "fail", detail });
+var skipped = (id, detail) => ({ id, status: "skipped", detail });
+async function checkServer(registration, env, timeoutMs) {
+  const ids = ["mcp-initialize", "mcp-tools", ...FIXTURES.map((fixture) => `lint-${fixture.language}`)];
+  const checks = [];
+  const skipRest = (reason) => {
+    for (const id of ids.slice(checks.length)) checks.push(skipped(id, reason));
+  };
+  const resolved = which(registration.command, env);
+  if (!resolved) {
+    checks.push(fail2(ids[0], `The registered command "${registration.command}" is not on PATH.`));
+    skipRest("The server did not start.");
+    return checks;
+  }
+  const started = startInteractive(resolved, registration.args, env);
+  if (!started.ok) {
+    checks.push(fail2(ids[0], `The server could not start: ${limit2(started.error)}`));
+    skipRest("The server did not start.");
+    return checks;
+  }
+  const session = new McpSession(started.child, timeoutMs);
+  try {
+    const initialized = await session.request("initialize", { protocolVersion: PROTOCOL_VERSION, capabilities: {}, clientInfo: { name: "cwk-install-verify", version: "1.0.0" } });
+    const initializeResult = record2(initialized.result);
+    if (!initializeResult || typeof initializeResult.protocolVersion !== "string") {
+      checks.push(fail2(ids[0], `The initialize reply has no protocol version.${record2(initialized.error) ? ` Error: ${limit2(String(record2(initialized.error)?.message))}` : ""}`));
+      skipRest("The server did not initialize.");
+      return checks;
+    }
+    checks.push(pass(ids[0], `Protocol version ${initializeResult.protocolVersion}.`));
+    session.notify("notifications/initialized");
+    const listing = await session.request("tools/list", {});
+    const tools = record2(listing.result)?.tools;
+    const names = Array.isArray(tools) ? tools.map((tool) => record2(tool)?.name) : [];
+    checks.push(names.includes("lintText") ? pass(ids[1], "The server lists lintText.") : fail2(ids[1], "The server does not list lintText."));
+    for (const fixture of FIXTURES) {
+      const id = `lint-${fixture.language}`;
+      const reply = await session.request("tools/call", { name: "lintText", arguments: { text: fixture.text, language: fixture.language, genre: "document" } });
+      const found = countFindings(reply);
+      checks.push(typeof found === "string" ? fail2(id, found) : found > 0 ? pass(id, `${found} finding${found === 1 ? "" : "s"}.`) : fail2(id, "The fixture sentence produced no finding."));
+    }
+  } catch (error62) {
+    checks.push(fail2(ids[checks.length], limit2(message(error62))));
+    skipRest("An earlier MCP call failed or timed out.");
+    session.close();
+    return checks;
+  }
+  session.close();
+  return checks;
+}
+async function checkOutputStyle(settingsPath) {
+  const id = "output-style";
+  let file2;
+  try {
+    file2 = await readText(settingsPath);
+  } catch (error62) {
+    return { check: fail2(id, `${settingsPath} cannot be read: ${limit2(message(error62))}`) };
+  }
+  if (!file2) return { check: fail2(id, `${settingsPath} does not exist, so outputStyle is not set.`) };
+  let value;
+  try {
+    value = record2(JSON.parse(file2.text))?.outputStyle;
+  } catch {
+    return { check: fail2(id, `${settingsPath} is not valid JSON.`) };
+  }
+  if (value === OUTPUT_STYLE) return { check: pass(id, `outputStyle is "${OUTPUT_STYLE}".`) };
+  if (value === void 0) return { check: fail2(id, `outputStyle is not set in ${settingsPath}. Another writer may have reset it.`) };
+  const shown = JSON.stringify(typeof value === "string" ? value.slice(0, 64) : typeof value);
+  const detail = `outputStyle is ${shown}, not "${OUTPUT_STYLE}".`;
+  return { check: fail2(id, detail), conflict: { kind: "output-style", target: settingsPath, detail } };
+}
+async function checkBlock(instructionsPath, text) {
+  const id = "instruction-block";
+  if (text === void 0) return fail2(id, `${instructionsPath} does not exist, so it holds no block.`);
+  let block;
+  try {
+    block = findBlock(text);
+  } catch (error62) {
+    return fail2(id, limit2(message(error62)));
+  }
+  if (!block) return fail2(id, `${instructionsPath} holds 0 clear-writing-kit blocks. Expected 1.`);
+  const bytes = Buffer.byteLength(block.text, "utf8");
+  if (bytes >= BLOCK_LIMIT_BYTES) return fail2(id, `The block is ${bytes} bytes. The limit is under ${BLOCK_LIMIT_BYTES}.`);
+  return pass(id, `1 block, ${bytes} bytes.`);
+}
+async function verifyInstall(ctx) {
+  const resolved = resolveHost(ctx.agent, ctx.env);
+  if (!resolved.ok) return { status: "error", kind: resolved.error.startsWith("Host mismatch") ? "mismatch" : "usage", message: resolved.error };
+  const host = resolved.value;
+  if (!host.verified) return { status: "refused", message: `${host.displayName} is not verified, so verify does not run for it.` };
+  const timeoutMs = ctx.callTimeoutMs ?? CALL_TIMEOUT_MS;
+  const launcher = join7(ctx.home, ".clear-writing-kit", "cwk.mjs");
+  const configDirectory = host.configDirectoryEnv && ctx.env[host.configDirectoryEnv] || host.configDirectory(ctx.home);
+  const instructionsPath = join7(configDirectory, basename4(host.globalInstructionsFile(ctx.home)));
+  const notes = [];
+  const checks = [];
+  const conflicts = [];
+  const serverIds = ["mcp-initialize", "mcp-tools", ...FIXTURES.map((fixture) => `lint-${fixture.language}`)];
+  const binary = which(hostBinary3(host), ctx.env);
+  let registration;
+  if (!binary) {
+    checks.push(fail2("mcp-registration", `The ${host.displayName} command "${hostBinary3(host)}" is not on PATH, so the registered command cannot be read.`));
+  } else {
+    const entry = await run(binary, ["mcp", "get", MCP_NAME], { env: ctx.env });
+    if (entry.code === -1) checks.push(fail2("mcp-registration", `"${hostBinary3(host)} mcp get" could not run.`));
+    else if (entry.code !== 0) checks.push(fail2("mcp-registration", `${MCP_NAME} is not registered in ${host.displayName}.`));
+    else {
+      const parsed = parseRegistration(entry.stdout + entry.stderr, launcher);
+      if (typeof parsed === "string") checks.push(fail2("mcp-registration", parsed));
+      else {
+        registration = parsed;
+        checks.push(pass("mcp-registration", `Registered command: ${[parsed.command, ...parsed.args].join(" ")}`));
+      }
+    }
+  }
+  if (registration) checks.push(...await checkServer(registration, ctx.env, timeoutMs));
+  else for (const id of serverIds) checks.push(skipped(id, "The registered command was not read."));
+  if (host.outputStyleSupport === "yes") {
+    const style = await checkOutputStyle(join7(configDirectory, "settings.json"));
+    checks.push(style.check);
+    if (style.conflict) conflicts.push(style.conflict);
+  } else {
+    notes.push(`output-style: not applicable. ${host.displayName} has no verified outputStyle setting.`);
+  }
+  let instructionText;
+  try {
+    instructionText = (await readText(instructionsPath))?.text;
+    checks.push(await checkBlock(instructionsPath, instructionText));
+  } catch (error62) {
+    checks.push(fail2("instruction-block", `${instructionsPath} cannot be read: ${limit2(message(error62))}`));
+  }
+  try {
+    conflicts.push(...await findLegacyConflicts(ctx.home, configDirectory, instructionsPath, instructionText ?? ""));
+    const own2 = conflicts.length;
+    checks.push(own2 ? fail2("legacy-conflicts", `${own2} legacy conflict${own2 === 1 ? "" : "s"} found. The installer keeps them.`) : pass("legacy-conflicts", "No legacy conflicts."));
+  } catch (error62) {
+    checks.push(fail2("legacy-conflicts", `The legacy check failed: ${limit2(message(error62))}`));
+  }
+  const complete = checks.every((check2) => check2.status === "pass");
+  return { status: complete ? "pass" : "incomplete", host: { id: host.id, displayName: host.displayName }, checks, conflicts, notes };
+}
+function formatVerify(outcome) {
+  if (outcome.status === "error") return `Error: ${outcome.message}
+`;
+  if (outcome.status === "refused") return `Refused: ${outcome.message}
+`;
+  const lines = [
+    `Clear Writing Kit install verify, host: ${outcome.host.id} (${outcome.host.displayName})`,
+    ...outcome.checks.map((check2) => `[${check2.status}] ${check2.id}: ${check2.detail}`),
+    ...outcome.notes,
+    "Legacy conflicts:",
+    ...outcome.conflicts.length ? outcome.conflicts.map((conflict) => `  [${conflict.kind}] ${conflict.target}: ${conflict.detail} The installer keeps it.`) : ["  none"]
+  ];
+  const open2 = outcome.checks.filter((check2) => check2.status !== "pass");
+  lines.push(outcome.status === "pass" ? "Result: pass. Every check ran and passed." : `Result: incomplete. Not passed: ${open2.map((check2) => `${check2.id} (${check2.status})`).join(", ")}.`, "");
+  return lines.join("\n");
+}
+
 // ../src/cli.ts
 var installUsage = [
   "Usage: cwk install <plan|apply|verify|uninstall> --agent <claude|codex|copilot|opencode|antigravity>",
   "",
   "  plan       Show what the installer would change and print a plan hash. Writes nothing.",
   "  apply      Apply a plan. Requires --plan-hash from a plan run.",
-  "  verify     Check an installation.",
+  "  verify     Start the registered MCP server and check the installation. Writes nothing.",
   "  uninstall  Remove what the installer installed.",
   ""
 ].join("\n");
@@ -183268,12 +183603,12 @@ async function runInstall(args) {
     process.stdout.write(installUsage);
     return 0;
   }
-  if (subcommand === "verify" || subcommand === "uninstall") {
+  if (subcommand === "uninstall") {
     process.stderr.write(`"cwk install ${subcommand}" is not available in this build.
 `);
     return 2;
   }
-  if (subcommand !== "plan" && subcommand !== "apply") {
+  if (subcommand !== "plan" && subcommand !== "apply" && subcommand !== "verify") {
     process.stderr.write(installUsage);
     return 2;
   }
@@ -183290,7 +183625,7 @@ ${installUsage}`);
   const payloadDir = dirname4(fileURLToPath3(import.meta.url));
   let blockText;
   try {
-    blockText = await readFile2(join7(payloadDir, "..", "install", "agents-block.md"), "utf8");
+    blockText = await readFile2(join8(payloadDir, "..", "install", "agents-block.md"), "utf8");
   } catch {
     process.stderr.write("Cannot read install/agents-block.md next to the payload. Run the installer from the repository checkout.\n");
     return 1;
@@ -183305,6 +183640,11 @@ ${installUsage}`);
     const applied = await applyPlan(context, planHash);
     process.stdout.write(formatApply(applied));
     return applied.status === "applied" ? 0 : 1;
+  }
+  if (subcommand === "verify") {
+    const verified = await verifyInstall(context);
+    process.stdout.write(formatVerify(verified));
+    return verified.status === "pass" ? 0 : 1;
   }
   const outcome = await computePlan(context);
   process.stdout.write(formatPlan(outcome));
@@ -183342,7 +183682,7 @@ async function main() {
     });
     const { result, output: output2 } = await lintText({ text, language, genre, filename: stdinFilename });
     if (output2) process.stdout.write(output2);
-    process.exitCode = result.messages.some((message) => message.severity === 2) ? 1 : 0;
+    process.exitCode = result.messages.some((message2) => message2.severity === 2) ? 1 : 0;
     return;
   }
   if (!args.length) throw new Error("Provide --stdin or at least one file path");
@@ -183351,7 +183691,7 @@ async function main() {
   for (const item of texts) {
     const { result, output: output2 } = await lintText({ ...item, language, genre });
     if (output2) process.stdout.write(output2);
-    if (result.messages.some((message) => message.severity === 2)) failed = true;
+    if (result.messages.some((message2) => message2.severity === 2)) failed = true;
   }
   process.exitCode = failed ? 1 : 0;
 }
