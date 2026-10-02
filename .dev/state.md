@@ -6,7 +6,6 @@
 
 | Plan | File | Plan Phase | Last Activity |
 | --- | --- | --- | --- |
-| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.prompt.md` | pipeline | 2026-10-02 |
 
 <!-- When more than one plan is active, table order is priority order. `/gal whats-next` and `/gal wrap-up` use the first non-terminal row; if all rows are terminal, they fall back to the first row. -->
 
@@ -16,6 +15,7 @@
 
 | Date | Plan | Landing | Result |
 | --- | --- | --- | --- |
+| 2026-10-03 | feat-cross-agent-plugin-installer | `084e00c66e93f94cfef64c16b4f566c21da99ece` | Goal verified; finalize review CLEAR; durable docs synced |
 
 ## Follow-ups
 
@@ -37,7 +37,6 @@
 
 | Plan | Source Plan | Last Session | Stopped At | Next Step | Context |
 | --- | --- | --- | --- | --- | --- |
-| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-14 converged at `95df464`; direct TEST passed 79/79 and direct AUDIT is CLEAR after two remediated findings | Run ORCHESTRATOR-owned goal-backward verification | `Verification Independence: DEGRADED_BUNDLED`; no further executor dispatch. No real-home installation, new-session acceptance, or finalize. |
 
 ## Session Execution Context
 
