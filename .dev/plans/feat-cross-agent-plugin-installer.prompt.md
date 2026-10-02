@@ -101,6 +101,23 @@ Install the complete clear-writing-kit through one agent-readable INSTALL.md and
 
 Scope: TypeScript installer/checker; committed runtime payload; verified host plugins, global instruction block, Claude output style, CLI-only MCP registration. No web-skills, compiled binaries, manager-specific behavior, runtime auto-installation, legacy-item deletion, runtime generation of artifacts, or changes to SKILL.md/knowledge sources.
 
+### Approved Goal Gap Remediation
+
+Owner request 2026-10-02 "complete work before item 5" authorizes repository repairs, permanent independent regressions, and whole-goal revalidation only. Preserve T-01 through T-12 and their evidence. No Step 7 real-home installation, new-session activation, or finalize. Exact registration observation and schema-versioned host ownership follow the concrete isolated repair_review APPROVE design. Ambiguous Claude text or legacy ownership is retained/reported, never guessed. No new dependency or host support.
+
+```text
+MCP get -> present / absent / unreadable
+present -> actual full command/args digest -> plan approval and exact removal
+unreadable -> fail plan / incomplete verify / keep registration
+apply -> persist selected-host owners and actual settings targets
+uninstall selected host -> selected items -> retained consumer?
+yes -> retain shared runtime and records
+no -> remove exact hash matches only
+legacy unknown -> keep and report
+```
+
+
+
 ## Files to Create or Modify
 
 - `INSTALL.md` — the agent-facing install prompt.
@@ -188,15 +205,15 @@ None
 
 ## Status
 
-Workflow: DONE
+Workflow: IMPLEMENT
 Step: 5 of 7
-Last activity: 2026-10-02 — T-12 independent TESTER PASS and AUDITOR CLEAR at 53602d3. All task phases complete.
-Next step: Run convergence and checker-directed in-process goal-backward verification. No whole-plan verification is claimed yet.
-Current Task:
+Last activity: 2026-10-02 — Owner authorized completion of items 1 through 4. Isolated architecture and readiness review approved T-13/T-14 remediation. Original completed evidence retained.
+Next step: Implement T-13 through no-sandbox agy dispatch after fresh preflight. Do not run real-home install or finalize.
+Current Task: T-13
 Interrupted Phase:
 Task Base Commit: 4ead407f6147e301fe96a10e683cecdf111ca961
 Task Final Commit: 53602d3031b215cae2b20e34eada6fb4788813da
-Test Retry Count: 1
+Test Retry Count: 0
 Review Retry Count: 0
 
 ### Deviations
@@ -209,6 +226,22 @@ Review Retry Count: 0
 | 2026-10-02 | T-01 | Owner authorized ignoring generated .dev/pipeline records. Administrative commit 5d5a476 precedes implementation dfe8fa1; task base advanced to it without discarding output. Owner replaced the shared ignore rule in b4700fa, so generated records now use local .git/info/exclude. Tested HEAD is b4700fa, with implementation unchanged. | Generated receipts and loop-log were outside the implementation allowlist. Owner .gitignore is authoritative. Already tracked evidence remains tracked. |
 
 ### Handoff Notes
+
+#### Human Handback — goal-gaps-blocked
+
+Status: RESOLVED
+Reason: goal-gaps-blocked
+Task: T-12
+Phase: VERIFY
+Producer: VERIFY
+Producer state: GAPS_FOUND. Isolated actual apply/uninstall probes reproduce two wiring gaps at e47fd38. Changing only registered MCP arguments leaves the plan hash unchanged and uninstall deletes the changed registration. Uninstalling Codex from a home with both Claude and Codex installed retains Claude CLI entries but deletes its block and shared launcher/payload. Existing task PASS/CLEAR receipts do not cover these cases.
+Git HEAD: e47fd38722458d8c67359d4b5a365d4d72581ebe
+Next human step: Owner authorization "complete work before item 5" resolves the repair scope decision. Gaps are not yet claimed fixed. They are now explicit blocking T-13/T-14 tasks with TP-38 through TP-41 and isolated architecture/readiness APPROVE. Run the normal task pipeline and fresh whole-goal verification. Preserve all previous evidence. No real-home installation, new-session activation, or finalize.
+What to check: .dev/pipeline/feat-cross-agent-plugin-installer/goal-probes.ts and goal-probes.json. Run the bundled goal-probes.mjs against isolated fixtures. Inspect src/install/plan.ts readHostState and uninstall.ts command matching and manifest file cleanup.
+Expected result: A changed MCP command or argument list changes the plan hash and is preserved by uninstall. Uninstall of one host keeps all blocks, runtime files, and registrations still owned by another installed host.
+Pass/fail rule: Both conditions must hold in regression tests using the actual installer implementation. Either reproduced removal or unchanged plan hash is a failed goal check, regardless of existing task PASS receipts.
+
+Compatibility note: Human handback fields are unprefixed because this pinned GAL parse_human_blocks implementation matches exact field names and does not strip Markdown bullet prefixes. Required headings and fields are preserved. This is orchestration evidence, not a change to GAL code.
 
 Dispatch: phase=implement task=T-12 role=CODER executor=agy model=gemini-3.8-flash state=completed session_id=a05b9db0-e107-47b5-a88e-5eae82d91851 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-12/1790930027-978094000-000000-T-12-implement-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
 
@@ -801,6 +834,21 @@ Steps map to tasks as follows: Step 1 → T-01 to T-03, Step 2 → T-04, Step 3 
   - Acceptance: `INSTALL.md` covers every R-19 item, and the README and docs checks pass.
   - Evidence: E + TP-26, TP-27.
 
+- [ ] T-13 — Compare complete current MCP registrations safely
+  - Targets: `src/install/registration.ts`, `src/install/plan.ts`, `src/install/apply.ts`, `src/install/verify.ts`, `src/install/uninstall.ts`, `dist/`, `writing/test/installer-registration.test.cjs`, `writing/test/installer-fixtures.cjs`
+  - Depends on: T-12
+  - Change: Add one shared registration reader using existing spawn.ts and SHA-256/JSON-vector conventions. Distinguish present/absent/unreadable. Codex queries mcp get <name> --json and validates stdio command and the complete string-array args. Claude parses actual Command:/Args: output, JSON arrays when present, or a unique known-launcher anchor with unambiguous simple tokens. Reject duplicate fields, ambiguous quoting/whitespace, repeated anchors, malformed JSON, and unsupported transports without guessing. Only recognized missing-entry responses mean absent. Auth/permission/timeout/unknown failures are unreadable. Fingerprint the actual complete command and ordered args, not a reconstructed runtime preference. Include actual registration digest in plan target state, including different entries, so argument-only drift invalidates old hashes and apply writes nothing on stale approval. Uninstall removes exact matches only and keeps changed/unreadable entries. Verify shares the reader and never executes guessed commands. Remove obsolete duplicate parsing and substring-only checks. Never print current argv/env/raw host output or user-added secrets. No new dependency, host support, manifest ownership change, or real-home install. Rebuild dist with unchanged dictionary files.
+  - Acceptance: Independently authored permanent integration tests prove argument add/remove/reorder/change invalidates plan approval, stale apply has no filesystem/CLI writes, exact match removal and changed/unreadable preservation, shared parsing/verify behavior, space-containing homes, runtime preference changes, explicit absence versus lookup failure, and no secret sentinel in formatted output. Keep production code unmodified in TESTER. TESTER alone authors named test files after implementation. Root commits those tests then retests the committed HEAD before audit. Maximum source/test/generated-entry files is 8, excluding unchanged dictionary assets.
+  - Evidence: E + TP-38, TP-39, TP-05, TP-17, TP-24, TP-28, TP-36.
+
+- [ ] T-14 — Preserve host-owned artifacts and shared runtime consumers
+  - Targets: `src/install/manifest.ts`, `src/install/plan.ts`, `src/install/apply.ts`, `src/install/uninstall.ts`, `dist/`, `writing/test/installer-ownership.test.cjs`, `writing/test/installer-fixtures.cjs`, `docs/verification.md`
+  - Depends on: T-13
+  - Change: Add a validated manifest schema revision for per-file host owners, per-host completion metadata, and the durable actual output-style settings target. Preserve existing CLI host ownership, atomic replacement, hashes, and backups. Shared payload/launcher track known consumers. Block and settings records track their specific host and actual target. Include ownership/completion metadata in plan hash. Migrate old manifests conservatively: concrete recorded evidence may establish ownership, otherwise keep explicit unresolved legacy ownership and report it. Never assign every old item to the requesting host. On apply, exact matching current no-op artifacts may adopt selected-host metadata without rewriting artifact bytes or replacing differing old hashes. Metadata-only adoption is a manifest write, not a claim of zero writes. Fully adopted reruns are idempotent. Uninstall selects only requested-host block/settings records at persisted target paths. CLI cleanup precedes shared cleanup. Keep shared files while another owner, unresolved legacy ownership, kept/failed CLI consumer, retained block, or retained settings record remains. Persist retained owners/reasons so retry and final-consumer cleanup remain safe. No counters, generic adapters, new dependencies, registration redesign, or real-home writes. Rebuild dist without dictionary changes and update verification docs with tested ownership/migration behavior.
+  - Acceptance: Independently authored permanent integration tests use actual production plan/apply/uninstall APIs and host CLI mutation logs. Both host installation orders and both first-uninstall choices preserve the surviving host registration, byte-identical block/settings, and runnable launcher. Final consumer removal cleans exact matching artifacts only. Test no-op adoption, legacy ambiguous ownership, changed old hashes, relocated configuration paths, upgrades, changed shared files/blocks, failed CLI removal, and repeated cleanup. TESTER owns test code only. Root commits tests then independently retests committed HEAD before audit. Maximum source/test/doc/generated-entry files is 8.
+  - Evidence: E + TP-40, TP-41, TP-05, TP-17, TP-18, TP-19, TP-20, TP-21, TP-23, TP-24, TP-25, TP-28, TP-36.
+
+
 ## Deferred Follow-up
 
 None.
@@ -852,6 +900,12 @@ Each row checks one behavior and may cover several tasks. An agent runs every ro
 | TP-34 | integration | With no qualifying runtime on PATH, `plan` reports an error and gives no plan hash. E. | T-08 |
 | TP-35 | integration | `apply` for Claude Code with no `settings.json` creates the file containing only `outputStyle`. E. | T-09 |
 | TP-36 | integration | Each `install` subcommand exits non-zero on a host mismatch, a refused unverified host, a failed step, or an "incomplete" result, and exits 0 otherwise. E. | T-08, T-09, T-10, T-11 |
+
+| TP-38 | integration | Complete current MCP command/ordered args are observed using captured native output shapes and CLI fixtures. Added/removed/reordered/changed args change plan hash. Stale apply writes no file or CLI mutation. Reader rejects malformed/ambiguous output and distinguishes recognized absence from auth/permission/timeout. Exact matching unregisters, changed/unreadable entries remain, runtime preference change cannot authorize removal, and formatted outputs omit secret sentinels. Permanent TESTER-authored tests run through production callers. E. | T-13 |
+| TP-39 | integration | Shared verify reader starts the parsed registered command on Node/Deno/Bun, probes all three languages, and fails/skips unreadable entries rather than guessing. Space-containing launcher paths are intact. Fresh build parity, existing full lint/OKF/Node/Python suites, and independent audit pass. Permanent test files are committed by root and independently rerun on final HEAD. E. | T-13 |
+| TP-40 | integration | Install Claude and Codex in one isolated home in both orders and uninstall each host first. Surviving host retains registration, byte-identical block and unrelated settings, durable ownership, and runnable launcher with multilingual MCP findings. Removing final exact-match consumer cleans shared artifacts. Repeat and upgrade cycles remain safe on Node/Deno/Bun. E. | T-14 |
+| TP-41 | integration | Legacy/partial manifests, no-op adoption, custom config relocation, modified old hashes/blocks/shared files, ambiguous legacy ownership, and kept/failed CLI removals retain referenced payload and report reasons. No-op adoption writes only validated metadata, then fully adopted rerun has no changes. Permanent regressions and full lint/OKF/Node/Python suites pass, fresh dist matches committed output, and docs accurately distinguish fixture verification from pending real-home acceptance. E. | T-14 |
+
 
 ## Test Results
 
@@ -1488,6 +1542,8 @@ Evidence: python -m unittest discover -s tests -v passed (16/16), npm --prefix w
 
 ### Architecture Review
 
+Remediation amendment 2026-10-02: APPROVE by isolated repair_review applying the golem-architect contract after the fixed architect model was unavailable on this account. One shared strict registration reader and a manifest schema revision are the minimum sufficient design. Unknown CLI state and legacy ownership fail closed. Two behavior-based rollback units under ten source/test/doc/generated-entry files, no new dependency or host support. No unresolved architectural question. The original review below is retained as history.
+
 Verdict: APPROVE (golem-architect, 2026-10-02, second pass). First pass returned REVISE with four blocking findings, all resolved in this revision:
 
 - B1 presence-only verification → R-14 functional `lintText` calls per language and `outputStyle` re-read.
@@ -1528,6 +1584,8 @@ Not requested. The plan has no customer-facing interface.
 Result: no issues. The plan is at `.dev/plans/feat-cross-agent-plugin-installer.md` with a `feat-` slug and an EN semantic draft beside it. It is the only plan in `.dev/plans/`. All template sections are present. Both diagrams match R-01 to R-18 and the Files list, including the launcher and the CLI-only MCP registration. The name `accurate-answer` appears only as the legacy item that the installer detects. It is not residue.
 
 ### Engineering Review
+
+Remediation amendment: CLEAR. Isolated structural-atomicity and minimum-observable-probe lenses APPROVE. Fresh refining-check passes all 9 checks with 14 tasks and complete TP pairing. Permanent test code is authored only by independent TESTER after implementation. Root commits test-only additions, then fresh independent TESTER reruns final committed HEAD before audit. All existing test obligations remain. Real-home acceptance and finalize are excluded by owner instruction.
 
 Verdict: CLEAR (STAGE 3.5, golem-architect, 2026-10-02).
 

@@ -37,7 +37,7 @@
 
 | Plan | Source Plan | Last Session | Stopped At | Next Step | Context |
 | --- | --- | --- | --- | --- | --- |
-| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-12 independent TESTER PASS and AUDITOR CLEAR at 53602d3 | Run three-surface convergence and checker-directed goal-backward verification | T-01 through T-12 task phases complete. Authorized generator repair committed at 46ec937, documentation reconciliation at 53602d3. Full lint/OKF, 40 Node tests, 16 Python tests, artifact checks, and build parity pass. GAL pin 3054AF9B matches. Temporary CODER agy route must restore codex on terminal handback. No whole-plan verification or real-home activation is claimed. |
+| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | Owner authorized items 1 through 4, T-13/T-14 architecture/readiness approved | Fresh preflight then T-13 implement/test/audit through agy | T-01 through T-12 remain complete. Original goal gaps retained as evidence. Two new blocking remediation tasks cover exact MCP registration state and per-host/shared ownership. Fresh planning/refining gates pass. Independent TESTER owns permanent regressions, root commits and retests final HEAD. No real-home installation, new-session acceptance, or finalize. Temporarily use agy CODER and restore codex on terminal handback. |
 
 ## Session Execution Context
 

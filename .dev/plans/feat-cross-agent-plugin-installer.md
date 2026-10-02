@@ -1,9 +1,9 @@
 <!-- gal:planning-authority
 semantic-draft: .dev/plans/feat-cross-agent-plugin-installer.en.md
 planLanguage: zh-TW
-draft-hash: 263db406a775dd9550735d6b73bac82ffb3bb4d4a457c48e25a97ab54e37ad5d
-rendered-source-hash: 0793c7279785b1b81a4d4cb10df86fbc1d1f6ff0a35d145142041d86189834df
-prompt-hash: 3d69326f0d9e0d97a09070465dee45917a6173c15fc3e6ea4cac8e845c70f218
+draft-hash: f5c69d0da8c5fac16be82b594b774efad497cfcd371f1065d42bc816f0a1f787
+rendered-source-hash: 2766ad0588bc0f5cf7727e7c8ed22af324bbd2dbd8dec539acc3c623b24e069a
+prompt-hash: fb82740661921c7e50a4cbc4097fe998ed71fa72dc22f0f1f94bff3e0129022b
 equivalence-verdict: EQUIVALENT
 -->
 
@@ -220,6 +220,28 @@ clear-writing-kit/
 
 None
 
+### 目標缺口修正範圍
+
+擁有者於 2026-10-02 要求「完成5以前的工作」，核准修正、補測與整體重驗。保留 T-01 到 T-12 的完成紀錄與失敗證據，新增 T-13 和 T-14。第 7 步實機安裝、新對話驗收與 finalize 不在本次範圍內。
+
+先前擁有者核准的 `knowledge/usage/gemini.md` 產生器修正已完成，屬於 T-12 的執行範圍補充。保留該產出與核准紀錄，不再修改規則來源或其他產出。
+
+R-03 和 R-17 的修正採用一個共用登記讀取模組。Codex 使用 `mcp get <name> --json`，驗證 stdio 指令與完整的字串參數陣列。Claude 解析實際的 `Command:` 與 `Args:`，只接受 JSON 陣列或可唯一判定的啟動器路徑與簡單參數。重複欄位、模糊引號、無法確認的空白邊界和非支援的傳輸方式，一律回報無法讀取，不猜測。只有明確的不存在回應才判定為未登記，驗證、權限或逾時失敗不等於不存在。完整的目前指令與依序排列的參數納入指紋和 plan hash。解除安裝比對目前的實際指紋，不依新的執行環境偏好重建它。驗證沿用同一讀取結果，不執行猜測的指令。輸出不包含目前參數、環境值或原始 CLI 回應。
+
+共用酬載修正採用有版本的安裝資訊清單，記錄檔案所屬宿主、各宿主完成的步驟與實際 output style 設定路徑。共享檔案記錄已知使用者。解除安裝只處理所選宿主的區塊和設定。其他宿主、歸屬未明的舊紀錄、保留或移除失敗的 CLI 登記、保留的區塊或設定仍使用酬載時，共用檔案保留並持續記錄原因。舊紀錄只根據具體證據判定歸屬，不全部指派給目前宿主。重跑 apply 可以補登目前宿主的歸屬，但目前內容必須與舊紀錄雜湊相符，不重寫未變更的檔案，也不覆蓋不同的舊雜湊。補登只修改資訊清單，完成補登後的重跑保持冪等。歸屬與完成狀態也納入 plan hash。
+
+```text
+宿主 CLI 查詢 -> 已登記 / 不存在 / 無法讀取
+已登記 -> 完整指令與參數指紋 -> plan 核准 / 解除安裝比對
+無法讀取 -> plan 失敗 / verify 未完成 / uninstall 保留
+
+apply -> 記錄宿主與實際目標
+解除所選宿主 -> 處理專屬項目 -> 還有使用者？
+有 -> 保留共用酬載和紀錄
+無 -> 依檔案雜湊移除未修改的項目
+舊版歸屬未明 -> 保留並回報
+```
+
 ## Approach
 
 ### Step 1: Feasibility spike for the payload
@@ -303,6 +325,8 @@ A 類 Open Questions 的關閉紀錄：
 
 <!-- ARCH_REVIEW: CLEAR -->
 
+修正範圍架構審查：APPROVE，隔離的 `repair_review` reviewer，2026-10-02。原 `golem-architect` 固定模型不支援本帳戶，因此由原生預設 agent 套用相同架構審查規範。判定採用一個共用登記讀取模組和一個資訊清單結構版本，沒有新增相依套件、通用 adapter 或計數框架。無法唯一判定的 Claude 參數和舊版歸屬保留並回報，代價是可能需要人工處理，優先避免猜測刪除。沒有未解決的架構問題。結構原子性與最小可觀察驗證兩個面向均為 APPROVE。測試由獨立 TESTER 在實作後撰寫，協調者提交測試後，以提交後的 HEAD 重測，再進行審查。
+
 ### Business Review
 
 未申請。本計畫不涉及商業規則、定價、權限、通知、新手引導或資格判定。
@@ -326,6 +350,8 @@ A 類 Open Questions 的關閉紀錄：
 - 關卡：T-03 決定 payload 配置。它以「停止」結束時，T-05 之後的任務都不開始，計畫退回 deep-planning。
 
 <!-- ENG_REVIEW: CLEAR -->
+
+修正任務的工程審查：CLEAR，`gal refining-check` 的 9 項檢查全部通過。結構原子性和最小可觀察驗證均經隔離 reviewer 判定 APPROVE。每個任務是一項可交付行為，各有最多 8 個原始碼、測試、文件與產出入口檔案。既有字典檔不應變更。新增測試檢查實際檔案位元組、CLI 修改紀錄、回傳結果與持久化資訊清單，不以結束碼 0 代替行為證據。
 
 ## Test Plan
 
@@ -370,6 +396,11 @@ A 類 Open Questions 的關閉紀錄：
 | TP-35 | integration | 沒有 `settings.json` 時，對 Claude Code 執行 `apply` 會建立只含 `outputStyle` 的檔案。E。 | T-09 |
 | TP-36 | integration | 每個 `install` 子指令在工具不一致、拒絕未驗證工具、步驟失敗或結果為「未完成」時，都以非零結束碼結束，其他情況以 0 結束。E。 | T-08, T-09, T-10, T-11 |
 | TP-37 | integration | `settings.json` 不是有效的 JSON 時，對 Claude Code 執行 `apply` 會在寫入任何檔案前停止。E。 | T-09 |
+
+| TP-38 | integration | 完整 MCP 指令與依序排列的參數會影響 plan hash。參數新增、刪除、重排或修改後，舊 hash 的 apply 不寫檔、不修改 CLI。明確不存在、驗證或權限失敗、逾時、模糊或損壞輸出分開判定。解除安裝只移除相符登記，保留變動或無法讀取的項目。執行環境偏好改變不授權刪除。永久測試經由正式呼叫路徑驗證，輸出不含密鑰測試字串。E。 | T-13 |
+| TP-39 | integration | verify 共用登記讀取結果，在 Node、Deno、Bun 上啟動實際已登記指令，檢查三種語言。家目錄含空格仍正確。無法讀取時失敗或略過，不猜測執行。完整 lint、OKF、Node、Python 測試及產出一致性通過。獨立 TESTER 撰寫的永久測試提交後，在最終 HEAD 重測，再獨立審查。E。 | T-13 |
+| TP-40 | integration | 同一家目錄以兩種順序安裝 Claude 和 Codex，分別先解除任一宿主。剩餘宿主的登記、區塊位元組、其他設定、歸屬紀錄與可執行啟動器不變，MCP 三種語言仍有結果。移除最後一個未修改的使用者時清除共用項目。重跑和升級在 Node、Deno、Bun 上維持正確。E。 | T-14 |
+| TP-41 | integration | 舊版或未完成的資訊清單、未變更項目的歸屬補登、自訂設定路徑、已修改的舊雜湊、區塊或共用檔案、歸屬未明紀錄與 CLI 移除失敗，均保留仍使用的酬載並回報原因。補登只寫合法中繼資料，補登完成後重跑不再變更。永久回歸測試、完整檢查與產出一致性通過，文件區分隔離驗證與尚未執行的實機驗收。E。 | T-14 |
 
 ## Tasks
 
@@ -485,3 +516,17 @@ Step 與任務的對應：Step 1 → T-01 到 T-03，Step 2 → T-04，Step 3 �
   - Change: 依 R-19 撰寫 `INSTALL.md`。agent 從 repo clone 執行，`dist/` 已 commit，所以不需要 `npm install`。agent 先檢查 `node`、`deno`、`bun`，三者都沒有時附官方安裝網址並停止，不自行安裝執行環境。接著執行 `install plan --agent <self>`、顯示結果、等待明確確認、帶 plan hash 執行 `install apply`、執行 `install verify`、分開回報通過與失敗的步驟、絕不直接修改工具設定檔，並請使用者開新對話做行為驗收。在 README 三種語言的段落加入相同的安裝指令，把「本儲存庫不修改全域 agent 設定」改寫成安裝程式會修改什麼、怎麼解除安裝，並更新 output style 產生器的說明。在 `docs/verification.md` 說明 `verify`。不手動修改 `knowledge/`。
   - Acceptance: `INSTALL.md` 涵蓋 R-19 的每一項，README 和文件檢查都通過。
   - Evidence: E + TP-26, TP-27.
+
+- [ ] T-13 — 完整比對目前 MCP 登記
+  - Targets: `src/install/registration.ts`, `src/install/plan.ts`, `src/install/apply.ts`, `src/install/verify.ts`, `src/install/uninstall.ts`, `dist/`, `writing/test/installer-registration.test.cjs`, `writing/test/installer-fixtures.cjs`
+  - Depends on: T-12
+  - Change: 依核准的修正設計，新增共用登記讀取模組，沿用 spawn.ts 和 SHA-256／JSON 指令陣列。分開已登記、不存在與無法讀取。Codex 使用合法 stdio JSON，Claude 只接受可唯一判定的欄位與參數。處理重複欄位、模糊引號、空白邊界、重複啟動器、損壞 JSON、非支援傳輸方式與查詢失敗。實際完整指紋納入 plan hash，不把所有不同登記壓成同一個狀態。舊 hash 的 apply 不產生修改。解除安裝比對實際指紋，保留變動或無法讀取的項目。verify 共用讀取結果，不執行猜測指令。移除重複解析與只比對子字串的舊路徑。輸出不含目前參數、環境值或原始回應。沒有新增相依套件、宿主支援或歸屬修改。重建 dist，既有字典不變。
+  - Acceptance: 獨立 TESTER 在實作後撰寫永久整合測試，涵蓋參數新增、刪除、重排和修改，舊 hash 套用無檔案或 CLI 修改，相符登記移除、變動或無法讀取登記保留，含空格路徑、執行環境偏好變更、明確不存在與查詢失敗，以及输出不含密鑰測試字串。TESTER 不改正式程式。協調者提交測試後，在提交後 HEAD 重測，再獨立審查。最多 8 個來源、測試與產出入口檔案。
+  - Evidence: E + TP-38, TP-39, TP-05, TP-17, TP-24, TP-28, TP-36.
+
+- [ ] T-14 — 保留宿主專屬項目與共用酬載
+  - Targets: `src/install/manifest.ts`, `src/install/plan.ts`, `src/install/apply.ts`, `src/install/uninstall.ts`, `dist/`, `writing/test/installer-ownership.test.cjs`, `writing/test/installer-fixtures.cjs`, `docs/verification.md`
+  - Depends on: T-13
+  - Change: 依核准的修正設計，新增合法的資訊清單結構版本，記錄檔案所屬宿主、宿主完成的步驟與實際 output style 目標。保留 CLI 歸屬、原子寫入、雜湊檢查和備份。共用啟動器與酬載記錄已知使用者。歸屬與完成紀錄納入 plan hash。舊紀錄只根據具體證據判定，其他維持歸屬未明並回報。apply 可以補登內容與舊雜湊相符的未變更項目，只寫資訊清單，不重寫產出或覆蓋不同的舊雜湊，補登完成後維持冪等。解除安裝只處理所選宿主的區塊與已記錄路徑的設定。先處理 CLI，再移除共用檔案。其他宿主、未明舊紀錄、保留或移除失敗的登記、保留的區塊或設定仍使用時，保留共用檔案和原因紀錄以供重試。不新增計數器、通用 adapter、相依套件或登記解析設計。重建 dist，字典不變，更新驗證文件。
+  - Acceptance: 獨立永久整合測試經由正式 plan/apply/uninstall 與 CLI 修改紀錄，證明兩種安裝順序與兩種首次解除選擇都保留另一宿主的登記、區塊位元組、其他設定、歸屬與可執行啟動器。最後使用者移除時只清除雜湊相符項目。涵蓋補登、舊版未明歸屬、已修改舊雜湊、設定路徑變更、升級、共用檔案或區塊變更、CLI 移除失敗和重複清理。TESTER 只寫測試，協調者提交後重測，再獨立審查。最多 8 個來源、測試、文件與產出入口檔案。不修改實機設定。
+  - Evidence: E + TP-40, TP-41, TP-05, TP-17, TP-18, TP-19, TP-20, TP-21, TP-23, TP-24, TP-25, TP-28, TP-36.
