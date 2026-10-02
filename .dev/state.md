@@ -37,7 +37,7 @@
 
 | Plan | Source Plan | Last Session | Stopped At | Next Step | Context |
 | --- | --- | --- | --- | --- | --- |
-| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-07 independent test PASS and audit CLEAR at f7c5bbf | Run T-08 install plan implementation | T-01 through T-07 complete. Claude authentication restored. Temporary no-sandbox Claude CODER route active for this invocation. Restore original route on handback. |
+| feat-cross-agent-plugin-installer | `.dev/plans/feat-cross-agent-plugin-installer.md` | 2026-10-02 | T-08 independent test PASS and audit CLEAR at 79c4d60 | Run T-09 install apply implementation | T-01 through T-08 complete. Temporary no-sandbox Claude CODER route active for this invocation. Restore original route on handback. Later-command test branches remain mandatory. |
 
 ## Session Execution Context
 

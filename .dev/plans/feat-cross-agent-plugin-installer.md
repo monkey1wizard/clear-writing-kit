@@ -446,7 +446,8 @@ Step 與任務的對應：Step 1 → T-01 到 T-03，Step 2 → T-04，Step 3 �
   - Acceptance: 每份設定檔都能在隔離的測試用家目錄安裝，並列出 skill。
   - Evidence: E + TP-10.
 
-- [ ] T-08 — 交付 `cwk install plan`
+- [x] T-08 — 交付 `cwk install plan` *(79c4d60)*
+  - Commit: 79c4d6050993ed02dac6d621cdd108c5fd19ea1e
   - Targets: `src/install/spawn.ts`, `src/install/runtime.ts`, `src/install/identity.ts`, `src/install/fsutil.ts`, `src/install/manifest.ts`, `src/install/block.ts`, `src/install/plan.ts`, `src/cli.ts`, `dist/`
   - Depends on: T-03, T-04, T-06, T-07
   - Change: `spawn.ts`：匯出依 PATHEXT 解析的 `which(name, env)`，以及 `run(command, args, options)`。`.cmd` 或 `.bat` 經由 `cmd.exe /d /s /c` 執行，每個參數都依 cmd.exe 規則加引號；其他檔案直接執行；回傳結束碼、stdout 和 stderr。`runtime.ts`：`selectRuntime(env)` 透過 `which()` 依序選 Node >= 20.18、Deno >= 2（加 `run -A`）、Bun；都不符合時回傳錯誤值，`plan` 回報這個錯誤且不輸出 hash。`identity.ts`：`resolveHost(agentArg, env)` 必須有 `--agent`，用完整名稱比對身分變數，不用前綴。不一致的定義是：缺少所指定工具的必要變數，或出現其他工具的完整名稱變數而沒有所指定工具的變數。`fsutil.ts`：`readText(path)` 回傳文字，以及換行格式、BOM、結尾換行的狀態。`manifest.ts`：schema 含版本、檔案項目（路徑、SHA-256）、CLI 項目（工具、類型、名稱、指令指紋）和已完成的步驟；檔案不存在視為空，無法解析是錯誤。`block.ts`：純函式 `upsertBlock(text, block)` 替換唯一一個 kit 區塊，或依檔案自己的換行格式在一行空行後附加一個區塊；有兩個區塊時丟出錯誤；不改動標記以外的位元組；回傳新文字和是否有變更。`plan.ts`：`computePlan(ctx)` 判定工具、選執行環境、透過工具的列出或查詢指令讀取目前的 plugin 和 MCP 狀態，並回傳：依序的步驟（payload、plugin、MCP、區塊、output style）；只含 kit 自己區塊或項目的逐行差異，由 `upsertBlock` 算出、不另用差異套件，所以重跑時沒有差異；R-15 定義的舊版衝突清單（`accurate-answer` skill 目錄、提到 `accurate-answer` 的區塊、不是 `clear-writing-kit` 的 `outputStyle`）；以及涵蓋安裝程式版本、payload 摘要值和正規化目標狀態的 SHA-256 plan hash，不含時間戳記和備份路徑。未驗證的工具得到手動步驟，沒有 hash。不寫入任何東西。在 `src/cli.ts` 新增 `install plan --agent`，重新建置 `dist/`。

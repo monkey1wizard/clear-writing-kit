@@ -190,11 +190,11 @@ None
 
 Workflow: IMPLEMENT
 Step: 5 of 7
-Last activity: 2026-10-02 — T-07 independent test and audit passed at f7c5bbf. Plugin manifests are ready. Installer plan is next.
-Next step: Run T-08 install plan implementation through the owner-authorized no-sandbox Claude executor.
-Current Task: T-08
+Last activity: 2026-10-02 — T-08 independent tests PASS and audit CLEAR at 79c4d60. Read-only installation planning is ready.
+Next step: Run T-09 install apply implementation through the owner-authorized no-sandbox Claude executor.
+Current Task:
 Task Base Commit: e7d2860a6ea66c381d2c167d40902b28e6116d13
-Task Final Commit:
+Task Final Commit: 79c4d6050993ed02dac6d621cdd108c5fd19ea1e
 Test Retry Count: 0
 Review Retry Count: 0
 
@@ -250,6 +250,14 @@ T-08 task-quality check: The task specifies the read-only plan behavior, module 
 Dispatch: phase=implement task=T-08 role=CODER executor=claude model=claude-sonnet-5-5 state=completed session_id=6cc22352-d293-40d6-8ac0-eba2a111ea6f log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-08/1790912349-828652900-000000-T-08-implement-claude.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
 
 T-08 implementation probes are preliminary evidence only. Independent tests must cover runtime preference fixtures, unverified-host manual steps, exact identity mismatch scenarios including inherited CODEX_SESSION_ID/CODEX_THREAD_ID inside Claude Code, sanitized diffs, target-state hash binding, and config token redaction. The implementer noted inherited Codex variables can pass --agent codex inside Claude Code. Resolve any confirmed failure within the T-08 identity module scope. Never alter the completed host table merely to bypass a boundary gate.
+
+Dispatch: phase=test task=T-08 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=4ea1867d-c727-4690-a32b-9e3de96535cd log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-08/1790912788-281023800-000000-T-08-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
+
+T-08 independent test: PASS at 79c4d6050993ed02dac6d621cdd108c5fd19ea1e with unchanged HEAD and no production edits. Covered TP-05, TP-11, TP-12, TP-13, TP-14 plan branch, TP-15 plan branch, TP-16 plan branch, TP-17 plan branch, TP-22, TP-28, TP-32 plan branch, TP-34, and TP-36 plan branch. Later apply/verify/uninstall branches remain NotRun at their owning tasks. Audit focus: TP-11 tested only CLAUDECODE and CODEX_COMPANION_SESSION_ID, not inherited CODEX_SESSION_ID/CODEX_THREAD_ID. Resolve whether a request for codex from an active Claude Code session violates the mismatch requirement when both sets of exact identity variables exist. Also assess whether normalized target-state hashing binds all relevant changes while preserving token redaction.
+
+Dispatch: phase=audit task=T-08 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=fd7407c0-7408-4e2e-9c44-16da5fd0a907 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-08/1790913384-621332800-000000-T-08-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
+
+T-08 audit resolution: CLEAR at unchanged HEAD 79c4d60. Exact-variable matching follows the task's mismatch definition and permits nested execution environments when the requested host's own variable exists. The plan hash binds normalized target state, manifest digest, runtime arguments, payload, and conflicts. Later T-09 target-change refusal and secrecy probes remain mandatory.
 
 New prompt. Source approval and planning reviews are carried forward. T-03 is the payload gate. If it returns stop, T-05 onward cannot start. Human review occurs once after all automated tasks and goal-backward verification. T-01 implementation dispatch completed and was committed. Working tree was clean at b4700fa before this test cursor update. Boundary verification passed. Independent testing and audit have not run. Generated bundle whitespace warnings come from embedded dependency strings and remain unchanged to preserve build reproducibility.
 
@@ -473,7 +481,8 @@ Steps map to tasks as follows: Step 1 → T-01 to T-03, Step 2 → T-04, Step 3 
   - Acceptance: Each manifest installs on an isolated fixture home and lists the skill.
   - Evidence: E + TP-10.
 
-- [ ] T-08 — Ship `cwk install plan`
+- [x] T-08 — Ship `cwk install plan` *(79c4d60)*
+  - Commit: 79c4d6050993ed02dac6d621cdd108c5fd19ea1e
   - Targets: `src/install/spawn.ts`, `src/install/runtime.ts`, `src/install/identity.ts`, `src/install/fsutil.ts`, `src/install/manifest.ts`, `src/install/block.ts`, `src/install/plan.ts`, `src/cli.ts`, `dist/`
   - Depends on: T-03, T-04, T-06, T-07
   - Change: `spawn.ts`: export `which(name, env)` honoring PATHEXT, and `run(command, args, options)` that runs a `.cmd` or `.bat` through `cmd.exe /d /s /c` with every argument quoted for cmd.exe and other files directly, returning exit code, stdout, and stderr. `runtime.ts`: `selectRuntime(env)` picks Node >= 20.18, then Deno >= 2 (with `run -A`), then Bun, through `which()`, and returns an error value when none qualifies; `plan` reports that error and gives no hash. `identity.ts`: `resolveHost(agentArg, env)` requires `--agent` and checks identity variables by exact name, never prefix. A mismatch is a missing required variable of the requested host, or an exact-name variable of another host present without the requested host's variable. `fsutil.ts`: `readText(path)` returns text plus EOL, BOM, and trailing-newline state. `manifest.ts`: schema with version, file entries (path, SHA-256), CLI entries (host, kind, name, command fingerprint), and completed steps; a missing file is empty and an unparsable file is an error. `block.ts`: the pure function `upsertBlock(text, block)` replaces the one existing kit block or appends one after a single blank line in the file's EOL style, throws on two blocks, never changes bytes outside the markers, and returns the new text and whether anything changed. `plan.ts`: `computePlan(ctx)` resolves the host, selects the runtime, reads current plugin and MCP state through the host list or get commands, and returns ordered steps (payload, plugin, MCP, block, output style), line diffs of the kit's own block or entries only, computed from `upsertBlock` and without a diff dependency, so a rerun shows no diff, the legacy conflict list as defined in R-15 (an `accurate-answer` skill directory, a block naming `accurate-answer`, an `outputStyle` other than `clear-writing-kit`), and a SHA-256 plan hash over installer version, payload digest, and normalized target state, excluding timestamps and backup paths. An unverified host gets manual steps and no hash. Nothing is written. Add `install plan --agent` to `src/cli.ts` and rebuild `dist/`.
@@ -917,6 +926,49 @@ None.
 #### Not Tested
 
 - TP-09: Fallback command verification after `apply`. Skipped because `apply` prerequisite is delivered in T-09.
+
+### [T-08] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 15 | Passed: 15 | Failed: 0 | Skipped: 0
+Verdict: PASS
+Evidence: npm --prefix writing run build matches dist/ (TP-05: 0 diff); 17/17 independent Node/Deno/Bun probes passed covering TP-05, TP-11, TP-12, TP-13, TP-14, TP-15, TP-16, TP-17, TP-22, TP-28, TP-32, TP-34, TP-36, Python artifacts (12/12), and checkers suite (26/26).
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-05: Committed `dist/` equals fresh `npm --prefix writing run build` | Yes | PASS | Clean build; `git status --porcelain dist/` produced 0 diff. |
+| TP-11: Host identity exact matching, mismatch error, and missing `--agent` | Yes | PASS | `--agent claude` with `CLAUDECODE` and `CODEX_COMPANION_SESSION_ID` passes and generates plan hash; `--agent codex` with only `CLAUDECODE` set fails with mismatch error and no hash; variable prefixes (`CLAUDECODE_XYZ`) fail; missing `--agent` fails with exit code 2. |
+| TP-12: Runtime selection and `which()` with PATH fixtures | Yes | PASS | `which()` resolves `.cmd` via `PATHEXT`; runtime selection picks Node >= 20.18 first, skips Node 18 to pick Deno >= 2 with `run -A`, skips Deno < 2 to pick Bun, and returns absolute path. |
+| TP-13: `plan` is read-only and diffs only kit's own block and entries | Yes | PASS | File hashes of existing `CLAUDE.md` and `settings.json` unchanged on disk after `plan`; diff shows only kit block additions with no existing content leaked as added lines. |
+| TP-14: Deterministic plan hash across multiple runs | Yes | PASS | Two consecutive `plan` invocations on unchanged fixture home yield identical 64-character SHA-256 plan hashes. |
+| TP-15: Unverified host lists manual steps without hash and refuses apply | Yes | PASS | `plan --agent copilot` lists manual installation steps (plugin, MCP, instruction block), emits no plan hash, explains apply refusal, and exits with code 1. |
+| TP-16: Conflict reporting for legacy writing skill, block, and foreign outputStyle | Yes | PASS | `plan` detects and reports planted `accurate-answer` skill directory, instruction block naming `accurate-answer`, and non-kit `outputStyle`, without deleting any of them. |
+| TP-17: Config token redaction | Yes | PASS | Secret API tokens planted in fixture host `settings.json` are never printed in `plan` stdout or stderr. |
+| TP-22: Argument containing space and `&` preserved through `.cmd` stub | Yes | PASS | `run()` passing `"arg with space & ampersand"` to `.cmd` stub receives full quoted argument intact on Node, Deno, and Bun on Windows. |
+| TP-28: `install --help` lists subcommands across runtimes | Yes | PASS | `cwk install --help` executed on Node, Deno, and Bun lists `plan`, `apply`, `verify`, and `uninstall` with exit code 0. |
+| TP-32: Corrupted manifest handling | Yes | PASS | Invalid JSON in `install-manifest.json` causes `plan` to fail with error mentioning manifest and emit no plan hash. |
+| TP-34: No qualifying runtime on PATH | Yes | PASS | When no qualifying runtime exists on PATH, `plan` reports an error and emits no plan hash. |
+| TP-36: Subcommand exit code contracts | Yes | PASS | Valid `plan` exits 0; host mismatch and unverified host exit 1; invalid arguments and unknown subcommands exit 2. |
+| Regression: Python artifacts suite | Yes | PASS | `python -m unittest discover -s tests -v` executed 12 tests, 12 passed, exit code 0. |
+| Regression: Checkers suite | Yes | PASS | `node --test test/checkers.test.cjs` executed 26 tests, 26 passed, exit code 0. |
+
+#### Failed Tests
+
+- None. All 15 covering criteria and regression suites passed.
+
+#### Not Tested
+
+- TP-09: Fallback command execution after `apply`. Deferred until `apply` is delivered in T-09.
+- TP-14 (`apply` branch): Target change detection and refusal during `apply`. Deferred until T-09.
+- TP-15 (`apply` branch): Refusal to run `apply` on unverified host. Deferred until T-09.
+- TP-16 (`verify` branch): Conflict reporting during `verify`. Deferred until T-10.
+- TP-17 (`apply`, `verify`, `uninstall` branches): Secret non-leakage during subsequent subcommands. Deferred until respective tasks land.
+- TP-32 (`apply` branch): Corrupted manifest refusal during `apply`. Deferred until T-09.
+- TP-36 (`apply`, `verify`, `uninstall` branches): Subcommand exit code checks for future subcommands. Deferred until respective tasks land.
 ## Review Results
 
 ### Architecture Review
@@ -1106,6 +1158,27 @@ The audit evaluated T-06 changes implementing the agent instruction block genera
 #### Summary
 
 The audit evaluated T-07 changes delivering host plugin manifests across `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `.codex-plugin/plugin.json`, and `.agents/plugins/marketplace.json`. Each manifest declares `clear-writing-kit` version 2.0.0 for verified hosts that support plugin skills. All manifests scope their skill declarations exclusively to `./skills/coding-agent-writing`. The Claude Code manifest also declares `./output-styles/clear-writing-kit.md`. Neither manifest declares MCP servers or references `web-skills/`. The marketplace declarations use safe relative paths pointing to the repository root. Static schema validation confirmed no path traversal vulnerabilities, no secrets, and no external network endpoints. The review identified no deep performance bottlenecks, OWASP Top 10 vulnerabilities, or STRIDE security risks.
+
+#### Open Findings
+
+- None.
+
+#### Remediation Tracking
+
+| Finding | Severity | Status |
+| --- | --- | --- |
+| None | None | CLEAR |
+
+<!-- AUDIT_REVIEW: CLEAR -->
+
+### [T-08] 2026-10-02
+
+**Date:** 2026-10-02
+**Findings:** 0 total — 0 critical, 0 high, 0 medium, 0 low
+
+#### Summary
+
+The audit evaluated T-08 changes delivering read-only installation planning (`cwk install plan`) across `src/install/spawn.ts`, `src/install/runtime.ts`, `src/install/identity.ts`, `src/install/fsutil.ts`, `src/install/manifest.ts`, `src/install/block.ts`, `src/install/plan.ts`, `src/cli.ts`, and `dist/`. The implementation adheres strictly to read-only guarantees: no files or configurations are written during plan execution. Subprocess execution in `spawn.ts` safely routes `.cmd` and `.bat` through `cmd.exe /d /s /c` with defensive quoting and explicit rejection of unrepresentable metacharacters (`"`, `%`, `\r`, `\n`, `\0`), and executes non-batch binaries directly without shell evaluation. Host identity resolution in `identity.ts` enforces exact-variable matching without prefix matching, correctly distinguishing missing required variables from foreign variables present without the requested host's variable, which allows nested execution environments without spoofing. Plan hashing in `plan.ts` deterministically binds installer version, payload digest, normalized target states, manifest digest, runtime arguments, and detected conflicts without binding unstable timestamps or absolute paths. Token redaction is preserved: `settings.json` is only parsed to extract and sanitize `outputStyle`, ensuring authentication tokens and unrelated keys are never read, emitted in diffs, or leaked into error logs. Line diffing operates strictly on the kit block lines via LCS, preventing foreign file leakage. Manifest parsing validates schema integrity and rejects corruption without echoing untrusted input. No deep performance bottlenecks, OWASP Top 10 vulnerabilities, or STRIDE security risks were identified.
 
 #### Open Findings
 
