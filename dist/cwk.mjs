@@ -148892,9 +148892,10 @@ function parseManifest(text) {
   if (!isObject(data) || !(data.version === null || isString(data.version))) return invalid;
   const { files, cli } = data;
   if (!Array.isArray(files) || !Array.isArray(cli)) return invalid;
-  if (typeof data.schemaRevision === "number" && data.schemaRevision >= 2) {
+  if (data.schemaRevision !== void 0 && data.schemaRevision !== 1 && data.schemaRevision !== CURRENT_SCHEMA_REVISION) return invalid;
+  if (data.schemaRevision === CURRENT_SCHEMA_REVISION) {
     const filesValid2 = files.every(
-      (entry) => isObject(entry) && isString(entry.path) && isString(entry.sha256) && /^[0-9a-f]{64}$/.test(entry.sha256) && isStringArray(entry.owners)
+      (entry) => isObject(entry) && isString(entry.path) && isString(entry.sha256) && /^[0-9a-f]{64}$/.test(entry.sha256) && isStringArray(entry.owners) && entry.owners.length > 0 && entry.owners.every((owner) => owner.length > 0)
     );
     const cliValid2 = cli.every(
       (entry) => isObject(entry) && isString(entry.host) && isString(entry.kind) && isString(entry.name) && isString(entry.fingerprint)
@@ -148905,7 +148906,7 @@ function parseManifest(text) {
     );
     const settings = Array.isArray(data.settings) ? data.settings : [];
     const settingsValid = settings.every(
-      (entry) => isObject(entry) && isString(entry.host) && isString(entry.target) && isString(entry.setting) && isString(entry.value)
+      (entry) => isObject(entry) && isString(entry.host) && isString(entry.target) && entry.setting === "outputStyle" && isString(entry.value)
     );
     const completedSteps = isObject(data.completedSteps) ? data.completedSteps : null;
     const completedValid = completedSteps !== null && Object.entries(completedSteps).every(([k, v]) => isString(k) && isStringArray(v));
@@ -148976,7 +148977,7 @@ function parseManifest(text) {
   const migratedSettings = [];
   if (Array.isArray(data.settings)) {
     for (const s of data.settings) {
-      if (isObject(s) && isString(s.host) && isString(s.target) && isString(s.setting) && isString(s.value)) {
+      if (isObject(s) && isString(s.host) && isString(s.target) && s.setting === "outputStyle" && isString(s.value)) {
         migratedSettings.push({ host: s.host, target: s.target, setting: s.setting, value: s.value });
       }
     }
@@ -149012,7 +149013,7 @@ async function readManifest(home) {
 }
 async function saveManifest(home, manifest) {
   const normalized = {
-    schemaRevision: manifest.schemaRevision || CURRENT_SCHEMA_REVISION,
+    schemaRevision: CURRENT_SCHEMA_REVISION,
     version: manifest.version,
     files: manifest.files.map((f) => ({ path: f.path, sha256: f.sha256, owners: [...new Set(f.owners)].sort() })),
     cli: manifest.cli.map((c) => ({ host: c.host, kind: c.kind, name: c.name, fingerprint: c.fingerprint })),

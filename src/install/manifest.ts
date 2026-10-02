@@ -69,13 +69,21 @@ export function parseManifest(text: string): Result<Manifest> {
   const { files, cli } = data;
   if (!Array.isArray(files) || !Array.isArray(cli)) return invalid;
 
-  if (typeof data.schemaRevision === "number" && data.schemaRevision >= 2) {
+  if (
+    data.schemaRevision !== undefined &&
+    data.schemaRevision !== 1 &&
+    data.schemaRevision !== CURRENT_SCHEMA_REVISION
+  ) return invalid;
+
+  if (data.schemaRevision === CURRENT_SCHEMA_REVISION) {
     const filesValid = files.every(entry =>
       isObject(entry) &&
       isString(entry.path) &&
       isString(entry.sha256) &&
       /^[0-9a-f]{64}$/.test(entry.sha256) &&
-      isStringArray(entry.owners)
+      isStringArray(entry.owners) &&
+      entry.owners.length > 0 &&
+      entry.owners.every(owner => owner.length > 0)
     );
     const cliValid = cli.every(entry =>
       isObject(entry) &&
@@ -97,7 +105,7 @@ export function parseManifest(text: string): Result<Manifest> {
       isObject(entry) &&
       isString(entry.host) &&
       isString(entry.target) &&
-      isString(entry.setting) &&
+      entry.setting === "outputStyle" &&
       isString(entry.value)
     );
     const completedSteps = isObject(data.completedSteps) ? data.completedSteps : null;
@@ -184,7 +192,7 @@ export function parseManifest(text: string): Result<Manifest> {
   const migratedSettings: ManifestSettingsRecord[] = [];
   if (Array.isArray(data.settings)) {
     for (const s of data.settings) {
-      if (isObject(s) && isString(s.host) && isString(s.target) && isString(s.setting) && isString(s.value)) {
+      if (isObject(s) && isString(s.host) && isString(s.target) && s.setting === "outputStyle" && isString(s.value)) {
         migratedSettings.push({ host: s.host, target: s.target, setting: s.setting, value: s.value });
       }
     }
@@ -226,7 +234,7 @@ export async function readManifest(home: string): Promise<Result<Manifest>> {
 /** Writes the manifest through an atomic replace. */
 export async function saveManifest(home: string, manifest: Manifest) {
   const normalized: Manifest = {
-    schemaRevision: manifest.schemaRevision || CURRENT_SCHEMA_REVISION,
+    schemaRevision: CURRENT_SCHEMA_REVISION,
     version: manifest.version,
     files: manifest.files.map(f => ({ path: f.path, sha256: f.sha256, owners: [...new Set(f.owners)].sort() })),
     cli: manifest.cli.map(c => ({ host: c.host, kind: c.kind, name: c.name, fingerprint: c.fingerprint })),
