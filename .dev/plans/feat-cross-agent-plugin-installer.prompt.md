@@ -358,7 +358,7 @@ Dispatch: phase=implement task=T-11 role=CODER executor=claude model=claude-sonn
 
 #### Retry Handoff — T-11 / IMPLEMENT
 
-- Status: OPEN
+- Status: RESOLVED
 - Problem: Boundary-check failed because clearOutputStyle behavior was added to settings.ts outside T-11 scope.
 - Evidence:
   - Test Results: not-applicable
@@ -369,7 +369,15 @@ Dispatch: phase=implement task=T-11 role=CODER executor=claude model=claude-sonn
      - Result: Block and settings probes passed, but settings.ts has a new behavior outside the task allowlist. The CLI-entry removal branch and complete host cycles remain untested.
      - Validation: boundary-check overall fail on src/install/settings.ts.
      - Commit: none
-- Next human step: Move clearOutputStyle into uninstall.ts, preserving its field-only editing and backups. Reuse the already-landed T-09 topLevelMembers parser by exporting only that existing symbol in settings.ts if needed. The only permitted remaining settings.ts diff is adding export to the existing parser declaration, with no import, parser, or behavior changes. The orchestrator can then apply the explicit visibility-only boundary protocol. Alternatively keep no settings.ts diff. No allowlist edits, prompt edits, tests, stash, or commits by CODER. Rebuild dist. Preserve all output and report marketplace retention and original trailing-newline limitations honestly for TESTER/AUDITOR.
+  2. 2026-10-02 — Scope correction completed at base 9942c10.
+     - Result: clearOutputStyle moved into uninstall.ts. settings.ts only exports unchanged topLevelMembers from T-09. Orchestrator recorded the permitted visibility-only exception in doc-only commit a0f409a. Native Claude smoke succeeded.
+     - Validation: completed session 9dd64b6d-4451-45aa-9632-35b7177e5218. Both task and base-range boundary checks pass.
+     - Commit: none
+- Next human step: Scope correction resolved through the permitted visibility-only protocol. Commit the implementation and run independent native host cycles. Preserve and report untracked marketplace retention, prior outputStyle not restored, and original trailing-newline limitations.
+
+Dispatch: phase=implement task=T-11 role=CODER executor=claude model=claude-sonnet-5-5 state=completed session_id=9dd64b6d-4451-45aa-9632-35b7177e5218 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-11/1790917527-876661100-000000-T-11-implement-claude.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+T-11 test focus: CLI removals and full lifecycle must use actual installed Claude/Codex CLIs on isolated configuration directories where available. Retain hand-edited blocks, modified payload files, re-pointed MCP entries, and any hash-mismatching settings file, with explicit reasons. Test upgrade A-to-B payload removal and remaining TP branches. The manifest does not own the marketplace registration, so native uninstall currently retains it with a manual removal note. Prior outputStyle and nonstandard original trailing newline may require the retained backup for exact restoration. These limits must remain visible in receipts and docs, not be hidden as a pristine-state pass.
 
 New prompt. Source approval and planning reviews are carried forward. T-03 is the payload gate. If it returns stop, T-05 onward cannot start. Human review occurs once after all automated tasks and goal-backward verification. T-01 implementation dispatch completed and was committed. Working tree was clean at b4700fa before this test cursor update. Boundary verification passed. Independent testing and audit have not run. Generated bundle whitespace warnings come from embedded dependency strings and remain unchanged to preserve build reproducibility.
 

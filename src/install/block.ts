@@ -1,4 +1,4 @@
-import { detectEol } from "./fsutil.js";
+import { detectEol, sha256 } from "./fsutil.js";
 
 const BEGIN_PATTERN = /<!-- clear-writing-kit:begin\b[^>]*-->/g;
 const END_MARKER = "<!-- clear-writing-kit:end -->";
@@ -49,4 +49,26 @@ export function upsertBlock(text: string, block: string): { text: string; change
   if (text === "") return { text: styled + eol, changed: true };
   const trailing = (/(?:\r?\n)*$/.exec(text)?.[0] ?? "").split("\n").length - 1;
   return { text: text + eol.repeat(Math.max(0, 2 - trailing)) + styled + eol, changed: true };
+}
+
+export type RemoveBlockResult = { status: "removed"; text: string } | { status: "absent" } | { status: "changed" };
+
+/**
+ * Removes the one kit block when its SHA-256 equals `expectedHash`, the hash of the block bytes as written.
+ * The line ending after the block goes with it. When the block ends the file, the blank line that `upsertBlock` added before it goes too.
+ * A block that no longer matches is reported as changed and the text stays as it is.
+ */
+export function removeBlock(text: string, expectedHash: string): RemoveBlockResult {
+  const block = findBlock(text);
+  if (!block) return { status: "absent" };
+  if (sha256(block.text) !== expectedHash) return { status: "changed" };
+  let before = text.slice(0, block.start);
+  let after = text.slice(block.end);
+  if (after.startsWith("\r\n")) after = after.slice(2);
+  else if (after.startsWith("\n")) after = after.slice(1);
+  if (after === "") {
+    if (before.endsWith("\r\n\r\n")) before = before.slice(0, -2);
+    else if (before.endsWith("\n\n")) before = before.slice(0, -1);
+  }
+  return { status: "removed", text: before + after };
 }

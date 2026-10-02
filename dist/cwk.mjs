@@ -4264,7 +4264,7 @@ var require_lodash = __commonJS({
           }
           return mapped.length && mapped[0] === arrays[0] ? baseIntersection(mapped, undefined2, comparator) : [];
         });
-        function join9(array2, separator) {
+        function join10(array2, separator) {
           return array2 == null ? "" : nativeJoin.call(array2, separator);
         }
         function last(array2) {
@@ -5573,22 +5573,22 @@ var require_lodash = __commonJS({
         var snakeCase = createCompounder(function(result2, word, index) {
           return result2 + (index ? "_" : "") + word.toLowerCase();
         });
-        function split(string4, separator, limit3) {
-          if (limit3 && typeof limit3 != "number" && isIterateeCall(string4, separator, limit3)) {
-            separator = limit3 = undefined2;
+        function split(string4, separator, limit4) {
+          if (limit4 && typeof limit4 != "number" && isIterateeCall(string4, separator, limit4)) {
+            separator = limit4 = undefined2;
           }
-          limit3 = limit3 === undefined2 ? MAX_ARRAY_LENGTH : limit3 >>> 0;
-          if (!limit3) {
+          limit4 = limit4 === undefined2 ? MAX_ARRAY_LENGTH : limit4 >>> 0;
+          if (!limit4) {
             return [];
           }
           string4 = toString(string4);
           if (string4 && (typeof separator == "string" || separator != null && !isRegExp(separator))) {
             separator = baseToString(separator);
             if (!separator && hasUnicode(string4)) {
-              return castSlice(stringToArray(string4), 0, limit3);
+              return castSlice(stringToArray(string4), 0, limit4);
             }
           }
-          return string4.split(separator, limit3);
+          return string4.split(separator, limit4);
         }
         var startCase = createCompounder(function(result2, word, index) {
           return result2 + (index ? " " : "") + upperFirst(word);
@@ -6188,7 +6188,7 @@ var require_lodash = __commonJS({
         lodash.isUndefined = isUndefined;
         lodash.isWeakMap = isWeakMap;
         lodash.isWeakSet = isWeakSet;
-        lodash.join = join9;
+        lodash.join = join10;
         lodash.kebabCase = kebabCase;
         lodash.last = last;
         lodash.lastIndexOf = lastIndexOf;
@@ -19707,7 +19707,7 @@ var require_Obj = __commonJS({
 var require_Str = __commonJS({
   "node_modules/prelude-ls/lib/Str.js"(exports, module) {
     var split;
-    var join9;
+    var join10;
     var lines;
     var unlines;
     var words;
@@ -19722,7 +19722,7 @@ var require_Str = __commonJS({
     split = curry$(function(sep, str) {
       return str.split(sep);
     });
-    join9 = curry$(function(sep, xs) {
+    join10 = curry$(function(sep, xs) {
       return xs.join(sep);
     });
     lines = function(str) {
@@ -19781,7 +19781,7 @@ var require_Str = __commonJS({
     };
     module.exports = {
       split,
-      join: join9,
+      join: join10,
       lines,
       unlines,
       words,
@@ -31876,7 +31876,7 @@ var require_rc_config_loader = __commonJS({
       const extensions = Object.keys(loaderByExt);
       while (extensions.length) {
         const ext = extensions.shift();
-        const configLocation = join9(parts, configFileName + ext);
+        const configLocation = join10(parts, configFileName + ext);
         if (!fs_1.default.existsSync(configLocation)) {
           continue;
         }
@@ -31905,7 +31905,7 @@ var require_rc_config_loader = __commonJS({
         }
       }
       if (packageJSON) {
-        const pkgJSONLoc = join9(parts, "package.json");
+        const pkgJSONLoc = join10(parts, "package.json");
         if (fs_1.default.existsSync(pkgJSONLoc)) {
           const pkgJSON = json5_1.default.parse(readFile3(pkgJSONLoc));
           if (pkgJSON[packageJSONFieldName]) {
@@ -31924,7 +31924,7 @@ var require_rc_config_loader = __commonJS({
     function splitPath(x) {
       return path_1.default.resolve(x || "").split(path_1.default.sep);
     }
-    function join9(parts, filename) {
+    function join10(parts, filename) {
       return path_1.default.resolve(parts.join(path_1.default.sep) + path_1.default.sep, filename);
     }
     function loadJSConfigFile(filePath, suppress) {
@@ -37925,9 +37925,9 @@ var require_core3 = __commonJS({
     function getDirname() {
       return typeof this.path === "string" ? p.dirname(this.path) : void 0;
     }
-    function setDirname(dirname5) {
+    function setDirname(dirname6) {
       assertPath(this.path, "dirname");
-      this.path = p.join(dirname5 || "", this.basename);
+      this.path = p.join(dirname6 || "", this.basename);
     }
     function getBasename() {
       return typeof this.path === "string" ? p.basename(this.path) : void 0;
@@ -39739,7 +39739,7 @@ var require_factory_space = __commonJS({
     "use strict";
     var markdownSpace = require_markdown_space();
     function spaceFactory(effects, ok2, type, max) {
-      var limit3 = max ? max - 1 : Infinity;
+      var limit4 = max ? max - 1 : Infinity;
       var size = 0;
       return start;
       function start(code) {
@@ -39750,7 +39750,7 @@ var require_factory_space = __commonJS({
         return ok2(code);
       }
       function prefix(code) {
-        if (markdownSpace(code) && size++ < limit3) {
+        if (markdownSpace(code) && size++ < limit4) {
           effects.consume(code);
           return prefix;
         }
@@ -40209,7 +40209,7 @@ var require_factory_space2 = __commonJS({
     "use strict";
     var markdownSpace = require_markdown_space2();
     function spaceFactory(effects, ok2, type, max) {
-      var limit3 = max ? max - 1 : Infinity;
+      var limit4 = max ? max - 1 : Infinity;
       var size = 0;
       return start;
       function start(code) {
@@ -40220,7 +40220,7 @@ var require_factory_space2 = __commonJS({
         return ok2(code);
       }
       function prefix(code) {
-        if (markdownSpace(code) && size++ < limit3) {
+        if (markdownSpace(code) && size++ < limit4) {
           effects.consume(code);
           return prefix;
         }
@@ -41319,7 +41319,7 @@ var require_factory_space3 = __commonJS({
     "use strict";
     var markdownSpace = require_markdown_space3();
     function spaceFactory(effects, ok2, type, max) {
-      var limit3 = max ? max - 1 : Infinity;
+      var limit4 = max ? max - 1 : Infinity;
       var size = 0;
       return start;
       function start(code) {
@@ -41330,7 +41330,7 @@ var require_factory_space3 = __commonJS({
         return ok2(code);
       }
       function prefix(code) {
-        if (markdownSpace(code) && size++ < limit3) {
+        if (markdownSpace(code) && size++ < limit4) {
           effects.consume(code);
           return prefix;
         }
@@ -45705,7 +45705,7 @@ var require_factory_destination = __commonJS({
     var markdownLineEndingOrSpace = require_markdown_line_ending_or_space3();
     var markdownLineEnding = require_markdown_line_ending2();
     function destinationFactory(effects, ok2, nok, type, literalType, literalMarkerType, rawType, stringType, max) {
-      var limit3 = max || Infinity;
+      var limit4 = max || Infinity;
       var balance = 0;
       return start;
       function start(code) {
@@ -45764,7 +45764,7 @@ var require_factory_destination = __commonJS({
       }
       function destinationRaw(code) {
         if (code === 40) {
-          if (++balance > limit3) return nok(code);
+          if (++balance > limit4) return nok(code);
           effects.consume(code);
           return destinationRaw;
         }
@@ -49008,7 +49008,7 @@ var require_factory_space4 = __commonJS({
     "use strict";
     var markdownSpace = require_markdown_space4();
     function spaceFactory(effects, ok2, type, max) {
-      var limit3 = max ? max - 1 : Infinity;
+      var limit4 = max ? max - 1 : Infinity;
       var size = 0;
       return start;
       function start(code) {
@@ -49019,7 +49019,7 @@ var require_factory_space4 = __commonJS({
         return ok2(code);
       }
       function prefix(code) {
-        if (markdownSpace(code) && size++ < limit3) {
+        if (markdownSpace(code) && size++ < limit4) {
           effects.consume(code);
           return prefix;
         }
@@ -59515,8 +59515,8 @@ var require_dist4 = __commonJS({
       * @param {KeyStatField} [field] - Optionally rank by one counter (e.g. "hits")
       * @returns {StatsKeyEntry[]}
       */
-      mostUsedKeys(limit3 = 100, field) {
-        return this.sortedKeyEntries(field, "desc").slice(0, limit3);
+      mostUsedKeys(limit4 = 100, field) {
+        return this.sortedKeyEntries(field, "desc").slice(0, limit4);
       }
       /**
       * The least-used keys, sorted ascending. Sorts by total recorded operations,
@@ -59528,8 +59528,8 @@ var require_dist4 = __commonJS({
       * @param {KeyStatField} [field] - Optionally rank by one counter (e.g. "gets")
       * @returns {StatsKeyEntry[]}
       */
-      leastUsedKeys(limit3 = 100, field) {
-        return this.sortedKeyEntries(field, "asc").slice(0, limit3);
+      leastUsedKeys(limit4 = 100, field) {
+        return this.sortedKeyEntries(field, "asc").slice(0, limit4);
       }
       /**
       * @param {string} key - The key to look up
@@ -63929,11 +63929,11 @@ var require_dist9 = __commonJS({
     module.exports = __toCommonJS(index_exports);
     var import_node_crypto2 = __toESM3(__require("crypto"), 1);
     var import_node_fs5 = __toESM3(__require("fs"), 1);
-    var import_node_path12 = __toESM3(__require("path"), 1);
+    var import_node_path13 = __toESM3(__require("path"), 1);
     var import_flat_cache = require_dist8();
     function createFromFile(filePath, useCheckSum, currentWorkingDirectory) {
-      const fname = import_node_path12.default.basename(filePath);
-      const directory = import_node_path12.default.dirname(filePath);
+      const fname = import_node_path13.default.basename(filePath);
+      const directory = import_node_path13.default.dirname(filePath);
       return create(fname, directory, useCheckSum, currentWorkingDirectory);
     }
     function create(cacheId, cacheDirectory, useCheckSum, currentWorkingDirectory) {
@@ -64091,7 +64091,7 @@ var require_dist9 = __commonJS({
        * @returns {boolean} if the file path is a relative path, false otherwise
        */
       isRelativePath(filePath) {
-        return !import_node_path12.default.isAbsolute(filePath);
+        return !import_node_path13.default.isAbsolute(filePath);
       }
       /**
        * Delete the cache file from the disk
@@ -64309,7 +64309,7 @@ var require_dist9 = __commonJS({
       getAbsolutePath(filePath, options) {
         if (this.isRelativePath(filePath)) {
           const currentWorkingDirectory = options?.currentWorkingDirectory ?? this._currentWorkingDirectory ?? process.cwd();
-          filePath = import_node_path12.default.resolve(currentWorkingDirectory, filePath);
+          filePath = import_node_path13.default.resolve(currentWorkingDirectory, filePath);
         }
         return filePath;
       }
@@ -98197,11 +98197,11 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
         "enum",
         "const"
       ]);
-      function inlineRef(schema, limit3 = true) {
+      function inlineRef(schema, limit4 = true) {
         if (typeof schema == "boolean") return true;
-        if (limit3 === true) return !hasRef(schema);
-        if (!limit3) return false;
-        return countKeys(schema) <= limit3;
+        if (limit4 === true) return !hasRef(schema);
+        if (!limit4) return false;
+        return countKeys(schema) <= limit4;
       }
       exports2.inlineRef = inlineRef;
       const REF_KEYWORDS = /* @__PURE__ */ new Set([
@@ -99338,41 +99338,41 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
         schemelessOptions.skipEscape = true;
         return serialize(resolved, schemelessOptions);
       }
-      function resolveComponent(base, relative, options, skipNormalization) {
+      function resolveComponent(base, relative2, options, skipNormalization) {
         const target = {};
         if (!skipNormalization) {
           base = parse3(serialize(base, options), options);
-          relative = parse3(serialize(relative, options), options);
+          relative2 = parse3(serialize(relative2, options), options);
         }
         options = options || {};
-        if (!options.tolerant && relative.scheme) {
-          target.scheme = relative.scheme;
-          target.userinfo = relative.userinfo;
-          target.host = relative.host;
-          target.port = relative.port;
-          target.path = removeDotSegments(relative.path || "");
-          target.query = relative.query;
+        if (!options.tolerant && relative2.scheme) {
+          target.scheme = relative2.scheme;
+          target.userinfo = relative2.userinfo;
+          target.host = relative2.host;
+          target.port = relative2.port;
+          target.path = removeDotSegments(relative2.path || "");
+          target.query = relative2.query;
         } else {
-          if (relative.userinfo !== void 0 || relative.host !== void 0 || relative.port !== void 0) {
-            target.userinfo = relative.userinfo;
-            target.host = relative.host;
-            target.port = relative.port;
-            target.path = removeDotSegments(relative.path || "");
-            target.query = relative.query;
+          if (relative2.userinfo !== void 0 || relative2.host !== void 0 || relative2.port !== void 0) {
+            target.userinfo = relative2.userinfo;
+            target.host = relative2.host;
+            target.port = relative2.port;
+            target.path = removeDotSegments(relative2.path || "");
+            target.query = relative2.query;
           } else {
-            if (!relative.path) {
+            if (!relative2.path) {
               target.path = base.path;
-              if (relative.query !== void 0) target.query = relative.query;
+              if (relative2.query !== void 0) target.query = relative2.query;
               else target.query = base.query;
             } else {
-              if (relative.path[0] === "/") target.path = removeDotSegments(relative.path);
+              if (relative2.path[0] === "/") target.path = removeDotSegments(relative2.path);
               else {
-                if ((base.userinfo !== void 0 || base.host !== void 0 || base.port !== void 0) && !base.path) target.path = "/" + relative.path;
-                else if (!base.path) target.path = relative.path;
-                else target.path = base.path.slice(0, base.path.lastIndexOf("/") + 1) + relative.path;
+                if ((base.userinfo !== void 0 || base.host !== void 0 || base.port !== void 0) && !base.path) target.path = "/" + relative2.path;
+                else if (!base.path) target.path = relative2.path;
+                else target.path = base.path.slice(0, base.path.lastIndexOf("/") + 1) + relative2.path;
                 target.path = removeDotSegments(target.path);
               }
-              target.query = relative.query;
+              target.query = relative2.query;
             }
             target.userinfo = base.userinfo;
             target.host = base.host;
@@ -99380,7 +99380,7 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
           }
           target.scheme = base.scheme;
         }
-        target.fragment = relative.fragment;
+        target.fragment = relative2.fragment;
         return target;
       }
       function equal(uriA, uriB, options) {
@@ -140003,10 +140003,10 @@ var require_async = __commonJS({
           callFn.apply(this, arguments);
         };
       }
-      function _eachOfLimit(limit3) {
+      function _eachOfLimit(limit4) {
         return function(obj, iteratee, callback) {
           callback = once(callback || noop);
-          if (limit3 <= 0 || !obj) {
+          if (limit4 <= 0 || !obj) {
             return callback(null);
           }
           var nextElem = iterator(obj);
@@ -140027,7 +140027,7 @@ var require_async = __commonJS({
           }
           function replenish() {
             looping = true;
-            while (running < limit3 && !done) {
+            while (running < limit4 && !done) {
               var elem = nextElem();
               if (elem === null) {
                 done = true;
@@ -140044,12 +140044,12 @@ var require_async = __commonJS({
           replenish();
         };
       }
-      function eachOfLimit(coll, limit3, iteratee, callback) {
-        _eachOfLimit(limit3)(coll, wrapAsync(iteratee), callback);
+      function eachOfLimit(coll, limit4, iteratee, callback) {
+        _eachOfLimit(limit4)(coll, wrapAsync(iteratee), callback);
       }
-      function doLimit(fn, limit3) {
+      function doLimit(fn, limit4) {
         return function(iterable, iteratee, callback) {
-          return fn(iterable, limit3, iteratee, callback);
+          return fn(iterable, limit4, iteratee, callback);
         };
       }
       function eachOfArrayLike(coll, iteratee, callback) {
@@ -140098,8 +140098,8 @@ var require_async = __commonJS({
       var map2 = doParallel(_asyncMap);
       var applyEach = applyEach$1(map2);
       function doParallelLimit(fn) {
-        return function(obj, limit3, iteratee, callback) {
-          return fn(_eachOfLimit(limit3), obj, wrapAsync(iteratee), callback);
+        return function(obj, limit4, iteratee, callback) {
+          return fn(_eachOfLimit(limit4), obj, wrapAsync(iteratee), callback);
         };
       }
       var mapLimit = doParallelLimit(_asyncMap);
@@ -140709,10 +140709,10 @@ var require_async = __commonJS({
         return seq.apply(null, slice(arguments).reverse());
       };
       var _concat = Array.prototype.concat;
-      var concatLimit = function(coll, limit3, iteratee, callback) {
+      var concatLimit = function(coll, limit4, iteratee, callback) {
         callback = callback || noop;
         var _iteratee = wrapAsync(iteratee);
-        mapLimit(coll, limit3, function(val, callback2) {
+        mapLimit(coll, limit4, function(val, callback2) {
           _iteratee(val, function(err2) {
             if (err2) return callback2(err2);
             return callback2(null, slice(arguments, 1));
@@ -140849,8 +140849,8 @@ var require_async = __commonJS({
       function eachLimit(coll, iteratee, callback) {
         eachOf(coll, _withoutIndex(wrapAsync(iteratee)), callback);
       }
-      function eachLimit$1(coll, limit3, iteratee, callback) {
-        _eachOfLimit(limit3)(coll, _withoutIndex(wrapAsync(iteratee)), callback);
+      function eachLimit$1(coll, limit4, iteratee, callback) {
+        _eachOfLimit(limit4)(coll, _withoutIndex(wrapAsync(iteratee)), callback);
       }
       var eachSeries = doLimit(eachLimit$1, 1);
       function ensureAsync(fn) {
@@ -140937,10 +140937,10 @@ var require_async = __commonJS({
         }
         next();
       }
-      var groupByLimit = function(coll, limit3, iteratee, callback) {
+      var groupByLimit = function(coll, limit4, iteratee, callback) {
         callback = callback || noop;
         var _iteratee = wrapAsync(iteratee);
-        mapLimit(coll, limit3, function(val, callback2) {
+        mapLimit(coll, limit4, function(val, callback2) {
           _iteratee(val, function(err2, key) {
             if (err2) return callback2(err2);
             return callback2(null, { key, val });
@@ -140965,11 +140965,11 @@ var require_async = __commonJS({
       var groupBy = doLimit(groupByLimit, Infinity);
       var groupBySeries = doLimit(groupByLimit, 1);
       var log = consoleFunc("log");
-      function mapValuesLimit(obj, limit3, iteratee, callback) {
+      function mapValuesLimit(obj, limit4, iteratee, callback) {
         callback = once(callback || noop);
         var newObj = {};
         var _iteratee = wrapAsync(iteratee);
-        eachOfLimit(obj, limit3, function(val, key, next) {
+        eachOfLimit(obj, limit4, function(val, key, next) {
           _iteratee(val, key, function(err2, result) {
             if (err2) return next(err2);
             newObj[key] = result;
@@ -141041,8 +141041,8 @@ var require_async = __commonJS({
       function parallelLimit(tasks, callback) {
         _parallel(eachOf, tasks, callback);
       }
-      function parallelLimit$1(tasks, limit3, callback) {
-        _parallel(_eachOfLimit(limit3), tasks, callback);
+      function parallelLimit$1(tasks, limit4, callback) {
+        _parallel(_eachOfLimit(limit4), tasks, callback);
       }
       var queue$1 = function(worker, concurrency) {
         var _worker = wrapAsync(worker);
@@ -141258,9 +141258,9 @@ var require_async = __commonJS({
         }
         return result;
       }
-      function timeLimit(count, limit3, iteratee, callback) {
+      function timeLimit(count, limit4, iteratee, callback) {
         var _iteratee = wrapAsync(iteratee);
-        mapLimit(baseRange(0, count, 1), limit3, _iteratee, callback);
+        mapLimit(baseRange(0, count, 1), limit4, _iteratee, callback);
       }
       var times = doLimit(timeLimit, Infinity);
       var timesSeries = doLimit(timeLimit, 1);
@@ -148430,7 +148430,7 @@ var require_textlint_rule_preset_ja_technical_writing = __commonJS({
 // ../src/cli.ts
 import { readFile as readFile2 } from "node:fs/promises";
 import { homedir } from "node:os";
-import { dirname as dirname4, join as join8 } from "node:path";
+import { dirname as dirname5, join as join9 } from "node:path";
 import { fileURLToPath as fileURLToPath3 } from "node:url";
 
 // ../src/check.ts
@@ -148742,11 +148742,11 @@ async function sha256File(path4) {
     throw error62;
   }
 }
-async function listFiles(root, relative = "") {
-  const entries = await readdir(join(root, relative), { withFileTypes: true });
+async function listFiles(root, relative2 = "") {
+  const entries = await readdir(join(root, relative2), { withFileTypes: true });
   const files = [];
   for (const entry of entries) {
-    const child = relative ? `${relative}/${entry.name}` : entry.name;
+    const child = relative2 ? `${relative2}/${entry.name}` : entry.name;
     if (entry.isDirectory()) files.push(...await listFiles(root, child));
     else if (entry.isFile()) files.push(child);
   }
@@ -148848,6 +148848,20 @@ function upsertBlock(text, block) {
   if (text === "") return { text: styled + eol, changed: true };
   const trailing = (/(?:\r?\n)*$/.exec(text)?.[0] ?? "").split("\n").length - 1;
   return { text: text + eol.repeat(Math.max(0, 2 - trailing)) + styled + eol, changed: true };
+}
+function removeBlock(text, expectedHash) {
+  const block = findBlock(text);
+  if (!block) return { status: "absent" };
+  if (sha256(block.text) !== expectedHash) return { status: "changed" };
+  let before = text.slice(0, block.start);
+  let after = text.slice(block.end);
+  if (after.startsWith("\r\n")) after = after.slice(2);
+  else if (after.startsWith("\n")) after = after.slice(1);
+  if (after === "") {
+    if (before.endsWith("\r\n\r\n")) before = before.slice(0, -2);
+    else if (before.endsWith("\n\n")) before = before.slice(0, -1);
+  }
+  return { status: "removed", text: before + after };
 }
 
 // ../src/install/manifest.ts
@@ -176636,11 +176650,11 @@ var require_resolve = /* @__PURE__ */ __commonJSMin(((exports) => {
     "enum",
     "const"
   ]);
-  function inlineRef(schema, limit3 = true) {
+  function inlineRef(schema, limit4 = true) {
     if (typeof schema == "boolean") return true;
-    if (limit3 === true) return !hasRef(schema);
-    if (!limit3) return false;
-    return countKeys(schema) <= limit3;
+    if (limit4 === true) return !hasRef(schema);
+    if (!limit4) return false;
+    return countKeys(schema) <= limit4;
   }
   exports.inlineRef = inlineRef;
   const REF_KEYWORDS = /* @__PURE__ */ new Set([
@@ -177777,41 +177791,41 @@ var require_fast_uri = /* @__PURE__ */ __commonJSMin(((exports, module) => {
     schemelessOptions.skipEscape = true;
     return serialize(resolved, schemelessOptions);
   }
-  function resolveComponent(base, relative, options, skipNormalization) {
+  function resolveComponent(base, relative2, options, skipNormalization) {
     const target = {};
     if (!skipNormalization) {
       base = parse3(serialize(base, options), options);
-      relative = parse3(serialize(relative, options), options);
+      relative2 = parse3(serialize(relative2, options), options);
     }
     options = options || {};
-    if (!options.tolerant && relative.scheme) {
-      target.scheme = relative.scheme;
-      target.userinfo = relative.userinfo;
-      target.host = relative.host;
-      target.port = relative.port;
-      target.path = removeDotSegments(relative.path || "");
-      target.query = relative.query;
+    if (!options.tolerant && relative2.scheme) {
+      target.scheme = relative2.scheme;
+      target.userinfo = relative2.userinfo;
+      target.host = relative2.host;
+      target.port = relative2.port;
+      target.path = removeDotSegments(relative2.path || "");
+      target.query = relative2.query;
     } else {
-      if (relative.userinfo !== void 0 || relative.host !== void 0 || relative.port !== void 0) {
-        target.userinfo = relative.userinfo;
-        target.host = relative.host;
-        target.port = relative.port;
-        target.path = removeDotSegments(relative.path || "");
-        target.query = relative.query;
+      if (relative2.userinfo !== void 0 || relative2.host !== void 0 || relative2.port !== void 0) {
+        target.userinfo = relative2.userinfo;
+        target.host = relative2.host;
+        target.port = relative2.port;
+        target.path = removeDotSegments(relative2.path || "");
+        target.query = relative2.query;
       } else {
-        if (!relative.path) {
+        if (!relative2.path) {
           target.path = base.path;
-          if (relative.query !== void 0) target.query = relative.query;
+          if (relative2.query !== void 0) target.query = relative2.query;
           else target.query = base.query;
         } else {
-          if (relative.path[0] === "/") target.path = removeDotSegments(relative.path);
+          if (relative2.path[0] === "/") target.path = removeDotSegments(relative2.path);
           else {
-            if ((base.userinfo !== void 0 || base.host !== void 0 || base.port !== void 0) && !base.path) target.path = "/" + relative.path;
-            else if (!base.path) target.path = relative.path;
-            else target.path = base.path.slice(0, base.path.lastIndexOf("/") + 1) + relative.path;
+            if ((base.userinfo !== void 0 || base.host !== void 0 || base.port !== void 0) && !base.path) target.path = "/" + relative2.path;
+            else if (!base.path) target.path = relative2.path;
+            else target.path = base.path.slice(0, base.path.lastIndexOf("/") + 1) + relative2.path;
             target.path = removeDotSegments(target.path);
           }
-          target.query = relative.query;
+          target.query = relative2.query;
         }
         target.userinfo = base.userinfo;
         target.host = base.host;
@@ -177819,7 +177833,7 @@ var require_fast_uri = /* @__PURE__ */ __commonJSMin(((exports, module) => {
       }
       target.scheme = base.scheme;
     }
-    target.fragment = relative.fragment;
+    target.fragment = relative2.fragment;
     return target;
   }
   function equal(uriA, uriB, options) {
@@ -183252,10 +183266,256 @@ async function runMcpServer() {
   await server.connect(new StdioServerTransport());
 }
 
+// ../src/install/uninstall.ts
+import { readdir as readdir2, rm as rm3, rmdir } from "node:fs/promises";
+import { dirname as dirname4, isAbsolute as isAbsolute2, join as join7, relative } from "node:path";
+var OUTPUT_LIMIT2 = 2e3;
+var limit2 = (text) => text.length > OUTPUT_LIMIT2 ? `${text.slice(0, OUTPUT_LIMIT2)}... (truncated)` : text;
+var normalizePath2 = (text) => text.replace(/\\+/g, "/");
+var hostBinary3 = (host) => host.mcpCommands.add.split(" ")[0];
+var BLOCK_SUFFIX = "#block";
+var isInside = (parent, child) => {
+  const path4 = relative(parent, child);
+  return path4 !== "" && !path4.startsWith("..") && !isAbsolute2(path4);
+};
+async function pruneEmpty(directory, stop) {
+  for (let current = directory; isInside(stop, current); current = dirname4(current)) {
+    try {
+      await rmdir(current);
+    } catch {
+      return;
+    }
+  }
+}
+async function clearOutputStyle(path4, value, backupDir) {
+  const file2 = await readText(path4);
+  if (!file2) return "absent";
+  let data;
+  try {
+    data = JSON.parse(file2.text);
+  } catch {
+    throw new Error(`${path4} is not valid JSON.`);
+  }
+  if (typeof data !== "object" || data === null || Array.isArray(data)) throw new Error(`${path4} does not hold a JSON object.`);
+  const current = data.outputStyle;
+  if (current === void 0) return "absent";
+  if (current !== value) return "different";
+  const { members: members2, open: open2, close } = topLevelMembers(file2.text);
+  const index = members2.map((member) => member.key).lastIndexOf("outputStyle");
+  let next;
+  if (members2.length === 1) {
+    if (file2.text === `{
+  "outputStyle": ${JSON.stringify(value)}
+}
+`) {
+      await backup(path4, backupDir);
+      await rm3(path4, { force: true });
+      return "file-removed";
+    }
+    next = file2.text.slice(0, open2 + 1) + file2.text.slice(close);
+  } else if (index < members2.length - 1) {
+    next = file2.text.slice(0, members2[index].keyStart) + file2.text.slice(members2[index + 1].keyStart);
+  } else {
+    next = file2.text.slice(0, members2[index - 1].valueEnd) + file2.text.slice(members2[index].valueEnd);
+  }
+  JSON.parse(next);
+  await backup(path4, backupDir);
+  await writeTextAtomic(path4, next, { bom: file2.bom });
+  return "cleared";
+}
+async function uninstall(ctx) {
+  const resolved = resolveHost(ctx.agent, ctx.env);
+  if (!resolved.ok) return { status: "error", kind: resolved.error.startsWith("Host mismatch") ? "mismatch" : "usage", message: resolved.error };
+  const host = resolved.value;
+  if (!host.verified) return { status: "refused", message: `${host.displayName} is not verified, so the installer never installed for it and uninstall does not run.` };
+  const manifestResult = await readManifest(ctx.home);
+  if (!manifestResult.ok) return { status: "error", kind: "manifest", message: manifestResult.error };
+  const manifest = manifestResult.value;
+  const kitDirectory = join7(ctx.home, ".clear-writing-kit");
+  const backupDir = join7(kitDirectory, "backups", (/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-"));
+  const removed = [];
+  const kept = [];
+  const failed = [];
+  const backups = [];
+  const notes = [];
+  const remaining = { ...manifest, files: [], cli: [] };
+  const configDirectory = host.configDirectoryEnv && ctx.env[host.configDirectoryEnv] || host.configDirectory(ctx.home);
+  const binary = which(hostBinary3(host), ctx.env);
+  for (const entry of manifest.cli) {
+    const target = `${entry.host} ${entry.kind} ${entry.name}`;
+    const keep = (detail) => {
+      kept.push({ target, detail });
+      remaining.cli.push(entry);
+    };
+    const fail3 = (detail) => {
+      failed.push({ target, detail });
+      remaining.cli.push(entry);
+    };
+    if (entry.host !== host.id) {
+      keep(`It belongs to host ${entry.host}. Run uninstall with --agent ${entry.host}.`);
+      continue;
+    }
+    if (entry.kind !== "mcp" && entry.kind !== "plugin") {
+      keep(`The entry kind "${entry.kind}" is not known to this installer.`);
+      continue;
+    }
+    if (!binary) {
+      keep(`The host command "${hostBinary3(host)}" is not on PATH, so the entry cannot be read or removed.`);
+      continue;
+    }
+    try {
+      if (entry.kind === "mcp") {
+        if (entry.name !== MCP_NAME) {
+          keep(`The MCP name is not ${MCP_NAME}.`);
+          continue;
+        }
+        const shown = await run(binary, ["mcp", "get", MCP_NAME], { env: ctx.env });
+        if (shown.code === -1) {
+          fail3(`"${hostBinary3(host)} mcp get" could not run.`);
+          continue;
+        }
+        if (shown.code !== 0) {
+          removed.push({ target, detail: "The host has no such entry. Nothing to remove." });
+          continue;
+        }
+        const runtime = pickRuntime(await probeRuntimes(ctx.env));
+        const launcher = join7(kitDirectory, "cwk.mjs");
+        const text = normalizePath2(shown.stdout + shown.stderr);
+        const matches = runtime.ok && mcpFingerprint([runtime.value.command, ...runtime.value.args, launcher, "mcp"]) === entry.fingerprint && text.includes(normalizePath2(launcher)) && text.includes(normalizePath2(runtime.value.command));
+        if (!matches) {
+          keep("The current MCP entry does not match what the installer registered. It was changed after install.");
+          continue;
+        }
+        const scope = host.id === "claude" ? ["--scope", "user"] : [];
+        const result = await run(binary, ["mcp", "remove", MCP_NAME, ...scope], { env: ctx.env, timeoutMs: 12e4 });
+        if (result.code !== 0) fail3(limit2(`"mcp remove" exited with code ${result.code}. ${(result.stdout + result.stderr).trim()}`));
+        else removed.push({ target, detail: "Removed through the host remove command." });
+      } else {
+        if (entry.name !== PLUGIN_NAME || entry.fingerprint !== pluginFingerprint(host.id)) {
+          keep("The fingerprint does not match the plugin the installer registered.");
+          continue;
+        }
+        const listed = await run(binary, ["plugin", "list"], { env: ctx.env });
+        if (listed.code !== 0) {
+          fail3(`"${hostBinary3(host)} plugin list" failed with exit code ${listed.code}.`);
+          continue;
+        }
+        if (!new RegExp(`(^|[^\\w-])${PLUGIN_NAME}(?![\\w-])`, "m").test(listed.stdout)) {
+          removed.push({ target, detail: "The host has no such plugin. Nothing to remove." });
+          continue;
+        }
+        const result = await run(binary, ["plugin", host.id === "codex" ? "remove" : "uninstall", PLUGIN_NAME], { env: ctx.env, timeoutMs: 12e4 });
+        if (result.code !== 0) fail3(limit2(`"plugin remove" exited with code ${result.code}. ${(result.stdout + result.stderr).trim()}`));
+        else removed.push({ target, detail: "Removed through the host remove command." });
+      }
+    } catch (error62) {
+      fail3(limit2(error62 instanceof Error ? error62.message : String(error62)));
+    }
+  }
+  if (manifest.cli.some((entry) => entry.host === host.id && entry.kind === "plugin")) {
+    notes.push(`The plugin marketplace entry for ${PLUGIN_NAME} was not recorded by the installer. Remove it by hand with "${hostBinary3(host)} plugin marketplace remove ${PLUGIN_NAME}" if it is no longer wanted.`);
+  }
+  for (const entry of manifest.files.filter((file2) => file2.path.endsWith(BLOCK_SUFFIX))) {
+    const path4 = entry.path.slice(0, -BLOCK_SUFFIX.length);
+    const keep = (detail) => {
+      kept.push({ target: `${path4} (block)`, detail });
+      remaining.files.push(entry);
+    };
+    try {
+      const file2 = await readText(path4);
+      if (!file2) {
+        removed.push({ target: `${path4} (block)`, detail: "The file is already gone." });
+        continue;
+      }
+      const result = removeBlock(file2.text, entry.sha256);
+      if (result.status === "absent") {
+        removed.push({ target: `${path4} (block)`, detail: "The block is already gone." });
+        continue;
+      }
+      if (result.status === "changed") {
+        keep("The block was edited after install. Its hash no longer matches.");
+        continue;
+      }
+      const copy = await backup(path4, backupDir);
+      if (copy) backups.push(copy);
+      if (result.text === "") await rm3(path4, { force: true });
+      else await writeTextAtomic(path4, result.text, { bom: file2.bom });
+      removed.push({ target: `${path4} (block)`, detail: result.text === "" ? "Removed. The file held nothing else, so it was deleted." : "Removed. Text outside the block is unchanged." });
+    } catch (error62) {
+      kept.push({ target: `${path4} (block)`, detail: limit2(error62 instanceof Error ? error62.message : String(error62)) });
+      remaining.files.push(entry);
+    }
+  }
+  if (host.outputStyleSupport === "yes" && manifest.completedSteps.includes("output-style")) {
+    const settingsPath = join7(configDirectory, "settings.json");
+    try {
+      const result = await clearOutputStyle(settingsPath, OUTPUT_STYLE, backupDir);
+      if (result === "different") kept.push({ target: `${settingsPath} outputStyle`, detail: `outputStyle is not "${OUTPUT_STYLE}" now. It was changed after install.` });
+      else if (result !== "absent") removed.push({ target: `${settingsPath} outputStyle`, detail: result === "file-removed" ? "Removed. The file held nothing else, so it was deleted." : "Removed. Other settings are unchanged." });
+    } catch (error62) {
+      kept.push({ target: `${settingsPath} outputStyle`, detail: limit2(error62 instanceof Error ? error62.message : String(error62)) });
+    }
+  }
+  const removedFiles = [];
+  for (const entry of manifest.files.filter((file2) => !file2.path.endsWith(BLOCK_SUFFIX))) {
+    const keep = (detail) => {
+      kept.push({ target: entry.path, detail });
+      remaining.files.push(entry);
+    };
+    if (!isInside(kitDirectory, entry.path)) {
+      keep("The path is outside the kit directory. The installer never removes it.");
+      continue;
+    }
+    try {
+      const hash2 = await sha256File(entry.path);
+      if (hash2 === void 0) {
+        removed.push({ target: entry.path, detail: "The file is already gone." });
+        continue;
+      }
+      if (hash2 !== entry.sha256) {
+        keep("The file was changed after install. Its hash no longer matches.");
+        continue;
+      }
+      await rm3(entry.path, { force: true });
+      removedFiles.push(entry.path);
+      removed.push({ target: entry.path, detail: "Removed. Its hash matched the manifest." });
+    } catch (error62) {
+      keep(limit2(error62 instanceof Error ? error62.message : String(error62)));
+    }
+  }
+  for (const path4 of removedFiles) await pruneEmpty(dirname4(path4), kitDirectory);
+  const anyLeft = remaining.files.length > 0 || remaining.cli.length > 0;
+  if (anyLeft) await saveManifest(ctx.home, remaining);
+  else {
+    await rm3(manifestPath(ctx.home), { force: true });
+    try {
+      if ((await readdir2(kitDirectory)).length === 0) await rmdir(kitDirectory);
+    } catch {
+    }
+  }
+  return { status: failed.length ? "incomplete" : "done", removed, kept, failed, backups, notes };
+}
+function formatUninstall(outcome) {
+  if (outcome.status === "error") return `Error: ${outcome.message}
+`;
+  if (outcome.status === "refused") return `Refused: ${outcome.message}
+`;
+  const list = (title, items) => [`${title}:`, ...items.length ? items.map((item) => `  ${item.target}: ${item.detail}`) : ["  none"]];
+  return [
+    outcome.status === "done" ? "Uninstall finished." : "Uninstall is incomplete. Run it again after you fix the failed items.",
+    ...list("Removed", outcome.removed),
+    ...list("Kept", outcome.kept),
+    ...outcome.failed.length ? list("Failed", outcome.failed) : [],
+    ...outcome.backups.map((path4) => `Backup: ${path4}`),
+    ...outcome.notes.map((note) => `Note: ${note}`),
+    ""
+  ].join("\n");
+}
+
 // ../src/install/verify.ts
 import { spawn as spawn2 } from "node:child_process";
 import { stat as stat2 } from "node:fs/promises";
-import { basename as basename4, join as join7 } from "node:path";
+import { basename as basename4, join as join8 } from "node:path";
 var CALL_TIMEOUT_MS = 3e4;
 var BLOCK_LIMIT_BYTES = 2048;
 var DETAIL_LIMIT = 300;
@@ -183265,10 +183525,10 @@ var FIXTURES = [
   { language: "zh-TW", text: "alpha; beta" },
   { language: "ja-JP", text: "\u7D50\u679C\u3092\u8AAC\u660E\u3057\u307E\u3059\u3002\n\n- \u30C6\u30B9\u30C8\u3092\u5B9F\u884C\u3057\u307E\u3059\u3002\n\n\u51E6\u7406\u306F\u5B8C\u4E86\u3057\u3066\u3044\u307E\u305B\u3093\u3002\n" }
 ];
-var limit2 = (text) => text.length > DETAIL_LIMIT ? `${text.slice(0, DETAIL_LIMIT)}... (truncated)` : text;
+var limit3 = (text) => text.length > DETAIL_LIMIT ? `${text.slice(0, DETAIL_LIMIT)}... (truncated)` : text;
 var message = (error62) => error62 instanceof Error ? error62.message : String(error62);
 var slashes = (text) => text.replace(/\\/g, "/");
-var hostBinary3 = (host) => host.mcpCommands.add.split(" ")[0];
+var hostBinary4 = (host) => host.mcpCommands.add.split(" ")[0];
 var LEGACY_SKILL2 = "accurate-answer";
 var CMD_LIMIT_MESSAGE = "An argument contains a character that cmd.exe cannot carry unchanged.";
 var isWindows2 = () => process.platform === "win32";
@@ -183319,7 +183579,7 @@ function foreignBlocksNaming2(text) {
 }
 async function findLegacyConflicts(home, configDirectory, instructionsPath, instructionText) {
   const conflicts = [];
-  for (const directory of /* @__PURE__ */ new Set([join7(home, ".agents", "skills", LEGACY_SKILL2), join7(configDirectory, "skills", LEGACY_SKILL2)])) {
+  for (const directory of /* @__PURE__ */ new Set([join8(home, ".agents", "skills", LEGACY_SKILL2), join8(configDirectory, "skills", LEGACY_SKILL2)])) {
     if (await isDirectory2(directory)) conflicts.push({ kind: "skill", target: directory, detail: `The ${LEGACY_SKILL2} skill directory exists.` });
   }
   for (const name of foreignBlocksNaming2(instructionText)) {
@@ -183414,11 +183674,11 @@ var McpSession = class {
 var record2 = (value) => typeof value === "object" && value !== null && !Array.isArray(value) ? value : void 0;
 function countFindings(reply) {
   const error62 = record2(reply.error);
-  if (error62) return `The server answered with an error: ${limit2(String(error62.message ?? "unknown"))}`;
+  if (error62) return `The server answered with an error: ${limit3(String(error62.message ?? "unknown"))}`;
   const result = record2(reply.result);
   if (!result) return "The reply has no result.";
   const content = Array.isArray(result.content) ? record2(result.content[0]) : void 0;
-  if (result.isError === true) return `The tool reported an error: ${limit2(String(content?.text ?? "unknown"))}`;
+  if (result.isError === true) return `The tool reported an error: ${limit3(String(content?.text ?? "unknown"))}`;
   const structured = record2(result.structuredContent)?.findings;
   if (Array.isArray(structured)) return structured.length;
   try {
@@ -183445,7 +183705,7 @@ async function checkServer(registration, env, timeoutMs) {
   }
   const started = startInteractive(resolved, registration.args, env);
   if (!started.ok) {
-    checks.push(fail2(ids[0], `The server could not start: ${limit2(started.error)}`));
+    checks.push(fail2(ids[0], `The server could not start: ${limit3(started.error)}`));
     skipRest("The server did not start.");
     return checks;
   }
@@ -183454,7 +183714,7 @@ async function checkServer(registration, env, timeoutMs) {
     const initialized = await session.request("initialize", { protocolVersion: PROTOCOL_VERSION, capabilities: {}, clientInfo: { name: "cwk-install-verify", version: "1.0.0" } });
     const initializeResult = record2(initialized.result);
     if (!initializeResult || typeof initializeResult.protocolVersion !== "string") {
-      checks.push(fail2(ids[0], `The initialize reply has no protocol version.${record2(initialized.error) ? ` Error: ${limit2(String(record2(initialized.error)?.message))}` : ""}`));
+      checks.push(fail2(ids[0], `The initialize reply has no protocol version.${record2(initialized.error) ? ` Error: ${limit3(String(record2(initialized.error)?.message))}` : ""}`));
       skipRest("The server did not initialize.");
       return checks;
     }
@@ -183471,7 +183731,7 @@ async function checkServer(registration, env, timeoutMs) {
       checks.push(typeof found === "string" ? fail2(id, found) : found > 0 ? pass(id, `${found} finding${found === 1 ? "" : "s"}.`) : fail2(id, "The fixture sentence produced no finding."));
     }
   } catch (error62) {
-    checks.push(fail2(ids[checks.length], limit2(message(error62))));
+    checks.push(fail2(ids[checks.length], limit3(message(error62))));
     skipRest("An earlier MCP call failed or timed out.");
   } finally {
     session.close();
@@ -183484,7 +183744,7 @@ async function checkOutputStyle(settingsPath) {
   try {
     file2 = await readText(settingsPath);
   } catch (error62) {
-    return { check: fail2(id, `${settingsPath} cannot be read: ${limit2(message(error62))}`) };
+    return { check: fail2(id, `${settingsPath} cannot be read: ${limit3(message(error62))}`) };
   }
   if (!file2) return { check: fail2(id, `${settingsPath} does not exist, so outputStyle is not set.`) };
   let value;
@@ -183506,7 +183766,7 @@ async function checkBlock(instructionsPath, text) {
   try {
     block = findBlock(text);
   } catch (error62) {
-    return fail2(id, limit2(message(error62)));
+    return fail2(id, limit3(message(error62)));
   }
   if (!block) return fail2(id, `${instructionsPath} holds 0 clear-writing-kit blocks. Expected 1.`);
   const bytes = Buffer.byteLength(block.text, "utf8");
@@ -183519,20 +183779,20 @@ async function verifyInstall(ctx) {
   const host = resolved.value;
   if (!host.verified) return { status: "refused", message: `${host.displayName} is not verified, so verify does not run for it.` };
   const timeoutMs = ctx.callTimeoutMs ?? CALL_TIMEOUT_MS;
-  const launcher = join7(ctx.home, ".clear-writing-kit", "cwk.mjs");
+  const launcher = join8(ctx.home, ".clear-writing-kit", "cwk.mjs");
   const configDirectory = host.configDirectoryEnv && ctx.env[host.configDirectoryEnv] || host.configDirectory(ctx.home);
-  const instructionsPath = join7(configDirectory, basename4(host.globalInstructionsFile(ctx.home)));
+  const instructionsPath = join8(configDirectory, basename4(host.globalInstructionsFile(ctx.home)));
   const notes = [];
   const checks = [];
   const conflicts = [];
   const serverIds = ["mcp-initialize", "mcp-tools", ...FIXTURES.map((fixture) => `lint-${fixture.language}`)];
-  const binary = which(hostBinary3(host), ctx.env);
+  const binary = which(hostBinary4(host), ctx.env);
   let registration;
   if (!binary) {
-    checks.push(fail2("mcp-registration", `The ${host.displayName} command "${hostBinary3(host)}" is not on PATH, so the registered command cannot be read.`));
+    checks.push(fail2("mcp-registration", `The ${host.displayName} command "${hostBinary4(host)}" is not on PATH, so the registered command cannot be read.`));
   } else {
     const entry = await run(binary, ["mcp", "get", MCP_NAME], { env: ctx.env });
-    if (entry.code === -1) checks.push(fail2("mcp-registration", `"${hostBinary3(host)} mcp get" could not run.`));
+    if (entry.code === -1) checks.push(fail2("mcp-registration", `"${hostBinary4(host)} mcp get" could not run.`));
     else if (entry.code !== 0) checks.push(fail2("mcp-registration", `${MCP_NAME} is not registered in ${host.displayName}.`));
     else {
       const parsed = parseRegistration(entry.stdout + entry.stderr, launcher);
@@ -183546,7 +183806,7 @@ async function verifyInstall(ctx) {
   if (registration) checks.push(...await checkServer(registration, ctx.env, timeoutMs));
   else for (const id of serverIds) checks.push(skipped(id, "The registered command was not read."));
   if (host.outputStyleSupport === "yes") {
-    const style = await checkOutputStyle(join7(configDirectory, "settings.json"));
+    const style = await checkOutputStyle(join8(configDirectory, "settings.json"));
     checks.push(style.check);
     if (style.conflict) conflicts.push(style.conflict);
   } else {
@@ -183557,14 +183817,14 @@ async function verifyInstall(ctx) {
     instructionText = (await readText(instructionsPath))?.text;
     checks.push(await checkBlock(instructionsPath, instructionText));
   } catch (error62) {
-    checks.push(fail2("instruction-block", `${instructionsPath} cannot be read: ${limit2(message(error62))}`));
+    checks.push(fail2("instruction-block", `${instructionsPath} cannot be read: ${limit3(message(error62))}`));
   }
   try {
     conflicts.push(...await findLegacyConflicts(ctx.home, configDirectory, instructionsPath, instructionText ?? ""));
     const own2 = conflicts.length;
     checks.push(own2 ? fail2("legacy-conflicts", `${own2} legacy conflict${own2 === 1 ? "" : "s"} found. The installer keeps them.`) : pass("legacy-conflicts", "No legacy conflicts."));
   } catch (error62) {
-    checks.push(fail2("legacy-conflicts", `The legacy check failed: ${limit2(message(error62))}`));
+    checks.push(fail2("legacy-conflicts", `The legacy check failed: ${limit3(message(error62))}`));
   }
   const complete = checks.every((check2) => check2.status === "pass");
   return { status: complete ? "pass" : "incomplete", host: { id: host.id, displayName: host.displayName }, checks, conflicts, notes };
@@ -183602,12 +183862,7 @@ async function runInstall(args) {
     process.stdout.write(installUsage);
     return 0;
   }
-  if (subcommand === "uninstall") {
-    process.stderr.write(`"cwk install ${subcommand}" is not available in this build.
-`);
-    return 2;
-  }
-  if (subcommand !== "plan" && subcommand !== "apply" && subcommand !== "verify") {
+  if (subcommand !== "plan" && subcommand !== "apply" && subcommand !== "verify" && subcommand !== "uninstall") {
     process.stderr.write(installUsage);
     return 2;
   }
@@ -183621,10 +183876,10 @@ async function runInstall(args) {
 ${installUsage}`);
     return 2;
   }
-  const payloadDir = dirname4(fileURLToPath3(import.meta.url));
+  const payloadDir = dirname5(fileURLToPath3(import.meta.url));
   let blockText;
   try {
-    blockText = await readFile2(join8(payloadDir, "..", "install", "agents-block.md"), "utf8");
+    blockText = await readFile2(join9(payloadDir, "..", "install", "agents-block.md"), "utf8");
   } catch {
     process.stderr.write("Cannot read install/agents-block.md next to the payload. Run the installer from the repository checkout.\n");
     return 1;
@@ -183644,6 +183899,11 @@ ${installUsage}`);
     const verified = await verifyInstall(context);
     process.stdout.write(formatVerify(verified));
     return verified.status === "pass" ? 0 : 1;
+  }
+  if (subcommand === "uninstall") {
+    const uninstalled = await uninstall(context);
+    process.stdout.write(formatUninstall(uninstalled));
+    return uninstalled.status === "done" ? 0 : 1;
   }
   const outcome = await computePlan(context);
   process.stdout.write(formatPlan(outcome));

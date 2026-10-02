@@ -36,7 +36,7 @@ function endOfValue(text: string, from: number) {
 type Member = { key: string; valueStart: number; valueEnd: number; keyStart: number };
 
 /** Locates the members of the top-level object in valid JSON text. */
-function topLevelMembers(text: string): { members: Member[]; open: number; close: number } {
+export function topLevelMembers(text: string): { members: Member[]; open: number; close: number } {
   const open = skipSpace(text, 0);
   const members: Member[] = [];
   let index = skipSpace(text, open + 1);

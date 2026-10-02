@@ -7,6 +7,7 @@ import { lintText } from "./check.js";
 import { applyPlan, formatApply } from "./install/apply.js";
 import { computePlan, formatPlan } from "./install/plan.js";
 import { runMcpServer } from "./mcp.js";
+import { formatUninstall, uninstall } from "./install/uninstall.js";
 import { formatVerify, verifyInstall } from "./install/verify.js";
 
 const installUsage = [
@@ -25,11 +26,7 @@ async function runInstall(args: string[]): Promise<number> {
     process.stdout.write(installUsage);
     return 0;
   }
-  if (subcommand === "uninstall") {
-    process.stderr.write(`"cwk install ${subcommand}" is not available in this build.\n`);
-    return 2;
-  }
-  if (subcommand !== "plan" && subcommand !== "apply" && subcommand !== "verify") {
+  if (subcommand !== "plan" && subcommand !== "apply" && subcommand !== "verify" && subcommand !== "uninstall") {
     process.stderr.write(installUsage);
     return 2;
   }
@@ -65,6 +62,11 @@ ${installUsage}`);
     const verified = await verifyInstall(context);
     process.stdout.write(formatVerify(verified));
     return verified.status === "pass" ? 0 : 1;
+  }
+  if (subcommand === "uninstall") {
+    const uninstalled = await uninstall(context);
+    process.stdout.write(formatUninstall(uninstalled));
+    return uninstalled.status === "done" ? 0 : 1;
   }
   const outcome = await computePlan(context);
   process.stdout.write(formatPlan(outcome));
