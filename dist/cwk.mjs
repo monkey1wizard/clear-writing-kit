@@ -149875,16 +149875,24 @@ async function applyPlan(ctx, planHash) {
     }
     try {
       if (step.id === "payload") {
+        const payloadOwners = /* @__PURE__ */ new Set([host.id]);
+        for (const file2 of manifest.files) {
+          for (const owner of file2.owners) payloadOwners.add(owner);
+        }
+        for (const entry of manifest.cli) payloadOwners.add(entry.host);
+        for (const record3 of manifest.blocks) payloadOwners.add(record3.host);
+        for (const record3 of manifest.settings) payloadOwners.add(record3.host);
+        for (const completedHost of Object.keys(manifest.completedSteps)) payloadOwners.add(completedHost);
+        const owners = [...payloadOwners].sort();
         const copied = await copyPayload(ctx.payloadDir, writes.versionDirectory);
         const launcher = await writeLauncher(writes.launcher, plan.version);
         for (const file2 of [...copied, launcher]) {
           const existing = manifest.files.find((item) => item.path === file2.path);
           if (existing) {
             existing.sha256 = file2.sha256;
-            if (!existing.owners.includes(host.id)) existing.owners.push(host.id);
-            existing.owners.sort();
+            existing.owners = [.../* @__PURE__ */ new Set([...existing.owners, ...owners])].sort();
           } else {
-            manifest.files.push({ path: file2.path, sha256: file2.sha256, owners: [host.id] });
+            manifest.files.push({ path: file2.path, sha256: file2.sha256, owners: [...owners] });
           }
         }
         manifest.version = plan.version;

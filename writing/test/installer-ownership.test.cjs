@@ -296,6 +296,48 @@ test('changed shared files are retained by hash and removed after restoration', 
   }
 });
 
+test('a cross-host upgrade transfers current payload ownership and cleans after the final consumer', async () => {
+  const fixture = makeDualFixture();
+  try {
+    const payloadA = path.join(fixture.home, 'payload-a');
+    const payloadB = path.join(fixture.home, 'payload-b');
+    fs.mkdirSync(payloadA, { recursive: true });
+    fs.mkdirSync(payloadB, { recursive: true });
+    fs.writeFileSync(path.join(payloadA, 'cwk.mjs'), 'export const version = "2.0.0";\n');
+    fs.writeFileSync(path.join(payloadB, 'cwk.mjs'), 'export const version = "2.0.1";\n');
+
+    const blockA = fixture.blockText.replace(/clear-writing-kit:begin v=[^ ]+/, 'clear-writing-kit:begin v=2.0.0');
+    const blockB = fixture.blockText.replace(/clear-writing-kit:begin v=[^ ]+/, 'clear-writing-kit:begin v=2.0.1');
+    const claude = { ...context(fixture, 'claude'), payloadDir: payloadA, blockText: blockA };
+    const codexA = { ...context(fixture, 'codex'), payloadDir: payloadA, blockText: blockA };
+    const codexB = { ...context(fixture, 'codex'), payloadDir: payloadB, blockText: blockB };
+
+    await install(claude);
+    await install(codexA);
+    await install(codexB);
+
+    const upgraded = readManifest(fixture.home);
+    const currentFiles = upgraded.files.filter(file => file.path.includes(`${path.sep}2.0.1${path.sep}`));
+    assert.ok(currentFiles.length > 0);
+    assert.ok(currentFiles.every(file => file.owners.includes('claude') && file.owners.includes('codex')));
+
+    const firstRemoval = await installer.uninstall(codexB);
+    assert.equal(firstRemoval.status, 'done');
+    const retained = readManifest(fixture.home);
+    assert.ok(retained.files.every(file => file.owners.includes('claude')));
+    assert.ok(retained.files.every(file => !file.owners.includes('legacy')));
+
+    const finalRemoval = await installer.uninstall(claude);
+    assert.equal(finalRemoval.status, 'done');
+    assert.equal(fs.existsSync(installer.manifestPath(fixture.home)), false);
+    assert.equal(fs.existsSync(path.join(fixture.home, '.clear-writing-kit', 'cwk.mjs')), false);
+    assert.equal(fs.existsSync(path.join(fixture.home, '.clear-writing-kit', '2.0.0')), false);
+    assert.equal(fs.existsSync(path.join(fixture.home, '.clear-writing-kit', '2.0.1')), false);
+  } finally {
+    fixture.cleanup();
+  }
+});
+
 test('failed CLI removal retains shared runtime and a later retry cleans it', async () => {
   const fixture = makeDualFixture();
   try {

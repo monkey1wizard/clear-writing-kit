@@ -160,16 +160,25 @@ export async function applyPlan(ctx: PlanContext, planHash: string): Promise<App
     }
     try {
       if (step.id === "payload") {
+        const payloadOwners = new Set<string>([host.id]);
+        for (const file of manifest.files) {
+          for (const owner of file.owners) payloadOwners.add(owner);
+        }
+        for (const entry of manifest.cli) payloadOwners.add(entry.host);
+        for (const record of manifest.blocks) payloadOwners.add(record.host);
+        for (const record of manifest.settings) payloadOwners.add(record.host);
+        for (const completedHost of Object.keys(manifest.completedSteps)) payloadOwners.add(completedHost);
+        const owners = [...payloadOwners].sort();
+
         const copied = await copyPayload(ctx.payloadDir, writes.versionDirectory);
         const launcher = await writeLauncher(writes.launcher, plan.version);
         for (const file of [...copied, launcher]) {
           const existing = manifest.files.find(item => item.path === file.path);
           if (existing) {
             existing.sha256 = file.sha256;
-            if (!existing.owners.includes(host.id)) existing.owners.push(host.id);
-            existing.owners.sort();
+            existing.owners = [...new Set([...existing.owners, ...owners])].sort();
           } else {
-            manifest.files.push({ path: file.path, sha256: file.sha256, owners: [host.id] });
+            manifest.files.push({ path: file.path, sha256: file.sha256, owners: [...owners] });
           }
         }
         manifest.version = plan.version;
