@@ -268,10 +268,9 @@ async function checkServer(registration: Registration, env: Env, timeoutMs: numb
   } catch (error) {
     checks.push(fail(ids[checks.length], limit(message(error))));
     skipRest("An earlier MCP call failed or timed out.");
+  } finally {
     session.close();
-    return checks;
   }
-  session.close();
   return checks;
 }
 

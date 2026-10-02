@@ -183473,10 +183473,9 @@ async function checkServer(registration, env, timeoutMs) {
   } catch (error62) {
     checks.push(fail2(ids[checks.length], limit2(message(error62))));
     skipRest("An earlier MCP call failed or timed out.");
+  } finally {
     session.close();
-    return checks;
   }
-  session.close();
   return checks;
 }
 async function checkOutputStyle(settingsPath) {

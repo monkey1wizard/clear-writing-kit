@@ -194,9 +194,9 @@ Last activity: 2026-10-02 — T-09 independent tests PASS and audit CLEAR at 6d5
 Next step: Run T-10 install verify implementation through the owner-authorized no-sandbox Claude executor.
 Current Task: T-10
 Task Base Commit: 66887d4317a3d09161a3cde3a70ef3d95d29ca1c
-Task Final Commit:
+Task Final Commit: 5c42b1f51b3752d685813302953d2e9e58d37fb7
 Test Retry Count: 0
-Review Retry Count: 0
+Review Retry Count: 1
 
 ### Deviations
 
@@ -314,6 +314,31 @@ Dispatch: phase=implement task=T-10 role=CODER executor=claude model=claude-sonn
 - Next human step: Scope correction resolved. Orchestrator must commit the allowlisted implementation, then TESTER must independently verify it and investigate the two reported npm test failures.
 
 Dispatch: phase=implement task=T-10 role=CODER executor=claude model=claude-sonnet-5-5 state=completed session_id=1f6c21d4-ee73-472e-b51e-42738867c415 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-10/1790915337-506734400-000000-T-10-implement-claude.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+Dispatch: phase=test task=T-10 role=TESTER executor=agy model=gemini-3.8-flash state=completed session_id=c3424ceb-2c69-4992-a8cc-bba778c405e4 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-10/1790915523-128357100-000000-T-10-test-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-tester.agent.md contract_source=embedded
+
+T-10 independent test: PASS at 5c42b1f51b3752d685813302953d2e9e58d37fb7 with unchanged HEAD and no production edits. TP-05, TP-16 verify branch, TP-17 verify branch, TP-24, TP-28, and TP-36 verify branch passed. Python artifacts 16/16 and checker tests 26/26 passed. Full npm test still has two failures in writing/test/okf.test.cjs due to stale source_sha256 in knowledge/usage/gemini.md from pre-existing 2026-09-29 commit bf6d3a5. Independent investigation established they predate T-10. Do not report the full npm suite as passing or manually edit knowledge. Uninstall-dependent test branches remain mandatory at T-11.
+
+Dispatch: phase=audit task=T-10 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=996defa6-04bc-4f5b-ab00-b1de51ff45d4 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-10/1790916175-282360200-000000-T-10-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
+
+#### Retry Handoff — T-10 / AUDIT
+
+- Status: OPEN
+- Problem: FINDING-001 is LOW and the auditor returned CLEAR, but the omitted session cleanup can keep verify alive after an invalid initialize response. Orchestrator requires the scoped cleanup repair before convergence.
+- Evidence:
+  - Test Results: PASS at 5c42b1f, invalid-initialize process exit not covered.
+  - Review Results: T-10 2026-10-02 CLEAR with one open LOW FINDING-001 at src/install/verify.ts:252.
+  - Security Review: no high or critical findings.
+- Attempts:
+  1. 2026-10-02 — Audited implementation at 5c42b1f.
+     - Result: Invalid initialize response returns before session.close(), leaving child process and stdio active.
+     - Validation: completed audit session 996defa6-04bc-4f5b-ab00-b1de51ff45d4.
+     - Commit: 5c42b1f51b3752d685813302953d2e9e58d37fb7
+- Next human step: No owner decision is needed for the authorized scoped repair. CODER must ensure session.close() runs on every checkServer exit path, preferably with try/finally, preserving skipped-check reporting. Edit verify.ts and rebuild dist only. No prompt edits, stash, HEAD change, or test authoring. TESTER must cover a long-lived server returning initialize without a valid protocolVersion and prove verify exits incomplete promptly with the child terminated, then AUDITOR must recheck cleanup.
+
+Dispatch: phase=implement task=T-10 role=CODER executor=claude model=claude-sonnet-5-5 state=completed session_id=72c04dfb-3b78-4c5a-ba39-a3ad366c6b74 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-10/1790916425-438971900-000000-T-10-implement-claude.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+T-10 cleanup repair: checkServer now runs session.close() in finally, including the invalid initialize early-return path. Boundary check passes. Fresh committed TESTER and AUDITOR evidence is required before resolving FINDING-001 and converging.
 
 New prompt. Source approval and planning reviews are carried forward. T-03 is the payload gate. If it returns stop, T-05 onward cannot start. Human review occurs once after all automated tasks and goal-backward verification. T-01 implementation dispatch completed and was committed. Working tree was clean at b4700fa before this test cursor update. Boundary verification passed. Independent testing and audit have not run. Generated bundle whitespace warnings come from embedded dependency strings and remain unchanged to preserve build reproducibility.
 
@@ -1071,6 +1096,39 @@ Evidence: npm --prefix writing run build matches dist/ (TP-05: 0 diff); 18/18 in
 - TP-17 (`verify`, `uninstall` branches): Secret non-leakage during verify/uninstall. Deferred until respective tasks land.
 - TP-24: `cwk install verify` execution. Deferred until T-10.
 - TP-25: `cwk install uninstall` execution. Deferred until T-11.
+
+### [T-10] 2026-10-02
+
+Run: 2026-10-02
+Mode: spec
+Browser Route: No runnable browser route
+Total: 9 | Passed: 9 | Failed: 0 | Skipped: 0
+Verdict: PASS
+Evidence: npm --prefix writing run build matches dist/ (TP-05: 0 diff); 10/10 independent Node/Deno/Bun probes passed covering TP-05, TP-16, TP-17, TP-24, TP-28, TP-36; Python artifacts suite passed (16/16); checkers suite passed (26/26). Independent investigation confirmed the two reported npm test failures in writing/test/okf.test.cjs stem from pre-existing stale knowledge/usage/gemini.md (Sep 29 commit bf6d3a5).
+
+#### Coverage of Success Criteria / Scenarios
+
+| Criteria / Scenario | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| TP-05: Committed `dist/` equals fresh `npm --prefix writing run build` | Yes | PASS | Clean build executed; `git status --porcelain dist/` produced 0 diff against committed payload. |
+| TP-16: Conflict reporting for legacy writing skill, block, and foreign outputStyle during `verify` | Yes | PASS | `verify` detects and reports planted `accurate-answer` skill directory, instruction block naming `accurate-answer`, and non-kit `outputStyle`, without deleting or modifying any of them. |
+| TP-17: Config token redaction during `verify` | Yes | PASS | Host secrets planted in fixture `settings.json` are never printed in `verify` stdout or stderr across normal or failure execution paths. |
+| TP-24: `cwk install verify` execution, per-language findings, timeout, and failure states | Yes | PASS | After `apply`, `verify` reads registered MCP command via `claude mcp get`, starts server, verifies `lintText` with findings for en-US, zh-TW, and ja-JP, and passes with spaces in home path; correctly reports `incomplete` with non-zero exit code when dictionary is removed, `outputStyle` is reset, a legacy skill exists, or MCP server hangs past timeout. |
+| TP-28: `install --help` lists subcommands across runtimes | Yes | PASS | `cwk install --help` executed on Node (v25.2.1), Deno (2.9.7), and Bun (1.3.12) lists `plan`, `apply`, `verify`, and `uninstall` with exit code 0. |
+| TP-36: Exit code contracts across subcommands for `verify` | Yes | PASS | Valid `verify` exits 0 on `pass`; returns exit 1 on `incomplete`, host mismatch, unverified host, or missing `--agent`; returns exit 2 on unknown flags. |
+| Investigation: Root cause of reported `npm test` failures | Yes | PASS | Investigated two failures in `writing/test/okf.test.cjs`: both stem from stale `source_sha256` in `knowledge/usage/gemini.md` dating to pre-existing commit `bf6d3a5` (2026-09-29); unrelated to T-10 implementation. |
+| Regression: Python artifacts suite | Yes | PASS | `python -m unittest discover -s tests -v` executed 16 tests, 16 passed, exit code 0. |
+| Regression: Checkers suite | Yes | PASS | `node --test writing/test/checkers.test.cjs` executed 26 tests, 26 passed, exit code 0. |
+
+#### Failed Tests
+
+- None. All covering criteria and regression suites passed.
+
+#### Not Tested
+
+- TP-17 (`uninstall` branch): Secret non-leakage during `uninstall`. Deferred until T-11.
+- TP-25: `cwk install uninstall` execution. Deferred until T-11.
+- TP-36 (`uninstall` branch): Subcommand exit code checks for `uninstall`. Deferred until T-11.
 ## Review Results
 
 ### Architecture Review
@@ -1312,6 +1370,31 @@ The audit evaluated T-09 changes delivering `cwk install apply` across `src/inst
 | Finding | Severity | Status |
 | --- | --- | --- |
 | None | None | CLEAR |
+
+<!-- AUDIT_REVIEW: CLEAR -->
+
+### [T-10] 2026-10-02
+
+**Date:** 2026-10-02
+**Findings:** 1 total — 0 critical, 0 high, 0 medium, 1 low
+
+#### Summary
+
+The audit evaluated task T-10 changes implementing `cwk install verify` across `src/install/verify.ts`, `src/cli.ts`, and `dist/`. The implementation adheres to security boundaries, safe process execution, and configuration privacy. Host commands are resolved through exact name matching without shell interpolation, Windows `.cmd`/`.bat` commands enforce argument inspection against dangerous characters (`"`, `%`, `\r`, `\n`, `\0`), and MCP communications speak JSON-RPC 2.0 over isolated stdio pipes with dedicated per-request timeouts (30 seconds default). Host settings inspection re-reads only the target `outputStyle` key and truncates unexpected values without printing secret tokens or other keys. Legacy conflicts and instruction block byte limits are safely inspected without altering or deleting existing files. One low-severity resource cleanup defect was identified in `src/install/verify.ts:252`, where an early return on an invalid `initialize` response bypasses `session.close()`, leaving the child process and open stdio streams active on the Node.js event loop. No critical or high security vulnerabilities or deep performance bottlenecks were identified, and all success criteria (TP-16, TP-17, TP-24, TP-28, TP-36) remain satisfied.
+
+#### Open Findings
+
+**[LOW] FINDING-001: Omitted session cleanup on invalid initialize reply**
+- File: `src/install/verify.ts:252`
+- Exploit or failure scenario: If a registered server responds to `initialize` without a valid `protocolVersion` string, `checkServer` returns early before calling `session.close()`, leaving the spawned child process alive and stdio stream handles open on the Node.js event loop.
+- Recommended fix: Ensure `session.close()` executes on all exit paths by wrapping MCP request execution in a `try ... finally` block or calling `session.close()` before returning on line 252.
+- Confidence: 9/10
+
+#### Remediation Tracking
+
+| Finding | Severity | Status |
+| --- | --- | --- |
+| FINDING-001 | LOW | OPEN |
 
 <!-- AUDIT_REVIEW: CLEAR -->
 ## Debug Log
