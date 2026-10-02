@@ -192,16 +192,18 @@ Workflow: IMPLEMENT
 Step: 5 of 7
 Last activity: 2026-10-02 — T-10 independent tests PASS and audit CLEAR at 8c93c76. FINDING-001 is resolved.
 Next step: Run T-11 install uninstall implementation through the owner-authorized no-sandbox Claude executor.
-Current Task:
-Task Base Commit: 66887d4317a3d09161a3cde3a70ef3d95d29ca1c
-Task Final Commit: 8c93c7632001de3617106f08aa51c71650226a23
+Current Task: T-11
+Task Base Commit: 9942c1079480bee0d4af56598669d138cb513708
+Task Final Commit:
 Test Retry Count: 0
-Review Retry Count: 1
+Review Retry Count: 0
 
 ### Deviations
 
 | Date | Task | Deviation | Reason |
 | --- | --- | --- | --- |
+
+| 2026-10-02 | T-11 | Visibility-only boundary widening for src/install/settings.ts: export the unchanged topLevelMembers parser landed in T-09 commit 6d53fe2. | Reuse the existing format-preserving JSON parser from uninstall.ts. The sole out-of-allowlist code change is the export keyword, with no behavior or import changes. |
 
 | 2026-10-02 | T-01 | Owner authorized ignoring generated .dev/pipeline records. Administrative commit 5d5a476 precedes implementation dfe8fa1; task base advanced to it without discarding output. Owner replaced the shared ignore rule in b4700fa, so generated records now use local .git/info/exclude. Tested HEAD is b4700fa, with implementation unchanged. | Generated receipts and loop-log were outside the implementation allowlist. Owner .gitignore is authoritative. Already tracked evidence remains tracked. |
 
@@ -349,6 +351,25 @@ Dispatch: phase=test task=T-10 role=TESTER executor=agy model=gemini-3.8-flash s
 T-10 cleanup retest: PASS at unchanged HEAD 8c93c7632001de3617106f08aa51c71650226a23. Long-lived invalid-initialize server yields incomplete exit 1 within 5 seconds, and child PID is confirmed terminated. All task-scoped TP rows and regression suites pass again. Two pre-existing full npm test failures remain unchanged and are not a passing suite.
 
 Dispatch: phase=audit task=T-10 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=a68090d5-ca71-418e-a4ed-e4e81a88386f log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-10/1790916883-102276600-000000-T-10-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
+
+T-11 task-quality check: The task owns block.ts, uninstall.ts, cli.ts, and rebuilt dist only. Remove the block only when its exact bytes match the manifest hash, preserve foreign blocks, and retain every modified file/CLI entry with a reason. Query the actual CLI-managed state before comparing plugin/MCP fingerprints. Remove only hash-matching versioned payload files and retain backups. Resolve deletion paths within the injected home and intended kit/host artifact paths, and do not follow directory symlinks into unrelated paths. Preserve user content in pre-existing instruction/settings files. No real-home uninstall, test authoring, stash, HEAD change, prompt edits, or behavior refactors to prior modules belong to this phase. TESTER must exercise complete apply/rerun/verify/uninstall fixture cycles for both verified hosts, using native CLIs where available, and resolve every remaining TP branch including TP-17, TP-23, TP-25, TP-28, and TP-36. Do not mark a host cycle passed if Codex registration readback or native CLI syntax is merely assumed.
+
+Dispatch: phase=implement task=T-11 role=CODER executor=claude model=claude-sonnet-5-5 state=completed session_id=35b80aaf-08eb-4885-9bce-ee53bd9301ac log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-11/1790917219-630438400-000000-T-11-implement-claude.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+#### Retry Handoff — T-11 / IMPLEMENT
+
+- Status: OPEN
+- Problem: Boundary-check failed because clearOutputStyle behavior was added to settings.ts outside T-11 scope.
+- Evidence:
+  - Test Results: not-applicable
+  - Review Results: not-applicable
+  - Security Review: not-applicable
+- Attempts:
+  1. 2026-10-02 — Initial implementation completed at unchanged base 9942c10.
+     - Result: Block and settings probes passed, but settings.ts has a new behavior outside the task allowlist. The CLI-entry removal branch and complete host cycles remain untested.
+     - Validation: boundary-check overall fail on src/install/settings.ts.
+     - Commit: none
+- Next human step: Move clearOutputStyle into uninstall.ts, preserving its field-only editing and backups. Reuse the already-landed T-09 topLevelMembers parser by exporting only that existing symbol in settings.ts if needed. The only permitted remaining settings.ts diff is adding export to the existing parser declaration, with no import, parser, or behavior changes. The orchestrator can then apply the explicit visibility-only boundary protocol. Alternatively keep no settings.ts diff. No allowlist edits, prompt edits, tests, stash, or commits by CODER. Rebuild dist. Preserve all output and report marketplace retention and original trailing-newline limitations honestly for TESTER/AUDITOR.
 
 New prompt. Source approval and planning reviews are carried forward. T-03 is the payload gate. If it returns stop, T-05 onward cannot start. Human review occurs once after all automated tasks and goal-backward verification. T-01 implementation dispatch completed and was committed. Working tree was clean at b4700fa before this test cursor update. Boundary verification passed. Independent testing and audit have not run. Generated bundle whitespace warnings come from embedded dependency strings and remain unchanged to preserve build reproducibility.
 
@@ -597,7 +618,8 @@ Steps map to tasks as follows: Step 1 → T-01 to T-03, Step 2 → T-04, Step 3 
   - Evidence: E + TP-16, TP-17, TP-24, TP-28, TP-36.
 
 - [ ] T-11 — Ship `cwk install uninstall`
-  - Targets: `src/install/block.ts`, `src/install/uninstall.ts`, `src/cli.ts`, `dist/`
+  - Targets: `src/install/block.ts`, `src/install/uninstall.ts`, `src/install/settings.ts`, `src/cli.ts`, `dist/`
+  - Boundary justification: settings.ts is limited to exporting the unchanged topLevelMembers parser from already-landed T-09 logic for reuse by uninstall.ts. No behavior change is authorized in that file.
   - Depends on: T-09
   - Change: Add `removeBlock(text, expectedHash)` to `block.ts`, where `expectedHash` is the SHA-256 of the block bytes as written. `uninstall(ctx)` removes manifest file entries whose hash matches, removes CLI entries through the host remove command when the current command matches the fingerprint, removes the kit block when its hash matches, and removes payload versions whose hashes match. It reports every kept item with the reason and keeps backups. Add `install uninstall` and rebuild `dist/`.
   - Acceptance: `uninstall` restores a clean fixture home and keeps every changed item.
