@@ -16,6 +16,7 @@ The guidance applies the reader outcomes of ISO 24495-1. English also uses selec
 
 | Use | Location | How to use it |
 | --- | --- | --- |
+| Coding-agent installation | [INSTALL.md](INSTALL.md) | Follow the guided plan and apply installation |
 | Coding-agent replies and documents | [coding-agent-writing](skills/coding-agent-writing/SKILL.md) | Install this folder through your agent's skill manager |
 | ChatGPT Web or Gemini Web skills | [web-answer-writing](web-skills/web-answer-writing/SKILL.md) | Upload the generated ZIP in a supported skill interface |
 | ChatGPT Custom Instructions | [chatgpt.md](web-instructions/chatgpt.md) | Paste only the text inside the block |
@@ -37,6 +38,17 @@ The Web skill includes manual review steps for sessions without writing tools. A
 ### Generate and use the files
 
 Requirements: Python 3.10 or newer for generation, plus Node.js 20.18 or newer and npm for local writing checks. Run these commands from the repository root.
+
+Install the coding-agent plugin and MCP server:
+
+```powershell
+node dist/cwk.mjs install plan --agent claude
+node dist/cwk.mjs install apply --agent claude --plan-hash <hash>
+node dist/cwk.mjs install verify --agent claude
+node dist/cwk.mjs install uninstall --agent claude
+```
+
+Supported runtimes are Node.js (>= 20.18.0), Deno (>= 2.0.0, via `deno run -A`), and Bun. Agents follow the guided procedure in [INSTALL.md](INSTALL.md).
 
 Preview in a new temporary directory:
 
@@ -62,7 +74,7 @@ python scripts/generate-output-style.py --output build/clear-writing-kit.md
 python scripts/generate-output-style.py --output build/clear-writing-kit.md --check
 ```
 
-Without `--output`, the generator writes `~/.claude/output-styles/clear-writing-kit.md`. It does not select the output style in a conversation.
+Without `--output`, the generator writes `output-styles/clear-writing-kit.md` in the repository. It does not select the output style in a conversation.
 
 ### Verify changes
 
@@ -88,7 +100,7 @@ The repository name changes from `accurate-answer` to `clear-writing-kit`. The s
 
 The Claude output-style name and generated filename also change to `clear-writing-kit`. Existing installations are not migrated automatically. Generate the new file, then select the new style in Claude Code. After confirming the replacement works, remove the old output style. This change does not rename your local checkout folder or the remote repository.
 
-This repository does not edit global agent settings. The [rule migration record](docs/rule-migration.md) explains where the original requirements now live. The [checker reference](docs/writing-checks.md) documents rule scope and examples.
+The installer places the runtime payload in `~/.clear-writing-kit/<version>/`, creates the launcher `~/.clear-writing-kit/cwk.mjs`, registers the host plugin, registers the `clear-writing-kit-textlint` MCP server, adds an isolated instruction block to global agent instructions (`~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md`), and for Claude Code sets `outputStyle` in `~/.claude/settings.json` after creating a backup. To uninstall, run `node dist/cwk.mjs install uninstall --agent <agent>` (or with `deno run -A` or `bun`). The uninstaller removes manifest-tracked files, unregisters CLI entries matching fingerprints, removes the kit instruction block matching its hash, and deletes the payload directory. Modified files or entries are retained and reported with reasons. Retained backups can restore previous settings such as `outputStyle` or original file trailing newlines, while host marketplace entries are retained for manual removal. The [rule migration record](docs/rule-migration.md) explains where the original requirements now live. The [checker reference](docs/writing-checks.md) documents rule scope and examples.
 
 ## 繁體中文
 
@@ -102,6 +114,7 @@ Clear Writing Kit 提供 coding agents 與 Web 助理使用的寫作規則。優
 
 | 用途 | 位置 | 使用方式 |
 | --- | --- | --- |
+| coding-agent 安裝 | [INSTALL.md](INSTALL.md) | 遵循引導式流程執行 plan、apply 與 verify |
 | coding-agent 回答與文件 | [coding-agent-writing](skills/coding-agent-writing/SKILL.md) | 使用代理程式的技能管理工具安裝此資料夾 |
 | ChatGPT Web 或 Gemini Web 技能 | [web-answer-writing](web-skills/web-answer-writing/SKILL.md) | 在支援技能的介面上傳產生的 ZIP |
 | ChatGPT 自訂指示 | [chatgpt.md](web-instructions/chatgpt.md) | 只貼上文字區塊內容 |
@@ -123,6 +136,17 @@ coding agents 必須先探索可用的寫作工具，才能判斷工具是否不
 ### 產生與使用檔案
 
 產生器需要 Python 3.10 以上版本。本機文字檢查需要 Node.js 20.18 以上版本及 npm。請在儲存庫根目錄執行以下命令。
+
+安裝 coding-agent 外掛程式與 MCP 伺服器：
+
+```powershell
+node dist/cwk.mjs install plan --agent claude
+node dist/cwk.mjs install apply --agent claude --plan-hash <hash>
+node dist/cwk.mjs install verify --agent claude
+node dist/cwk.mjs install uninstall --agent claude
+```
+
+支援的執行階段包含 Node.js（20.18.0 以上版本）、Deno（2.0.0 以上版本，透過 `deno run -A`）及 Bun。代理程式請遵循 [INSTALL.md](INSTALL.md) 的指示流程。
 
 在新的暫存目錄預覽：
 
@@ -148,7 +172,7 @@ python scripts/generate-output-style.py --output build/clear-writing-kit.md
 python scripts/generate-output-style.py --output build/clear-writing-kit.md --check
 ```
 
-若未指定 `--output`，產生器會寫入 `~/.claude/output-styles/clear-writing-kit.md`。產生器不會替對話選取輸出樣式。
+若未指定 `--output`，產生器會寫入儲存庫內的 `output-styles/clear-writing-kit.md`。產生器不會替對話選取輸出樣式。
 
 ### 驗證變更
 
@@ -174,7 +198,7 @@ python -m unittest discover -s tests -v
 
 Claude 輸出樣式名稱與產生的檔名也改為 `clear-writing-kit`。既有安裝不會自動遷移。請先產生新檔案，再於 Claude Code 選取新樣式。確認新樣式正常後，才移除舊樣式。本次變更不會重新命名本機工作目錄或遠端儲存庫。
 
-本儲存庫不會修改全域代理程式設定。[規則遷移紀錄](docs/rule-migration.md)說明原本要求的新位置。[檢查器說明](docs/writing-checks.md)列出規則範圍與範例。
+安裝程式會將執行階段酬載安裝至 `~/.clear-writing-kit/<version>/`，建立啟動器 `~/.clear-writing-kit/cwk.mjs`，註冊宿主外掛程式，註冊 `clear-writing-kit-textlint` MCP 伺服器，在全域指示檔案（`~/.claude/CLAUDE.md` 或 `~/.codex/AGENTS.md`）加入獨立的指示區塊，並為 Claude Code 在 `~/.claude/settings.json` 設定 `outputStyle`（修改前會先備份）。若要解除安裝，請執行 `cwk install uninstall --agent <agent>`（亦可使用 `deno run -A` 或 `bun`）。解除安裝程式會移除資訊清單中雜湊相符的檔案、取消註冊指紋相符的 CLI 項目、移除雜湊相符的指示區塊，並刪除對應的酬載目錄。若檔案或項目曾被修改，則會保留並回報原因。保留的備份可用於還原原有的 `outputStyle` 或原始檔案結尾換行。市集註冊項目則保留供手動移除。[規則遷移紀錄](docs/rule-migration.md)說明原本要求的新位置。[檢查器說明](docs/writing-checks.md)列出規則範圍與範例。
 
 ## 日本語
 
@@ -188,6 +212,7 @@ ISO 24495-1の読者中心の原則を採用している。英語には、ASD-ST
 
 | 用途 | 場所 | 使用方法 |
 | --- | --- | --- |
+| コーディングエージェントのインストール | [INSTALL.md](INSTALL.md) | ガイド付き手順で plan、apply、verify を実行する |
 | コーディングエージェントの回答と文書 | [coding-agent-writing](skills/coding-agent-writing/SKILL.md) | エージェントのスキル管理ツールでフォルダーをインストールする |
 | ChatGPT WebとGemini Webのスキル | [web-answer-writing](web-skills/web-answer-writing/SKILL.md) | 対応するスキル画面で生成済みZIPをアップロードする |
 | ChatGPTのカスタム指示 | [chatgpt.md](web-instructions/chatgpt.md) | テキストブロックの内容だけを貼り付ける |
@@ -209,6 +234,17 @@ Webの会話で検査ツールが使えない場合は、文章を手動で確�
 ### ファイルの生成と利用
 
 生成処理にはPython 3.10以降が必要である。ローカルの文章検査には、Node.js 20.18以降とnpmが必要である。次のコマンドは、リポジトリのルートで実行する。
+
+コーディングエージェント用のプラグインとMCPサーバーをインストールする。
+
+```powershell
+node dist/cwk.mjs install plan --agent claude
+node dist/cwk.mjs install apply --agent claude --plan-hash <hash>
+node dist/cwk.mjs install verify --agent claude
+node dist/cwk.mjs install uninstall --agent claude
+```
+
+対応する実行環境はNode.js（20.18.0以降）、Deno（2.0.0以降、`deno run -A`）、Bunである。エージェントは [INSTALL.md](INSTALL.md) の手順に従う。
 
 新しい一時フォルダーにプレビューを生成する。
 
@@ -234,7 +270,7 @@ python scripts/generate-output-style.py --output build/clear-writing-kit.md
 python scripts/generate-output-style.py --output build/clear-writing-kit.md --check
 ```
 
-`--output` を省略すると、生成先は `~/.claude/output-styles/clear-writing-kit.md` になる。生成処理は、会話で使う出力スタイルを選択しない。
+`--output` を省略すると、リポジトリ内の `output-styles/clear-writing-kit.md` に書き込む。生成処理は、会話で使う出力スタイルを選択しない。
 
 ### 変更内容の検証
 
@@ -260,4 +296,4 @@ python -m unittest discover -s tests -v
 
 Claudeの出力スタイル名と生成ファイル名も `clear-writing-kit` に変わる。既存のインストールは自動移行されない。新しいファイルを生成し、Claude Codeで新しいスタイルを選択する。新しいスタイルの動作を確認してから、古いスタイルを削除する。この変更では、ローカルの作業フォルダーやリモートリポジトリの名前を変更しない。
 
-このリポジトリは、エージェントのグローバル設定を変更しない。[規則の移行記録](docs/rule-migration.md)に、元の要件の移行先を記載する。[検査ツールの説明](docs/writing-checks.md)には、規則の範囲と例を記載する。
+インストーラーは実行時ペイロードを `~/.clear-writing-kit/<version>/` に配置し、ランチャー `~/.clear-writing-kit/cwk.mjs` を作成する。各ホストのプラグインと `clear-writing-kit-textlint` MCPサーバーを登録する。グローバル指示ファイル（`~/.claude/CLAUDE.md` または `~/.codex/AGENTS.md`）に指示ブロックを追加する。Claude Codeでは `~/.claude/settings.json` のバックアップを作成し、`outputStyle` を設定する。アンインストールするには、`cwk install uninstall --agent <agent>` を実行する（`deno run -A` または `bun` も使用可能）。アンインストーラーは、マニフェストとハッシュが一致するファイルを削除する。フィンガープリントが一致するCLI登録と、ハッシュが一致する指示ブロックやペイロードも削除する。変更されたファイルや設定は保持し、理由を報告する。以前の `outputStyle` や元の末尾改行は、保持されたバックアップから復元できる。マーケットプレイスの登録は手動削除用に保持される。[規則の移行記録](docs/rule-migration.md)に、元の要件の移行先を記載する。[検査ツールの説明](docs/writing-checks.md)には、規則の範囲と例を記載する。

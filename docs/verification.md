@@ -43,3 +43,37 @@ New document-style tests first failed against the earlier configuration. Further
 No live ChatGPT or Gemini upload, global skill installation, ccync synchronization, new-agent activation, long-conversation evaluation, or message-blocking hook was tested. Neither format validation nor synthetic tests prove that a model will follow every rule. The original research specification's cross-host deployment acceptance remains outside this repository-only implementation.
 
 Repository branding and the Claude output-style name now use `clear-writing-kit`. The coding-agent and Web skill names remain distinct. The [migration record](rule-migration.md) documents the old names and the required installation changes. This repository update does not rename the local checkout folder or the remote repository.
+
+## Cross-agent installer verification (2026-10-02)
+
+Date: 2026-10-02. Environment: Windows, Node.js 25.2.1, Deno 2.9.7, Bun 1.3.10.
+
+### The verify command
+
+The `cwk install verify --agent <agent>` command tests live installer operations:
+
+- Direct stdio JSON-RPC transport: It starts the registered MCP command and speaks `initialize`, `tools/list`, and `tools/call` over stdio without an external client package.
+- Multi-language probes: It calls `lintText` with probe sentences in `en-US`, `zh-TW`, and `ja-JP`. Each probe must produce at least one finding. Calls are bounded by a 30-second timeout.
+- Host configuration checks: In Claude Code, it re-reads `~/.claude/settings.json` to confirm `outputStyle` equals `clear-writing-kit`.
+- Instruction block validation: It checks that exactly one instruction block exists within `<!-- clear-writing-kit:begin v=<version> -->` and `<!-- clear-writing-kit:end -->`, and verifies the block stays under 2,048 bytes.
+- Legacy conflict reporting: It checks for legacy conflicts (an `accurate-answer` skill directory, an instruction block naming `accurate-answer`, or a conflicting `outputStyle`). It reports them without deleting them.
+- Strict verdict: It returns `pass` (exit code 0) only when every check runs and passes. Any missing tool, failed probe, stale setting, oversize block, or unaddressed legacy conflict results in `incomplete` (exit code 1).
+
+### Host verification scope
+
+Native fixture lifecycles verify Claude Code (`claude`) and Codex CLI (`codex`) on isolated configuration directories. Other surveyed hosts (`copilot`, `opencode`, `antigravity`) remain marked unverified (`verified: false`). For unverified hosts, `plan` outputs manual installation instructions and `apply` refuses to run.
+
+### Uninstall lifecycle and restoration limits
+
+The `cwk install uninstall --agent <agent>` command removes installed items based on manifest tracking:
+
+- Tracked file removal: Files are deleted only when their SHA-256 matches the install manifest.
+- Registered CLI entries: Host plugin and MCP registrations are removed through host CLIs when current commands match recorded fingerprints.
+- Instruction block removal: The instruction block is removed only when its exact content hash matches.
+- Payload version cleanup: Versioned directories in `~/.clear-writing-kit/<version>/` are removed when their hashes match.
+- Modified item retention: Any file, instruction block, or MCP entry modified after installation is preserved and reported with the reason.
+- Restoration limits: Timestamped backups (such as `settings.json.bak`) are preserved in the backup directory. Restoring a prior `outputStyle` or an original non-standard trailing newline requires manual restoration from the retained backup. Host marketplace registrations are retained for manual removal.
+
+### Historical test status distinction
+
+Keep the 2026-09-29 local check results above distinct from later regression runs. Two pre-existing test failures in `writing/test/okf.test.cjs` stem from a stale `source_sha256` in `knowledge/usage/gemini.md` dating from commit `bf6d3a5` (2026-09-29). Those failures predate the installer implementation. The installer plan does not change `knowledge/` or its generation sources.

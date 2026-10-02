@@ -1,0 +1,76 @@
+# Clear Writing Kit: Agent Installation Procedure
+
+This document instructs coding agents on how to install clear-writing-kit for their host environment. Follow this procedure step-by-step.
+
+## 1. Runtime Preflight
+
+Check for an available JavaScript runtime on the system PATH in this priority order: `node`, `deno`, or `bun`.
+
+- Supported versions: Node.js >= 20.18.0, Deno >= 2.0.0, or Bun.
+- If none of these runtimes is found on PATH, STOP immediately. Do not install a runtime automatically.
+- Direct the user to install a supported runtime and provide the official installation URLs:
+  - Node.js: <https://nodejs.org/>
+  - Deno: <https://deno.com/>
+  - Bun: <https://bun.sh/>
+
+Select the runtime command:
+
+- Node: `node dist/cwk.mjs`
+- Deno: `deno run -A dist/cwk.mjs`
+- Bun: `bun dist/cwk.mjs`
+
+## 2. Repository Clone and Committed Payload
+
+The agent works directly from a repository clone.
+The runtime payload in `dist/` is pre-built and committed to the repository, so no `npm install` is needed.
+
+## 3. Ban on Direct Configuration Edits
+
+Never edit host configuration files directly.
+Do not manually edit or create host configuration files, settings files (such as `settings.json`), instruction files (such as `CLAUDE.md` or `AGENTS.md`), or plugin manifests. All configuration changes, plugin registrations, MCP registrations, and instruction blocks must be performed through the installer commands. Never manually edit or delete legacy conflict items or foreign blocks.
+
+## 4. Compute and Show the Installation Plan
+
+Identify your host identity `<self>` (`claude`, `codex`, `copilot`, `opencode`, or `antigravity`).
+Run the read-only plan command:
+
+```bash
+<runtime-command> install plan --agent <self>
+```
+
+Show the complete plan output to the user, including the target host, target files, diffs, conflict list, and the computed plan hash.
+
+## 5. Wait for Explicit User Confirmation
+
+Wait for explicit confirmation from the user before applying changes.
+Never run `apply` without explicit user confirmation.
+
+## 6. Apply the Installation Plan
+
+Once the user confirms, run the apply command with the exact plan hash from the plan step:
+
+```bash
+<runtime-command> install apply --agent <self> --plan-hash <plan-hash>
+```
+
+The installer verifies that the current target state matches the plan hash before making changes. If a step fails, the installer stops and reports the failed step. Completed steps remain recorded in the manifest.
+
+## 7. Verify the Installation
+
+After `apply` completes, run the verification command:
+
+```bash
+<runtime-command> install verify --agent <self>
+```
+
+The verification command checks the registered MCP server with probe sentences across all supported languages (en-US, zh-TW, ja-JP), validates the instruction block, and verifies host settings.
+
+## 8. Separate Pass and Fail Reporting
+
+Report passed and failed steps separately.
+Do not combine passed and failed checks into a single generic summary. Clearly list every check that passed, and separately report any failed or incomplete checks along with their error messages and diagnostic details.
+
+## 9. Request a New Session for Behavior Check
+
+Ask the user to start a new agent session to perform the behavior check.
+Host configuration changes, plugin discovery, output styles, and global instruction blocks take effect in fresh agent sessions. Prompt the user to start a new session to confirm that the skill, MCP tools, and output style are active.

@@ -188,15 +188,15 @@ None
 
 ## Status
 
-Workflow: IMPLEMENT
+Workflow: TEST
 Step: 5 of 7
-Last activity: 2026-10-02 — T-11 independent tests PASS and audit CLEAR at b0f2d66.
-Next step: Run T-12 documentation after T-11 convergence.
-Current Task:
+Last activity: 2026-10-02 — T-11 converged. Start T-12 documentation.
+Next step: Independently test T-12 documentation and command parity.
+Current Task: T-12
 Interrupted Phase:
-Task Base Commit: 9942c1079480bee0d4af56598669d138cb513708
-Task Final Commit: b0f2d668ce78a0ce779a19c3a79e14db1372087d
-Test Retry Count: 1
+Task Base Commit: 4ead407f6147e301fe96a10e683cecdf111ca961
+Task Final Commit:
+Test Retry Count: 0
 Review Retry Count: 0
 
 ### Deviations
@@ -209,6 +209,16 @@ Review Retry Count: 0
 | 2026-10-02 | T-01 | Owner authorized ignoring generated .dev/pipeline records. Administrative commit 5d5a476 precedes implementation dfe8fa1; task base advanced to it without discarding output. Owner replaced the shared ignore rule in b4700fa, so generated records now use local .git/info/exclude. Tested HEAD is b4700fa, with implementation unchanged. | Generated receipts and loop-log were outside the implementation allowlist. Owner .gitignore is authoritative. Already tracked evidence remains tracked. |
 
 ### Handoff Notes
+
+Dispatch: phase=implement task=T-12 role=CODER executor=agy model=gemini-3.8-flash state=completed session_id=a10f2bf4-8cc8-4990-9bbd-37f0abef9176 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-12/1790921212-827595900-000000-T-12-implement-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+T-12 test focus: Independently validate all R-19 steps, runnable documented command forms without assuming a globally installed cwk alias, three-language command/link parity, accurate runtime-version evidence, and scope-limited documentation checks. Distinguish full npm lint/test baseline failures from direct changed-document checks. Use accurate-answer and zh-TW lint for Chinese edits. No production edits by TESTER. Verify original generator checks, artifact tests, and changed-doc Markdown/language checks. Do not claim new-session activation or full npm suites passed without fresh evidence.
+
+T-12 task-quality check: The change owns only agent-facing installation procedure, three-language README command parity, generator description, and accurate verification documentation. Follow R-19 exactly, using committed dist from a clone with no npm install for installation. Choose a supported runtime without installing it. If none exists, stop with official runtime install URLs. Show plan before explicit user confirmation. Bind apply to its plan hash, then run verify and report passed/failed/skipped separately. Do not edit host configuration directly or remove legacy conflicts. Request new sessions for behavior acceptance without claiming them tested. Preserve current document structure and local links. Document uninstall marketplace retention, old outputStyle restoration from backups, and exact trailing-newline restoration limits. Keep 2026-09-29 historical test results distinct from current two pre-existing full npm OKF failures. Add no runtime/code abstractions and no changes to SKILL.md or knowledge/. Use existing docs terminology and avoid duplicate procedures. Native host verification is limited to Claude/Codex fixtures, other hosts remain unverified. No real-home install, independent test authoring, commits, or stash in CODER phase.
+
+Dispatch: phase=implement task=T-12 role=CODER executor=codex model=gpt-6-luna state=no-receipt session_id=01a0fb37-4f90-7792-820b-9b41af189b57 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-12/1790921100-806765500-000000-T-12-implement-codex.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+T-12 recovery: Shared CODER configuration reverted to codex between T-11 and T-12 dispatches. The original process used workspace-write, contrary to the owner no-sandbox constraint. It exited on its own before the targeted taskkill call, which found no process. Terminal state is no-receipt. Logged exec failures report helper_unknown_error: setup refresh had errors. No product files changed. No cause is inferred from those errors. Set CODER to agy again, verify the fresh route and pin immediately before one permitted recovery dispatch. Do not delete leases or outputs. The unsupported --executor option produced no dispatch.
 
 #### Human Handback — convergence-human-repair
 
