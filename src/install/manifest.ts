@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { err, ok, readText, type Result } from "./fsutil.js";
+import { err, ok, readText, writeTextAtomic, type Result } from "./fsutil.js";
 
 export type ManifestFile = { path: string; sha256: string };
 export type ManifestCliEntry = { host: string; kind: string; name: string; fingerprint: string };
@@ -38,4 +38,10 @@ export function parseManifest(text: string): Result<Manifest> {
 export async function readManifest(home: string): Promise<Result<Manifest>> {
   const file = await readText(manifestPath(home));
   return file ? parseManifest(file.text) : ok(emptyManifest());
+}
+
+/** Writes the manifest through an atomic replace. */
+export async function saveManifest(home: string, manifest: Manifest) {
+  await writeTextAtomic(manifestPath(home), `${JSON.stringify(manifest, null, 2)}
+`, { bom: false });
 }

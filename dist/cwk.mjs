@@ -4264,7 +4264,7 @@ var require_lodash = __commonJS({
           }
           return mapped.length && mapped[0] === arrays[0] ? baseIntersection(mapped, undefined2, comparator) : [];
         });
-        function join6(array2, separator) {
+        function join8(array2, separator) {
           return array2 == null ? "" : nativeJoin.call(array2, separator);
         }
         function last(array2) {
@@ -5573,22 +5573,22 @@ var require_lodash = __commonJS({
         var snakeCase = createCompounder(function(result2, word, index) {
           return result2 + (index ? "_" : "") + word.toLowerCase();
         });
-        function split(string4, separator, limit) {
-          if (limit && typeof limit != "number" && isIterateeCall(string4, separator, limit)) {
-            separator = limit = undefined2;
+        function split(string4, separator, limit2) {
+          if (limit2 && typeof limit2 != "number" && isIterateeCall(string4, separator, limit2)) {
+            separator = limit2 = undefined2;
           }
-          limit = limit === undefined2 ? MAX_ARRAY_LENGTH : limit >>> 0;
-          if (!limit) {
+          limit2 = limit2 === undefined2 ? MAX_ARRAY_LENGTH : limit2 >>> 0;
+          if (!limit2) {
             return [];
           }
           string4 = toString(string4);
           if (string4 && (typeof separator == "string" || separator != null && !isRegExp(separator))) {
             separator = baseToString(separator);
             if (!separator && hasUnicode(string4)) {
-              return castSlice(stringToArray(string4), 0, limit);
+              return castSlice(stringToArray(string4), 0, limit2);
             }
           }
-          return string4.split(separator, limit);
+          return string4.split(separator, limit2);
         }
         var startCase = createCompounder(function(result2, word, index) {
           return result2 + (index ? " " : "") + upperFirst(word);
@@ -6188,7 +6188,7 @@ var require_lodash = __commonJS({
         lodash.isUndefined = isUndefined;
         lodash.isWeakMap = isWeakMap;
         lodash.isWeakSet = isWeakSet;
-        lodash.join = join6;
+        lodash.join = join8;
         lodash.kebabCase = kebabCase;
         lodash.last = last;
         lodash.lastIndexOf = lastIndexOf;
@@ -19707,7 +19707,7 @@ var require_Obj = __commonJS({
 var require_Str = __commonJS({
   "node_modules/prelude-ls/lib/Str.js"(exports, module) {
     var split;
-    var join6;
+    var join8;
     var lines;
     var unlines;
     var words;
@@ -19722,7 +19722,7 @@ var require_Str = __commonJS({
     split = curry$(function(sep, str) {
       return str.split(sep);
     });
-    join6 = curry$(function(sep, xs) {
+    join8 = curry$(function(sep, xs) {
       return xs.join(sep);
     });
     lines = function(str) {
@@ -19781,7 +19781,7 @@ var require_Str = __commonJS({
     };
     module.exports = {
       split,
-      join: join6,
+      join: join8,
       lines,
       unlines,
       words,
@@ -31876,7 +31876,7 @@ var require_rc_config_loader = __commonJS({
       const extensions = Object.keys(loaderByExt);
       while (extensions.length) {
         const ext = extensions.shift();
-        const configLocation = join6(parts, configFileName + ext);
+        const configLocation = join8(parts, configFileName + ext);
         if (!fs_1.default.existsSync(configLocation)) {
           continue;
         }
@@ -31905,7 +31905,7 @@ var require_rc_config_loader = __commonJS({
         }
       }
       if (packageJSON) {
-        const pkgJSONLoc = join6(parts, "package.json");
+        const pkgJSONLoc = join8(parts, "package.json");
         if (fs_1.default.existsSync(pkgJSONLoc)) {
           const pkgJSON = json5_1.default.parse(readFile3(pkgJSONLoc));
           if (pkgJSON[packageJSONFieldName]) {
@@ -31924,7 +31924,7 @@ var require_rc_config_loader = __commonJS({
     function splitPath(x) {
       return path_1.default.resolve(x || "").split(path_1.default.sep);
     }
-    function join6(parts, filename) {
+    function join8(parts, filename) {
       return path_1.default.resolve(parts.join(path_1.default.sep) + path_1.default.sep, filename);
     }
     function loadJSConfigFile(filePath, suppress) {
@@ -37925,17 +37925,17 @@ var require_core3 = __commonJS({
     function getDirname() {
       return typeof this.path === "string" ? p.dirname(this.path) : void 0;
     }
-    function setDirname(dirname2) {
+    function setDirname(dirname5) {
       assertPath(this.path, "dirname");
-      this.path = p.join(dirname2 || "", this.basename);
+      this.path = p.join(dirname5 || "", this.basename);
     }
     function getBasename() {
       return typeof this.path === "string" ? p.basename(this.path) : void 0;
     }
-    function setBasename(basename2) {
-      assertNonEmpty(basename2, "basename");
-      assertPart(basename2, "basename");
-      this.path = p.join(this.dirname || "", basename2);
+    function setBasename(basename4) {
+      assertNonEmpty(basename4, "basename");
+      assertPart(basename4, "basename");
+      this.path = p.join(this.dirname || "", basename4);
     }
     function getExtname() {
       return typeof this.path === "string" ? p.extname(this.path) : void 0;
@@ -39739,7 +39739,7 @@ var require_factory_space = __commonJS({
     "use strict";
     var markdownSpace = require_markdown_space();
     function spaceFactory(effects, ok2, type, max) {
-      var limit = max ? max - 1 : Infinity;
+      var limit2 = max ? max - 1 : Infinity;
       var size = 0;
       return start;
       function start(code) {
@@ -39750,7 +39750,7 @@ var require_factory_space = __commonJS({
         return ok2(code);
       }
       function prefix(code) {
-        if (markdownSpace(code) && size++ < limit) {
+        if (markdownSpace(code) && size++ < limit2) {
           effects.consume(code);
           return prefix;
         }
@@ -40209,7 +40209,7 @@ var require_factory_space2 = __commonJS({
     "use strict";
     var markdownSpace = require_markdown_space2();
     function spaceFactory(effects, ok2, type, max) {
-      var limit = max ? max - 1 : Infinity;
+      var limit2 = max ? max - 1 : Infinity;
       var size = 0;
       return start;
       function start(code) {
@@ -40220,7 +40220,7 @@ var require_factory_space2 = __commonJS({
         return ok2(code);
       }
       function prefix(code) {
-        if (markdownSpace(code) && size++ < limit) {
+        if (markdownSpace(code) && size++ < limit2) {
           effects.consume(code);
           return prefix;
         }
@@ -41319,7 +41319,7 @@ var require_factory_space3 = __commonJS({
     "use strict";
     var markdownSpace = require_markdown_space3();
     function spaceFactory(effects, ok2, type, max) {
-      var limit = max ? max - 1 : Infinity;
+      var limit2 = max ? max - 1 : Infinity;
       var size = 0;
       return start;
       function start(code) {
@@ -41330,7 +41330,7 @@ var require_factory_space3 = __commonJS({
         return ok2(code);
       }
       function prefix(code) {
-        if (markdownSpace(code) && size++ < limit) {
+        if (markdownSpace(code) && size++ < limit2) {
           effects.consume(code);
           return prefix;
         }
@@ -45705,7 +45705,7 @@ var require_factory_destination = __commonJS({
     var markdownLineEndingOrSpace = require_markdown_line_ending_or_space3();
     var markdownLineEnding = require_markdown_line_ending2();
     function destinationFactory(effects, ok2, nok, type, literalType, literalMarkerType, rawType, stringType, max) {
-      var limit = max || Infinity;
+      var limit2 = max || Infinity;
       var balance = 0;
       return start;
       function start(code) {
@@ -45764,7 +45764,7 @@ var require_factory_destination = __commonJS({
       }
       function destinationRaw(code) {
         if (code === 40) {
-          if (++balance > limit) return nok(code);
+          if (++balance > limit2) return nok(code);
           effects.consume(code);
           return destinationRaw;
         }
@@ -49008,7 +49008,7 @@ var require_factory_space4 = __commonJS({
     "use strict";
     var markdownSpace = require_markdown_space4();
     function spaceFactory(effects, ok2, type, max) {
-      var limit = max ? max - 1 : Infinity;
+      var limit2 = max ? max - 1 : Infinity;
       var size = 0;
       return start;
       function start(code) {
@@ -49019,7 +49019,7 @@ var require_factory_space4 = __commonJS({
         return ok2(code);
       }
       function prefix(code) {
-        if (markdownSpace(code) && size++ < limit) {
+        if (markdownSpace(code) && size++ < limit2) {
           effects.consume(code);
           return prefix;
         }
@@ -59515,8 +59515,8 @@ var require_dist4 = __commonJS({
       * @param {KeyStatField} [field] - Optionally rank by one counter (e.g. "hits")
       * @returns {StatsKeyEntry[]}
       */
-      mostUsedKeys(limit = 100, field) {
-        return this.sortedKeyEntries(field, "desc").slice(0, limit);
+      mostUsedKeys(limit2 = 100, field) {
+        return this.sortedKeyEntries(field, "desc").slice(0, limit2);
       }
       /**
       * The least-used keys, sorted ascending. Sorts by total recorded operations,
@@ -59528,8 +59528,8 @@ var require_dist4 = __commonJS({
       * @param {KeyStatField} [field] - Optionally rank by one counter (e.g. "gets")
       * @returns {StatsKeyEntry[]}
       */
-      leastUsedKeys(limit = 100, field) {
-        return this.sortedKeyEntries(field, "asc").slice(0, limit);
+      leastUsedKeys(limit2 = 100, field) {
+        return this.sortedKeyEntries(field, "asc").slice(0, limit2);
       }
       /**
       * @param {string} key - The key to look up
@@ -63928,12 +63928,12 @@ var require_dist9 = __commonJS({
     });
     module.exports = __toCommonJS(index_exports);
     var import_node_crypto2 = __toESM3(__require("crypto"), 1);
-    var import_node_fs4 = __toESM3(__require("fs"), 1);
-    var import_node_path9 = __toESM3(__require("path"), 1);
+    var import_node_fs5 = __toESM3(__require("fs"), 1);
+    var import_node_path11 = __toESM3(__require("path"), 1);
     var import_flat_cache = require_dist8();
     function createFromFile(filePath, useCheckSum, currentWorkingDirectory) {
-      const fname = import_node_path9.default.basename(filePath);
-      const directory = import_node_path9.default.dirname(filePath);
+      const fname = import_node_path11.default.basename(filePath);
+      const directory = import_node_path11.default.dirname(filePath);
       return create(fname, directory, useCheckSum, currentWorkingDirectory);
     }
     function create(cacheId, cacheDirectory, useCheckSum, currentWorkingDirectory) {
@@ -63948,7 +63948,7 @@ var require_dist9 = __commonJS({
       const fileEntryCache = new FileEntryCache(options);
       if (cacheDirectory) {
         const cachePath = `${cacheDirectory}/${cacheId}`;
-        if (import_node_fs4.default.existsSync(cachePath)) {
+        if (import_node_fs5.default.existsSync(cachePath)) {
           fileEntryCache.cache = (0, import_flat_cache.createFromFile)(cachePath, options.cache);
         }
       }
@@ -64091,7 +64091,7 @@ var require_dist9 = __commonJS({
        * @returns {boolean} if the file path is a relative path, false otherwise
        */
       isRelativePath(filePath) {
-        return !import_node_path9.default.isAbsolute(filePath);
+        return !import_node_path11.default.isAbsolute(filePath);
       }
       /**
        * Delete the cache file from the disk
@@ -64174,13 +64174,13 @@ var require_dist9 = __commonJS({
         const useCheckSumValue = options?.useCheckSum ?? this._useCheckSum;
         const useModifiedTimeValue = options?.useModifiedTime ?? this._useModifiedTime;
         try {
-          fstat = import_node_fs4.default.statSync(filePath);
+          fstat = import_node_fs5.default.statSync(filePath);
           result.meta = {
             size: fstat.size
           };
           result.meta.mtime = fstat.mtime.getTime();
           if (useCheckSumValue) {
-            const buffer = import_node_fs4.default.readFileSync(filePath);
+            const buffer = import_node_fs5.default.readFileSync(filePath);
             result.meta.hash = this.getHash(buffer);
           }
         } catch (error62) {
@@ -64309,7 +64309,7 @@ var require_dist9 = __commonJS({
       getAbsolutePath(filePath, options) {
         if (this.isRelativePath(filePath)) {
           const currentWorkingDirectory = options?.currentWorkingDirectory ?? this._currentWorkingDirectory ?? process.cwd();
-          filePath = import_node_path9.default.resolve(currentWorkingDirectory, filePath);
+          filePath = import_node_path11.default.resolve(currentWorkingDirectory, filePath);
         }
         return filePath;
       }
@@ -96664,9 +96664,9 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
           const rhs = this.rhs === void 0 ? "" : ` = ${this.rhs}`;
           return `${varKind} ${this.name}${rhs};` + _n;
         }
-        optimizeNames(names, constants) {
+        optimizeNames(names, constants2) {
           if (!names[this.name.str]) return;
-          if (this.rhs) this.rhs = optimizeExpr(this.rhs, names, constants);
+          if (this.rhs) this.rhs = optimizeExpr(this.rhs, names, constants2);
           return this;
         }
         get names() {
@@ -96683,9 +96683,9 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
         render({ _n }) {
           return `${this.lhs} = ${this.rhs};` + _n;
         }
-        optimizeNames(names, constants) {
+        optimizeNames(names, constants2) {
           if (this.lhs instanceof code_1.Name && !names[this.lhs.str] && !this.sideEffects) return;
-          this.rhs = optimizeExpr(this.rhs, names, constants);
+          this.rhs = optimizeExpr(this.rhs, names, constants2);
           return this;
         }
         get names() {
@@ -96744,8 +96744,8 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
         optimizeNodes() {
           return `${this.code}` ? this : void 0;
         }
-        optimizeNames(names, constants) {
-          this.code = optimizeExpr(this.code, names, constants);
+        optimizeNames(names, constants2) {
+          this.code = optimizeExpr(this.code, names, constants2);
           return this;
         }
         get names() {
@@ -96771,12 +96771,12 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
           }
           return nodes.length > 0 ? this : void 0;
         }
-        optimizeNames(names, constants) {
+        optimizeNames(names, constants2) {
           const { nodes } = this;
           let i = nodes.length;
           while (i--) {
             const n = nodes[i];
-            if (n.optimizeNames(names, constants)) continue;
+            if (n.optimizeNames(names, constants2)) continue;
             subtractNames(names, n.names);
             nodes.splice(i, 1);
           }
@@ -96823,11 +96823,11 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
           if (cond === false || !this.nodes.length) return void 0;
           return this;
         }
-        optimizeNames(names, constants) {
+        optimizeNames(names, constants2) {
           var _a3;
-          this.else = (_a3 = this.else) === null || _a3 === void 0 ? void 0 : _a3.optimizeNames(names, constants);
-          if (!(super.optimizeNames(names, constants) || this.else)) return;
-          this.condition = optimizeExpr(this.condition, names, constants);
+          this.else = (_a3 = this.else) === null || _a3 === void 0 ? void 0 : _a3.optimizeNames(names, constants2);
+          if (!(super.optimizeNames(names, constants2) || this.else)) return;
+          this.condition = optimizeExpr(this.condition, names, constants2);
           return this;
         }
         get names() {
@@ -96849,9 +96849,9 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
         render(opts) {
           return `for(${this.iteration})` + super.render(opts);
         }
-        optimizeNames(names, constants) {
-          if (!super.optimizeNames(names, constants)) return;
-          this.iteration = optimizeExpr(this.iteration, names, constants);
+        optimizeNames(names, constants2) {
+          if (!super.optimizeNames(names, constants2)) return;
+          this.iteration = optimizeExpr(this.iteration, names, constants2);
           return this;
         }
         get names() {
@@ -96886,9 +96886,9 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
         render(opts) {
           return `for(${this.varKind} ${this.name} ${this.loop} ${this.iterable})` + super.render(opts);
         }
-        optimizeNames(names, constants) {
-          if (!super.optimizeNames(names, constants)) return;
-          this.iterable = optimizeExpr(this.iterable, names, constants);
+        optimizeNames(names, constants2) {
+          if (!super.optimizeNames(names, constants2)) return;
+          this.iterable = optimizeExpr(this.iterable, names, constants2);
           return this;
         }
         get names() {
@@ -96927,11 +96927,11 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
           (_b = this.finally) === null || _b === void 0 || _b.optimizeNodes();
           return this;
         }
-        optimizeNames(names, constants) {
+        optimizeNames(names, constants2) {
           var _a3, _b;
-          super.optimizeNames(names, constants);
-          (_a3 = this.catch) === null || _a3 === void 0 || _a3.optimizeNames(names, constants);
-          (_b = this.finally) === null || _b === void 0 || _b.optimizeNames(names, constants);
+          super.optimizeNames(names, constants2);
+          (_a3 = this.catch) === null || _a3 === void 0 || _a3.optimizeNames(names, constants2);
+          (_b = this.finally) === null || _b === void 0 || _b.optimizeNames(names, constants2);
           return this;
         }
         get names() {
@@ -97180,7 +97180,7 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
       function addExprNames(names, from) {
         return from instanceof code_1._CodeOrName ? addNames(names, from.names) : names;
       }
-      function optimizeExpr(expr, names, constants) {
+      function optimizeExpr(expr, names, constants2) {
         if (expr instanceof code_1.Name) return replaceName(expr);
         if (!canOptimize(expr)) return expr;
         return new code_1._Code(expr._items.reduce((items, c) => {
@@ -97190,13 +97190,13 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
           return items;
         }, []));
         function replaceName(n) {
-          const c = constants[n.str];
+          const c = constants2[n.str];
           if (c === void 0 || names[n.str] !== 1) return n;
           delete names[n.str];
           return c;
         }
         function canOptimize(e) {
-          return e instanceof code_1._Code && e._items.some((c) => c instanceof code_1.Name && names[c.str] === 1 && constants[c.str] !== void 0);
+          return e instanceof code_1._Code && e._items.some((c) => c instanceof code_1.Name && names[c.str] === 1 && constants2[c.str] !== void 0);
         }
       }
       function subtractNames(names, from) {
@@ -98197,11 +98197,11 @@ var require_ajvProvider_ZaoO9afR = __commonJS({
         "enum",
         "const"
       ]);
-      function inlineRef(schema, limit = true) {
+      function inlineRef(schema, limit2 = true) {
         if (typeof schema == "boolean") return true;
-        if (limit === true) return !hasRef(schema);
-        if (!limit) return false;
-        return countKeys(schema) <= limit;
+        if (limit2 === true) return !hasRef(schema);
+        if (!limit2) return false;
+        return countKeys(schema) <= limit2;
       }
       exports2.inlineRef = inlineRef;
       const REF_KEYWORDS = /* @__PURE__ */ new Set([
@@ -140003,10 +140003,10 @@ var require_async = __commonJS({
           callFn.apply(this, arguments);
         };
       }
-      function _eachOfLimit(limit) {
+      function _eachOfLimit(limit2) {
         return function(obj, iteratee, callback) {
           callback = once(callback || noop);
-          if (limit <= 0 || !obj) {
+          if (limit2 <= 0 || !obj) {
             return callback(null);
           }
           var nextElem = iterator(obj);
@@ -140027,7 +140027,7 @@ var require_async = __commonJS({
           }
           function replenish() {
             looping = true;
-            while (running < limit && !done) {
+            while (running < limit2 && !done) {
               var elem = nextElem();
               if (elem === null) {
                 done = true;
@@ -140044,12 +140044,12 @@ var require_async = __commonJS({
           replenish();
         };
       }
-      function eachOfLimit(coll, limit, iteratee, callback) {
-        _eachOfLimit(limit)(coll, wrapAsync(iteratee), callback);
+      function eachOfLimit(coll, limit2, iteratee, callback) {
+        _eachOfLimit(limit2)(coll, wrapAsync(iteratee), callback);
       }
-      function doLimit(fn, limit) {
+      function doLimit(fn, limit2) {
         return function(iterable, iteratee, callback) {
-          return fn(iterable, limit, iteratee, callback);
+          return fn(iterable, limit2, iteratee, callback);
         };
       }
       function eachOfArrayLike(coll, iteratee, callback) {
@@ -140098,8 +140098,8 @@ var require_async = __commonJS({
       var map2 = doParallel(_asyncMap);
       var applyEach = applyEach$1(map2);
       function doParallelLimit(fn) {
-        return function(obj, limit, iteratee, callback) {
-          return fn(_eachOfLimit(limit), obj, wrapAsync(iteratee), callback);
+        return function(obj, limit2, iteratee, callback) {
+          return fn(_eachOfLimit(limit2), obj, wrapAsync(iteratee), callback);
         };
       }
       var mapLimit = doParallelLimit(_asyncMap);
@@ -140709,10 +140709,10 @@ var require_async = __commonJS({
         return seq.apply(null, slice(arguments).reverse());
       };
       var _concat = Array.prototype.concat;
-      var concatLimit = function(coll, limit, iteratee, callback) {
+      var concatLimit = function(coll, limit2, iteratee, callback) {
         callback = callback || noop;
         var _iteratee = wrapAsync(iteratee);
-        mapLimit(coll, limit, function(val, callback2) {
+        mapLimit(coll, limit2, function(val, callback2) {
           _iteratee(val, function(err2) {
             if (err2) return callback2(err2);
             return callback2(null, slice(arguments, 1));
@@ -140849,8 +140849,8 @@ var require_async = __commonJS({
       function eachLimit(coll, iteratee, callback) {
         eachOf(coll, _withoutIndex(wrapAsync(iteratee)), callback);
       }
-      function eachLimit$1(coll, limit, iteratee, callback) {
-        _eachOfLimit(limit)(coll, _withoutIndex(wrapAsync(iteratee)), callback);
+      function eachLimit$1(coll, limit2, iteratee, callback) {
+        _eachOfLimit(limit2)(coll, _withoutIndex(wrapAsync(iteratee)), callback);
       }
       var eachSeries = doLimit(eachLimit$1, 1);
       function ensureAsync(fn) {
@@ -140937,10 +140937,10 @@ var require_async = __commonJS({
         }
         next();
       }
-      var groupByLimit = function(coll, limit, iteratee, callback) {
+      var groupByLimit = function(coll, limit2, iteratee, callback) {
         callback = callback || noop;
         var _iteratee = wrapAsync(iteratee);
-        mapLimit(coll, limit, function(val, callback2) {
+        mapLimit(coll, limit2, function(val, callback2) {
           _iteratee(val, function(err2, key) {
             if (err2) return callback2(err2);
             return callback2(null, { key, val });
@@ -140965,11 +140965,11 @@ var require_async = __commonJS({
       var groupBy = doLimit(groupByLimit, Infinity);
       var groupBySeries = doLimit(groupByLimit, 1);
       var log = consoleFunc("log");
-      function mapValuesLimit(obj, limit, iteratee, callback) {
+      function mapValuesLimit(obj, limit2, iteratee, callback) {
         callback = once(callback || noop);
         var newObj = {};
         var _iteratee = wrapAsync(iteratee);
-        eachOfLimit(obj, limit, function(val, key, next) {
+        eachOfLimit(obj, limit2, function(val, key, next) {
           _iteratee(val, key, function(err2, result) {
             if (err2) return next(err2);
             newObj[key] = result;
@@ -141041,8 +141041,8 @@ var require_async = __commonJS({
       function parallelLimit(tasks, callback) {
         _parallel(eachOf, tasks, callback);
       }
-      function parallelLimit$1(tasks, limit, callback) {
-        _parallel(_eachOfLimit(limit), tasks, callback);
+      function parallelLimit$1(tasks, limit2, callback) {
+        _parallel(_eachOfLimit(limit2), tasks, callback);
       }
       var queue$1 = function(worker, concurrency) {
         var _worker = wrapAsync(worker);
@@ -141258,9 +141258,9 @@ var require_async = __commonJS({
         }
         return result;
       }
-      function timeLimit(count, limit, iteratee, callback) {
+      function timeLimit(count, limit2, iteratee, callback) {
         var _iteratee = wrapAsync(iteratee);
-        mapLimit(baseRange(0, count, 1), limit, _iteratee, callback);
+        mapLimit(baseRange(0, count, 1), limit2, _iteratee, callback);
       }
       var times = doLimit(timeLimit, Infinity);
       var timesSeries = doLimit(timeLimit, 1);
@@ -148430,7 +148430,7 @@ var require_textlint_rule_preset_ja_technical_writing = __commonJS({
 // ../src/cli.ts
 import { readFile as readFile2 } from "node:fs/promises";
 import { homedir } from "node:os";
-import { dirname, join as join5 } from "node:path";
+import { dirname as dirname4, join as join7 } from "node:path";
 import { fileURLToPath as fileURLToPath3 } from "node:url";
 
 // ../src/check.ts
@@ -148618,9 +148618,8 @@ async function lintText({ text, language, genre, filename = "input.md" }) {
   return { result, output: formatter.format([result]) };
 }
 
-// ../src/install/plan.ts
-import { stat } from "node:fs/promises";
-import { basename, join as join4 } from "node:path";
+// ../src/install/apply.ts
+import { basename as basename3, dirname as dirname3, join as join6 } from "node:path";
 
 // ../src/hosts.ts
 var hosts = [
@@ -148708,8 +148707,9 @@ var hosts = [
 
 // ../src/install/fsutil.ts
 import { createHash } from "node:crypto";
-import { readFile, readdir } from "node:fs/promises";
-import { join } from "node:path";
+import { constants } from "node:fs";
+import { copyFile, mkdir, readFile, readdir, rename, rm, writeFile } from "node:fs/promises";
+import { basename, dirname, join } from "node:path";
 var ok = (value) => ({ ok: true, value });
 var err = (error62) => ({ ok: false, error: error62 });
 function detectEol(text) {
@@ -148765,6 +148765,47 @@ async function digestTree(root) {
   for (const file2 of files) hash2.update(`${file2}\0${await sha256File(join(root, file2))}
 `);
   return hash2.digest("hex");
+}
+var RENAME_RETRIES = 5;
+var RENAME_DELAY_MS = 100;
+var LOCK_CODES = /* @__PURE__ */ new Set(["EPERM", "EBUSY", "EACCES"]);
+async function renameWithRetry(from, to) {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      await rename(from, to);
+      return;
+    } catch (error62) {
+      const code = error62?.code;
+      if (!code || !LOCK_CODES.has(code)) throw error62;
+      if (attempt >= RENAME_RETRIES) throw new Error(`Cannot replace ${to}: it stayed locked after ${RENAME_RETRIES} retries.`);
+      await new Promise((resolve2) => setTimeout(resolve2, RENAME_DELAY_MS));
+    }
+  }
+}
+async function writeTextAtomic(path4, text, format) {
+  await mkdir(dirname(path4), { recursive: true });
+  const temporary = `${path4}.${process.pid}.${Date.now()}.tmp`;
+  try {
+    await writeFile(temporary, Buffer.concat([format.bom ? Buffer.from([239, 187, 191]) : Buffer.alloc(0), Buffer.from(text, "utf8")]));
+    await renameWithRetry(temporary, path4);
+  } catch (error62) {
+    await rm(temporary, { force: true });
+    throw error62;
+  }
+}
+async function backup(path4, backupDir) {
+  await mkdir(backupDir, { recursive: true });
+  for (let counter = 0; ; counter++) {
+    const target = join(backupDir, `${basename(path4)}.${counter}.bak`);
+    try {
+      await copyFile(path4, target, constants.COPYFILE_EXCL);
+      return target;
+    } catch (error62) {
+      const code = error62?.code;
+      if (isMissing(error62)) return void 0;
+      if (code !== "EEXIST") throw error62;
+    }
+  }
 }
 
 // ../src/install/block.ts
@@ -148840,6 +148881,46 @@ async function readManifest(home) {
   const file2 = await readText(manifestPath(home));
   return file2 ? parseManifest(file2.text) : ok(emptyManifest());
 }
+async function saveManifest(home, manifest) {
+  await writeTextAtomic(manifestPath(home), `${JSON.stringify(manifest, null, 2)}
+`, { bom: false });
+}
+
+// ../src/install/payload.ts
+import { copyFile as copyFile2, mkdir as mkdir2, rm as rm2 } from "node:fs/promises";
+import { dirname as dirname2, join as join3 } from "node:path";
+async function copyPayload(payloadDir, versionDirectory) {
+  const staging = `${versionDirectory}.${process.pid}.${Date.now()}.tmp`;
+  try {
+    await rm2(staging, { recursive: true, force: true });
+    await mkdir2(staging, { recursive: true });
+    for (const file2 of await listFiles(payloadDir)) {
+      const destination = join3(staging, file2);
+      await mkdir2(dirname2(destination), { recursive: true });
+      await copyFile2(join3(payloadDir, file2), destination);
+    }
+    await rm2(versionDirectory, { recursive: true, force: true });
+    await renameWithRetry(staging, versionDirectory);
+  } catch (error62) {
+    await rm2(staging, { recursive: true, force: true });
+    throw error62;
+  }
+  const installed = [];
+  for (const file2 of (await listFiles(versionDirectory)).sort()) {
+    installed.push({ path: join3(versionDirectory, file2), sha256: await sha256File(join3(versionDirectory, file2)) });
+  }
+  return installed;
+}
+async function writeLauncher(launcher, version2) {
+  if (!/^[\w.+-]+$/.test(version2)) throw new Error(`The version "${version2}" cannot name a directory.`);
+  await writeTextAtomic(launcher, `await import("./${version2}/cwk.mjs");
+`, { bom: false });
+  return { path: launcher, sha256: await sha256File(launcher) };
+}
+
+// ../src/install/plan.ts
+import { stat } from "node:fs/promises";
+import { basename as basename2, join as join5 } from "node:path";
 
 // ../src/install/identity.ts
 function present(env, name) {
@@ -148866,7 +148947,7 @@ function resolveHost(agentArg, env) {
 // ../src/install/spawn.ts
 import { spawn } from "node:child_process";
 import { statSync } from "node:fs";
-import { delimiter, extname, isAbsolute, join as join3, resolve } from "node:path";
+import { delimiter, extname, isAbsolute, join as join4, resolve } from "node:path";
 var isWindows = () => process.platform === "win32";
 function envValue(env, name) {
   if (!isWindows()) return env[name];
@@ -148888,7 +148969,7 @@ function which(name, env = process.env) {
   const directories = /[\\/]/.test(name) ? [""] : (envValue(env, "PATH") ?? "").split(delimiter).map((directory) => directory.replace(/^"|"$/g, "")).filter(Boolean);
   for (const directory of directories) {
     for (const candidate of names) {
-      const path4 = directory ? join3(directory, candidate) : candidate;
+      const path4 = directory ? join4(directory, candidate) : candidate;
       if (isFile(path4)) return isAbsolute(path4) ? path4 : resolve(path4);
     }
   }
@@ -149033,7 +149114,7 @@ function manualSteps(host, home, env) {
   return [
     `Plugin: ${host.pluginCommands.install}, with the clear-writing-kit plugin from this repository.`,
     `MCP: ${host.mcpCommands.add}, registering ${MCP_NAME} with the launcher command from INSTALL.md.`,
-    `Instruction block: add the contents of install/agents-block.md to ${join4(configDirectory, basename(host.globalInstructionsFile(home)))}.`,
+    `Instruction block: add the contents of install/agents-block.md to ${join5(configDirectory, basename2(host.globalInstructionsFile(home)))}.`,
     `${host.displayName} is not verified, so \`install apply\` refuses to run for it.`
   ];
 }
@@ -149065,11 +149146,11 @@ async function computePlan(ctx) {
   const payloadDigest = await digestTree(ctx.payloadDir);
   if (!payloadDigest) return fail("state", "The payload directory is missing.");
   const home = ctx.home;
-  const kitDirectory = join4(home, ".clear-writing-kit");
-  const versionDirectory = join4(kitDirectory, version2);
-  const launcher = join4(kitDirectory, "cwk.mjs");
+  const kitDirectory = join5(home, ".clear-writing-kit");
+  const versionDirectory = join5(kitDirectory, version2);
+  const launcher = join5(kitDirectory, "cwk.mjs");
   const configDirectory = host.configDirectoryEnv && ctx.env[host.configDirectoryEnv] || host.configDirectory(home);
-  const instructionsPath = join4(configDirectory, basename(host.globalInstructionsFile(home)));
+  const instructionsPath = join5(configDirectory, basename2(host.globalInstructionsFile(home)));
   const state = await readHostState(host, ctx.env, launcher, runtime.value);
   if ("status" in state) return state;
   const steps = [];
@@ -149125,7 +149206,7 @@ async function computePlan(ctx) {
   });
   const conflicts = [];
   if (host.outputStyleSupport === "yes") {
-    const settingsPath = join4(configDirectory, "settings.json");
+    const settingsPath = join5(configDirectory, "settings.json");
     const settings = await readText(settingsPath);
     let current;
     if (settings) {
@@ -149149,7 +149230,7 @@ async function computePlan(ctx) {
       conflicts.push({ kind: "output-style", target: settingsPath, detail: `outputStyle is ${shown(current)}, not "${OUTPUT_STYLE}".` });
     }
   }
-  for (const directory of /* @__PURE__ */ new Set([join4(home, ".agents", "skills", LEGACY_SKILL), join4(configDirectory, "skills", LEGACY_SKILL)])) {
+  for (const directory of /* @__PURE__ */ new Set([join5(home, ".agents", "skills", LEGACY_SKILL), join5(configDirectory, "skills", LEGACY_SKILL)])) {
     if (await isDirectory(directory)) conflicts.push({ kind: "skill", target: directory, detail: `The ${LEGACY_SKILL} skill directory exists.` });
   }
   for (const name of foreignBlocksNaming(instructionText)) {
@@ -149191,6 +149272,209 @@ No plan hash.
   });
   lines.push(`Plan hash: ${plan.hash}`, "");
   return lines.join("\n");
+}
+
+// ../src/install/settings.ts
+var isSpace = (character) => character === " " || character === "	" || character === "\r" || character === "\n";
+function skipSpace(text, from) {
+  let index = from;
+  while (index < text.length && isSpace(text[index])) index++;
+  return index;
+}
+function endOfString(text, from) {
+  let index = from + 1;
+  while (text[index] !== '"') index += text[index] === "\\" ? 2 : 1;
+  return index + 1;
+}
+function endOfValue(text, from) {
+  let depth = 0;
+  let index = from;
+  while (index < text.length) {
+    const character = text[index];
+    if (character === '"') {
+      index = endOfString(text, index);
+      continue;
+    }
+    if (character === "{" || character === "[") depth++;
+    else if (character === "}" || character === "]") {
+      if (depth === 0) break;
+      depth--;
+    } else if (character === "," && depth === 0) break;
+    index++;
+  }
+  while (index > from && isSpace(text[index - 1])) index--;
+  return index;
+}
+function topLevelMembers(text) {
+  const open2 = skipSpace(text, 0);
+  const members2 = [];
+  let index = skipSpace(text, open2 + 1);
+  while (text[index] !== "}") {
+    const keyStart = index;
+    const keyEnd = endOfString(text, index);
+    const key = JSON.parse(text.slice(keyStart, keyEnd));
+    const valueStart = skipSpace(text, skipSpace(text, keyEnd) + 1);
+    const valueEnd = endOfValue(text, valueStart);
+    members2.push({ key, keyStart, valueStart, valueEnd });
+    index = skipSpace(text, valueEnd);
+    if (text[index] === ",") index = skipSpace(text, index + 1);
+  }
+  return { members: members2, open: open2, close: index };
+}
+async function setOutputStyle(path4, value, backupDir) {
+  const encoded = JSON.stringify(value);
+  const file2 = await readText(path4);
+  if (!file2) {
+    await writeTextAtomic(path4, `{
+  "outputStyle": ${encoded}
+}
+`, { bom: false });
+    return void 0;
+  }
+  let data;
+  try {
+    data = JSON.parse(file2.text);
+  } catch {
+    throw new Error(`${path4} is not valid JSON.`);
+  }
+  if (typeof data !== "object" || data === null || Array.isArray(data)) throw new Error(`${path4} does not hold a JSON object.`);
+  const oldValue = data.outputStyle;
+  const { members: members2, open: open2, close } = topLevelMembers(file2.text);
+  const existing = members2.filter((member) => member.key === "outputStyle").pop();
+  let next;
+  if (existing) {
+    next = file2.text.slice(0, existing.valueStart) + encoded + file2.text.slice(existing.valueEnd);
+  } else if (members2.length === 0) {
+    next = `${file2.text.slice(0, open2 + 1)}${file2.eol}  "outputStyle": ${encoded}${file2.eol}${file2.text.slice(close)}`;
+  } else {
+    const last = members2[members2.length - 1];
+    const lineStart = file2.text.lastIndexOf("\n", last.keyStart) + 1;
+    const indent = /^[ \t]*$/.test(file2.text.slice(lineStart, last.keyStart)) ? file2.text.slice(lineStart, last.keyStart) : " ";
+    const separator = indent === " " ? " " : file2.eol + indent;
+    next = `${file2.text.slice(0, last.valueEnd)},${separator}"outputStyle": ${encoded}${file2.text.slice(last.valueEnd)}`;
+  }
+  if (next === file2.text) return oldValue;
+  await backup(path4, backupDir);
+  await writeTextAtomic(path4, next, { bom: file2.bom });
+  return oldValue;
+}
+
+// ../src/install/apply.ts
+var OUTPUT_LIMIT = 2e3;
+var limit = (text) => text.length > OUTPUT_LIMIT ? `${text.slice(0, OUTPUT_LIMIT)}... (truncated)` : text;
+var mcpFingerprint = (registration) => sha256(JSON.stringify(registration));
+var pluginFingerprint = (hostId) => sha256(`${hostId}:plugin:${PLUGIN_NAME}`);
+function upsertBy(items, entry, same) {
+  const index = items.findIndex(same);
+  if (index >= 0) items[index] = entry;
+  else items.push(entry);
+}
+var hostBinary2 = (host) => host.mcpCommands.add.split(" ")[0];
+async function prepareWrites(host, plan, ctx) {
+  const kitDirectory = join6(ctx.home, ".clear-writing-kit");
+  const launcher = join6(kitDirectory, "cwk.mjs");
+  const configDirectory = host.configDirectoryEnv && ctx.env[host.configDirectoryEnv] || host.configDirectory(ctx.home);
+  const instructionsPath = join6(configDirectory, basename3(host.globalInstructionsFile(ctx.home)));
+  const instructions = await readText(instructionsPath);
+  return {
+    kitDirectory,
+    versionDirectory: join6(kitDirectory, plan.version),
+    launcher,
+    instructionsPath,
+    instructionsText: upsertBlock(instructions?.text ?? "", ctx.blockText).text,
+    instructionsBom: instructions?.bom ?? false,
+    settingsPath: host.outputStyleSupport === "yes" ? join6(configDirectory, "settings.json") : void 0,
+    registration: [plan.runtime.command, ...plan.runtime.args, launcher, "mcp"]
+  };
+}
+async function runHost(binary, args, env, tolerate) {
+  const result = await run(binary, args, { env, timeoutMs: 12e4 });
+  if (result.code !== 0 && !(tolerate === true || tolerate?.test(result.stdout + result.stderr))) {
+    throw new Error(limit(`"${args.slice(0, 2).join(" ")}" exited with code ${result.code}. ${(result.stdout + result.stderr).trim()}`));
+  }
+}
+async function applyPlan(ctx, planHash) {
+  const outcome = await computePlan(ctx);
+  if (outcome.status === "error") return outcome;
+  if (outcome.status === "manual") return { status: "refused", message: `${outcome.host.displayName} is not verified, so apply does not run for it. Follow the manual steps from plan.` };
+  const plan = outcome.plan;
+  if (plan.hash !== planHash) {
+    const targets = plan.steps.map((step) => step.target).join(", ");
+    return { status: "error", kind: "mismatch", message: `The plan hash does not match the current state. Nothing was written. A target changed since the plan was made. Targets checked: ${targets}. Run plan again and use the new hash.` };
+  }
+  const host = hosts.find((candidate) => candidate.id === plan.host.id);
+  const binary = host ? which(hostBinary2(host), ctx.env) : void 0;
+  if (!host || !binary) return { status: "refused", message: "The host command is not on PATH." };
+  const manifestResult = await readManifest(ctx.home);
+  if (!manifestResult.ok) return { status: "error", kind: "manifest", message: manifestResult.error };
+  const manifest = manifestResult.value;
+  let writes;
+  try {
+    writes = await prepareWrites(host, plan, ctx);
+  } catch (error62) {
+    return { status: "error", kind: "block", message: error62 instanceof Error ? error62.message : String(error62) };
+  }
+  const backupDir = join6(writes.kitDirectory, "backups", (/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-"));
+  const backups = [];
+  const completed = [];
+  const unchanged = [];
+  const kept = async (path4) => {
+    const copy = await backup(path4, backupDir);
+    if (copy) backups.push(copy);
+  };
+  for (const step of plan.steps) {
+    if (step.action === "none") {
+      unchanged.push(step.id);
+      continue;
+    }
+    try {
+      if (step.id === "payload") {
+        const copied = await copyPayload(ctx.payloadDir, writes.versionDirectory);
+        const launcher = await writeLauncher(writes.launcher, plan.version);
+        for (const file2 of [...copied, launcher]) upsertBy(manifest.files, file2, (item) => item.path === file2.path);
+        manifest.version = plan.version;
+      } else if (step.id === "plugin") {
+        await runHost(binary, ["plugin", "marketplace", "add", dirname3(ctx.payloadDir)], ctx.env, /already/i);
+        await runHost(binary, ["plugin", host.id === "codex" ? "add" : "install", `${PLUGIN_NAME}@${PLUGIN_NAME}`], ctx.env);
+        const entry = { host: host.id, kind: "plugin", name: PLUGIN_NAME, fingerprint: pluginFingerprint(host.id) };
+        upsertBy(manifest.cli, entry, (item) => item.host === entry.host && item.kind === entry.kind && item.name === entry.name);
+      } else if (step.id === "mcp") {
+        const scope = host.id === "claude" ? ["--scope", "user"] : [];
+        if (step.action === "update") await runHost(binary, ["mcp", "remove", MCP_NAME, ...scope], ctx.env, true);
+        await runHost(binary, ["mcp", "add", ...scope, MCP_NAME, "--", ...writes.registration], ctx.env);
+        const entry = { host: host.id, kind: "mcp", name: MCP_NAME, fingerprint: mcpFingerprint(writes.registration) };
+        upsertBy(manifest.cli, entry, (item) => item.host === entry.host && item.kind === entry.kind && item.name === entry.name);
+      } else if (step.id === "block") {
+        await kept(writes.instructionsPath);
+        await writeTextAtomic(writes.instructionsPath, writes.instructionsText, { bom: writes.instructionsBom });
+        const block = findBlock(writes.instructionsText);
+        if (block) upsertBy(manifest.files, { path: `${writes.instructionsPath}#block`, sha256: sha256(block.text) }, (item) => item.path === `${writes.instructionsPath}#block`);
+      } else if (writes.settingsPath) {
+        await setOutputStyle(writes.settingsPath, OUTPUT_STYLE, backupDir);
+      }
+      if (!manifest.completedSteps.includes(step.id)) manifest.completedSteps.push(step.id);
+      await saveManifest(ctx.home, manifest);
+      completed.push(step.id);
+    } catch (error62) {
+      return { status: "failed", step: step.id, output: limit(error62 instanceof Error ? error62.message : String(error62)), completed };
+    }
+  }
+  return { status: "applied", completed, unchanged, backups };
+}
+function formatApply(outcome) {
+  if (outcome.status === "error") return `Error: ${outcome.message}
+`;
+  if (outcome.status === "refused") return `Refused: ${outcome.message}
+`;
+  if (outcome.status === "failed") {
+    return [`Failed at step ${outcome.step}.`, `Output: ${outcome.output}`, `Completed steps: ${outcome.completed.join(", ") || "none"}`, "Run plan again to see the remaining steps.", ""].join("\n");
+  }
+  return [
+    outcome.completed.length ? `Applied steps: ${outcome.completed.join(", ")}` : "Nothing to change. Every step is already current.",
+    ...outcome.unchanged.length ? [`Already current: ${outcome.unchanged.join(", ")}`] : [],
+    ...outcome.backups.map((path4) => `Backup: ${path4}`),
+    ""
+  ].join("\n");
 }
 
 // node_modules/@modelcontextprotocol/server/dist/chunk-Br0eD_fh.mjs
@@ -174819,9 +175103,9 @@ var require_codegen = /* @__PURE__ */ __commonJSMin(((exports) => {
       const rhs = this.rhs === void 0 ? "" : ` = ${this.rhs}`;
       return `${varKind} ${this.name}${rhs};` + _n;
     }
-    optimizeNames(names, constants) {
+    optimizeNames(names, constants2) {
       if (!names[this.name.str]) return;
-      if (this.rhs) this.rhs = optimizeExpr(this.rhs, names, constants);
+      if (this.rhs) this.rhs = optimizeExpr(this.rhs, names, constants2);
       return this;
     }
     get names() {
@@ -174838,9 +175122,9 @@ var require_codegen = /* @__PURE__ */ __commonJSMin(((exports) => {
     render({ _n }) {
       return `${this.lhs} = ${this.rhs};` + _n;
     }
-    optimizeNames(names, constants) {
+    optimizeNames(names, constants2) {
       if (this.lhs instanceof code_1.Name && !names[this.lhs.str] && !this.sideEffects) return;
-      this.rhs = optimizeExpr(this.rhs, names, constants);
+      this.rhs = optimizeExpr(this.rhs, names, constants2);
       return this;
     }
     get names() {
@@ -174899,8 +175183,8 @@ var require_codegen = /* @__PURE__ */ __commonJSMin(((exports) => {
     optimizeNodes() {
       return `${this.code}` ? this : void 0;
     }
-    optimizeNames(names, constants) {
-      this.code = optimizeExpr(this.code, names, constants);
+    optimizeNames(names, constants2) {
+      this.code = optimizeExpr(this.code, names, constants2);
       return this;
     }
     get names() {
@@ -174926,12 +175210,12 @@ var require_codegen = /* @__PURE__ */ __commonJSMin(((exports) => {
       }
       return nodes.length > 0 ? this : void 0;
     }
-    optimizeNames(names, constants) {
+    optimizeNames(names, constants2) {
       const { nodes } = this;
       let i = nodes.length;
       while (i--) {
         const n = nodes[i];
-        if (n.optimizeNames(names, constants)) continue;
+        if (n.optimizeNames(names, constants2)) continue;
         subtractNames(names, n.names);
         nodes.splice(i, 1);
       }
@@ -174978,11 +175262,11 @@ var require_codegen = /* @__PURE__ */ __commonJSMin(((exports) => {
       if (cond === false || !this.nodes.length) return void 0;
       return this;
     }
-    optimizeNames(names, constants) {
+    optimizeNames(names, constants2) {
       var _a3;
-      this.else = (_a3 = this.else) === null || _a3 === void 0 ? void 0 : _a3.optimizeNames(names, constants);
-      if (!(super.optimizeNames(names, constants) || this.else)) return;
-      this.condition = optimizeExpr(this.condition, names, constants);
+      this.else = (_a3 = this.else) === null || _a3 === void 0 ? void 0 : _a3.optimizeNames(names, constants2);
+      if (!(super.optimizeNames(names, constants2) || this.else)) return;
+      this.condition = optimizeExpr(this.condition, names, constants2);
       return this;
     }
     get names() {
@@ -175004,9 +175288,9 @@ var require_codegen = /* @__PURE__ */ __commonJSMin(((exports) => {
     render(opts) {
       return `for(${this.iteration})` + super.render(opts);
     }
-    optimizeNames(names, constants) {
-      if (!super.optimizeNames(names, constants)) return;
-      this.iteration = optimizeExpr(this.iteration, names, constants);
+    optimizeNames(names, constants2) {
+      if (!super.optimizeNames(names, constants2)) return;
+      this.iteration = optimizeExpr(this.iteration, names, constants2);
       return this;
     }
     get names() {
@@ -175041,9 +175325,9 @@ var require_codegen = /* @__PURE__ */ __commonJSMin(((exports) => {
     render(opts) {
       return `for(${this.varKind} ${this.name} ${this.loop} ${this.iterable})` + super.render(opts);
     }
-    optimizeNames(names, constants) {
-      if (!super.optimizeNames(names, constants)) return;
-      this.iterable = optimizeExpr(this.iterable, names, constants);
+    optimizeNames(names, constants2) {
+      if (!super.optimizeNames(names, constants2)) return;
+      this.iterable = optimizeExpr(this.iterable, names, constants2);
       return this;
     }
     get names() {
@@ -175082,11 +175366,11 @@ var require_codegen = /* @__PURE__ */ __commonJSMin(((exports) => {
       (_b = this.finally) === null || _b === void 0 || _b.optimizeNodes();
       return this;
     }
-    optimizeNames(names, constants) {
+    optimizeNames(names, constants2) {
       var _a3, _b;
-      super.optimizeNames(names, constants);
-      (_a3 = this.catch) === null || _a3 === void 0 || _a3.optimizeNames(names, constants);
-      (_b = this.finally) === null || _b === void 0 || _b.optimizeNames(names, constants);
+      super.optimizeNames(names, constants2);
+      (_a3 = this.catch) === null || _a3 === void 0 || _a3.optimizeNames(names, constants2);
+      (_b = this.finally) === null || _b === void 0 || _b.optimizeNames(names, constants2);
       return this;
     }
     get names() {
@@ -175335,7 +175619,7 @@ var require_codegen = /* @__PURE__ */ __commonJSMin(((exports) => {
   function addExprNames(names, from) {
     return from instanceof code_1._CodeOrName ? addNames(names, from.names) : names;
   }
-  function optimizeExpr(expr, names, constants) {
+  function optimizeExpr(expr, names, constants2) {
     if (expr instanceof code_1.Name) return replaceName(expr);
     if (!canOptimize(expr)) return expr;
     return new code_1._Code(expr._items.reduce((items, c) => {
@@ -175345,13 +175629,13 @@ var require_codegen = /* @__PURE__ */ __commonJSMin(((exports) => {
       return items;
     }, []));
     function replaceName(n) {
-      const c = constants[n.str];
+      const c = constants2[n.str];
       if (c === void 0 || names[n.str] !== 1) return n;
       delete names[n.str];
       return c;
     }
     function canOptimize(e) {
-      return e instanceof code_1._Code && e._items.some((c) => c instanceof code_1.Name && names[c.str] === 1 && constants[c.str] !== void 0);
+      return e instanceof code_1._Code && e._items.some((c) => c instanceof code_1.Name && names[c.str] === 1 && constants2[c.str] !== void 0);
     }
   }
   function subtractNames(names, from) {
@@ -176352,11 +176636,11 @@ var require_resolve = /* @__PURE__ */ __commonJSMin(((exports) => {
     "enum",
     "const"
   ]);
-  function inlineRef(schema, limit = true) {
+  function inlineRef(schema, limit2 = true) {
     if (typeof schema == "boolean") return true;
-    if (limit === true) return !hasRef(schema);
-    if (!limit) return false;
-    return countKeys(schema) <= limit;
+    if (limit2 === true) return !hasRef(schema);
+    if (!limit2) return false;
+    return countKeys(schema) <= limit2;
   }
   exports.inlineRef = inlineRef;
   const REF_KEYWORDS = /* @__PURE__ */ new Set([
@@ -182984,32 +183268,45 @@ async function runInstall(args) {
     process.stdout.write(installUsage);
     return 0;
   }
-  if (subcommand === "apply" || subcommand === "verify" || subcommand === "uninstall") {
+  if (subcommand === "verify" || subcommand === "uninstall") {
     process.stderr.write(`"cwk install ${subcommand}" is not available in this build.
 `);
     return 2;
   }
-  if (subcommand !== "plan") {
+  if (subcommand !== "plan" && subcommand !== "apply") {
     process.stderr.write(installUsage);
     return 2;
   }
   const flag = args.indexOf("--agent");
   const agent = flag >= 0 ? args[flag + 1] : void 0;
-  const extra = args.filter((_, index) => index !== flag && index !== flag + 1);
+  const hashFlag = subcommand === "apply" ? args.indexOf("--plan-hash") : -1;
+  const planHash = hashFlag >= 0 ? args[hashFlag + 1] : void 0;
+  const extra = args.filter((_, index) => index !== flag && index !== flag + 1 && (hashFlag < 0 || index !== hashFlag && index !== hashFlag + 1));
   if (extra.length) {
     process.stderr.write(`Unknown argument: ${extra[0]}
 ${installUsage}`);
     return 2;
   }
-  const payloadDir = dirname(fileURLToPath3(import.meta.url));
+  const payloadDir = dirname4(fileURLToPath3(import.meta.url));
   let blockText;
   try {
-    blockText = await readFile2(join5(payloadDir, "..", "install", "agents-block.md"), "utf8");
+    blockText = await readFile2(join7(payloadDir, "..", "install", "agents-block.md"), "utf8");
   } catch {
     process.stderr.write("Cannot read install/agents-block.md next to the payload. Run the installer from the repository checkout.\n");
     return 1;
   }
-  const outcome = await computePlan({ agent, env: process.env, home: homedir(), payloadDir, blockText });
+  const context = { agent, env: process.env, home: homedir(), payloadDir, blockText };
+  if (subcommand === "apply") {
+    if (!planHash) {
+      process.stderr.write(`apply requires --plan-hash from a plan run.
+${installUsage}`);
+      return 2;
+    }
+    const applied = await applyPlan(context, planHash);
+    process.stdout.write(formatApply(applied));
+    return applied.status === "applied" ? 0 : 1;
+  }
+  const outcome = await computePlan(context);
   process.stdout.write(formatPlan(outcome));
   return outcome.status === "ready" ? 0 : 1;
 }

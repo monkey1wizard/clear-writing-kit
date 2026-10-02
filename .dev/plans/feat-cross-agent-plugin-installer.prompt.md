@@ -192,9 +192,9 @@ Workflow: IMPLEMENT
 Step: 5 of 7
 Last activity: 2026-10-02 — T-08 independent tests PASS and audit CLEAR at 79c4d60. Read-only installation planning is ready.
 Next step: Run T-09 install apply implementation through the owner-authorized no-sandbox Claude executor.
-Current Task:
-Task Base Commit: e7d2860a6ea66c381d2c167d40902b28e6116d13
-Task Final Commit: 79c4d6050993ed02dac6d621cdd108c5fd19ea1e
+Current Task: T-09
+Task Base Commit: 9f43372c13a3b466eba62c717884ecef58330833
+Task Final Commit:
 Test Retry Count: 0
 Review Retry Count: 0
 
@@ -258,6 +258,31 @@ T-08 independent test: PASS at 79c4d6050993ed02dac6d621cdd108c5fd19ea1e with unc
 Dispatch: phase=audit task=T-08 role=AUDITOR executor=agy model=gemini-3.8-flash state=completed session_id=fd7407c0-7408-4e2e-9c44-16da5fd0a907 log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-08/1790913384-621332800-000000-T-08-audit-agy.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-auditor.agent.md contract_source=embedded
 
 T-08 audit resolution: CLEAR at unchanged HEAD 79c4d60. Exact-variable matching follows the task's mismatch definition and permits nested execution environments when the requested host's own variable exists. The plan hash binds normalized target state, manifest digest, runtime arguments, payload, and conflicts. Later T-09 target-change refusal and secrecy probes remain mandatory.
+
+T-09 task-quality check: The task owns atomic file replacement, backups, manifest persistence after each completed step, versioned payload and launcher installation, outputStyle-only JSON editing, CLI-only plugin/MCP registration, plan-hash refusal before any writes, and resumable step failure reporting. Use the T-08 context and read-only plan contract. Preserve BOM, EOL, trailing newline, unrelated instruction blocks, and unrelated settings keys. Report locked-path failures after five 100 ms retries. No real-home installs or independently authored test code in this phase. Tests deferred from T-06/T-08 that require apply are now mandatory; verify/uninstall-dependent lifecycle checks remain deferred to T-10/T-11.
+
+Dispatch: phase=implement task=T-09 role=CODER executor=claude model=claude-sonnet-5-5 state=completed session_id=4af04d09-6852-432a-bb76-c23e3a23b09e log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-09/1790913646-131593400-000000-T-09-implement-claude.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
+
+#### Retry Handoff — T-09 / IMPLEMENT
+
+- Status: RESOLVED
+- Problem: Boundary check failed because src/install/plan.ts has behavior and return-shape changes outside the T-09 allowlist. No commit, test, or audit may advance until scope is corrected.
+- Evidence:
+  - Test Results: not-applicable
+  - Review Results: not-applicable
+  - Security Review: not-applicable
+- Attempts:
+  1. 2026-10-02 — Completed initial implementation at base 9f43372.
+     - Result: Apply smoke tests completed, but PlanWrites, Plan.writes, computePlan return changes, and hostBinary export in src/install/plan.ts exceed task scope.
+     - Validation: boundary-check overall fail, out-of-allowlist src/install/plan.ts.
+     - Commit: none
+  2. 2026-10-02 — Completed scope correction at unchanged base 9f43372.
+     - Result: Write preparation moved into apply.ts. The T-08 Plan contract is preserved and src/install/plan.ts has no net diff. Payload rebuilt.
+     - Validation: completed Claude session 58d63a06-2200-4037-af5f-3cc8db87ffba and boundary-check overall pass.
+     - Commit: none
+- Next human step: Resolved by the permitted scope correction. No allowlist widening or owner decision was needed. Orchestrator must commit the allowlisted implementation and run independent tests and audit.
+
+Dispatch: phase=implement task=T-09 role=CODER executor=claude model=claude-sonnet-5-5 state=completed session_id=58d63a06-2200-4037-af5f-3cc8db87ffba log=C:/Code/clear-writing-kit/.dev/pipeline/feat-cross-agent-plugin-installer/T-09/1790913995-820823100-000000-T-09-implement-claude.log effort=medium contract=C:/Users/leetz/.gal/embedded-src/agents/golem-implementer.agent.md contract_source=embedded
 
 New prompt. Source approval and planning reviews are carried forward. T-03 is the payload gate. If it returns stop, T-05 onward cannot start. Human review occurs once after all automated tasks and goal-backward verification. T-01 implementation dispatch completed and was committed. Working tree was clean at b4700fa before this test cursor update. Boundary verification passed. Independent testing and audit have not run. Generated bundle whitespace warnings come from embedded dependency strings and remain unchanged to preserve build reproducibility.
 

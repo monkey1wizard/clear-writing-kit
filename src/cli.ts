@@ -4,6 +4,7 @@ import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { lintText } from "./check.js";
+import { applyPlan, formatApply } from "./install/apply.js";
 import { computePlan, formatPlan } from "./install/plan.js";
 import { runMcpServer } from "./mcp.js";
 
@@ -23,17 +24,19 @@ async function runInstall(args: string[]): Promise<number> {
     process.stdout.write(installUsage);
     return 0;
   }
-  if (subcommand === "apply" || subcommand === "verify" || subcommand === "uninstall") {
+  if (subcommand === "verify" || subcommand === "uninstall") {
     process.stderr.write(`"cwk install ${subcommand}" is not available in this build.\n`);
     return 2;
   }
-  if (subcommand !== "plan") {
+  if (subcommand !== "plan" && subcommand !== "apply") {
     process.stderr.write(installUsage);
     return 2;
   }
   const flag = args.indexOf("--agent");
   const agent = flag >= 0 ? args[flag + 1] : undefined;
-  const extra = args.filter((_, index) => index !== flag && index !== flag + 1);
+  const hashFlag = subcommand === "apply" ? args.indexOf("--plan-hash") : -1;
+  const planHash = hashFlag >= 0 ? args[hashFlag + 1] : undefined;
+  const extra = args.filter((_, index) => index !== flag && index !== flag + 1 && (hashFlag < 0 || (index !== hashFlag && index !== hashFlag + 1)));
   if (extra.length) {
     process.stderr.write(`Unknown argument: ${extra[0]}\n${installUsage}`);
     return 2;
@@ -46,7 +49,18 @@ async function runInstall(args: string[]): Promise<number> {
     process.stderr.write("Cannot read install/agents-block.md next to the payload. Run the installer from the repository checkout.\n");
     return 1;
   }
-  const outcome = await computePlan({ agent, env: process.env, home: homedir(), payloadDir, blockText });
+  const context = { agent, env: process.env, home: homedir(), payloadDir, blockText };
+  if (subcommand === "apply") {
+    if (!planHash) {
+      process.stderr.write(`apply requires --plan-hash from a plan run.
+${installUsage}`);
+      return 2;
+    }
+    const applied = await applyPlan(context, planHash);
+    process.stdout.write(formatApply(applied));
+    return applied.status === "applied" ? 0 : 1;
+  }
+  const outcome = await computePlan(context);
   process.stdout.write(formatPlan(outcome));
   return outcome.status === "ready" ? 0 : 1;
 }

@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
-import { readFile, readdir } from "node:fs/promises";
-import { join } from "node:path";
+import { constants } from "node:fs";
+import { copyFile, mkdir, readFile, readdir, rename, rm, writeFile } from "node:fs/promises";
+import { basename, dirname, join } from "node:path";
 
 export type Result<T, E = string> = { ok: true; value: T } | { ok: false; error: E };
 export const ok = <T>(value: T): Result<T, never> => ({ ok: true, value });
@@ -46,7 +47,7 @@ export async function sha256File(path: string) {
   }
 }
 
-async function listFiles(root: string, relative = ""): Promise<string[]> {
+export async function listFiles(root: string, relative = ""): Promise<string[]> {
   const entries = await readdir(join(root, relative), { withFileTypes: true });
   const files: string[] = [];
   for (const entry of entries) {
@@ -70,4 +71,52 @@ export async function digestTree(root: string) {
   const hash = createHash("sha256");
   for (const file of files) hash.update(`${file}\0${await sha256File(join(root, file))}\n`);
   return hash.digest("hex");
+}
+
+const RENAME_RETRIES = 5;
+const RENAME_DELAY_MS = 100;
+const LOCK_CODES = new Set(["EPERM", "EBUSY", "EACCES"]);
+
+/** Renames over the target. A locked target is retried 5 times, 100 ms apart, and then fails with an error that names the path. */
+export async function renameWithRetry(from: string, to: string) {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      await rename(from, to);
+      return;
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException)?.code;
+      if (!code || !LOCK_CODES.has(code)) throw error;
+      if (attempt >= RENAME_RETRIES) throw new Error(`Cannot replace ${to}: it stayed locked after ${RENAME_RETRIES} retries.`);
+      await new Promise(resolve => setTimeout(resolve, RENAME_DELAY_MS));
+    }
+  }
+}
+
+/** Writes a sibling temporary file and renames it over the target. The text keeps the line endings it has. The target stays unchanged when the write or the rename fails. */
+export async function writeTextAtomic(path: string, text: string, format: { bom: boolean }) {
+  await mkdir(dirname(path), { recursive: true });
+  const temporary = `${path}.${process.pid}.${Date.now()}.tmp`;
+  try {
+    await writeFile(temporary, Buffer.concat([format.bom ? Buffer.from([0xef, 0xbb, 0xbf]) : Buffer.alloc(0), Buffer.from(text, "utf8")]));
+    await renameWithRetry(temporary, path);
+  } catch (error) {
+    await rm(temporary, { force: true });
+    throw error;
+  }
+}
+
+/** Copies a file into the backup directory under a unique name. Returns the backup path, or undefined when the file is missing. */
+export async function backup(path: string, backupDir: string) {
+  await mkdir(backupDir, { recursive: true });
+  for (let counter = 0; ; counter++) {
+    const target = join(backupDir, `${basename(path)}.${counter}.bak`);
+    try {
+      await copyFile(path, target, constants.COPYFILE_EXCL);
+      return target;
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException)?.code;
+      if (isMissing(error)) return undefined;
+      if (code !== "EEXIST") throw error;
+    }
+  }
 }
