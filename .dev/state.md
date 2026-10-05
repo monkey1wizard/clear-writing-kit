@@ -15,7 +15,7 @@
 
 | Date | Plan | Landing | Result |
 | --- | --- | --- | --- |
-| 2026-10-03 | feat-cross-agent-plugin-installer | `084e00c66e93f94cfef64c16b4f566c21da99ece` | Goal verified; finalize review CLEAR; durable docs synced |
+| 2026-10-03 | feat-cross-agent-plugin-installer | `084e00c66e93f94cfef64c16b4f566c21da99ece` | ABSORBED; goal verified; review CLEAR; durable docs synced |
 
 ## Follow-ups
 
