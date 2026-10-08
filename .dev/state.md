@@ -6,6 +6,9 @@
 
 | Plan | File | Plan Phase | Last Activity |
 | --- | --- | --- | --- |
+| docs-apa-references | `.dev/plans/docs-apa-references.md` | deep-planning | 2026-10-08 |
+| feat-ja-report-style | `.dev/plans/feat-ja-report-style.md` | deep-planning | 2026-10-08 |
+| feat-ja-ai-tone-rules | `.dev/plans/feat-ja-ai-tone-rules.md` | planning | 2026-10-08 |
 
 <!-- When more than one plan is active, table order is priority order. `/gal whats-next` and `/gal wrap-up` use the first non-terminal row; if all rows are terminal, they fall back to the first row. -->
 
