@@ -78,13 +78,14 @@ None.
 
 ## Status
 
-Workflow: IMPLEMENT
-Step: 1 of 2
-Last activity: 2026-10-08 — T-01 implemented, focused tests and rebuild verified
-Next step: T-02 — regenerate the nine delivery projections
-Current Task: T-01
+Workflow: IMPLEMENT (complete)
+Step: 2 of 2
+Last activity: 2026-10-08 — T-02 projections regenerated, TP-04 and TP-05 recorded
+Next step: orchestrator test, review, and closeout
+Current Task: T-02
 Task Base Commit: ccc542e
-Task Final Commit: recorded by the T-01 commit (see git log)
+T-01 Commit: 774ba50
+Task Final Commit: recorded by the T-02 commit that contains this line
 Test Retry Count: 0
 Review Retry Count: 0
 
@@ -94,6 +95,8 @@ Review Retry Count: 0
 | --- | --- | --- | --- |
 | T-01 | Seven files | Also edited `tests/test_artifacts.py`: updated the recorded `RULE_PREFIX_SHA256` digests for `accuracy` and `ja-JP`, required `Bunka2022` for `ja-JP`, and asserted that `Bunka2022` is in the Standards and guidelines group. Test logic was not weakened. | This plan intentionally changes ja-JP rule text and the accuracy excerpt, and `docs-apa-references` added digest guards for both after this plan was written. |
 | T-01 | TP-03 en-US lint of `docs/writing-checks.md` returns zero findings | Exit 0 with zero errors and one warning: write-good `"objective" is wordy or unneeded` at line 40. | The warning is pre-existing at HEAD `ccc542e` (same line and column). That paragraph documents it as a contextual false positive, so removing it would change documented meaning. No new finding was introduced. |
+| T-02 | Nine-file allowlist | Also committed `knowledge/usage/chatgpt.md` and `knowledge/usage/gemini.md`. The TP-04 allowlist command therefore exits 1 and lists exactly 11 paths: the nine allowed paths plus these two. | `okf:generate` rewrote them. Their `source_sha256` covers the Web instruction files, and they embed the instruction block text. Approved as a generator-owned scope extension by the orchestrator. |
+| T-02 | Nine generated files | Also edited `tests/test_artifacts.py`: updated the three recorded `INSTRUCTION_BODY_SHA256` digests and changed the pinned phrase in `test_user_gemini_requirements_and_compact_limit` from "For ja-JP documents, use plain forms" to "For ja-JP documents, use である forms, not だ forms". | R-10 intentionally changes this excerpt. The assertion keeps the same strength. Between the T-01 and T-02 commits, this Python test failed because it renders from source. It passes after T-02. |
 | T-01 | Rebuild picks up the edited rule | Copied `writing/rules/ja-document-style/index.cjs` into the ignored `writing/node_modules/textlint-rule-ja-document-style/` before building. | The installed package in this checkout is a copy, not a link, so esbuild would otherwise bundle the old rule. No tracked file is affected. |
 
 ### Handoff Notes
@@ -106,7 +109,7 @@ Human-approved implementation contract generated from the reconciled English sem
   - **Files**: `skills/coding-agent-writing/references/ja-JP.md`, `skills/coding-agent-writing/references/accuracy.md`, `writing/rules/ja-document-style/index.cjs`, `writing/test/checkers.test.cjs`, `docs/writing-checks.md`, `docs/references.md`, `dist/cwk.mjs`.
   - **Change**: Update the maintained rule and persistent excerpt, extend the synchronous sentence-end checker for だ, だろう, だった, and のだ in ja-JP documents, preserve protected nodes and exceptions, skip まだ and ただ, add no fix, add the three named focused contracts, align durable docs and `[Bunka2022]`, then rebuild the committed bundle. Add no dependency or asynchronous path.
   - **Acceptance**: TP-01 through TP-03 pass. Findings use `ja-document-style`; protected and out-of-scope input stays unchanged; `dist/` equals a deterministic fresh build; T-01 records focused tests and rebuild evidence.
-- [ ] T-02 — Regenerate every delivery projection affected by the rule and excerpt.
+- [x] T-02 — Regenerate every delivery projection affected by the rule and excerpt.
   - **Files**: `web-skills/web-answer-writing/SKILL.md`, `web-skills/web-answer-writing/references/accuracy.md`, `web-skills/web-answer-writing/references/ja-JP.md`, `web-instructions/chatgpt.md`, `web-instructions/gemini.md`, `knowledge/rules/accuracy.md`, `knowledge/rules/ja-JP.md`, `output-styles/clear-writing-kit.md`, `install/agents-block.md`.
   - **Change**: Run the existing Web, OKF, output-style, and agents-block generators after T-01. Commit only generator-owned changes and enforce both packaging budgets.
   - **Acceptance**: TP-04 passes. Every projection equals its generator, the nine-file allowlist holds, and T-02 records all four generator summaries.
@@ -147,6 +150,26 @@ Run on 2026-10-08 from `C:\Code\clear-writing-kit`, base `ccc542e`.
 - Extra: `node --test test/checkers.test.cjs` in `writing/`: tests 29, pass 29, fail 0. `node lint-docs.cjs`: 0 errors, 10 warnings. `markdownlint-cli2`: 36 files, 0 errors.
 - Budgets after the excerpt edit, computed from the generator renderer before T-02: ChatGPT block 1,425 of 1,500 characters. Agents block 1,522 bytes, below 2,048.
 - Status: completed.
+
+### T-02
+
+Run on 2026-10-08 after T-01 commit `774ba50`.
+
+- Generators: `python scripts/generate-web-artifacts.py --update` wrote 7 Web artifacts. `cmd.exe /d /c npm --prefix writing run okf:generate` generated 14 OKF files. `python scripts/generate-output-style.py --output output-styles/clear-writing-kit.md` and `python scripts/generate-agents-block.py --output install/agents-block.md` each wrote their file. All exited 0.
+- TP-04 `python scripts/generate-web-artifacts.py --check`: "checked 7 Web artifacts", exit 0.
+- TP-04 `cmd.exe /d /c npm --prefix writing run okf:check`: "OKF format, source freshness, and publication links passed", exit 0.
+- TP-04 `python scripts/generate-output-style.py --output output-styles/clear-writing-kit.md --check`: exit 0.
+- TP-04 `python scripts/generate-agents-block.py --output install/agents-block.md --check`: exit 0.
+- TP-04 budgets: ChatGPT block 1,425 of 1,500 characters (was 1,414). the Gemini instruction block that holds the excerpt is 891 characters (was 880). `install/agents-block.md` 1,522 bytes, below 2,048.
+- TP-04 allowlist command: exit 1. It lists the nine allowed paths plus `knowledge/usage/chatgpt.md` and `knowledge/usage/gemini.md`, and nothing else (see Deviations).
+- Status: completed.
+
+### TP-05
+
+- `cmd.exe /d /c npm --prefix writing test`: tests 66, pass 66, fail 0, skipped 0.
+- `python -m unittest discover -s tests -v`: 18 tests, OK (after the T-02 test update; 1 failure before it, see Deviations).
+- `cmd.exe /d /c npm --prefix writing run lint`: profiles, OKF, and doc lint passed with 0 errors and 10 warnings. markdownlint checked 36 files with 0 errors. Exit 0.
+- `git diff --name-only -- dist web-skills knowledge web-instructions install output-styles` before the T-02 commit: the nine allowed projections plus the two `knowledge/usage/` files. `dist/cwk.mjs` was already committed in T-01.
 
 ## Review Results
 

@@ -14,7 +14,7 @@ sources:
 generated:
   by: process:clear-writing-kit-okf
 source_path: skills/coding-agent-writing/references/accuracy.md
-source_sha256: b0d934cc28b53288664cb8beb8cb93533a8024e01a814759ebc4e7dcd26192c5
+source_sha256: e80911f7a0a66d19f332bda5c52f052272e4d150a35f24837f75379d061a2722
 ---
 
 # Shared accuracy and clarity rules
@@ -26,7 +26,7 @@ Accuracy comes first, clarity second, and plain language third. If shortening lo
 The following block is also the source for generated Web custom instructions.
 
 <!-- instructions:begin -->
-Lead with the answer. Preserve facts, conditions, exceptions, negation, numbers, units, scope, attribution, and genuine uncertainty. Keep must, should, may, and can distinct. Separate verified facts from inference, advice, and unchecked claims. Report both success and failure. Preserve code, identifiers, commands, paths, URLs, quotations, error text, and product names unless I request changes. Use one term per concept and one main idea per sentence. Put conditions before the actions they control. Use focused paragraphs and lists when useful. Do not use semicolons, em dashes, or parenthetical asides in prose. Check meaning after editing. Follow my requested language and format. Use en-US spelling. For ja-JP documents, use plain forms, concise headings without final periods, and consistent sentences or noun phrases within each list. Use plain action sentences for steps. For ja-JP conversations, use polite text and lists. Apply document style to documents drafted in chat. Never claim a tool ran unless it did.
+Lead with the answer. Preserve facts, conditions, exceptions, negation, numbers, units, scope, attribution, and genuine uncertainty. Keep must, should, may, and can distinct. Separate verified facts from inference, advice, and unchecked claims. Report both success and failure. Preserve code, identifiers, commands, paths, URLs, quotations, error text, and product names unless I request changes. Use one term per concept and one main idea per sentence. Put conditions before the actions they control. Use focused paragraphs and lists when useful. Do not use semicolons, em dashes, or parenthetical asides in prose. Check meaning after editing. Follow my requested language and format. Use en-US spelling. For ja-JP documents, use である forms, not だ forms, concise headings without final periods, and consistent sentences or noun phrases within each list. Use plain action sentences for steps. For ja-JP conversations, use polite text and lists. Apply document style to documents drafted in chat. Never claim a tool ran unless it did.
 <!-- instructions:end -->
 
 ## Plain language

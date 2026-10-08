@@ -4,7 +4,7 @@ description: Coding-agent writing with local checks and en-US, zh-TW, and ja-JP 
 keep-coding-instructions: true
 ---
 
-<!-- Source SHA-256: e21cd4552b06109e433bddb4e92e3af06536e07bbae5dbbffae4cabbe849fcdd -->
+<!-- Source SHA-256: fa2b44c2b797650da8eb253c1128b83677957cda82dbdedf702a864b57c3d181 -->
 
 # Clear Writing Kit for Claude Code
 
@@ -47,7 +47,7 @@ Accuracy comes first, clarity second, and plain language third. If shortening lo
 The following block is also the source for generated Web custom instructions.
 
 <!-- instructions:begin -->
-Lead with the answer. Preserve facts, conditions, exceptions, negation, numbers, units, scope, attribution, and genuine uncertainty. Keep must, should, may, and can distinct. Separate verified facts from inference, advice, and unchecked claims. Report both success and failure. Preserve code, identifiers, commands, paths, URLs, quotations, error text, and product names unless I request changes. Use one term per concept and one main idea per sentence. Put conditions before the actions they control. Use focused paragraphs and lists when useful. Do not use semicolons, em dashes, or parenthetical asides in prose. Check meaning after editing. Follow my requested language and format. Use en-US spelling. For ja-JP documents, use plain forms, concise headings without final periods, and consistent sentences or noun phrases within each list. Use plain action sentences for steps. For ja-JP conversations, use polite text and lists. Apply document style to documents drafted in chat. Never claim a tool ran unless it did.
+Lead with the answer. Preserve facts, conditions, exceptions, negation, numbers, units, scope, attribution, and genuine uncertainty. Keep must, should, may, and can distinct. Separate verified facts from inference, advice, and unchecked claims. Report both success and failure. Preserve code, identifiers, commands, paths, URLs, quotations, error text, and product names unless I request changes. Use one term per concept and one main idea per sentence. Put conditions before the actions they control. Use focused paragraphs and lists when useful. Do not use semicolons, em dashes, or parenthetical asides in prose. Check meaning after editing. Follow my requested language and format. Use en-US spelling. For ja-JP documents, use である forms, not だ forms, concise headings without final periods, and consistent sentences or noun phrases within each list. Use plain action sentences for steps. For ja-JP conversations, use polite text and lists. Apply document style to documents drafted in chat. Never claim a tool ran unless it did.
 <!-- instructions:end -->
 
 ### Plain language
@@ -181,7 +181,9 @@ The full entries are in the [reference list](https://github.com/monkey1wizard/cl
 
 ### 説明文書
 
-このプロジェクトでは、説明文書の本文を常体で統一する。動詞は普通形を使う。名詞述語には「である」を使えるが、すべての文末に付ける必要はない。これはプロジェクトの文体方針であり、日本語の文書全般に対する規則ではない。
+このプロジェクトでは、説明文書を報告書型の文書として扱い、本文を常体のである体で統一する。名詞述語は「である」で終え、動詞は普通形で終える。文末に「だ」「だろう」「だった」を使わない。推量には「であろう」、過去には「であった」を使う。
+
+この規則は、このプロジェクトが作成する文書に適用する。日本語の文書全般に対する規則ではない。一般の利用者に向けた取扱説明書では、通常は敬体を使う。
 
 見出しには名詞句や簡潔な動詞表現を使い、句点を付けない。箇条書きは、同じまとまりの中で常体の文か名詞句にそろえる。手順には「設定ファイルを開く。」のように、動作を明示する文を使う。
 
@@ -213,7 +215,8 @@ textlintの結果だけで自然さを判断しない。意味と読みやすさ
 
 完全な書誌情報は[参考文献一覧](https://github.com/monkey1wizard/clear-writing-kit/blob/main/docs/references.md)にある。
 
-このファイルの規則は、すべてこのプロジェクトが独自に定めたものである。対象は、説明文書の常体、見出し、箇条書き、会話の敬体、用語と表記、意味を維持する例、最終確認である。
+- 説明文書の文体：報告書型の文書をである体で書き、文末に「だ」「だろう」「だった」を使わない規則は、`[Bunka2022]` のⅢ－１ ウに基づく。この規則を本プロジェクトの文書に限ることと、取扱説明書の扱いは、このプロジェクトの判断である。
+- その他の規則：見出し、箇条書き、会話の敬体、文体指定の優先、用語と表記、意味を維持する例、最終確認は、このプロジェクトが独自に定めたものである。
 
 ## Embedded local-checks
 

@@ -69,9 +69,9 @@ RULE_PREFIX_SHA256 = {
 # SHA-256 of generator output for the instruction files with the source stamp line removed.
 # A change that intentionally edits the persistent instruction excerpt or its templates must update the matching digest.
 INSTRUCTION_BODY_SHA256 = {
-    "web-instructions/chatgpt.md": "24712530ac8e0275c729c25d1f7c509b5465b9302874fb4e8720cff9b5746f0b",
-    "web-instructions/gemini.md": "5c5c0b3635f514556a3882032ac12e69c8c1c8ced5a293b6e9c3a84a3bbee835",
-    "install/agents-block.md": "b0790f489b758f3792b5137ee1ce158bf48560957e1f747f7eddcca334c7b41a",
+    "web-instructions/chatgpt.md": "56c9e4242b176484e82342bcdf83cbffc5ced60d2fb57c094de10d053fb605d3",
+    "web-instructions/gemini.md": "fd174653e95216f66146c4c968a3c3ee82a4af4f20393bb6775cf0cb3c327519",
+    "install/agents-block.md": "a65abcc9b87088423dd65fb0cbeecb8a5277429e887a598f2151ead8c1e3007e",
 }
 
 
@@ -377,7 +377,7 @@ class Artifacts(unittest.TestCase):
         for platform in ("chatgpt", "gemini"):
             instructions = outputs[Path("web-instructions") / (platform + ".md")]
             self.assertIn("Use en-US spelling.", instructions)
-            self.assertIn("For ja-JP documents, use plain forms", instructions)
+            self.assertIn("For ja-JP documents, use である forms, not だ forms", instructions)
             self.assertIn("Apply document style to documents drafted in chat.", instructions)
             self.assertIn("For ja-JP conversations, use polite text and lists.", instructions)
 
