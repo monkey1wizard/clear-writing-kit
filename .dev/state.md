@@ -6,6 +6,7 @@
 
 | Plan | File | Plan Phase | Last Activity |
 | --- | --- | --- | --- |
+| feat-ccync-local-checks | `.dev/plans/feat-ccync-local-checks.prompt.md` | execution-prompt | 2026-10-09 |
 
 <!-- When more than one plan is active, table order is priority order. `/gal whats-next` and `/gal wrap-up` use the first non-terminal row; if all rows are terminal, they fall back to the first row. -->
 
