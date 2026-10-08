@@ -1,17 +1,17 @@
 <!-- gal:planning-authority
 semantic-draft: .dev/plans/docs-apa-references.en.md
 planLanguage: zh-TW
-draft-hash: 2442212fc6558afb2f45077bb05d26a782f3cea972d374ff98cc751c0e9e435c
-rendered-source-hash: ca584bbdaa8b19f6e49038fb1cde076a5454d5cb21cb7e0e072406d76c40d727
-prompt-hash: none
-equivalence-verdict: pending
+draft-hash: 54068fbe3716fe967d95deb01737695e762b563e7f1ce7aedcaa2adb71cd804c
+rendered-source-hash: cf7004b6e6697978af723e5bbc4f6b875ea512dbd031ced84ece1f08e971fc87
+prompt-hash: 43aa84a930fcfc30b65dcf5024808c7661a737fd3b74939edbc157b0e14b441d
+equivalence-verdict: EQUIVALENT
 -->
 
 # Plan: APA 7 reference list and per-rule source attribution
 
 ## Approval
 
-- Human approval: [pending]
+- Human approval: [approved]
 - Architect review: [clear]
 - Design review: [not-requested]
 - Business review: [not-requested]
@@ -40,7 +40,7 @@ equivalence-verdict: pending
 ## Requirements
 
 - [ ] R-01 `docs/references.md` 是唯一的參考文獻清單。條目依 APA 7 撰寫，依第一作者排序。每筆有固定代號（例如 `[ISO2023]`）、完整的 APA 7 書目、有的話附 URL 或 DOI。內容可能變動的網頁要附查閱日期。
-- [ ] R-02 清單分兩組：標準與指引、軟體。軟體條目引用 `writing/package.json` 鎖定的確切版本。
+- [ ] R-02 清單分兩組：標準與指引、軟體。由 `writing/package.json` 管理的軟體要引用確切鎖定版本。repo 沒有鎖定的 host-provided 軟體（包括 zhtw-mcp）只引用 repository URL 與查閱日期，不得自行宣稱版本。
 - [ ] R-03 引用代號在兩個方向都能對上。規則檔引用的每個代號都在 `docs/references.md` 裡，清單裡的每筆條目也至少被一個規則檔引用。清單本身不重複列出哪些檔案使用了該條目。
 - [ ] R-04 `skills/coding-agent-writing/references/` 下每份維護中的規則檔，結尾加一節 `Sources`，用該檔案的語言撰寫。這一節把規則對應到代號，並列出專案自訂的規則。這一節以上的規則文字不改動。
 - [ ] R-05 每節 `Sources` 用絕對網址 `https://github.com/monkey1wizard/clear-writing-kit/blob/main/docs/references.md` 連到清單，不用相對連結。同一份檔案會被複製到 `web-skills/`、OKF 套件和 Claude output style，在這些地方相對路徑無法解析。
@@ -51,6 +51,23 @@ equivalence-verdict: pending
 - [ ] R-10 專案自訂的主張維持「專案選擇」的寫法。引用來源不得暗示本 repo 符合或通過某項標準的認證。
 - [ ] R-11 `docs/references.md` 通過既有的 en-US 文件 lint。含破折號或分號的正式標題寫成連結文字，`prose-punctuation` 規則本來就會略過連結，因此標題可以原樣引用。
 - [ ] R-12 speak-human-tw 作為啟發來源引用，不寫成規則出處，只對應 2026-09-29 加入的兩條規則：必須保留原樣的項目新增網址和引文（`references/accuracy.md`），以及放寬列表與版面規則（`references/accuracy.md`、`references/zh-TW.md`）。`Sources` 的英文寫「informed by」，繁中寫「受其啟發」。引用版本為 2026-09-28 的 commit `e180f0a`。
+
+### 已鎖定的來源對應表
+
+引用代號只用 ASCII 字母與數字。標準或指引使用正規化名稱加出版年份；鎖定版軟體使用產品名加上移除標點的完整版本數字；commit-pinned 指引使用 repository 名稱加年份；沒有鎖定版本的 host 軟體只使用 repository 名稱。
+
+| 引用代號 | 規則檔與主張 | 關係 |
+| --- | --- | --- |
+| `[ISO2023]` | `accuracy.md`：plain language 的讀者結果 | 由標準推導。準確性優先、非合規措辭與安全限制仍為專案自訂。 |
+| `[ASDSTE1002025]` | `en-US.md`：選用的短句與先寫條件指引 | 由指引推導。有限採用、排除字彙規範及不宣稱合規仍為專案自訂。 |
+| `[SpeakHumanTW2026]` | `accuracy.md`：保護 URL 與引文；`accuracy.md`、`zh-TW.md`：彈性列表、表格與版面 | 受 2026-09-28 commit `e180f0a` 啟發。沒有複製文字，最終範圍仍為專案自訂。 |
+| `[Textlint1580]` | `local-checks.md`：textlint profile、CLI、MCP、`lintText` 與 `lintFile` 的軟體行為 | 只歸因軟體行為；repository workflow 仍為專案自訂。 |
+| `[TextlintRulePresetJaTechnicalWriting1202]` | `local-checks.md`：鎖定版日文技術寫作 preset 行為 | 只歸因軟體行為。 |
+| `[TextlintRuleWriteGood200]` | `local-checks.md`：鎖定版 write-good 規則行為 | 只歸因軟體行為。 |
+| `[TextlintRuleNoZeroWidthSpaces101]` | `local-checks.md`：鎖定版 zero-width-space 規則行為 | 只歸因軟體行為。 |
+| `[ZhtwMCP]` | `zhtw-checks.md`：host-provided schema 與 capabilities | 依 repository URL 與查閱日期歸因軟體行為，不宣稱版本；workflow 與安全規則仍為專案自訂。 |
+
+其他現有內容皆為專案自訂：`accuracy.md` 的事實／推論、情態強度、不確定性、部分成功、單句單意、條件優先、行為者、程序與描述、標點、意思檢查與例子；目前 `ja-JP.md` 的全部內容；以及 `en-US.md`、`zh-TW.md`、`local-checks.md`、`zhtw-checks.md` 的其餘內容。本計畫不新增 `[Bunka2022]`，該引用由獨立的報告文體計畫負責。只有明確、由擁有者確認或有 repository 紀錄的影響才能加上 attribution；文字相似本身不構成歸因。
 
 ## Diagrams
 
@@ -159,6 +176,8 @@ None
 
 沒有安全面的影響。本變更只新增文件和一個測試，不寫入使用者設定。
 
+來源歸因邊界也已鎖定：只引用明確、由擁有者確認或有 repository 紀錄的影響；ISO 與 ASD 標為「由其推導」，speak-human-tw 只標為「受其啟發」；目前 ja-JP 內容仍是專案自訂；套件引用只證明軟體行為，不是規則文字權威；未鎖定的 zhtw-mcp 不得自行宣稱版本。這些決定已寫入「已鎖定的來源對應表」，實作時不需再作 attribution 判斷。
+
 <!-- ARCH_REVIEW: CLEAR -->
 
 ### Resolved Questions
@@ -172,7 +191,7 @@ None
 
 ### Documentation Structure Review (steward)
 
-通過。計畫位於 `.dev/plans/docs-apa-references.md`，英文草稿位於 `.dev/plans/docs-apa-references.en.md`。`.dev/plans/` 沒有其他計畫。必要章節齊全。圖與 `scripts/artifacts.py`、`writing/okf.cjs` 的投影路徑一致。沒有殘留舊專案名稱。
+通過。計畫位於 `.dev/plans/docs-apa-references.md`，英文草稿位於 `.dev/plans/docs-apa-references.en.md`。它是三份 active source plans 之一，且不與兩份日文計畫重複。必要章節齊全。圖與 `scripts/artifacts.py`、`writing/okf.cjs` 的五項工作投影路徑一致。沒有殘留舊專案名稱。
 
 ### Business Review
 
@@ -184,12 +203,41 @@ None
 
 ### Engineering Review
 
-Pending.
+CLEAR。Structural-atomicity review 已核准五項工作：T-01 負責唯一引用契約與已鎖定來源對應表，T-02 至 T-05 各自負責一個 delivery family。Tester review 已核准 TP-01 至 TP-07，證據涵蓋雙向引用、live metadata、README occurrence、projection body、generators、allowlist 與 authoritative suites。沒有剩餘的實作判斷、未解依賴或 verification-only task。
+
+<!-- ENG_REVIEW: CLEAR -->
 
 ## Test Plan
 
-Pending.
+| ID | Type | Description | Covers |
+| --- | --- | --- | --- |
+| TP-01 | integration | 執行 `python -m unittest tests.test_artifacts.Artifacts.test_reference_citation_contract -v`。要求雙向代號與使用者、已鎖定的來源對應、絕對連結、只對 `writing/package.json` 軟體要求確切版本、不得虛構 zhtw-mcp 版本、常駐指令摘要不含代號，以及每份規則檔在 `Sources` 以上的前綴不變。專案自訂主張必須維持專案選擇，不得暗示合規或認證；`[SpeakHumanTW2026]` 必須使用 commit `e180f0a`，且只能寫「informed by」或「受其啟發」。另要求 executor terminal 記錄為 `completed`，且 `.dev/plans/docs-apa-references.prompt.md` 有相符的 T-01 write-back 子節。 | T-01 |
+| TP-02 | manual | Why manual: 線上目錄頁與專案頁沒有穩定的本機 oracle。逐筆記錄已確認 metadata，並以適用的 APA 7 example 檢查最終條目。要求兩個規劃分組、各組依第一作者排序、可變網頁附查閱日期；任何無法確認的項目必須省略並寫入 task write-back。逐項依 R-10、R-12 檢查：不得暗示合規或認證，speak-human-tw 只能以 commit `e180f0a` 的啟發來源出現。要求 terminal 記錄為 `completed`，且 `.dev/plans/docs-apa-references.prompt.md` 有 T-01 子節。 | T-01 |
+| TP-03 | documentation | 執行 `python -m unittest tests.test_artifacts.Artifacts.test_readme_languages_have_equal_commands_and_local_links -v`、`rg -o -n "docs/references\\.md" README.md`、`rg -n -e "^#{1,6} References$" -e "^#{1,6} 參考文獻$" -e "^#{1,6} 参考文献$" -e "^\\[[A-Za-z]+[0-9]{4}\\]" README.md` 與 `cmd.exe /d /c npm --prefix writing run lint`。第一個 `rg` 必須正好有三個 occurrences；第二個 `rg` 必須無輸出並以預期的 1 結束；三個語言段落的連結均可用，測試與 lint 均通過。另要求 terminal 記錄為 `completed`，且 `.dev/plans/docs-apa-references.prompt.md` 有 T-02 子節。 | T-02 |
+| TP-04 | documentation | 執行 `python scripts/generate-web-artifacts.py --check` 與預定的聚焦測試 `python -m unittest tests.test_artifacts.Artifacts.test_reference_citation_projections -v`。聚焦測試必須掃描全部七個 render outputs、移除 generated stamp 行後比較 ChatGPT 與 Gemini 指示內文並要求差異為空、只對四份複製的 reference files 要求絕對參考文獻網址，且不對 skill 或兩份 instruction files 要求該網址。另要求 terminal 記錄為 `completed`，且 `.dev/plans/docs-apa-references.prompt.md` 有 T-03 子節。 | T-03 |
+| TP-05 | integration | 執行 `cmd.exe /d /c npm --prefix writing run okf:check`。六份來源派生 concept 必須最新，且沒有 unmapped、相對 `docs/` 或未預期的 knowledge 檔案。另要求 terminal 記錄為 `completed`，且 prompt 有 T-04 write-back 子節。 | T-04 |
+| TP-06 | documentation | 執行 `python scripts/generate-output-style.py --output output-styles/clear-writing-kit.md --check`。要求內容完全等於產生器結果，且內嵌參考文獻 URL 都是絕對網址。另要求 terminal 記錄為 `completed`，且 prompt 有 T-05 write-back 子節。 | T-05 |
+| TP-07 | integration | 執行 `cmd.exe /d /c npm --prefix writing test`、`python -m unittest discover -s tests -v`、`cmd.exe /d /c npm --prefix writing run lint`、`python scripts/generate-agents-block.py --output install/agents-block.md --check` 與 `git diff --name-only -- web-skills knowledge web-instructions install output-styles`。要求四份通過摘要，且 generated-path diff 只能出現 T-03 至 T-05 宣告的檔案。要求 terminal 記錄為 `completed`，且 `.dev/plans/docs-apa-references.prompt.md` 有 T-01 與 T-04 子節。 | T-01, T-04 |
 
 ## Tasks
 
-Pending.
+- [ ] T-01 — 建立唯一的 APA 7 引用契約。
+  - **Files**: `docs/references.md`, `skills/coding-agent-writing/references/accuracy.md`, `skills/coding-agent-writing/references/en-US.md`, `skills/coding-agent-writing/references/ja-JP.md`, `skills/coding-agent-writing/references/zh-TW.md`, `skills/coding-agent-writing/references/local-checks.md`, `skills/coding-agent-writing/references/zhtw-checks.md`, `tests/test_artifacts.py`.
+  - **Change**: 逐筆對照線上頁面查證候選來源，建立唯一且含代號的 APA 7 清單，依「已鎖定的來源對應表」實作且不得再作 attribution 判斷，在各規則檔附加符合其語言的 `Sources` 對應與指定絕對網址，並新增雙向代號、使用者、連結形式、歸因、指示摘要穩定性與 generated projection 測試（`test_reference_citation_contract`、`test_reference_citation_projections`）。每個新 `Sources` 章節以上的規則文字必須保持不變，引用代號不得進入常駐指令摘要。沿用既有 artifact 測試模組，不新增相依套件或平行引用資料庫。影響範圍：8 個檔案。
+  - **Acceptance**: TP-01 與 TP-02 通過，包含 R-01、R-02、R-10、R-12。每個新 `Sources` 標題以上的差異為空，每筆已確認條目都有唯一固定代號和至少一個使用者，無法確認的條目已省略並回報。executor log 以 `completed` 結束，且測試摘要記錄在 `.dev/plans/docs-apa-references.prompt.md` 的 T-01 下。
+- [ ] T-02 — 在 README 的每個語言段落加入參考文獻連結。
+  - **Files**: `README.md`.
+  - **Change**: 在英文、繁體中文和日文概覽各加入一句語意相同的連結。參考文獻清單只保留在既有唯一檔案，並沿用既有三語段落結構。影響範圍：1 個檔案。
+  - **Acceptance**: TP-03 通過。每個語言段落各有一個指向唯一參考文獻清單的相對連結，repo 沒有重複清單。executor log 以 `completed` 結束並記錄三個相符行。
+- [ ] T-03 — 從維護來源重新產生 Web 交付檔案群組。
+  - **Files**: `web-skills/web-answer-writing/SKILL.md`, `web-skills/web-answer-writing/references/accuracy.md`, `web-skills/web-answer-writing/references/en-US.md`, `web-skills/web-answer-writing/references/ja-JP.md`, `web-skills/web-answer-writing/references/zh-TW.md`, `web-instructions/chatgpt.md`, `web-instructions/gemini.md`.
+  - **Change**: 在 T-01 後執行既有 Web artifact 產生器。只接受產生器擁有的變更，也就是複製的 `Sources` 章節與來源雜湊 stamp。指示區塊必須保持不變。不得手動編輯產生檔。影響範圍：7 個檔案。
+  - **Acceptance**: TP-04 通過。提交檔案等於 `render_web()` 的結果，排除 stamp 後的指示區塊差異為空，每個複製的 `Sources` URL 都是絕對網址。executor log 以 `completed` 結束並記錄檢查摘要。
+- [ ] T-04 — 重新產生由來源派生的 OKF concepts。
+  - **Files**: `knowledge/rules/accuracy.md`, `knowledge/rules/en-US.md`, `knowledge/rules/ja-JP.md`, `knowledge/rules/zh-TW.md`, `knowledge/checks/local-checks.md`, `knowledge/checks/zhtw-checks.md`.
+  - **Change**: 在 T-01 後執行既有 OKF 產生器，只提交六份由已修改規則檔派生的 concept。沿用現有 `scheme:` pass-through 保留絕對外部連結，不新增參考文獻清單 OKF node。影響範圍：6 個檔案。
+  - **Acceptance**: TP-05 通過。產生的 concept 與 `writing/okf.cjs` 一致，不含 unmapped link 或指向 `docs/` 的相對連結，也沒有未預期的 concept。executor log 以 `completed` 結束並記錄 OKF 摘要。
+- [ ] T-05 — 重新產生 Claude Code output style。
+  - **Files**: `output-styles/clear-writing-kit.md`.
+  - **Change**: 在 T-01 後執行既有 output-style 產生器，讓內嵌的維護中參考檔含有新的 `Sources` 章節。不得手動編輯產生檔。影響範圍：1 個檔案。
+  - **Acceptance**: TP-06 通過。提交的 output style 等於 `render_claude()`，每個參考文獻清單連結都是絕對網址。executor log 以 `completed` 結束並記錄產生器摘要。

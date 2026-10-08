@@ -1,17 +1,17 @@
 <!-- gal:planning-authority
 semantic-draft: .dev/plans/feat-ja-report-style.en.md
 planLanguage: zh-TW
-draft-hash: 8a6fb88eb6dd7c150f3a8b9887d43db5f07e28ec70206386853cb92bfc99d80d
-rendered-source-hash: 7cc8b36753cdaddc71bc52e6769a14403aac12de19f407fb91b834f302b92f08
-prompt-hash: none
-equivalence-verdict: pending
+draft-hash: 3e635763c32015a495392f2b87ccffeec2c0459089e12d2ef9c57a4ba70c7ae3
+rendered-source-hash: 9b1826260091f506deea94a1d0decac6dc6ab81072398fb620db96bd7dc66277
+prompt-hash: cb23d9d02a69d015521912e5fcef675e8ba42b172f9e9e1171e36676aeaec278
+equivalence-verdict: EQUIVALENT
 -->
 
 # Plan: Align ja-JP document style with the official report style
 
 ## Approval
 
-- Human approval: [pending]
+- Human approval: [approved]
 - Architect review: [clear]
 - Design review: [not-requested]
 - Business review: [not-requested]
@@ -36,7 +36,7 @@ equivalence-verdict: pending
 
 ## Requirements
 
-- [ ] R-01 `references/ja-JP.md` 寫明文件視為報告類文件，使用「である」形常體。名詞述語以「である」結尾，動詞用普通形結尾。文件中不以「だ」「だろう」「だった」作為句尾。
+- [ ] R-01 `references/ja-JP.md` 寫明文件視為報告類文件，使用「である」形常體。基準文字使用穩定的日文 markers `報告書型`、`である体`、`文末に「だ」「だろう」「だった」`，讓相依計畫能驗證完整基準確實已落地。名詞述語以「である」結尾，動詞用普通形結尾。文件中不以「だ」「だろう」「だった」作為句尾。
 - [ ] R-02 `references/ja-JP.md` 保留既有例外。對話文字用敬體。使用者或專案指定的文體優先。引文、程式碼與產品名稱維持原樣。
 - [ ] R-03 `references/ja-JP.md` 保留適用範圍的說明：這是本工具文件的規則，不是所有日文的規則。並註明面向一般消費者的說明書通常用敬體。
 - [ ] R-04 `writing/rules/ja-document-style` 在 `document` 類型回報句尾的「だ」「だろう」「だった」。和既有的敬體句尾檢查一樣，略過「」與『』內的引文、引用區塊、連結、圖片和程式碼。整個詞是「まだ」或「ただ」時略過。不自動修正。
@@ -147,7 +147,7 @@ None
 
 ### Documentation Structure Review (steward)
 
-通過。計畫位於 `.dev/plans/feat-ja-report-style.md`，並有英文草稿。它是兩份進行中的計畫之一，與 `docs-apa-references` 不重複。圖與 `src/rules.ts` 和建置路徑一致。沒有殘留舊專案名稱。
+通過。計畫位於 `.dev/plans/feat-ja-report-style.md`，並有英文草稿。它是三份 active source plans 之一，且不與引用或 AI tone 工作重複。圖與經過 `src/rules.ts`、build 及 generated projections 的兩項工作路徑一致。沒有殘留舊專案名稱。
 
 ### Business Review
 
@@ -159,12 +159,27 @@ Pending.
 
 ### Engineering Review
 
-Pending.
+CLEAR。Structural-atomicity review 已核准兩項工作的切分：T-01 負責單一 ja-JP 報告文體行為，涵蓋規則、checker、tests、durable documentation、citation 與 rebuilt bundle；T-02 只負責九份 generated projections。Tester review 已核准 TP-01 至 TP-05，包括已命名的 boundary、CLI/MCP 與 documentation contracts、完整 `dist/` 重建 hashes、machine allowlists、packaging budgets 與 authoritative suites。沒有剩餘的實作選擇。
+
+<!-- ENG_REVIEW: CLEAR -->
 
 ## Test Plan
 
-Pending.
+| ID | Type | Description | Covers |
+| --- | --- | --- | --- |
+| TP-01 | unit | 新增名為 `Japanese documents reject da-form endings without fixes` 的測試，再執行 `node --test --test-name-pattern="Japanese documents reject da-form endings without fixes" writing/test/checkers.test.cjs`。文件中的「だ」「だろう」「だった」「のだ」必須回報；「である」「であろう」、動詞、完整詞「まだ」或「ただ」、blockquotes、links、images、inline 或 fenced code、日文引文、conversation、en-US、zh-TW 均不得回報。finding 不得含 fix payload，輸入文字必須逐位元組相同。要求 terminal 記錄為 `completed`，且 `.dev/plans/feat-ja-report-style.prompt.md` 有 T-01 子節。 | T-01 |
+| TP-02 | integration | 執行 `cmd.exe /d /c npm --prefix writing run build`，再新增並執行 `node --test --test-name-pattern="bundled Japanese report style CLI and MCP agree" writing/test/checkers.test.cjs`。該測試必須對 document 與 conversation 輸入 spawn `node dist/cwk.mjs check` 並呼叫 MCP path：document 非零結束、輸出 `ja-document-style` 且 findings 非空；conversation 為零結束、不含該規則且 findings 為空。以 `python -c "import hashlib,pathlib,subprocess;f=lambda:hashlib.sha256(b''.join(p.relative_to('dist').as_posix().encode()+b'\\0'+p.read_bytes() for p in sorted(pathlib.Path('dist').rglob('*')) if p.is_file())).hexdigest();a=f();subprocess.run(['cmd.exe','/d','/c','npm','--prefix','writing','run','build'],check=True);b=f();print(a,b);raise SystemExit(a!=b)"` 證明重建可重現；要求完整 `dist/` tree 重建前後 hash 相同。要求 terminal 記錄為 `completed`，且 `.dev/plans/feat-ja-report-style.prompt.md` 有 T-01 子節。 | T-01 |
+| TP-03 | documentation | 新增並執行 `node --test --test-name-pattern="Japanese report-style documentation contract" writing/test/checkers.test.cjs`，再執行 `node writing/check.cjs --language ja-JP --genre document skills/coding-agent-writing/references/ja-JP.md` 與 `node writing/check.cjs --language en-US --genre document docs/writing-checks.md`。指定測試必須要求 document-only「である」範圍、敬體對話、使用者或專案 override、引文／程式碼／產品名稱保護、一般消費者說明書範圍、checker message 與 `[Bunka2022]`；兩個 lint commands 均須回傳零 findings。另要求 terminal 記錄為 `completed`，且 `.dev/plans/feat-ja-report-style.prompt.md` 有 T-01 子節。 | T-01 |
+| TP-04 | documentation | 執行 `python scripts/generate-web-artifacts.py --check`、`cmd.exe /d /c npm --prefix writing run okf:check`、`python scripts/generate-output-style.py --output output-styles/clear-writing-kit.md --check` 與 `python scripts/generate-agents-block.py --output install/agents-block.md --check`。再執行 `python -c "import subprocess;allowed={'web-skills/web-answer-writing/SKILL.md','web-skills/web-answer-writing/references/accuracy.md','web-skills/web-answer-writing/references/ja-JP.md','web-instructions/chatgpt.md','web-instructions/gemini.md','knowledge/rules/accuracy.md','knowledge/rules/ja-JP.md','output-styles/clear-writing-kit.md','install/agents-block.md'};changed=set(subprocess.check_output(['git','diff','--name-only','--','web-skills','web-instructions','knowledge','output-styles','install/agents-block.md'],text=True).splitlines());print('\\n'.join(sorted(changed)));raise SystemExit(bool(changed-allowed))"`。要求符合兩個預算，且沒有超出 T-02 九檔 allowlist 的路徑。另要求 terminal 記錄為 `completed`，且 prompt 有 T-02 write-back 子節。 | T-02 |
+| TP-05 | integration | 執行 `cmd.exe /d /c npm --prefix writing test`、`python -m unittest discover -s tests -v`、`cmd.exe /d /c npm --prefix writing run lint` 與 `git diff --name-only -- dist web-skills knowledge web-instructions install output-styles`。要求三份通過摘要，且 generated-path diff 只能含 `dist/cwk.mjs` 與 T-02 的九檔 allowlist。要求 terminal 記錄為 `completed`，且 `.dev/plans/feat-ja-report-style.prompt.md` 有 T-01 與 T-02 子節。 | T-01 |
 
 ## Tasks
 
-Pending.
+- [ ] T-01 — 在維護規則與 bundled checker 強制「である」形文件文體。
+  - **Files**: `skills/coding-agent-writing/references/ja-JP.md`, `skills/coding-agent-writing/references/accuracy.md`, `writing/rules/ja-document-style/index.cjs`, `writing/test/checkers.test.cjs`, `docs/writing-checks.md`, `docs/references.md`, `dist/cwk.mjs`.
+  - **Change**: 更新維護中的 ja-JP 規則與常駐指令摘要，要求文件使用「である」形，同時保留對話和明確指定文體的例外。擴充現有同步句尾規則，不新增 tokenizer。規則只在 ja-JP document 回報「だ」「だろう」「だった」「のだ」。沿用現有 protected node 與日文引文處理，排除完整詞「まだ」和「ただ」，不提供 auto-fix。加入三個已命名的聚焦 regression 與 documentation-contract tests，對齊 durable documentation；`[Bunka2022]` 已存在時沿用，只有缺少時才新增。最後由來源重建已提交的 bundle。影響範圍：7 個檔案。
+  - **Acceptance**: TP-01、TP-02 與 TP-03 通過。findings 使用 `ja-document-style`，受保護或範圍外文字維持不變，規則不新增相依套件或非同步路徑，`dist/cwk.mjs` 等於 fresh build。executor log 以 `completed` 結束並記錄聚焦測試與重新建置證據。
+- [ ] T-02 — 重新產生受規則與摘要影響的所有交付投影。
+  - **Files**: `web-skills/web-answer-writing/SKILL.md`, `web-skills/web-answer-writing/references/accuracy.md`, `web-skills/web-answer-writing/references/ja-JP.md`, `web-instructions/chatgpt.md`, `web-instructions/gemini.md`, `knowledge/rules/accuracy.md`, `knowledge/rules/ja-JP.md`, `output-styles/clear-writing-kit.md`, `install/agents-block.md`.
+  - **Change**: 在 T-01 後執行既有 Web、OKF、output-style 與 agents-block 產生器。只提交產生器擁有的變更，持續強制所有 packaging budgets，不得直接編輯產生輸出。影響範圍：9 個檔案。
+  - **Acceptance**: TP-04 通過。每個提交的投影都等於產生器輸出，更新後的指示內容符合兩個預算，沒有不相關的產生檔變更。executor log 以 `completed` 結束並記錄四份檢查摘要。
