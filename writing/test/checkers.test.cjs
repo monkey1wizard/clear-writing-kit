@@ -57,6 +57,59 @@ test("Japanese supplemental endings are limited to documents", async () => {
   assert.ok(!(await lint("en-US", "document", "設定を確認してください。")).messages.some(m => m.ruleId === "ja-document-style"));
 });
 
+test("Japanese documents reject da-form endings without fixes", async () => {
+  const daForm = m => m.ruleId === "ja-document-style" && m.message.includes("である");
+  for (const text of ["本ツールは開発者向けだ。", "結果は変わるだろう。", "原因は設定だった。", "これは仕様なのだ。", "状態はこのままだ。"]) {
+    const original = Buffer.from(text, "utf8");
+    const findings = (await lint("ja-JP", "document", text)).messages.filter(daForm);
+    assert.ok(findings.length > 0, text);
+    for (const finding of findings) assert.equal(finding.fix, undefined, text);
+    assert.ok(Buffer.from(text, "utf8").equals(original), text);
+  }
+  const passing = [
+    "本ツールは開発者向けである。", "結果は変わるであろう。", "原因は設定であった。", "設定を変更した。", "テストはまだ。", "ただ。",
+    "> 本ツールは開発者向けだ。\n", "[本ツールは開発者向けだ。](https://example.com/)\n", "![本ツールは開発者向けだ。](image.png)\n",
+    "`本ツールは開発者向けだ。`\n", "```text\n本ツールは開発者向けだ。\n```\n", "原文は「本ツールは開発者向けだ。」である。", "原文は『結果は変わるだろう。』である。"
+  ];
+  for (const text of passing) {
+    assert.ok(!(await lint("ja-JP", "document", text)).messages.some(daForm), text);
+  }
+  for (const text of ["本ツールは開発者向けだ。", "結果は変わるだろう。", "原因は設定だった。"]) {
+    assert.ok(!(await lint("ja-JP", "conversation", text)).messages.some(m => m.ruleId === "ja-document-style"), text);
+    assert.ok(!(await lint("en-US", "document", text)).messages.some(m => m.ruleId === "ja-document-style"), text);
+    assert.ok(!(await lint("zh-TW", "document", text)).messages.some(m => m.ruleId === "ja-document-style"), text);
+  }
+});
+
+test("Japanese report-style documentation contract", () => {
+  const root = path.dirname(cwd);
+  const read = file => fs.readFileSync(path.join(root, file), "utf8").replace(/\r\n/g, "\n");
+  const message = "Use the である form in Japanese documents instead of だ, だろう, or だった. Preserve uncertainty and tense.";
+  const rule = read("writing/rules/ja-document-style/index.cjs");
+  const guide = read("skills/coding-agent-writing/references/ja-JP.md");
+  const checks = read("docs/writing-checks.md");
+  assert.ok(rule.includes(message));
+  for (const phrase of [
+    "説明文書を報告書型の文書として扱い、本文を常体のである体で統一する。",
+    "文末に「だ」「だろう」「だった」を使わない。",
+    "日本語の文書全般に対する規則ではない。",
+    "一般の利用者に向けた取扱説明書では、通常は敬体を使う。",
+    "会話の本文と箇条書きには、敬体を使う。",
+    "会話の中で文書を作成する場合は、その文書部分に説明文書の規則を適用する。",
+    "利用者やプロジェクトが別の文体を指定した場合は、その指定に従う。",
+    "コード、識別子、コマンド、パス、URL、引用、エラーメッセージ、製品名は、そのまま維持する。",
+    "`[Bunka2022]` のⅢ－１ ウに基づく。"
+  ]) assert.ok(guide.includes(phrase), phrase);
+  for (const phrase of [
+    message,
+    "| ja-document-style | ja-JP documents only |",
+    "The rule applies to documents that this project writes. This rule does not cover all Japanese text. Consumer-facing manuals generally use polite forms. Conversation prose uses polite forms. An explicit user or project style takes priority. Quotations, code, and product names stay unchanged.",
+    "It skips a sentence that ends with the whole word `まだ` or `ただ`.",
+    "`[Bunka2022]`"
+  ]) assert.ok(checks.includes(phrase), phrase);
+  assert.match(read("docs/references.md"), /^- `\[Bunka2022\]` 文化審議会\. \(2022\)\. \*\[公用文作成の考え方（建議）\]\(https:\/\/www\.bunka\.go\.jp\/seisaku\/bunkashingikai\/kokugo\/hokoku\/pdf\/93651301_01\.pdf\)\*/m);
+});
+
 test("Japanese document headings omit final periods", async () => {
   assert.ok((await lint("ja-JP", "document", "# 設定方法。\n")).messages.some(m => m.ruleId === "ja-document-style"));
   assert.equal((await lint("ja-JP", "document", "# 設定方法\n")).messages.length, 0);
@@ -109,7 +162,10 @@ test("CLI cannot silently override the selected profile", () => {
 });
 
 function mcp(language, genre) {
-  const child = spawn(process.execPath, ["node_modules/textlint/bin/textlint.js", "--config", config(language, genre), "--mcp"], { cwd, stdio: ["pipe", "pipe", "pipe"] });
+  return mcpClient(["node_modules/textlint/bin/textlint.js", "--config", config(language, genre), "--mcp"]);
+}
+function mcpClient(args) {
+  const child = spawn(process.execPath, args, { cwd, stdio: ["pipe", "pipe", "pipe"] });
   let buffer = "", next = 0, stderr = "";
   const pending = new Map();
   child.stderr.on("data", b => { stderr += b; });
@@ -153,3 +209,29 @@ for (const language of ["en-US", "zh-TW", "ja-JP"]) {
     });
   }
 }
+
+test("bundled Japanese report style CLI and MCP agree", { timeout: 60000 }, async () => {
+  const bundle = path.join(path.dirname(cwd), "dist", "cwk.mjs");
+  const text = "本ツールは開発者向けだ。\n";
+  const server = mcpClient([bundle, "mcp"]);
+  try {
+    await server.request("initialize", { protocolVersion: "2025-06-18", capabilities: {}, clientInfo: { name: "writing-check-test", version: "1" } });
+    server.child.stdin.write(JSON.stringify({ jsonrpc: "2.0", method: "notifications/initialized" }) + "\n");
+    for (const genre of ["document", "conversation"]) {
+      const cli = spawnSync(process.execPath, [bundle, "check", "--language", "ja-JP", "--genre", genre, "--stdin", "--stdin-filename", "sample.md"], { cwd, encoding: "utf8", input: text });
+      const response = await server.request("tools/call", { name: "lintText", arguments: { text, language: "ja-JP", genre, filename: "sample.md" } });
+      assert.ok(!response.isError, genre);
+      const findings = (response.structuredContent ?? { findings: JSON.parse(response.content[0].text) }).findings;
+      if (genre === "document") {
+        assert.notEqual(cli.status, 0, cli.stderr);
+        assert.match(cli.stdout, /ja-document-style/);
+        assert.ok(findings.length > 0);
+        assert.ok(findings.some(f => f.ruleId === "ja-document-style"));
+      } else {
+        assert.equal(cli.status, 0, cli.stderr + cli.stdout);
+        assert.doesNotMatch(cli.stdout, /ja-document-style/);
+        assert.deepEqual(findings, []);
+      }
+    }
+  } finally { server.child.kill(); }
+});

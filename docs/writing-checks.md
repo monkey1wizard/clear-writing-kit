@@ -24,7 +24,7 @@ Provide a complete draft on standard input. Use a file path instead of the stdin
 | write-good tooWordy and cliches | en-US, both genres | Warning | Direct wording passes. "in order to" prompts review | None |
 | ja-technical-writing/no-mix-dearu-desumasu | ja-JP documents | Error | Plain body text, plain headings, and plain or noun-phrase lists pass. Detected polite forms are reported | None |
 | ja-technical-writing/no-mix-dearu-desumasu | ja-JP conversations | Error | Polite body and lists pass. Explicit dearu body endings are reported | None |
-| ja-document-style | ja-JP documents only | Error | Plain action sentences pass. Selected polite endings missed by the preset and final periods in headings are reported | None |
+| ja-document-style | ja-JP documents only | Error | Plain action sentences and である endings pass. Selected polite endings missed by the preset, sentence-final だ, だろう, and だった, and final periods in headings are reported | None |
 | ja-technical-writing/sentence-length | ja-JP, both genres | Warning | Sentences over 100 characters prompt review | None |
 | ja-technical-writing/max-ten and max-comma | ja-JP, both genres | Warning | More than three commas prompts review | None |
 | ja-technical-writing/max-kanji-continuous-len | ja-JP, both genres | Warning | More than six consecutive kanji prompts review | None |
@@ -33,9 +33,9 @@ Provide a complete draft on standard input. Use a file path instead of the stdin
 
 The Japanese preset is version 12.0.2. Its upstream inventory lists all remaining rule IDs and examples. The local profile records each override. English checks do not ban real hedges or modal verbs. The Chinese textlint profile checks basic prose issues. zhtw-mcp supplies regional wording and translationese checks.
 
-Japanese document prose uses plain forms by project choice, not by a universal Japanese-language rule. Conversation prose uses polite forms. Documents drafted inside a conversation still use document style. Headings omit final periods, steps use plain action sentences, and each list keeps one sentence or noun-phrase pattern. The style classifier does not recognize every ordinary verb ending, so passing results still need a contextual review.
+This project treats its Japanese documents as report-type documents. Their prose uses the plain である form. The basis is section Ⅲ-1 ウ of 文化審議会 (2022) `[Bunka2022]`, which uses である, であろう, and であった in plain-style official documents instead of だ, だろう, and だった. The rule applies to documents that this project writes. This rule does not cover all Japanese text. Consumer-facing manuals generally use polite forms. Conversation prose uses polite forms. An explicit user or project style takes priority. Quotations, code, and product names stay unchanged. Documents drafted inside a conversation still use document style. Headings omit final periods, steps use plain action sentences, and each list keeps one sentence or noun-phrase pattern. The style classifier does not recognize every ordinary verb ending, so passing results still need a contextual review.
 
-The project-authored `ja-document-style` rule covers `ません`, `ませんでした`, `ました`, `でした`, `でしょう`, `ましょう`, and `ください` at sentence endings. It supplements observed gaps in the pinned preset. It does not run for conversations or other languages. It skips code, block quotations, link content, and matched Japanese quotation spans within a text node. It reports findings without changing negation, certainty, or any other meaning. This rule does not check all Japanese grammar.
+The project-authored `ja-document-style` rule covers `ません`, `ませんでした`, `ました`, `でした`, `でしょう`, `ましょう`, and `ください` at sentence endings. It supplements observed gaps in the pinned preset. It also reports sentence-final `だ`, `だろう`, and `だった`, including the explanatory `のだ`, with the message "Use the である form in Japanese documents instead of だ, だろう, or だった. Preserve uncertainty and tense." It skips a sentence that ends with the whole word `まだ` or `ただ`. It does not check `だ` inside a sentence, such as `だが`. It does not run for conversations or other languages. It skips code, block quotations, link content, and matched Japanese quotation spans within a text node. It reports findings without changing negation, certainty, or any other meaning. This rule does not check all Japanese grammar.
 
 A warning is not proof of an error. For example, "objective" in the user's Gemini instruction means impartial. Replacing it with "goal" would change the meaning. Preserve the instruction and record the finding as a contextual false positive.
 
@@ -58,5 +58,6 @@ The [implementation verification record](verification.md) separates executed che
 - [write-good rule](https://github.com/textlint-rule/textlint-rule-write-good): 2.0.0, MIT.
 - [no-zero-width-spaces](https://github.com/textlint-rule/textlint-rule-no-zero-width-spaces): 1.0.1, MIT.
 - [zhtw-mcp](https://github.com/sysprog21/zhtw-mcp): provided through the host. Discover its current schema before use.
+- [公用文作成の考え方（建議）](https://www.bunka.go.jp/seisaku/bunkashingikai/kokugo/hokoku/pdf/93651301_01.pdf): 文化審議会, 2022. Section Ⅲ-1 ウ is the basis for the である document form. The full entry is `[Bunka2022]` in the [reference list](references.md).
 
 Third-party rule code is installed as dependencies. Project-authored guidance does not reproduce ISO or ASD-STE100 standard text.

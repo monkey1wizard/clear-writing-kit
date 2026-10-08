@@ -52,16 +52,16 @@ REQUIRED_CITATIONS = {
     "accuracy": {"ISO2023", "SpeakHumanTW2026"},
     "en-US": {"ASDSTE1002025"},
     "zh-TW": {"SpeakHumanTW2026"},
-    "ja-JP": set(),
+    "ja-JP": {"Bunka2022"},
     "local-checks": {"Textlint1580", "TextlintRulePresetJaTechnicalWriting1202", "TextlintRuleWriteGood200", "TextlintRuleNoZeroWidthSpaces101"},
     "zhtw-checks": {"ZhtwMCP"},
 }
 # SHA-256 of each rule file's text above its citation section, with LF line endings and trailing newlines removed.
 # A change that intentionally edits rule text must update the matching digest.
 RULE_PREFIX_SHA256 = {
-    "accuracy": "0e7981a4669611441ed099e7bdb4adc0252a7918b29aac6d3bd4fa9474cb4630",
+    "accuracy": "fb2ffb9b1064ce6b0d5d7f3467767798728427a8040e12f74916e3285d7c5d84",
     "en-US": "aef28977a419d41c60600f9e79d4cd34d78a242b923e505dfb8d1bb2f360cc50",
-    "ja-JP": "b4b045a5be4aaa88cdadb18e7fbdf105c2006ffc224be2f251c46e07703b0080",
+    "ja-JP": "2bbbaa341c113532046e0eacd37a198c4dc821ffe9de182f83ab75eaae01a8e4",
     "zh-TW": "3c456744656c6a8b7b9529ada08a55d2fc7c7d28544584b8d69e39dc106b1ab8",
     "local-checks": "812eb093d005e9990af013a541f36f6062da242b0c9743c2f1f749b4812258cb",
     "zhtw-checks": "f6735588d51c744622c508d4e5b2cf9b333660aecd181da44a2e0fbbcf63a3ff",
@@ -138,7 +138,7 @@ class Artifacts(unittest.TestCase):
                         self.assertNotIn("Version", entry, key)
                         self.assertRegex(entry, r"Retrieved [A-Z][a-z]+ \d{1,2}, \d{4}, from <https://", key)
             self.assertEqual(order, sorted(order), group)
-        for key in ("ISO2023", "ASDSTE1002025", "SpeakHumanTW2026"):
+        for key in ("ISO2023", "ASDSTE1002025", "SpeakHumanTW2026", "Bunka2022"):
             self.assertEqual(entries[key][0], "Standards and guidelines", key)
         for key in ("Textlint1580", "TextlintRulePresetJaTechnicalWriting1202", "TextlintRuleWriteGood200", "TextlintRuleNoZeroWidthSpaces101", "ZhtwMCP"):
             self.assertEqual(entries[key][0], "Software", key)

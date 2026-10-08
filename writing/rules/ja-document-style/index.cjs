@@ -29,6 +29,19 @@ module.exports = function (context) {
       if (quoted.has(match.index)) continue;
       report(node, new RuleError("Use a plain-form sentence in Japanese documents. Preserve negation and uncertainty.", { index: match.index }));
     }
+    for (const match of source.matchAll(/だ(?:ろう|った)?(?=[。.!?！？]|$)/gu)) {
+      if (quoted.has(match.index) || isAdverbEnding(source, match)) continue;
+      report(node, new RuleError("Use the である form in Japanese documents instead of だ, だろう, or だった. Preserve uncertainty and tense.", { index: match.index }));
+    }
   };
   return handlers;
 };
+
+// A sentence that ends with the whole word まだ or ただ does not use the copula だ.
+function isAdverbEnding(source, match) {
+  if (match[0] !== "だ") return false;
+  const word = source.slice(match.index - 1, match.index + 1);
+  if (word !== "まだ" && word !== "ただ") return false;
+  const before = source[match.index - 2];
+  return before === undefined || !/[\u3041-\u309F]/u.test(before) || "はもがをにでとへや".includes(before);
+}

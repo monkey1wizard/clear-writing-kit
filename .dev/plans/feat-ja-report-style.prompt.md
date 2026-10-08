@@ -78,19 +78,23 @@ None.
 
 ## Status
 
-Workflow: DRAFT
-Step: 0 of 2
-Last activity: 2026-10-08 — prompt generated from source plan
-Next step: wait for `docs-apa-references` to land, then execute T-01
-Current Task: —
-Task Base Commit: —
-Task Final Commit: —
+Workflow: IMPLEMENT
+Step: 1 of 2
+Last activity: 2026-10-08 — T-01 implemented, focused tests and rebuild verified
+Next step: T-02 — regenerate the nine delivery projections
+Current Task: T-01
+Task Base Commit: ccc542e
+Task Final Commit: recorded by the T-01 commit (see git log)
 Test Retry Count: 0
 Review Retry Count: 0
 
 ### Deviations
 
-None.
+| Step | Plan Said | Actually Did | Why |
+| --- | --- | --- | --- |
+| T-01 | Seven files | Also edited `tests/test_artifacts.py`: updated the recorded `RULE_PREFIX_SHA256` digests for `accuracy` and `ja-JP`, required `Bunka2022` for `ja-JP`, and asserted that `Bunka2022` is in the Standards and guidelines group. Test logic was not weakened. | This plan intentionally changes ja-JP rule text and the accuracy excerpt, and `docs-apa-references` added digest guards for both after this plan was written. |
+| T-01 | TP-03 en-US lint of `docs/writing-checks.md` returns zero findings | Exit 0 with zero errors and one warning: write-good `"objective" is wordy or unneeded` at line 40. | The warning is pre-existing at HEAD `ccc542e` (same line and column). That paragraph documents it as a contextual false positive, so removing it would change documented meaning. No new finding was introduced. |
+| T-01 | Rebuild picks up the edited rule | Copied `writing/rules/ja-document-style/index.cjs` into the ignored `writing/node_modules/textlint-rule-ja-document-style/` before building. | The installed package in this checkout is a copy, not a link, so esbuild would otherwise bundle the old rule. No tracked file is affected. |
 
 ### Handoff Notes
 
@@ -98,7 +102,7 @@ Human-approved implementation contract generated from the reconciled English sem
 
 ## Tasks
 
-- [ ] T-01 — Enforce である-form document style in the maintained rule and bundled checker.
+- [x] T-01 — Enforce である-form document style in the maintained rule and bundled checker.
   - **Files**: `skills/coding-agent-writing/references/ja-JP.md`, `skills/coding-agent-writing/references/accuracy.md`, `writing/rules/ja-document-style/index.cjs`, `writing/test/checkers.test.cjs`, `docs/writing-checks.md`, `docs/references.md`, `dist/cwk.mjs`.
   - **Change**: Update the maintained rule and persistent excerpt, extend the synchronous sentence-end checker for だ, だろう, だった, and のだ in ja-JP documents, preserve protected nodes and exceptions, skip まだ and ただ, add no fix, add the three named focused contracts, align durable docs and `[Bunka2022]`, then rebuild the committed bundle. Add no dependency or asynchronous path.
   - **Acceptance**: TP-01 through TP-03 pass. Findings use `ja-document-style`; protected and out-of-scope input stays unchanged; `dist/` equals a deterministic fresh build; T-01 records focused tests and rebuild evidence.
@@ -127,7 +131,22 @@ Not started.
 
 ## Test Results
 
-Not run.
+### T-01
+
+Run on 2026-10-08 from `C:\Code\clear-writing-kit`, base `ccc542e`.
+
+- `[Bunka2022]` source check: downloaded https://www.bunka.go.jp/seisaku/bunkashingikai/kokugo/hokoku/pdf/93651301_01.pdf (63 pages) and extracted its text with pypdf. Cover: title 「公用文作成の考え方（建議）」, author 文化審議会, date 令和４年１月７日 (2022-01-07). Section Ⅲ－１ ウ: 常体では、「である・であろう・であった」の形を用いる. The explanation part states that official documents use である forms rather than だ・だろう・だった. Publisher 文化庁 is inferred from the hosting site `bunka.go.jp`. The cover names only 文化審議会.
+- TP-01 `node --test --test-name-pattern="Japanese documents reject da-form endings without fixes" writing/test/checkers.test.cjs`: tests 1, pass 1, fail 0.
+- TP-02 `cmd.exe /d /c npm --prefix writing run build`: completed, `dist/cwk.mjs` changed (+11 lines). `dist/dict/` unchanged.
+- TP-02 `node --test --test-name-pattern="bundled Japanese report style CLI and MCP agree" writing/test/checkers.test.cjs`: tests 1, pass 1, fail 0.
+- TP-02 reproducible-build hash command: `a5318fb588774fcef346bbbcbb894f2fac8b7f1e4a783a2998e0bc8e01afd9b0` before and after a second build, exit 0.
+- TP-03 `node --test --test-name-pattern="Japanese report-style documentation contract" writing/test/checkers.test.cjs`: tests 1, pass 1, fail 0.
+- TP-03 `node writing/check.cjs --language ja-JP --genre document skills/coding-agent-writing/references/ja-JP.md`: exit 0, zero findings.
+- TP-03 `node writing/check.cjs --language en-US --genre document docs/writing-checks.md`: exit 0, 0 errors, 1 pre-existing warning (see Deviations).
+- `python -m unittest tests.test_artifacts.Artifacts.test_reference_citation_contract -v`: 1 test, OK.
+- Extra: `node --test test/checkers.test.cjs` in `writing/`: tests 29, pass 29, fail 0. `node lint-docs.cjs`: 0 errors, 10 warnings. `markdownlint-cli2`: 36 files, 0 errors.
+- Budgets after the excerpt edit, computed from the generator renderer before T-02: ChatGPT block 1,425 of 1,500 characters. Agents block 1,522 bytes, below 2,048.
+- Status: completed.
 
 ## Review Results
 

@@ -110300,9 +110300,20 @@ var require_textlint_rule_ja_document_style = __commonJS({
           if (quoted.has(match2.index)) continue;
           report(node2, new RuleError("Use a plain-form sentence in Japanese documents. Preserve negation and uncertainty.", { index: match2.index }));
         }
+        for (const match2 of source.matchAll(/だ(?:ろう|った)?(?=[。.!?！？]|$)/gu)) {
+          if (quoted.has(match2.index) || isAdverbEnding(source, match2)) continue;
+          report(node2, new RuleError("Use the \u3067\u3042\u308B form in Japanese documents instead of \u3060, \u3060\u308D\u3046, or \u3060\u3063\u305F. Preserve uncertainty and tense.", { index: match2.index }));
+        }
       };
       return handlers;
     };
+    function isAdverbEnding(source, match2) {
+      if (match2[0] !== "\u3060") return false;
+      const word = source.slice(match2.index - 1, match2.index + 1);
+      if (word !== "\u307E\u3060" && word !== "\u305F\u3060") return false;
+      const before = source[match2.index - 2];
+      return before === void 0 || !/[\u3041-\u309F]/u.test(before) || "\u306F\u3082\u304C\u3092\u306B\u3067\u3068\u3078\u3084".includes(before);
+    }
   }
 });
 
