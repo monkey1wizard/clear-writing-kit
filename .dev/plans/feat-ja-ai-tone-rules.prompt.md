@@ -85,30 +85,40 @@ None.
 
 Workflow: IMPLEMENT (complete)
 Step: 2 of 2
-Last activity: 2026-10-08 — T-02 implementation complete; IMPLEMENT complete for T-01 and T-02
-Next step: orchestrator test and review gates, then finalize
+Last activity: 2026-10-08 — audit fix round 1: idiomatic Japanese wording in the style-signal section, release-premise correction recorded
+Next step: orchestrator re-review of the audit fix, then finalize
 Current Task: T-02
 Task Base Commit: d8bb8b7
 Task Final Commit: T-01 `d601331`; T-02 recorded by the orchestrator from the T-02 commit
 Test Retry Count: 0
-Review Retry Count: 0
+Review Retry Count: 1
 Checkpoint: T-02 implemented — eight declared projections plus two OKF usage stamps regenerated; agents block unchanged
 
 ### Deviations
 
 | Step | Plan Said | Actually Did | Why |
 | --- | --- | --- | --- |
-| T-01 | Why section: release `v1.1.0` points to commit `0df4774` | Did not label the citation as a release. `gh api` shows the `v1.1.0` tag object `4a1f88f` resolves to `c2ffae6` itself | Plan premise is factually wrong. The commit-snapshot citation is unaffected |
+| T-01 | Why section: release `v1.1.0` points to commit `0df4774` | Did not label the citation as a release. `gh api` shows the `v1.1.0` annotated tag `4a1f88f` and the published release target are both `c2ffae6` itself | Plan premise is factually wrong; corrected on 2026-10-08 in this table and in a dated note under the source plan's Why section. `c2ffae6` is the `v1.1.0` release commit. Citing the commit snapshot instead of the release label is an intentional pin for immutability (a tag can move; a commit hash cannot), not a claim that the commit is unreleased. R-07 still forbids a release label in the citation. No repository comment, rule, or citation text claims otherwise |
 | T-01 | Commit dated 2026-10-07 | Kept year 2026. Author date is 2026-10-07T16:30:19Z; committer date is 2026-10-08T02:41:44Z | APA entry uses year only |
 | T-01 | Add yomiyasu in the correct reference group | Placed `[Yomiyasu2026]` in Standards and guidelines, in the same `[Agent skill]. GitHub.` form as `[SpeakHumanTW2026]` | The Software group requires an npm pin or a `Retrieved` date. The source is cited as writing guidance |
 | T-01 | Existing tests unchanged except new contracts | Updated `RULE_PREFIX_SHA256` for `accuracy` and `ja-JP`, added `Yomiyasu2026` to `REQUIRED_CITATIONS` for both, added Yomiyasu entry and influence-wording assertions | Rule text above Sources changed on purpose. No assertion was removed or weakened. `INSTRUCTION_BODY_SHA256` unchanged |
 | T-01 | Zero lint findings | en-US check reports 1 warning (`requirement`, line 36) | Pre-existing at HEAD on an unchanged line. Exit 0, 0 errors |
 | T-01 | Full lint passes at T-01 | Full lint and the projection contract fail until T-02 | Plan puts OKF regeneration and the projection test's targets in T-02. Both pass after T-02 |
+| Audit fix | No wording change after T-01 | Changed 「読みやすさを下げることがある」 to 「読みやすさを損なうことがある」 and 「内容を運ばない」 to 「実質的な内容を持たない」 in `ja-JP.md`; updated `RULE_PREFIX_SHA256['ja-JP']`; regenerated projections | Independent audit flagged both phrases as unidiomatic (the second as an English calque). である体 kept; no other wording changed |
 | T-02 | Eight-file projection allowlist | Also committed `knowledge/usage/chatgpt.md` and `knowledge/usage/gemini.md` (stamp-only `source_sha256` change) | `okf:generate` hashes the web instruction files, whose stamps changed. Approved generator-owned scope extension |
 
 ### Handoff Notes
 
 Human-approved implementation contract generated from the reconciled English semantic draft. The predecessor order is binding; do not start while either predecessor remains active.
+
+Retry Handoff — T-01 / review attempt 1
+
+- Status: RESOLVED pending re-review
+- Blocking finding: independent agy audit (gemini-3.8-flash) flagged 「内容を運ばない」 as an English calque and 「読みやすさを下げる」 as unidiomatic in `skills/coding-agent-writing/references/ja-JP.md`; it also noted the plan's incorrect `v1.1.0` → `0df4774` premise. Independent agy test returned PASS.
+- Remediation: replaced both phrases, updated the `ja-JP` rule-prefix digest, regenerated Web, OKF, and output-style projections, and recorded the release-premise correction (Deviations, source plan Why note).
+- Validation: see `## Test Results > ### Audit fix`; all commands passed.
+- Commit: the `fix(ja-style-signals)` audit-fix commit.
+- Remaining uncertainty: Japanese naturalness is still not verified by a proficient human reader.
 
 ## Tasks
 
@@ -237,6 +247,27 @@ Diff review: `web-instructions/chatgpt.md`, `web-instructions/gemini.md`, and `w
 | `cmd.exe /d /c npm --prefix writing test` | exit 0, tests 66, pass 66, fail 0 |
 | `python -m unittest discover -s tests -v` | exit 0, 20 tests, OK |
 | `cmd.exe /d /c npm --prefix writing run lint` | exit 0; lint-docs 50 sections, 0 errors, 10 pre-existing warnings; markdownlint 0 errors |
+
+### Audit fix
+
+Status: completed (2026-10-08, base commit `7a92a78`). Japanese naturalness remains NOT verified by a proficient human reader.
+
+| Command | Result |
+| --- | --- |
+| `python scripts/generate-web-artifacts.py --update` | exit 0, wrote 7 Web artifacts |
+| `cmd.exe /d /c npm --prefix writing run okf:generate` | exit 0, generated 14 OKF files |
+| `python scripts/generate-output-style.py --output output-styles/clear-writing-kit.md` | exit 0 |
+| `python scripts/generate-agents-block.py --output install/agents-block.md --check` | exit 0; `git diff --quiet -- install/agents-block.md` exit 0 (unchanged) |
+| `node writing/check.cjs --language ja-JP --genre document skills/coding-agent-writing/references/ja-JP.md` | exit 0, 0 findings |
+| `python scripts/generate-web-artifacts.py --check` | exit 0, checked 7 Web artifacts |
+| `cmd.exe /d /c npm --prefix writing run okf:check` | exit 0, format, source freshness, and publication links passed |
+| `python scripts/generate-output-style.py --output output-styles/clear-writing-kit.md --check` | exit 0 |
+| `cmd.exe /d /c npm --prefix writing test` | exit 0, tests 66, pass 66, fail 0 |
+| `python -m unittest discover -s tests -v` | exit 0, 20 tests, OK |
+| `cmd.exe /d /c npm --prefix writing run lint` | exit 0; 50 sections, 0 errors, 10 pre-existing warnings; markdownlint 0 errors |
+| TP-03 20-character overlap on the regenerated `build/ai-tone-section.txt` (updated section) | `[]`; pinned source hashes unchanged (`D588769E…` and `C146F079…`); neither new phrase occurs in either upstream file |
+
+Changed generated paths: `web-skills/web-answer-writing/references/ja-JP.md`, `knowledge/rules/ja-JP.md`, `output-styles/clear-writing-kit.md`, plus stamp-only changes in `web-instructions/chatgpt.md`, `web-instructions/gemini.md`, `web-skills/web-answer-writing/SKILL.md`, `knowledge/usage/chatgpt.md`, and `knowledge/usage/gemini.md`.
 
 ## Review Results
 

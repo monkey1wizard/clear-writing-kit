@@ -13,7 +13,7 @@ sources:
 generated:
   by: process:clear-writing-kit-okf
 source_path: web-instructions/gemini.md
-source_sha256: e4269c126dcba154acceb4a6a99727ee191ba345a7f1bd0d6a5e7fb5678ef41c
+source_sha256: d6cf1e8dd5b87a966a698d7c590509ff91748b8c1c8bcbdbe835528640044620
 ---
 
 # Clear Writing Kit: Instructions for Gemini

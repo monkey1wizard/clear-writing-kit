@@ -26,6 +26,7 @@ ja-JP 規則提醒撰寫者避開常見於制式或機械生成日文、且可�
 - `references/ja-JP.md` 涵蓋文體、用語和意思保留，但沒有 AI 腔樣式。來源：`skills/coding-agent-writing/references/ja-JP.md`。
 - yomiyasu 的意思保留規則列出改寫後必須保留的四項：主張、比重、斷定強度、句子功能。`references/accuracy.md` 的共用意思檢查涵蓋事實細節與確定程度，但沒有點名相對比重和句子功能。來源：鎖定 commit 的 yomiyasu `skills/yomiyasu/SKILL.md` §1。
 - yomiyasu 有些換詞建議是寫給一般讀者的，會和標準技術用語衝突。例如 `既定`（預設）→「初めの設定」、`照合` →「照らし合わせる」。本工具的文件屬於技術文件，所以逐詞替換不能照單全收。來源：yomiyasu `skills/yomiyasu/references/slop-catalog.md` §3。
+- 更正（2026-10-08）：第一點「`v1.1.0` 指向 commit `0df4774`」有誤。`gh api` 顯示 `v1.1.0` annotated tag `4a1f88f` 與已發布 release 的 target 都是 `c2ffae6` 本身。引用 commit snapshot 是為了鎖定不可變的內容，不是因為該 commit 未發布。
 
 ### Decisions already made by the owner
 
