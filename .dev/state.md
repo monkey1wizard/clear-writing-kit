@@ -6,7 +6,6 @@
 
 | Plan | File | Plan Phase | Last Activity |
 | --- | --- | --- | --- |
-| docs-apa-references | `.dev/plans/docs-apa-references.prompt.md` | prompt-ready | 2026-10-08 |
 | feat-ja-report-style | `.dev/plans/feat-ja-report-style.prompt.md` | prompt-ready | 2026-10-08 |
 | feat-ja-ai-tone-rules | `.dev/plans/feat-ja-ai-tone-rules.prompt.md` | prompt-ready | 2026-10-08 |
 
@@ -18,6 +17,7 @@
 
 | Date | Plan | Landing | Result |
 | --- | --- | --- | --- |
+| 2026-10-08 | docs-apa-references | `2ff7b2e` | FINALIZED; independent test PASS; audit CLEAR; generated projections synced |
 | 2026-10-03 | feat-cross-agent-plugin-installer | `084e00c66e93f94cfef64c16b4f566c21da99ece` | ABSORBED; goal verified; review CLEAR; durable docs synced |
 
 ## Follow-ups
