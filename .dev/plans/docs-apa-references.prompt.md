@@ -85,11 +85,11 @@ None.
 ## Status
 
 Workflow: IMPLEMENT
-Step: 1 of 5
-Last activity: 2026-10-08 — T-01 implemented: APA 7 list, six Sources sections, citation contract and projection tests
-Next step: T-02 README links, then T-03 to T-05 regeneration
-Current Task: T-01
-Task Base Commit: 70b58fec4dee64e6f0c3c5febbe159ed33232688
+Step: 2 of 5
+Last activity: 2026-10-08 — T-02 implemented: README reference-list link in each language section
+Next step: T-03 to T-05 regeneration
+Current Task: T-02
+Task Base Commit: ccfe366
 Checkpoint: T-01 implemented — docs/references.md plus Sources sections; projection test and okf:check stay red until T-03 to T-05
 Task Final Commit: —
 Test Retry Count: 0
@@ -114,7 +114,7 @@ Human-approved implementation contract generated from the reconciled English sem
   - **Files**: `docs/references.md`, `skills/coding-agent-writing/references/accuracy.md`, `skills/coding-agent-writing/references/en-US.md`, `skills/coding-agent-writing/references/ja-JP.md`, `skills/coding-agent-writing/references/zh-TW.md`, `skills/coding-agent-writing/references/local-checks.md`, `skills/coding-agent-writing/references/zhtw-checks.md`, `tests/test_artifacts.py`.
   - **Change**: Verify each candidate source, implement the locked attribution map, create the single keyed APA 7 list, append language-appropriate `Sources` mappings with the absolute URL, and add `test_reference_citation_contract` plus `test_reference_citation_projections`. Preserve every rule prefix and the persistent excerpt. Add no dependency or parallel citation store.
   - **Acceptance**: TP-01 and TP-02 pass, including R1, R2, R10, and R12. Every confirmed entry has one key and consumer; omitted entries and all evidence are recorded under T-01.
-- [ ] T-02 — Add the reference-list link to each README language section.
+- [x] T-02 — Add the reference-list link to each README language section.
   - **Files**: `README.md`.
   - **Change**: Add one equivalent relative-link sentence to the English, Traditional Chinese, and Japanese overview sections without duplicating the list.
   - **Acceptance**: TP-03 passes and T-02 records the three matching links.
@@ -180,6 +180,19 @@ APA 7 review (TP-02, manual): two groups, standards and guidelines first. Each g
 | `cmd.exe /d /c npm --prefix writing run lint` | FAIL at `okf.cjs --check`: six stale concepts, expected until T-04 |
 | Lint stages run separately | `generate-profiles.cjs --check` exit 0; `lint-docs.cjs` 0 errors, 6 warnings, all on pre-existing lines; `markdownlint-cli2` 0 errors |
 | zhtw-mcp on the two zh-TW `Sources` sections | 0 errors, 0 warnings, 0 info |
+
+### T-02
+
+Verified 2026-10-08. Each README overview paragraph gained one sentence with a relative link to `docs/references.md`. The link text is "reference list", 「參考文獻清單」, and 「参考文献一覧」, so the path appears once per line. No list entry or heading was copied.
+
+| Check | Result |
+| --- | --- |
+| `python -m unittest tests.test_artifacts.Artifacts.test_readme_languages_have_equal_commands_and_local_links -v` | PASS, 1 test |
+| `rg -o -n "docs/references\.md" README.md` | 3 matches: lines 13, 113, 213 |
+| Negative `rg` for copied headings or keyed entries | No output, exit 1 (expected) |
+| `cmd.exe /d /c npm --prefix writing run lint` | FAIL at `okf.cjs --check` only: the same six stale concepts as T-01, expected until T-04 |
+| Lint stages run separately | `generate-profiles.cjs --check` exit 0; `lint-docs.cjs` 0 errors, 6 warnings, none in `README.md`; `markdownlint-cli2` 0 errors |
+| zhtw-mcp on the new zh-TW sentence | 0 errors, 0 warnings, 0 info |
 
 ## Review Results
 
