@@ -84,13 +84,13 @@ None.
 
 ## Status
 
-Workflow: IMPLEMENT
+Workflow: IMPLEMENT complete
 Step: 5 of 5
-Last activity: 2026-10-08 — T-05 implemented: Claude Code output style regenerated
-Next step: TP-07 full verification, then test and review phases
+Last activity: 2026-10-08 — T-05 implemented and TP-07 passed
+Next step: Orchestrator test and review phases
 Current Task: T-05
 Task Base Commit: c9d3fbc
-Checkpoint: T-01 implemented — docs/references.md plus Sources sections; projection test and okf:check stay red until T-03 to T-05
+Checkpoint: T-05 implemented — all five tasks committed; TP-07 suites, lint, and generator checks pass
 Task Final Commit: —
 Test Retry Count: 0
 Review Retry Count: 0
@@ -219,6 +219,19 @@ Verified 2026-10-08. `python scripts/generate-output-style.py --output output-st
 | Check | Result |
 | --- | --- |
 | `python scripts/generate-output-style.py --output output-styles/clear-writing-kit.md --check` | PASS, exit 0 |
+
+### TP-07
+
+Verified 2026-10-08 on commit `3ea6e15`, after T-01 to T-05.
+
+| Check | Result |
+| --- | --- |
+| `cmd.exe /d /c npm --prefix writing test` | PASS: 63 tests, 63 pass, 0 fail |
+| `python -m unittest discover -s tests -v` | PASS: 18 tests OK, including `test_reference_citation_contract` and `test_reference_citation_projections` |
+| `cmd.exe /d /c npm --prefix writing run lint` | PASS, exit 0. `okf.cjs --check` passes. `lint-docs.cjs`: 50 text sections, 0 errors, 10 warnings, all on unchanged "objective" or "requirement" lines that existed before this plan. `markdownlint-cli2`: 0 errors. |
+| `python scripts/generate-agents-block.py --output install/agents-block.md --check` | PASS, exit 0. `install/agents-block.md` has no diff from `70b58fe`. |
+| `python scripts/generate-web-artifacts.py --check` | PASS: 7 Web artifacts |
+| `git diff --name-only 70b58fe..HEAD -- web-skills knowledge web-instructions install output-styles` | 16 paths: the 7 T-03 files, the 6 T-04 concepts, `knowledge/usage/chatgpt.md`, `knowledge/usage/gemini.md` (approved T-04 extension), and `output-styles/clear-writing-kit.md`. No undeclared path. |
 
 ## Review Results
 
