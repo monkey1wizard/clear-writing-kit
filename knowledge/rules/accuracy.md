@@ -14,7 +14,7 @@ sources:
 generated:
   by: process:clear-writing-kit-okf
 source_path: skills/coding-agent-writing/references/accuracy.md
-source_sha256: f05941e19855f68c081424629d858d1541eba3374181cc87a11ccba69c13307f
+source_sha256: b0d934cc28b53288664cb8beb8cb93533a8024e01a814759ebc4e7dcd26192c5
 ---
 
 # Shared accuracy and clarity rules
@@ -68,3 +68,12 @@ When results are partial, identify the failure and the expected and observed beh
 ## Meaning check
 
 Compare the final text with its source. Verify facts, numbers, units, deadlines, negation, conditions, exceptions, scope, attribution, and certainty. A style checker cannot perform this comparison for you.
+
+## Sources
+
+The full entries are in the [reference list](https://github.com/monkey1wizard/clear-writing-kit/blob/main/docs/references.md).
+
+- Plain language: the four reader outcomes derive from `[ISO2023]`. The priority of accuracy over plainness, the note that these are project rules, and the safety limits are project choices.
+- Protected items: the addition of URLs and quotations to the items that stay unchanged was informed by `[SpeakHumanTW2026]` at commit `e180f0a`. No text was copied. The final scope is a project choice.
+- Lists and layout: the flexible use of lists, tables, and layout was informed by `[SpeakHumanTW2026]` at commit `e180f0a`. No text was copied. The final scope is a project choice.
+- Project-authored rules: facts and inference, modal strength, uncertainty, partial results, one main idea per sentence, conditions before actions, actors, procedures and descriptions, punctuation, the meaning check, and the examples.

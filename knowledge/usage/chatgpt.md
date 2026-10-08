@@ -13,7 +13,7 @@ sources:
 generated:
   by: process:clear-writing-kit-okf
 source_path: web-instructions/chatgpt.md
-source_sha256: b95692327bc12c887780c86844feb7827722445e1d8586930797fbd6431edb11
+source_sha256: f51a98240eccd23bac93ca6b6de21b6b7be1c8c828a111c2ab1ae0f93fe29b88
 ---
 
 # Clear Writing Kit: ChatGPT Custom Instructions

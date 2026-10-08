@@ -14,7 +14,7 @@ sources:
 generated:
   by: process:clear-writing-kit-okf
 source_path: skills/coding-agent-writing/references/en-US.md
-source_sha256: 6c8f6a67ce14b3db1b8b733474c13030c8830ae37a3ac73f8a24813e151acb2c
+source_sha256: 9c6a5e93e1545c34ae4edc2bda15ec94b4966ff43d0c5b5f285cdae153f3f92a
 ---
 
 # United States English
@@ -42,3 +42,10 @@ Clear when supported: "Not benchmarked. The new parser reads the file once inste
 Incorrect rewrite: "The request fails when the token expires."
 
 Meaning-preserving rewrite: "If the token expires, the request may fail." Preserve "may" when the source states only a possibility.
+
+## Sources
+
+The full entries are in the [reference list](https://github.com/monkey1wizard/clear-writing-kit/blob/main/docs/references.md).
+
+- Short sentences and conditions before actions: this optional guidance derives from `[ASDSTE1002025]`. The limited adoption, the exclusion of the controlled vocabulary, and the decision not to claim the full standard are project choices.
+- Project-authored rules: all other content in this file, including the document and conversation rules, the modal distinctions, and the examples.

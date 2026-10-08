@@ -15,7 +15,7 @@ sources:
 generated:
   by: process:clear-writing-kit-okf
 source_path: skills/coding-agent-writing/references/zh-TW.md
-source_sha256: a3580c88d9b9db60972e13e9160e7438c149c8759d3fc3a696ddfc164427f71e
+source_sha256: 5dc57badc2afd2add9e55b83c8732abdb782a3c9a40c8f55a340969f012eed26
 ---
 
 # 臺灣繁體中文
@@ -53,3 +53,10 @@ source_sha256: a3580c88d9b9db60972e13e9160e7438c149c8759d3fc3a696ddfc164427f71e
 ## 交付前檢查
 
 確認讀者能找到重點，並能分辨事實與推論。核對數字、單位、期限、範圍、例外及資訊來源。工具流程由執行環境的入口指定。人工判讀與機械檢查都不能省略原意核對。
+
+## 資料來源
+
+完整書目見[參考文獻清單](https://github.com/monkey1wizard/clear-writing-kit/blob/main/docs/references.md)。
+
+- 列表、表格與版面：彈性使用列表、表格與版面的規則，受其啟發的來源是 `[SpeakHumanTW2026]` 的 commit `e180f0a`。本專案沒有照搬原文，最終範圍由本專案決定。
+- 本專案自訂的規則：本檔其餘內容，包括說明文件與一般回答的寫法、用詞與句型、保留原樣的項目、改寫範例與交付前檢查。

@@ -85,11 +85,11 @@ None.
 ## Status
 
 Workflow: IMPLEMENT
-Step: 3 of 5
-Last activity: 2026-10-08 — T-03 implemented: Web artifacts regenerated with Sources sections
-Next step: T-04 OKF regeneration, then T-05 output style
-Current Task: T-03
-Task Base Commit: f69e968
+Step: 4 of 5
+Last activity: 2026-10-08 — T-04 implemented: OKF concepts regenerated
+Next step: T-05 output style, then TP-07
+Current Task: T-04
+Task Base Commit: 81c39a8
 Checkpoint: T-01 implemented — docs/references.md plus Sources sections; projection test and okf:check stay red until T-03 to T-05
 Task Final Commit: —
 Test Retry Count: 0
@@ -103,7 +103,7 @@ Review Retry Count: 0
 | T-01 | Instruction bodies stay equal to the committed files | The gemini baseline digest is the generator output from HEAD sources, not the committed file | At base commit `70b58fe`, `web-instructions/gemini.md` was already stale: it says "reply in zh-TW" while `scripts/templates/gemini.txt` says "reply in Traditional Chinese", and `generate-web-artifacts.py --check` fails on a clean HEAD export. T-03 regeneration will apply that template text. The persistent excerpt is unchanged. |
 | T-01 | `npm --prefix writing run lint` passes for T-01 | `okf.cjs --check` stage fails as stale until T-04 | The lint script runs `okf.cjs --check`, which compares `knowledge/` with the edited rule files. The other stages pass. |
 | T-03 | TP-04 runs `test_reference_citation_projections` as the T-03 check | Ran it after T-03 and again in TP-07 after T-05 | The test also asserts the T-04 concepts and the T-05 output style, so it cannot fully pass until T-05. Its Web subtests passed after T-03. |
-| T-04 scope (report only) | T-04 regenerates six concept files | A local regeneration also changed `knowledge/usage/chatgpt.md` and `knowledge/usage/gemini.md` | Their `source_sha256` covers the web instruction files, whose stamps change in T-03. The gemini usage block also picks up the template text. T-04 and TP-07 must allow these two paths. Not committed in T-01. |
+| T-04 | Commit the six declared concept files | Also committed `knowledge/usage/chatgpt.md` and `knowledge/usage/gemini.md` | `okf.cjs --generate` rewrites their `source_sha256`, which covers the Web instruction files changed in T-03. Only that line changed in each file. Orchestrator approved this generator-owned scope extension; without it `okf:check` fails. |
 
 ### Handoff Notes
 
@@ -123,7 +123,7 @@ Human-approved implementation contract generated from the reconciled English sem
   - **Files**: `web-skills/web-answer-writing/SKILL.md`, four copied reference files, `web-instructions/chatgpt.md`, `web-instructions/gemini.md`.
   - **Change**: Run the existing Web generator after T-01. Accept only copied `Sources` sections and generator stamps; preserve instruction bodies.
   - **Acceptance**: TP-04 passes and T-03 records the generator and projection-contract evidence.
-- [ ] T-04 — Regenerate the six source-derived OKF concepts.
+- [x] T-04 — Regenerate the six source-derived OKF concepts.
   - **Files**: `knowledge/rules/accuracy.md`, `knowledge/rules/en-US.md`, `knowledge/rules/ja-JP.md`, `knowledge/rules/zh-TW.md`, `knowledge/checks/local-checks.md`, `knowledge/checks/zhtw-checks.md`.
   - **Change**: Run the existing OKF generator after T-01. Preserve absolute-link pass-through and add no reference-list node.
   - **Acceptance**: TP-05 passes and T-04 records the OKF summary.
@@ -203,6 +203,14 @@ Verified 2026-10-08. `python scripts/generate-web-artifacts.py --update` wrote t
 | --- | --- |
 | `python scripts/generate-web-artifacts.py --check` | PASS: "checked 7 Web artifacts", exit 0 |
 | `python -m unittest tests.test_artifacts.Artifacts.test_reference_citation_projections -v` right after T-03 | Web subtests pass: all seven outputs equal `render_web()`, no relative `docs/` link, absolute URL in the four copied reference files, stamp-excluded ChatGPT and Gemini bodies match the baseline digests, agents block equals `render_agents_block()`. The test still FAILS on 7 subtests owned by later tasks: six `knowledge/` concepts (T-04) and the output style (T-05). Full rerun recorded under TP-07. |
+
+### T-04
+
+Verified 2026-10-08. `cmd.exe /d /c npm --prefix writing run okf:generate` reported "Generated 14 OKF files" and changed eight paths: the six declared concepts plus `knowledge/usage/chatgpt.md` and `knowledge/usage/gemini.md`. In the two usage files only the `source_sha256` line changed, because that hash covers the Web instruction files regenerated in T-03. Each of the six concepts contains the absolute reference-list URL once. `knowledge/` contains no `](docs/` or `](../docs` link.
+
+| Check | Result |
+| --- | --- |
+| `cmd.exe /d /c npm --prefix writing run okf:check` | PASS: "OKF format, source freshness, and publication links passed", exit 0 |
 
 ## Review Results
 

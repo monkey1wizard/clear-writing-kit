@@ -16,7 +16,7 @@ sources:
 generated:
   by: process:clear-writing-kit-okf
 source_path: skills/coding-agent-writing/references/ja-JP.md
-source_sha256: ec0843365a74f8032551752dd80a8267593c69b6fed13dad5d62a2073697495b
+source_sha256: 14fd0619918a8e51e76a1f36d7c55374c2465ce90118eab2338f98bbb2c1c43c
 ---
 
 # 日本語の文章規則
@@ -52,3 +52,9 @@ source_sha256: ec0843365a74f8032551752dd80a8267593c69b6fed13dad5d62a2073697495b
 ## 最終確認
 
 textlintの結果だけで自然さを判断しない。意味と読みやすさを確認する。重要な文書では、日本語に習熟した読者の評価も必要である。
+
+## 出典
+
+完全な書誌情報は[参考文献一覧](https://github.com/monkey1wizard/clear-writing-kit/blob/main/docs/references.md)にある。
+
+このファイルの規則は、すべてこのプロジェクトが独自に定めたものである。対象は、説明文書の常体、見出し、箇条書き、会話の敬体、用語と表記、意味を維持する例、最終確認である。
