@@ -85,11 +85,11 @@ None.
 ## Status
 
 Workflow: IMPLEMENT
-Step: 2 of 5
-Last activity: 2026-10-08 — T-02 implemented: README reference-list link in each language section
-Next step: T-03 to T-05 regeneration
-Current Task: T-02
-Task Base Commit: ccfe366
+Step: 3 of 5
+Last activity: 2026-10-08 — T-03 implemented: Web artifacts regenerated with Sources sections
+Next step: T-04 OKF regeneration, then T-05 output style
+Current Task: T-03
+Task Base Commit: f69e968
 Checkpoint: T-01 implemented — docs/references.md plus Sources sections; projection test and okf:check stay red until T-03 to T-05
 Task Final Commit: —
 Test Retry Count: 0
@@ -102,6 +102,7 @@ Review Retry Count: 0
 | T-01 | Change only the new tests in `tests/test_artifacts.py` | Also narrowed the regex in the existing `test_claude_embeds_local_procedures_without_file_links` to skip `https:` targets | The old regex rejected every `](...md)` target, so the required absolute `docs/references.md` URL in the embedded `Sources` sections would fail it after T-05. Relative file links are still rejected. |
 | T-01 | Instruction bodies stay equal to the committed files | The gemini baseline digest is the generator output from HEAD sources, not the committed file | At base commit `70b58fe`, `web-instructions/gemini.md` was already stale: it says "reply in zh-TW" while `scripts/templates/gemini.txt` says "reply in Traditional Chinese", and `generate-web-artifacts.py --check` fails on a clean HEAD export. T-03 regeneration will apply that template text. The persistent excerpt is unchanged. |
 | T-01 | `npm --prefix writing run lint` passes for T-01 | `okf.cjs --check` stage fails as stale until T-04 | The lint script runs `okf.cjs --check`, which compares `knowledge/` with the edited rule files. The other stages pass. |
+| T-03 | TP-04 runs `test_reference_citation_projections` as the T-03 check | Ran it after T-03 and again in TP-07 after T-05 | The test also asserts the T-04 concepts and the T-05 output style, so it cannot fully pass until T-05. Its Web subtests passed after T-03. |
 | T-04 scope (report only) | T-04 regenerates six concept files | A local regeneration also changed `knowledge/usage/chatgpt.md` and `knowledge/usage/gemini.md` | Their `source_sha256` covers the web instruction files, whose stamps change in T-03. The gemini usage block also picks up the template text. T-04 and TP-07 must allow these two paths. Not committed in T-01. |
 
 ### Handoff Notes
@@ -118,7 +119,7 @@ Human-approved implementation contract generated from the reconciled English sem
   - **Files**: `README.md`.
   - **Change**: Add one equivalent relative-link sentence to the English, Traditional Chinese, and Japanese overview sections without duplicating the list.
   - **Acceptance**: TP-03 passes and T-02 records the three matching links.
-- [ ] T-03 — Regenerate the Web delivery family.
+- [x] T-03 — Regenerate the Web delivery family.
   - **Files**: `web-skills/web-answer-writing/SKILL.md`, four copied reference files, `web-instructions/chatgpt.md`, `web-instructions/gemini.md`.
   - **Change**: Run the existing Web generator after T-01. Accept only copied `Sources` sections and generator stamps; preserve instruction bodies.
   - **Acceptance**: TP-04 passes and T-03 records the generator and projection-contract evidence.
@@ -193,6 +194,15 @@ Verified 2026-10-08. Each README overview paragraph gained one sentence with a r
 | `cmd.exe /d /c npm --prefix writing run lint` | FAIL at `okf.cjs --check` only: the same six stale concepts as T-01, expected until T-04 |
 | Lint stages run separately | `generate-profiles.cjs --check` exit 0; `lint-docs.cjs` 0 errors, 6 warnings, none in `README.md`; `markdownlint-cli2` 0 errors |
 | zhtw-mcp on the new zh-TW sentence | 0 errors, 0 warnings, 0 info |
+
+### T-03
+
+Verified 2026-10-08. `python scripts/generate-web-artifacts.py --update` wrote the seven declared files and nothing else. The diff contains the copied `Sources` sections in the four reference files, the new source stamp in `SKILL.md`, `chatgpt.md`, and `gemini.md`, and one generator-owned body line in `gemini.md`: "reply in zh-TW" became "reply in Traditional Chinese", which is the text of `scripts/templates/gemini.txt` (see the T-01 deviation).
+
+| Check | Result |
+| --- | --- |
+| `python scripts/generate-web-artifacts.py --check` | PASS: "checked 7 Web artifacts", exit 0 |
+| `python -m unittest tests.test_artifacts.Artifacts.test_reference_citation_projections -v` right after T-03 | Web subtests pass: all seven outputs equal `render_web()`, no relative `docs/` link, absolute URL in the four copied reference files, stamp-excluded ChatGPT and Gemini bodies match the baseline digests, agents block equals `render_agents_block()`. The test still FAILS on 7 subtests owned by later tasks: six `knowledge/` concepts (T-04) and the output style (T-05). Full rerun recorded under TP-07. |
 
 ## Review Results
 
