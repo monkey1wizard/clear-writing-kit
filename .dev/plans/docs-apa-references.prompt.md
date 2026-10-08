@@ -85,11 +85,11 @@ None.
 ## Status
 
 Workflow: IMPLEMENT
-Step: 4 of 5
-Last activity: 2026-10-08 — T-04 implemented: OKF concepts regenerated
-Next step: T-05 output style, then TP-07
-Current Task: T-04
-Task Base Commit: 81c39a8
+Step: 5 of 5
+Last activity: 2026-10-08 — T-05 implemented: Claude Code output style regenerated
+Next step: TP-07 full verification, then test and review phases
+Current Task: T-05
+Task Base Commit: c9d3fbc
 Checkpoint: T-01 implemented — docs/references.md plus Sources sections; projection test and okf:check stay red until T-03 to T-05
 Task Final Commit: —
 Test Retry Count: 0
@@ -127,7 +127,7 @@ Human-approved implementation contract generated from the reconciled English sem
   - **Files**: `knowledge/rules/accuracy.md`, `knowledge/rules/en-US.md`, `knowledge/rules/ja-JP.md`, `knowledge/rules/zh-TW.md`, `knowledge/checks/local-checks.md`, `knowledge/checks/zhtw-checks.md`.
   - **Change**: Run the existing OKF generator after T-01. Preserve absolute-link pass-through and add no reference-list node.
   - **Acceptance**: TP-05 passes and T-04 records the OKF summary.
-- [ ] T-05 — Regenerate the Claude Code output style.
+- [x] T-05 — Regenerate the Claude Code output style.
   - **Files**: `output-styles/clear-writing-kit.md`.
   - **Change**: Run the existing output-style generator after T-01; do not hand-edit output.
   - **Acceptance**: TP-06 passes and T-05 records the generator summary.
@@ -211,6 +211,14 @@ Verified 2026-10-08. `cmd.exe /d /c npm --prefix writing run okf:generate` repor
 | Check | Result |
 | --- | --- |
 | `cmd.exe /d /c npm --prefix writing run okf:check` | PASS: "OKF format, source freshness, and publication links passed", exit 0 |
+
+### T-05
+
+Verified 2026-10-08. `python scripts/generate-output-style.py --output output-styles/clear-writing-kit.md` rewrote only the output style: 49 insertions, 1 deletion (the source stamp). The file contains the absolute reference-list URL six times, one per embedded `Sources` section, and no `](docs/` or `](../docs` link.
+
+| Check | Result |
+| --- | --- |
+| `python scripts/generate-output-style.py --output output-styles/clear-writing-kit.md --check` | PASS, exit 0 |
 
 ## Review Results
 

@@ -4,7 +4,7 @@ description: Coding-agent writing with local checks and en-US, zh-TW, and ja-JP 
 keep-coding-instructions: true
 ---
 
-<!-- Source SHA-256: fc52239c612482d1a877ec74b3566facff73dca1985cae7e58c687fe9ae3b8c2 -->
+<!-- Source SHA-256: e21cd4552b06109e433bddb4e92e3af06536e07bbae5dbbffae4cabbe849fcdd -->
 
 # Clear Writing Kit for Claude Code
 
@@ -90,6 +90,15 @@ When results are partial, identify the failure and the expected and observed beh
 
 Compare the final text with its source. Verify facts, numbers, units, deadlines, negation, conditions, exceptions, scope, attribution, and certainty. A style checker cannot perform this comparison for you.
 
+### Sources
+
+The full entries are in the [reference list](https://github.com/monkey1wizard/clear-writing-kit/blob/main/docs/references.md).
+
+- Plain language: the four reader outcomes derive from `[ISO2023]`. The priority of accuracy over plainness, the note that these are project rules, and the safety limits are project choices.
+- Protected items: the addition of URLs and quotations to the items that stay unchanged was informed by `[SpeakHumanTW2026]` at commit `e180f0a`. No text was copied. The final scope is a project choice.
+- Lists and layout: the flexible use of lists, tables, and layout was informed by `[SpeakHumanTW2026]` at commit `e180f0a`. No text was copied. The final scope is a project choice.
+- Project-authored rules: facts and inference, modal strength, uncertainty, partial results, one main idea per sentence, conditions before actions, actors, procedures and descriptions, punctuation, the meaning check, and the examples.
+
 ## Embedded en-US
 
 Use United States spelling and plain technical prose. Apply the shared accuracy rules before language-specific preferences.
@@ -115,6 +124,13 @@ Clear when supported: "Not benchmarked. The new parser reads the file once inste
 Incorrect rewrite: "The request fails when the token expires."
 
 Meaning-preserving rewrite: "If the token expires, the request may fail." Preserve "may" when the source states only a possibility.
+
+### Sources
+
+The full entries are in the [reference list](https://github.com/monkey1wizard/clear-writing-kit/blob/main/docs/references.md).
+
+- Short sentences and conditions before actions: this optional guidance derives from `[ASDSTE1002025]`. The limited adoption, the exclusion of the controlled vocabulary, and the decision not to claim the full standard are project choices.
+- Project-authored rules: all other content in this file, including the document and conversation rules, the modal distinctions, and the examples.
 
 ## Embedded zh-TW
 
@@ -152,6 +168,13 @@ Meaning-preserving rewrite: "If the token expires, the request may fail." Preser
 
 確認讀者能找到重點，並能分辨事實與推論。核對數字、單位、期限、範圍、例外及資訊來源。工具流程由執行環境的入口指定。人工判讀與機械檢查都不能省略原意核對。
 
+### 資料來源
+
+完整書目見[參考文獻清單](https://github.com/monkey1wizard/clear-writing-kit/blob/main/docs/references.md)。
+
+- 列表、表格與版面：彈性使用列表、表格與版面的規則，受其啟發的來源是 `[SpeakHumanTW2026]` 的 commit `e180f0a`。本專案沒有照搬原文，最終範圍由本專案決定。
+- 本專案自訂的規則：本檔其餘內容，包括說明文件與一般回答的寫法、用詞與句型、保留原樣的項目、改寫範例與交付前檢查。
+
 ## Embedded ja-JP
 
 正確性を優先し、意味を変えずに読みやすくする。事実、条件、否定、数値、範囲、情報源、不確実性を維持する。
@@ -185,6 +208,12 @@ Meaning-preserving rewrite: "If the token expires, the request may fail." Preser
 ### 最終確認
 
 textlintの結果だけで自然さを判断しない。意味と読みやすさを確認する。重要な文書では、日本語に習熟した読者の評価も必要である。
+
+### 出典
+
+完全な書誌情報は[参考文献一覧](https://github.com/monkey1wizard/clear-writing-kit/blob/main/docs/references.md)にある。
+
+このファイルの規則は、すべてこのプロジェクトが独自に定めたものである。対象は、説明文書の常体、見出し、箇条書き、会話の敬体、用語と表記、意味を維持する例、最終確認である。
 
 ## Embedded local-checks
 
@@ -230,6 +259,18 @@ If a tool is absent, denied, misconfigured, or times out, report that observed s
 
 Record evidence when the task requires it. Do not add a self-evaluation or tool-success ritual to every answer. Checking an already sent message cannot establish a pre-delivery check.
 
+### Sources
+
+The full entries are in the [reference list](https://github.com/monkey1wizard/clear-writing-kit/blob/main/docs/references.md).
+
+- Checker behavior: profiles, the CLI, the MCP server, and the `lintText` and `lintFile` tools follow `[Textlint1580]`.
+- Japanese preset behavior follows `[TextlintRulePresetJaTechnicalWriting1202]`.
+- English style rule behavior follows `[TextlintRuleWriteGood200]`.
+- Zero-width space rule behavior follows `[TextlintRuleNoZeroWidthSpaces101]`.
+- Project-authored rules: tool discovery, profile selection, the review and recheck limits, and the reporting rules.
+
+These software citations describe tool behavior. They are not the source of the rule text.
+
 ## Embedded zhtw-checks
 
 本流程保留原始 skill 的兩項要求：文字要容易理解，也要使用臺灣繁體中文。語言原則見 [zh-TW.md](#embedded-zh-tw)。
@@ -273,3 +314,10 @@ Record evidence when the task requires it. Do not add a self-evaluation or tool-
 區分未安裝、未連線、權限遭拒、呼叫失敗與逾時。使用 [zh-TW.md](#embedded-zh-tw) 完成人工檢查，並在首次發生時交代未執行的檢查。只有在狀態改變或影響當次結果時，才重述相同限制。
 
 若專案將該檢查列為必要關卡，未完成時必須回報阻擋。不得把人工檢查說成工具檢查成功。
+
+### 資料來源
+
+完整書目見[參考文獻清單](https://github.com/monkey1wizard/clear-writing-kit/blob/main/docs/references.md)。
+
+- 工具參數與功能：`text`、`content_type`、`fix_mode`、`detect_style`、`verify`、`translationese_domain` 與 `glossary` 等參數，以及修正模式的行為，依據 `[ZhtwMCP]`。本專案不指定該工具的版本。使用前仍須讀取宿主提供的實際參數結構。
+- 本專案自訂的規則：本檔其餘內容，包括尋找工具、交付前檢查、修正輪數上限、判讀方式、外部驗證限制，以及工具不可用時的回報方式。
