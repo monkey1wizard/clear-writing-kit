@@ -83,19 +83,27 @@ None.
 
 ## Status
 
-Workflow: DRAFT
-Step: 0 of 2
-Last activity: 2026-10-08 — prompt generated from source plan
-Next step: wait for both predecessor plans to finalize, then execute T-01
-Current Task: —
-Task Base Commit: —
+Workflow: IMPLEMENT
+Step: 1 of 2
+Last activity: 2026-10-08 — T-01 implementation complete
+Next step: T-02 regenerate projections
+Current Task: T-01
+Task Base Commit: d8bb8b7
 Task Final Commit: —
 Test Retry Count: 0
 Review Retry Count: 0
+Checkpoint: T-01 implemented — ja-JP style-signal section, accuracy meaning-check items, Yomiyasu2026 citation, two contract tests
 
 ### Deviations
 
-None.
+| Step | Plan Said | Actually Did | Why |
+| --- | --- | --- | --- |
+| T-01 | Why section: release `v1.1.0` points to commit `0df4774` | Did not label the citation as a release. `gh api` shows the `v1.1.0` tag object `4a1f88f` resolves to `c2ffae6` itself | Plan premise is factually wrong. The commit-snapshot citation is unaffected |
+| T-01 | Commit dated 2026-10-07 | Kept year 2026. Author date is 2026-10-07T16:30:19Z; committer date is 2026-10-08T02:41:44Z | APA entry uses year only |
+| T-01 | Add yomiyasu in the correct reference group | Placed `[Yomiyasu2026]` in Standards and guidelines, in the same `[Agent skill]. GitHub.` form as `[SpeakHumanTW2026]` | The Software group requires an npm pin or a `Retrieved` date. The source is cited as writing guidance |
+| T-01 | Existing tests unchanged except new contracts | Updated `RULE_PREFIX_SHA256` for `accuracy` and `ja-JP`, added `Yomiyasu2026` to `REQUIRED_CITATIONS` for both, added Yomiyasu entry and influence-wording assertions | Rule text above Sources changed on purpose. No assertion was removed or weakened. `INSTRUCTION_BODY_SHA256` unchanged |
+| T-01 | Zero lint findings | en-US check reports 1 warning (`requirement`, line 36) | Pre-existing at HEAD on an unchanged line. Exit 0, 0 errors |
+| T-01 | Full lint passes at T-01 | Full lint and the projection contract fail until T-02 | Plan puts OKF regeneration and the projection test's targets in T-02. Both pass after T-02 |
 
 ### Handoff Notes
 
@@ -103,7 +111,7 @@ Human-approved implementation contract generated from the reconciled English sem
 
 ## Tasks
 
-- [ ] T-01 — Add shared meaning guards and Japanese style-signal guidance.
+- [x] T-01 — Add shared meaning guards and Japanese style-signal guidance.
   - **Files**: `skills/coding-agent-writing/references/accuracy.md`, `skills/coding-agent-writing/references/ja-JP.md`, `docs/references.md`, `tests/test_artifacts.py`.
   - **Change**: After all Preconditions pass and before the first repository edit, fetch `skills/yomiyasu/SKILL.md` and `skills/yomiyasu/references/slop-catalog.md` from `https://github.com/nanaism/yomiyasu` at exact commit `c2ffae670994fec96daef92e0bc219f5c1923113` using TP-03's raw URLs. Fail without repository modification on any source mismatch. Add relative weight and sentence function to the shared meaning check, add five bounded ja-JP style-signal rules and guards, add the pinned citation, and add the named guidance and projection contract tests. Add no checker, dependency, Web variant, or permanent copy tool.
   - **Acceptance**: All Preconditions and TP-01 through TP-03 pass. The citation resolves both ways, the persistent excerpt is byte-identical, meaning and technical terms remain protected, both copy-review methods are recorded, and T-01 ends `completed`; `NotRun` fails.
@@ -132,7 +140,64 @@ Not started.
 
 ## Test Results
 
-Not run.
+Japanese naturalness of the new section is NOT verified. No reviewer proficient in Japanese has read it. The checks below cover lint, contracts, and copy review only.
+
+### T-01
+
+Status: completed (2026-10-08, base commit `d8bb8b7`).
+
+Preconditions, rerun by the implementer at `d8bb8b76294e6e3ebecfd24e79164474903ef071`:
+
+| ID | Command result | Verdict |
+| --- | --- | --- |
+| PC-01 | `test_reference_citation_contract` ran 1 test, `OK`. Active Plans check exited 0 (no `docs-apa-references`). | pass |
+| PC-02 | Named checker test: tests 1, pass 1, fail 0. Active Plans check exited 0 (no `feat-ja-report-style`). | pass |
+| PC-03 | Marker check exited 0 (all three markers present). | pass |
+
+Source retrieval (TP-03), done before the first repository edit. `build/` is git-ignored (`.gitignore:3:/build/`).
+
+| Item | Verified value |
+| --- | --- |
+| Repository | `https://github.com/nanaism/yomiyasu`, owner `nanaism`, license MIT (`gh api repos/nanaism/yomiyasu`) |
+| Owner name | GitHub profile name `大賀 愛一郎（oga_aiichiro）` (`gh api users/nanaism`). Cited as `Oga, A.` |
+| Commit | `c2ffae670994fec96daef92e0bc219f5c1923113`, author date 2026-10-07T16:30:19Z, committer date 2026-10-08T02:41:44Z |
+| `build/yomiyasu-SKILL.md` (`skills/yomiyasu/SKILL.md`, 66,624 bytes) | SHA-256 `D588769E4E4550D6BA1317CC5730AEC7C93B99069E7B1AA54514F272AB8EC3AF` |
+| `build/yomiyasu-slop-catalog.md` (`skills/yomiyasu/references/slop-catalog.md`, 16,783 bytes) | SHA-256 `C146F079B67AC277396564B97ACD9D718975F70B01D67697494BE2C4EA10C5C2` |
+| Release label | Not used. The `v1.1.0` annotated tag object `4a1f88f` resolves to this same commit `c2ffae6`. See Deviations. |
+
+Mechanical overlap (TP-03 command on `build/ai-tone-section.txt`, the full new ja-JP section): `[]`, no shared 20-character run. The same command on the added Sources bullets and the added accuracy sentence also printed `[]`. The longest shared run in the section is 11 characters, `を確定できない場合は、`, a grammatical connective.
+
+Item-by-item comparison against both pinned files:
+
+| New item | Closest upstream item | Copied text | Result |
+| --- | --- | --- | --- |
+| Section intro (documents and conversation, editing signal, not authorship evidence) | No counterpart; upstream has no scope or authorship sentence | None | Project-authored |
+| 比喩動詞 rule | slop-catalog §1 intro sentence | Category name `比喩動詞` only (also an SKILL.md heading word) | Paraphrased |
+| 比喩動詞 examples 「データが眠る」「問題を炙り出す」 | §1 table rows use other verbs | None (neither phrase occurs upstream) | Project-authored |
+| 英語の直訳構文 rule | slop-catalog §2 intro sentence | Term `直訳` only | Paraphrased |
+| 英語の直訳構文 examples 「〜を可能にする」「重要な役割を果たす」 | §2 table rows use other calques | None | Project-authored |
+| 空疎な評価語 rule | slop-catalog §5 「評価を装う語」 row | None | Paraphrased |
+| 空疎な評価語 examples 「圧倒的な」「画期的な」 | §5 lists `本質的` and others | None | Project-authored |
+| 前置きと文末の付け足し rule | slop-catalog §6 前置フィラー and 文末の付け足し rows | None | Paraphrased |
+| 前置きと文末の付け足し examples 「まず押さえておきたいのは」「と言っても過言ではない」 | §6 lists other openers and endings | None | Project-authored |
+| 定型の結び rule | slop-catalog §6 定型の結び row | Category name `定型の結び` only | Paraphrased |
+| 定型の結び examples 「いかがでしたか」「お役に立てれば幸い」 | §6 lists `いかがでしたでしょうか` and `〜の参考になれば幸いです` | None verbatim; both are common Japanese closings | Project-authored |
+| Limit paragraph (same meaning and scope, protected terms, keep original when unclear, no trend lists or per-word tables) | slop-catalog intro and SKILL.md 専門用語と名称の扱い | None | Paraphrased; exclusion sentence is project-authored |
+| accuracy.md meaning check: relative weight and sentence function | SKILL.md §1 意味の保持 items 2 and 4 | None (English paraphrase; upstream 感想 not adopted) | Paraphrased |
+| Excluded | slop-catalog §3 (2026 trend words) and all replacement columns | Not used | R-06 met |
+
+Lint and contracts:
+
+| Command | Result |
+| --- | --- |
+| `python -m unittest tests.test_artifacts.Artifacts.test_reference_citation_contract -v` (TP-01) | 1 test, OK |
+| `python -m unittest tests.test_artifacts.Artifacts.test_ja_ai_tone_guidance_contract -v` (TP-02) | 1 test, OK |
+| `node writing/check.cjs --language ja-JP --genre document skills/coding-agent-writing/references/ja-JP.md` | exit 0, 0 findings |
+| `node writing/check.cjs --language en-US --genre document skills/coding-agent-writing/references/accuracy.md` | exit 0, 0 errors, 1 warning at 36:120 (`requirement`, write-good). The same warning exists at HEAD on an unchanged line. See Deviations. |
+| TP-02 persistent excerpt byte-compare against HEAD | exit 0 (identical) |
+| `node generate-profiles.cjs --check`, `node lint-docs.cjs`, `markdownlint-cli2` (lint sub-steps) | exit 0 each; lint-docs 0 errors, 10 pre-existing warnings; markdownlint 0 errors |
+| Full `npm --prefix writing run lint` at T-01 | Fails at `okf.cjs --check` with stale `rules/accuracy.md` and `rules/ja-JP.md`. Expected until T-02 regenerates them. See T-02 for the passing run. |
+| `test_ja_ai_tone_projection_contract` at T-01 | Fails (4 failures) until T-02 regenerates projections. See T-02. |
 
 ## Review Results
 

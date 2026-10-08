@@ -9,6 +9,7 @@ A citation records that a source informed a rule or defines the behavior of a ch
 - `[ASDSTE1002025]` Aerospace, Security and Defence Industries Association of Europe. (2025). *[ASD-STE100 Simplified Technical English: Standard for technical documentation](https://www.asd-ste100.org/)* (Issue 9).
 - `[SpeakHumanTW2026]` Hou, R. (2026). *[speak-human-tw](https://github.com/Raymondhou0917/speak-human-tw/tree/e180f0a9960e396d28b394a77f51c5bd31106b36)* (Commit e180f0a) [Agent skill]. GitHub.
 - `[ISO2023]` International Organization for Standardization. (2023). *[Plain language — Part 1: Governing principles and guidelines](https://www.iso.org/standard/78907.html)* (ISO Standard No. 24495-1:2023).
+- `[Yomiyasu2026]` Oga, A. (2026). *[yomiyasu](https://github.com/nanaism/yomiyasu/tree/c2ffae670994fec96daef92e0bc219f5c1923113)* (Commit c2ffae6) [Agent skill]. GitHub.
 - `[Bunka2022]` 文化審議会. (2022). *[公用文作成の考え方（建議）](https://www.bunka.go.jp/seisaku/bunkashingikai/kokugo/hokoku/pdf/93651301_01.pdf)* [Approach to writing official documents (recommendation)]. 文化庁.
 
 ## Software

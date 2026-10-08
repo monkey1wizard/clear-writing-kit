@@ -49,25 +49,32 @@ SOURCES_SECTIONS = {
 }
 # Citations each rule file must keep. Files may cite further keys that the reference list defines.
 REQUIRED_CITATIONS = {
-    "accuracy": {"ISO2023", "SpeakHumanTW2026"},
+    "accuracy": {"ISO2023", "SpeakHumanTW2026", "Yomiyasu2026"},
     "en-US": {"ASDSTE1002025"},
     "zh-TW": {"SpeakHumanTW2026"},
-    "ja-JP": {"Bunka2022"},
+    "ja-JP": {"Bunka2022", "Yomiyasu2026"},
     "local-checks": {"Textlint1580", "TextlintRulePresetJaTechnicalWriting1202", "TextlintRuleWriteGood200", "TextlintRuleNoZeroWidthSpaces101"},
     "zhtw-checks": {"ZhtwMCP"},
 }
 # SHA-256 of each rule file's text above its citation section, with LF line endings and trailing newlines removed.
 # A change that intentionally edits rule text must update the matching digest.
 RULE_PREFIX_SHA256 = {
-    "accuracy": "fb2ffb9b1064ce6b0d5d7f3467767798728427a8040e12f74916e3285d7c5d84",
+    "accuracy": "bb975b90381d3bc965a17cf117df98ce70191a9134242011cfe348f57e75677f",
     "en-US": "aef28977a419d41c60600f9e79d4cd34d78a242b923e505dfb8d1bb2f360cc50",
-    "ja-JP": "2bbbaa341c113532046e0eacd37a198c4dc821ffe9de182f83ab75eaae01a8e4",
+    "ja-JP": "1d802f2a395fc830bb428ec52c5c51e570259f72031d0c6fe26650abc78ae489",
     "zh-TW": "3c456744656c6a8b7b9529ada08a55d2fc7c7d28544584b8d69e39dc106b1ab8",
     "local-checks": "812eb093d005e9990af013a541f36f6062da242b0c9743c2f1f749b4812258cb",
     "zhtw-checks": "f6735588d51c744622c508d4e5b2cf9b333660aecd181da44a2e0fbbcf63a3ff",
 }
 # SHA-256 of generator output for the instruction files with the source stamp line removed.
 # A change that intentionally edits the persistent instruction excerpt or its templates must update the matching digest.
+# SHA-256 of the persistent instruction excerpt that every account-level and agent instruction file embeds.
+PERSISTENT_CORE_SHA256 = "d8d0e1fb7c15b22b44c7e9e0f2e6e9b4004be7ce9cd07b2c609e46990583361d"
+# Exact repository snapshot that informed the Japanese style-signal rules and the shared meaning check.
+YOMIYASU_COMMIT = "c2ffae670994fec96daef92e0bc219f5c1923113"
+# Heading and ordered category names of the Japanese style-signal section.
+JA_STYLE_SIGNAL_HEADING = "定型的な言い回し"
+JA_STYLE_SIGNAL_CATEGORIES = ("比喩動詞", "英語の直訳構文", "空疎な評価語", "前置きと文末の付け足し", "定型の結び")
 INSTRUCTION_BODY_SHA256 = {
     "web-instructions/chatgpt.md": "56c9e4242b176484e82342bcdf83cbffc5ced60d2fb57c094de10d053fb605d3",
     "web-instructions/gemini.md": "fd174653e95216f66146c4c968a3c3ee82a4af4f20393bb6775cf0cb3c327519",
@@ -138,11 +145,14 @@ class Artifacts(unittest.TestCase):
                         self.assertNotIn("Version", entry, key)
                         self.assertRegex(entry, r"Retrieved [A-Z][a-z]+ \d{1,2}, \d{4}, from <https://", key)
             self.assertEqual(order, sorted(order), group)
-        for key in ("ISO2023", "ASDSTE1002025", "SpeakHumanTW2026", "Bunka2022"):
+        for key in ("ISO2023", "ASDSTE1002025", "SpeakHumanTW2026", "Bunka2022", "Yomiyasu2026"):
             self.assertEqual(entries[key][0], "Standards and guidelines", key)
         for key in ("Textlint1580", "TextlintRulePresetJaTechnicalWriting1202", "TextlintRuleWriteGood200", "TextlintRuleNoZeroWidthSpaces101", "ZhtwMCP"):
             self.assertEqual(entries[key][0], "Software", key)
         self.assertIn("e180f0a", entries["SpeakHumanTW2026"][1])
+        self.assertIn("/tree/" + YOMIYASU_COMMIT + ")", entries["Yomiyasu2026"][1])
+        self.assertIn("(Commit " + YOMIYASU_COMMIT[:7] + ")", entries["Yomiyasu2026"][1])
+        self.assertNotRegex(entries["Yomiyasu2026"][1], r"(?i)v?1\.1\.0|release")
 
         self.assertNotRegex(persistent_core(ROOT), BARE_CITATION_KEY)
         maintained = {p.stem for p in (ROOT / CORE / "references").glob("*.md")}
@@ -165,6 +175,11 @@ class Artifacts(unittest.TestCase):
                         self.assertIn("e180f0a", line)
                         self.assertTrue("informed by" in line or "受其啟發" in line, line)
                         self.assertNotRegex(line, r"(?i)deriv|follow|推導|依據")
+                    if "`[Yomiyasu2026]`" in line:
+                        self.assertIn(YOMIYASU_COMMIT[:7], line)
+                        self.assertNotRegex(line, r"(?i)v?1\.1\.0|release")
+                        self.assertTrue("informed by" in line or "着想を得た" in line, line)
+                        self.assertNotRegex(line, r"(?i)deriv|follow|基づく|準拠")
         self.assertEqual(cited - set(entries), set(), "cited keys missing from docs/references.md")
         self.assertEqual(set(entries) - cited, set(), "reference entries without a rule-file citation")
 
@@ -193,6 +208,75 @@ class Artifacts(unittest.TestCase):
         self.assertEqual(style, render_claude())
         self.assertEqual(style.count("](" + REFERENCES_URL + ")"), len(SOURCES_SECTIONS))
         self.assertNotRegex(style, RELATIVE_DOCS_LINK)
+
+    def test_ja_ai_tone_guidance_contract(self):
+        text = read_lf(ROOT / CORE / "references/ja-JP.md")
+        heading = "\n## " + JA_STYLE_SIGNAL_HEADING + "\n"
+        self.assertEqual(text.count(heading), 1)
+        section = text.split(heading, 1)[1].split("\n## ", 1)[0]
+        bullets = [line for line in section.splitlines() if line.startswith("- ")]
+        self.assertEqual([line[2:].split("：", 1)[0] for line in bullets], list(JA_STYLE_SIGNAL_CATEGORIES))
+        for line in bullets:
+            with self.subTest(category=line[2:].split("：", 1)[0]):
+                rule, examples = line.split("：", 1)[1].split("例：", 1)
+                self.assertEqual(rule.count("。"), 1)
+                self.assertTrue(rule.strip().endswith("。"))
+                self.assertIn(len(re.findall(r"「[^」]+」", examples)), (1, 2))
+                self.assertEqual(re.sub(r"「[^」]+」", "", examples).strip(), "")
+        prose = "\n".join(line for line in section.splitlines() if not line.startswith("- "))
+        # Scope, meaning limit, protected wording, uncertainty fallback, and no authorship inference.
+        for phrase in (
+            "文書と会話の両方に適用する",
+            "意味と範囲が変わらない場合に限る",
+            "定義済みの用語、標準的な技術用語、製品名、引用",
+            "元の表現を残す",
+            "書き手が人か機械かを判断する証拠にはしない",
+            "流行語の一覧や、語ごとの置換表は使わない",
+        ):
+            self.assertIn(phrase, prose)
+        # Time-bound vocabulary lists and per-word replacement tables stay out of the rule.
+        self.assertNotIn("|", section)
+        self.assertNotIn("→", section)
+        self.assertNotRegex(section, r"20\d\d年")
+
+        accuracy = read_lf(ROOT / CORE / "references/accuracy.md")
+        meaning = accuracy.split("\n## Meaning check\n", 1)[1].split("\n## ", 1)[0]
+        for phrase in (
+            "facts, numbers, units, deadlines, negation, conditions, exceptions, scope, attribution, and certainty",
+            "relative weight of each point",
+            "function of each sentence",
+            "evaluation, explanation, request, or plan",
+        ):
+            self.assertIn(phrase, meaning)
+        self.assertNotIn("relative weight", persistent_core(ROOT))
+        self.assertNotIn("function of each sentence", persistent_core(ROOT))
+        self.assertNotIn("relative weight", text)
+
+    def test_ja_ai_tone_projection_contract(self):
+        self.assertEqual(hashlib.sha256(persistent_core(ROOT).encode("utf-8")).hexdigest(), PERSISTENT_CORE_SHA256)
+        outputs = {relative.as_posix(): text for relative, text in render_web().items()}
+        for name in ("accuracy", "ja-JP"):
+            projected = WEB_SKILL / "references" / (name + ".md")
+            with self.subTest(projection=projected.as_posix()):
+                self.assertEqual(read_lf(ROOT / projected), outputs[projected.as_posix()])
+                self.assertEqual(read_lf(ROOT / projected), read_lf(ROOT / CORE / "references" / (name + ".md")))
+        markers = {"accuracy": "relative weight of each point", "ja-JP": "## " + JA_STYLE_SIGNAL_HEADING}
+        style = read_lf(ROOT / "output-styles/clear-writing-kit.md")
+        for name, marker in markers.items():
+            concept = read_lf(ROOT / "knowledge/rules" / (name + ".md"))
+            with self.subTest(marker=marker):
+                self.assertIn(marker, concept)
+                self.assertIn("Yomiyasu2026", concept)
+                self.assertIn(marker, style)
+        for relative in ("web-instructions/chatgpt.md", "web-instructions/gemini.md"):
+            with self.subTest(instructions=relative):
+                body = STAMP_LINE.sub("", read_lf(ROOT / relative))
+                self.assertEqual(hashlib.sha256(body.encode("utf-8")).hexdigest(), INSTRUCTION_BODY_SHA256[relative])
+                self.assertNotIn("relative weight", body)
+                self.assertNotIn(JA_STYLE_SIGNAL_HEADING, body)
+        agents_block = read_lf(ROOT / "install/agents-block.md").encode("utf-8")
+        self.assertEqual(hashlib.sha256(agents_block).hexdigest(), INSTRUCTION_BODY_SHA256["install/agents-block.md"])
+        self.assertEqual(read_lf(ROOT / "install/agents-block.md"), render_agents_block())
 
     def test_agents_block_has_required_content_and_byte_limit(self):
         block = render_agents_block()
