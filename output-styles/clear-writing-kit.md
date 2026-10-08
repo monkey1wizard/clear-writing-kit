@@ -4,7 +4,7 @@ description: Coding-agent writing with local checks and en-US, zh-TW, and ja-JP 
 keep-coding-instructions: true
 ---
 
-<!-- Source SHA-256: fa2b44c2b797650da8eb253c1128b83677957cda82dbdedf702a864b57c3d181 -->
+<!-- Source SHA-256: 3973d3f3a5b5b5154b860913549876c802fe312e1c2718e9d1af4f3e01433432 -->
 
 # Clear Writing Kit for Claude Code
 
@@ -88,7 +88,7 @@ When results are partial, identify the failure and the expected and observed beh
 
 ### Meaning check
 
-Compare the final text with its source. Verify facts, numbers, units, deadlines, negation, conditions, exceptions, scope, attribution, and certainty. A style checker cannot perform this comparison for you.
+Compare the final text with its source. Verify facts, numbers, units, deadlines, negation, conditions, exceptions, scope, attribution, and certainty. Also verify the relative weight of each point and the function of each sentence: evaluation, explanation, request, or plan. Do not turn a main point into a side note or an evaluation into a plan. A style checker cannot perform this comparison for you.
 
 ### Sources
 
@@ -97,6 +97,7 @@ The full entries are in the [reference list](https://github.com/monkey1wizard/cl
 - Plain language: the four reader outcomes derive from `[ISO2023]`. The priority of accuracy over plainness, the note that these are project rules, and the safety limits are project choices.
 - Protected items: the addition of URLs and quotations to the items that stay unchanged was informed by `[SpeakHumanTW2026]` at commit `e180f0a`. No text was copied. The final scope is a project choice.
 - Lists and layout: the flexible use of lists, tables, and layout was informed by `[SpeakHumanTW2026]` at commit `e180f0a`. No text was copied. The final scope is a project choice.
+- Meaning check: the relative weight of each point and the function of each sentence were informed by `[Yomiyasu2026]` at commit `c2ffae6`. No text was copied. The final scope is a project choice.
 - Project-authored rules: facts and inference, modal strength, uncertainty, partial results, one main idea per sentence, conditions before actions, actors, procedures and descriptions, punctuation, the meaning check, and the examples.
 
 ## Embedded en-US
@@ -201,6 +202,18 @@ The full entries are in the [reference list](https://github.com/monkey1wizard/cl
 
 コード、識別子、コマンド、パス、URL、引用、エラーメッセージ、製品名は、そのまま維持する。利用者が変更を求めた場合は、その範囲に従う。
 
+### 定型的な言い回し
+
+この節の規則は、文書と会話の両方に適用する。次の5類は、定型的な文章や機械的に生成された文章に多く見られ、読みやすさを下げることがある。推敲で見直す箇所の目安として使い、書き手が人か機械かを判断する証拠にはしない。
+
+- 比喩動詞：技術的な操作や状態を比喩の動詞で表している場合は、実際に起きる操作や状態を表す動詞で書く。例：「データが眠る」「問題を炙り出す」
+- 英語の直訳構文：英語の構文をそのままなぞった文は、同じ意味を保つ自然な日本語の構文に直す。例：「〜を可能にする」「重要な役割を果たす」
+- 空疎な評価語：評価の対象や根拠を示さない飾りの評価語は、対象と根拠を具体的に書くか、意味を担っていなければ削る。例：「圧倒的な」「画期的な」
+- 前置きと文末の付け足し：内容を運ばない前置きや文末の付け足しは削り、評価や推量はその強さを保って述語に残す。例：「まず押さえておきたいのは」「と言っても過言ではない」
+- 定型の結び：本文の内容に関係しない決まり文句の結びは削り、本文の最後の要点で終える。例：「いかがでしたか」「お役に立てれば幸い」
+
+言い換えるのは、意味と範囲が変わらない場合に限る。定義済みの用語、標準的な技術用語、製品名、引用は、上記の類に似ていても変えずに維持する。原文から意味を確定できない場合は、元の表現を残す。時期によって変わる流行語の一覧や、語ごとの置換表は使わない。
+
 ### 意味を維持する例
 
 原文は「変更は完了したが、テストはまだ実行していない。」である。
@@ -216,6 +229,7 @@ textlintの結果だけで自然さを判断しない。意味と読みやすさ
 完全な書誌情報は[参考文献一覧](https://github.com/monkey1wizard/clear-writing-kit/blob/main/docs/references.md)にある。
 
 - 説明文書の文体：報告書型の文書をである体で書き、文末に「だ」「だろう」「だった」を使わない規則は、`[Bunka2022]` のⅢ－１ ウに基づく。この規則を本プロジェクトの文書に限ることと、取扱説明書の扱いは、このプロジェクトの判断である。
+- 定型的な言い回し：5類の分類と、言い換えを意味が変わらない場合に限る考え方は、`[Yomiyasu2026]` のコミット `c2ffae6` から着想を得た。文章は複製していない。例、適用範囲、技術用語の保護、書き手の判定に使わない制限は、このプロジェクトの判断である。
 - その他の規則：見出し、箇条書き、会話の敬体、文体指定の優先、用語と表記、意味を維持する例、最終確認は、このプロジェクトが独自に定めたものである。
 
 ## Embedded local-checks

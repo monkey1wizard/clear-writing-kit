@@ -83,16 +83,16 @@ None.
 
 ## Status
 
-Workflow: IMPLEMENT
-Step: 1 of 2
-Last activity: 2026-10-08 — T-01 implementation complete
-Next step: T-02 regenerate projections
-Current Task: T-01
+Workflow: IMPLEMENT (complete)
+Step: 2 of 2
+Last activity: 2026-10-08 — T-02 implementation complete; IMPLEMENT complete for T-01 and T-02
+Next step: orchestrator test and review gates, then finalize
+Current Task: T-02
 Task Base Commit: d8bb8b7
-Task Final Commit: —
+Task Final Commit: T-01 `d601331`; T-02 recorded by the orchestrator from the T-02 commit
 Test Retry Count: 0
 Review Retry Count: 0
-Checkpoint: T-01 implemented — ja-JP style-signal section, accuracy meaning-check items, Yomiyasu2026 citation, two contract tests
+Checkpoint: T-02 implemented — eight declared projections plus two OKF usage stamps regenerated; agents block unchanged
 
 ### Deviations
 
@@ -104,6 +104,7 @@ Checkpoint: T-01 implemented — ja-JP style-signal section, accuracy meaning-ch
 | T-01 | Existing tests unchanged except new contracts | Updated `RULE_PREFIX_SHA256` for `accuracy` and `ja-JP`, added `Yomiyasu2026` to `REQUIRED_CITATIONS` for both, added Yomiyasu entry and influence-wording assertions | Rule text above Sources changed on purpose. No assertion was removed or weakened. `INSTRUCTION_BODY_SHA256` unchanged |
 | T-01 | Zero lint findings | en-US check reports 1 warning (`requirement`, line 36) | Pre-existing at HEAD on an unchanged line. Exit 0, 0 errors |
 | T-01 | Full lint passes at T-01 | Full lint and the projection contract fail until T-02 | Plan puts OKF regeneration and the projection test's targets in T-02. Both pass after T-02 |
+| T-02 | Eight-file projection allowlist | Also committed `knowledge/usage/chatgpt.md` and `knowledge/usage/gemini.md` (stamp-only `source_sha256` change) | `okf:generate` hashes the web instruction files, whose stamps changed. Approved generator-owned scope extension |
 
 ### Handoff Notes
 
@@ -115,7 +116,7 @@ Human-approved implementation contract generated from the reconciled English sem
   - **Files**: `skills/coding-agent-writing/references/accuracy.md`, `skills/coding-agent-writing/references/ja-JP.md`, `docs/references.md`, `tests/test_artifacts.py`.
   - **Change**: After all Preconditions pass and before the first repository edit, fetch `skills/yomiyasu/SKILL.md` and `skills/yomiyasu/references/slop-catalog.md` from `https://github.com/nanaism/yomiyasu` at exact commit `c2ffae670994fec96daef92e0bc219f5c1923113` using TP-03's raw URLs. Fail without repository modification on any source mismatch. Add relative weight and sentence function to the shared meaning check, add five bounded ja-JP style-signal rules and guards, add the pinned citation, and add the named guidance and projection contract tests. Add no checker, dependency, Web variant, or permanent copy tool.
   - **Acceptance**: All Preconditions and TP-01 through TP-03 pass. The citation resolves both ways, the persistent excerpt is byte-identical, meaning and technical terms remain protected, both copy-review methods are recorded, and T-01 ends `completed`; `NotRun` fails.
-- [ ] T-02 — Regenerate the eight delivery projections affected by the canonical rules.
+- [x] T-02 — Regenerate the eight delivery projections affected by the canonical rules.
   - **Files**: `web-skills/web-answer-writing/SKILL.md`, `web-skills/web-answer-writing/references/accuracy.md`, `web-skills/web-answer-writing/references/ja-JP.md`, `web-instructions/chatgpt.md`, `web-instructions/gemini.md`, `knowledge/rules/accuracy.md`, `knowledge/rules/ja-JP.md`, `output-styles/clear-writing-kit.md`.
   - **Change**: Run the existing Web, OKF, and output-style generators after T-01. Commit only generator-owned copies, embeds, and stamps. Check the agents-block generator and require `install/agents-block.md` to remain byte-identical.
   - **Acceptance**: TP-04 passes. All eight projections equal their generators, substantive instruction bodies and agents block remain unchanged as specified, no undeclared projection changes, and T-02 records four generator/check summaries.
@@ -198,6 +199,44 @@ Lint and contracts:
 | `node generate-profiles.cjs --check`, `node lint-docs.cjs`, `markdownlint-cli2` (lint sub-steps) | exit 0 each; lint-docs 0 errors, 10 pre-existing warnings; markdownlint 0 errors |
 | Full `npm --prefix writing run lint` at T-01 | Fails at `okf.cjs --check` with stale `rules/accuracy.md` and `rules/ja-JP.md`. Expected until T-02 regenerates them. See T-02 for the passing run. |
 | `test_ja_ai_tone_projection_contract` at T-01 | Fails (4 failures) until T-02 regenerates projections. See T-02. |
+
+T-01 commit: `d601331`.
+
+### T-02
+
+Status: completed (2026-10-08).
+
+Generators:
+
+| Command | Result |
+| --- | --- |
+| `python scripts/generate-web-artifacts.py --update` | exit 0, wrote 7 Web artifacts |
+| `cmd.exe /d /c npm --prefix writing run okf:generate` | exit 0, generated 14 OKF files |
+| `python scripts/generate-output-style.py --output output-styles/clear-writing-kit.md` | exit 0 |
+| `python scripts/generate-agents-block.py --output install/agents-block.md --check` (check mode only) | exit 0 |
+
+TP-04:
+
+| Command | Result |
+| --- | --- |
+| `python scripts/generate-web-artifacts.py --check` | exit 0, checked 7 Web artifacts |
+| `cmd.exe /d /c npm --prefix writing run okf:check` | exit 0, format, source freshness, and publication links passed |
+| `python scripts/generate-output-style.py --output output-styles/clear-writing-kit.md --check` | exit 0 |
+| `python scripts/generate-agents-block.py --output install/agents-block.md --check` | exit 0 |
+| `python -m unittest tests.test_artifacts.Artifacts.test_ja_ai_tone_projection_contract -v` | 1 test, OK |
+| TP-04 eight-file allowlist command, as written | exit 1. Extra paths: `knowledge/usage/chatgpt.md`, `knowledge/usage/gemini.md` |
+| Same command with those two approved usage files added (ten paths) | exit 0 |
+| `git diff --quiet -- install/agents-block.md` | exit 0 (byte-identical) |
+
+Diff review: `web-instructions/chatgpt.md`, `web-instructions/gemini.md`, and `web-skills/web-answer-writing/SKILL.md` changed only in the generated `Source SHA-256` stamp line. `knowledge/usage/chatgpt.md` and `knowledge/usage/gemini.md` changed only in `source_sha256`. The substantive ChatGPT and Gemini bodies match the unchanged `INSTRUCTION_BODY_SHA256` digests.
+
+### TP-05
+
+| Command | Result |
+| --- | --- |
+| `cmd.exe /d /c npm --prefix writing test` | exit 0, tests 66, pass 66, fail 0 |
+| `python -m unittest discover -s tests -v` | exit 0, 20 tests, OK |
+| `cmd.exe /d /c npm --prefix writing run lint` | exit 0; lint-docs 50 sections, 0 errors, 10 pre-existing warnings; markdownlint 0 errors |
 
 ## Review Results
 

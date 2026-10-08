@@ -14,7 +14,7 @@ sources:
 generated:
   by: process:clear-writing-kit-okf
 source_path: skills/coding-agent-writing/references/accuracy.md
-source_sha256: e80911f7a0a66d19f332bda5c52f052272e4d150a35f24837f75379d061a2722
+source_sha256: 6f84e6dfdccb3b6a5b57b88ad7947abb6bb7291949b9ffe1e3e4a0c330f0363f
 ---
 
 # Shared accuracy and clarity rules
@@ -67,7 +67,7 @@ When results are partial, identify the failure and the expected and observed beh
 
 ## Meaning check
 
-Compare the final text with its source. Verify facts, numbers, units, deadlines, negation, conditions, exceptions, scope, attribution, and certainty. A style checker cannot perform this comparison for you.
+Compare the final text with its source. Verify facts, numbers, units, deadlines, negation, conditions, exceptions, scope, attribution, and certainty. Also verify the relative weight of each point and the function of each sentence: evaluation, explanation, request, or plan. Do not turn a main point into a side note or an evaluation into a plan. A style checker cannot perform this comparison for you.
 
 ## Sources
 
@@ -76,4 +76,5 @@ The full entries are in the [reference list](https://github.com/monkey1wizard/cl
 - Plain language: the four reader outcomes derive from `[ISO2023]`. The priority of accuracy over plainness, the note that these are project rules, and the safety limits are project choices.
 - Protected items: the addition of URLs and quotations to the items that stay unchanged was informed by `[SpeakHumanTW2026]` at commit `e180f0a`. No text was copied. The final scope is a project choice.
 - Lists and layout: the flexible use of lists, tables, and layout was informed by `[SpeakHumanTW2026]` at commit `e180f0a`. No text was copied. The final scope is a project choice.
+- Meaning check: the relative weight of each point and the function of each sentence were informed by `[Yomiyasu2026]` at commit `c2ffae6`. No text was copied. The final scope is a project choice.
 - Project-authored rules: facts and inference, modal strength, uncertainty, partial results, one main idea per sentence, conditions before actions, actors, procedures and descriptions, punctuation, the meaning check, and the examples.
