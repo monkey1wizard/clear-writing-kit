@@ -84,19 +84,25 @@ None.
 
 ## Status
 
-Workflow: DRAFT
-Step: 0 of 5
-Last activity: 2026-10-08 — prompt generated from source plan
-Next step: execute T-01
-Current Task: —
-Task Base Commit: —
+Workflow: IMPLEMENT
+Step: 1 of 5
+Last activity: 2026-10-08 — T-01 implemented: APA 7 list, six Sources sections, citation contract and projection tests
+Next step: T-02 README links, then T-03 to T-05 regeneration
+Current Task: T-01
+Task Base Commit: 70b58fec4dee64e6f0c3c5febbe159ed33232688
+Checkpoint: T-01 implemented — docs/references.md plus Sources sections; projection test and okf:check stay red until T-03 to T-05
 Task Final Commit: —
 Test Retry Count: 0
 Review Retry Count: 0
 
 ### Deviations
 
-None.
+| Step | Plan Said | Actually Did | Why |
+| --- | --- | --- | --- |
+| T-01 | Change only the new tests in `tests/test_artifacts.py` | Also narrowed the regex in the existing `test_claude_embeds_local_procedures_without_file_links` to skip `https:` targets | The old regex rejected every `](...md)` target, so the required absolute `docs/references.md` URL in the embedded `Sources` sections would fail it after T-05. Relative file links are still rejected. |
+| T-01 | Instruction bodies stay equal to the committed files | The gemini baseline digest is the generator output from HEAD sources, not the committed file | At base commit `70b58fe`, `web-instructions/gemini.md` was already stale: it says "reply in zh-TW" while `scripts/templates/gemini.txt` says "reply in Traditional Chinese", and `generate-web-artifacts.py --check` fails on a clean HEAD export. T-03 regeneration will apply that template text. The persistent excerpt is unchanged. |
+| T-01 | `npm --prefix writing run lint` passes for T-01 | `okf.cjs --check` stage fails as stale until T-04 | The lint script runs `okf.cjs --check`, which compares `knowledge/` with the edited rule files. The other stages pass. |
+| T-04 scope (report only) | T-04 regenerates six concept files | A local regeneration also changed `knowledge/usage/chatgpt.md` and `knowledge/usage/gemini.md` | Their `source_sha256` covers the web instruction files, whose stamps change in T-03. The gemini usage block also picks up the template text. T-04 and TP-07 must allow these two paths. Not committed in T-01. |
 
 ### Handoff Notes
 
@@ -104,7 +110,7 @@ Human-approved implementation contract generated from the reconciled English sem
 
 ## Tasks
 
-- [ ] T-01 — Establish the canonical APA 7 citation contract.
+- [x] T-01 — Establish the canonical APA 7 citation contract.
   - **Files**: `docs/references.md`, `skills/coding-agent-writing/references/accuracy.md`, `skills/coding-agent-writing/references/en-US.md`, `skills/coding-agent-writing/references/ja-JP.md`, `skills/coding-agent-writing/references/zh-TW.md`, `skills/coding-agent-writing/references/local-checks.md`, `skills/coding-agent-writing/references/zhtw-checks.md`, `tests/test_artifacts.py`.
   - **Change**: Verify each candidate source, implement the locked attribution map, create the single keyed APA 7 list, append language-appropriate `Sources` mappings with the absolute URL, and add `test_reference_citation_contract` plus `test_reference_citation_projections`. Preserve every rule prefix and the persistent excerpt. Add no dependency or parallel citation store.
   - **Acceptance**: TP-01 and TP-02 pass, including R1, R2, R10, and R12. Every confirmed entry has one key and consumer; omitted entries and all evidence are recorded under T-01.
@@ -147,7 +153,33 @@ Not started.
 
 ## Test Results
 
-Not run.
+### T-01
+
+Verified 2026-10-08. Every candidate source was confirmed. No entry was omitted.
+
+| Key | Verified metadata | Evidence |
+| --- | --- | --- |
+| `[ISO2023]` | ISO 24495-1:2023, Plain language — Part 1: Governing principles and guidelines. Edition 1, published 2023-06, stage 60.60. Publisher: International Organization for Standardization. | `https://www.iso.org/standard/78907.html` fetched with curl, HTTP 200 |
+| `[ASDSTE1002025]` | ASD-STE100 Simplified Technical English, Issue 9, January 15, 2025, subtitle "Standard for Technical Documentation". Owner and publisher: ASD, Aerospace, Security and Defence Industries Association of Europe. | `https://www.asd-ste100.org/` fetched with curl, HTTP 200; ASD news page confirms Issue 9 |
+| `[SpeakHumanTW2026]` | Repository `Raymondhou0917/speak-human-tw`, owner Raymond Hou, MIT. Commit `e180f0a9960e396d28b394a77f51c5bd31106b36` dated 2026-09-28T04:55:56Z. | `gh api` repo, user, and commit; tree URL HTTP 200 |
+| `[Textlint1580]` | textlint 15.8.0, author azu, published 2026-08-01, npm. | `writing/package.json` and lockfile pin 15.8.0; `npm view`; GitHub tag `v15.8.0` |
+| `[TextlintRulePresetJaTechnicalWriting1202]` | textlint-rule-preset-ja-technical-writing 12.0.2, author azu, published 2025-01-02, npm. | Pin and lockfile 12.0.2; `npm view`; GitHub tag `v12.0.2` |
+| `[TextlintRuleWriteGood200]` | textlint-rule-write-good 2.0.0, author nodaguti, published 2021-06-06, npm. | Pin and lockfile 2.0.0; `npm view`; GitHub tag `v2.0.0` |
+| `[TextlintRuleNoZeroWidthSpaces101]` | textlint-rule-no-zero-width-spaces 1.0.1, author Tomoyuki Hata, published 2021-05-01, npm. | Pin and lockfile 1.0.1; `npm view` |
+| `[ZhtwMCP]` | Repository `sysprog21/zhtw-mcp`, "A linguistic linter for Traditional Chinese (zh-TW)", MIT. No version claimed. Retrieval date October 8, 2026. | `gh api repos/sysprog21/zhtw-mcp`; URL HTTP 200 |
+
+Limits: npmjs.com package pages return HTTP 403 to automated clients, so npm metadata comes from the npm registry through `npm view`. The ISO and ASD standards are paywalled or on request. Their entries rely on catalog and publisher pages only.
+
+APA 7 review (TP-02, manual): two groups, standards and guidelines first. Each group is sorted by first author. Software entries use `Author. (Year). Title (Version) [Computer software]. Publisher.`. The unpinned zhtw-mcp entry uses `n.d.` and a retrieval date. Titles are link text, so official dashes stay in the title. Entries contain no used-by lists and no compliance or certification wording. speak-human-tw appears only as "informed by" or 「受其啟發」 with commit `e180f0a`. `[Bunka2022]` was not added.
+
+| Check | Result |
+| --- | --- |
+| `python -m unittest tests.test_artifacts.Artifacts.test_reference_citation_contract -v` | PASS, 1 test |
+| `test_reference_citation_projections` after local regeneration of all five generators | PASS. Full `python -m unittest discover -s tests`: 18 tests OK. Generated outputs were then reverted and not committed. |
+| `test_reference_citation_projections` on the committed tree | Expected FAIL until T-03 to T-05; `test_committed_style_matches_generated_content` also fails until T-05 |
+| `cmd.exe /d /c npm --prefix writing run lint` | FAIL at `okf.cjs --check`: six stale concepts, expected until T-04 |
+| Lint stages run separately | `generate-profiles.cjs --check` exit 0; `lint-docs.cjs` 0 errors, 6 warnings, all on pre-existing lines; `markdownlint-cli2` 0 errors |
+| zhtw-mcp on the two zh-TW `Sources` sections | 0 errors, 0 warnings, 0 info |
 
 ## Review Results
 

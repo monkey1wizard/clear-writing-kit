@@ -41,3 +41,10 @@
 區分未安裝、未連線、權限遭拒、呼叫失敗與逾時。使用 [zh-TW.md](zh-TW.md) 完成人工檢查，並在首次發生時交代未執行的檢查。只有在狀態改變或影響當次結果時，才重述相同限制。
 
 若專案將該檢查列為必要關卡，未完成時必須回報阻擋。不得把人工檢查說成工具檢查成功。
+
+## 資料來源
+
+完整書目見[參考文獻清單](https://github.com/monkey1wizard/clear-writing-kit/blob/main/docs/references.md)。
+
+- 工具參數與功能：`text`、`content_type`、`fix_mode`、`detect_style`、`verify`、`translationese_domain` 與 `glossary` 等參數，以及修正模式的行為，依據 `[ZhtwMCP]`。本專案不指定該工具的版本。使用前仍須讀取宿主提供的實際參數結構。
+- 本專案自訂的規則：本檔其餘內容，包括尋找工具、交付前檢查、修正輪數上限、判讀方式、外部驗證限制，以及工具不可用時的回報方式。

@@ -41,3 +41,15 @@ If a required document check remains blocked, report the location and unresolved
 If a tool is absent, denied, misconfigured, or times out, report that observed state. Perform the manual language checks. Do not report missing execution as a pass. Disclose unchanged degradation once, not in every progress message.
 
 Record evidence when the task requires it. Do not add a self-evaluation or tool-success ritual to every answer. Checking an already sent message cannot establish a pre-delivery check.
+
+## Sources
+
+The full entries are in the [reference list](https://github.com/monkey1wizard/clear-writing-kit/blob/main/docs/references.md).
+
+- Checker behavior: profiles, the CLI, the MCP server, and the `lintText` and `lintFile` tools follow `[Textlint1580]`.
+- Japanese preset behavior follows `[TextlintRulePresetJaTechnicalWriting1202]`.
+- English style rule behavior follows `[TextlintRuleWriteGood200]`.
+- Zero-width space rule behavior follows `[TextlintRuleNoZeroWidthSpaces101]`.
+- Project-authored rules: tool discovery, profile selection, the review and recheck limits, and the reporting rules.
+
+These software citations describe tool behavior. They are not the source of the rule text.
