@@ -78,14 +78,14 @@ None.
 
 ## Status
 
-Workflow: IMPLEMENT (complete)
+Workflow: FINALIZED
 Step: 2 of 2
-Last activity: 2026-10-08 — T-02 projections regenerated, TP-04 and TP-05 recorded
-Next step: orchestrator test, review, and closeout
-Current Task: T-02
+Last activity: 2026-10-08 — independent test PASS and audit CLEAR (agy gemini-3.8-flash via gal dispatch); finalized on main
+Next step: none — plan closed
+Current Task: —
 Task Base Commit: ccc542e
 T-01 Commit: 774ba50
-Task Final Commit: recorded by the T-02 commit that contains this line
+Task Final Commit: 0f08efb
 Test Retry Count: 0
 Review Retry Count: 0
 
@@ -101,7 +101,11 @@ Review Retry Count: 0
 
 ### Handoff Notes
 
-Human-approved implementation contract generated from the reconciled English semantic draft. This plan follows `docs-apa-references` because both edit `docs/references.md` and the ja-JP `Sources` section.
+Finalized 2026-10-08 on `main` at the owner's direction (orchestrator-run pipeline logic without `gal pipeline`; no pipeline receipts were produced).
+- Independent test (agy `gemini-3.8-flash`): TP-01 to TP-05, ten checker probes, budgets, and baseline markers passed. `VERDICT: PASS`.
+- Independent audit (agy `gemini-3.8-flash`): no findings; clean-clone `npm ci` links the tracked rule source, so `dist/` is reproducible. `VERDICT: CLEAR`.
+- Unverified: the publisher 文化庁 in `[Bunka2022]` rests on the hosting domain; the bracketed English title is a project translation.
+- Not done: no last-good git tag was created.
 
 ## Tasks
 
