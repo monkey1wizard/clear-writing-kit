@@ -6,7 +6,6 @@
 
 | Plan | File | Plan Phase | Last Activity |
 | --- | --- | --- | --- |
-| feat-ja-ai-tone-rules | `.dev/plans/feat-ja-ai-tone-rules.prompt.md` | prompt-ready | 2026-10-08 |
 
 <!-- When more than one plan is active, table order is priority order. `/gal whats-next` and `/gal wrap-up` use the first non-terminal row; if all rows are terminal, they fall back to the first row. -->
 
@@ -16,8 +15,8 @@
 
 | Date | Plan | Landing | Result |
 | --- | --- | --- | --- |
+| 2026-10-08 | feat-ja-ai-tone-rules | `db9992c` | FINALIZED; independent test PASS; audit fix re-audited CLEAR; Japanese naturalness unreviewed |
 | 2026-10-08 | feat-ja-report-style | `0f08efb` | FINALIZED; independent test PASS; audit CLEAR; dist and projections synced |
-| 2026-10-08 | docs-apa-references | `2ff7b2e` | FINALIZED; independent test PASS; audit CLEAR; generated projections synced |
 
 ## Follow-ups
 
