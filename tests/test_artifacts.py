@@ -78,7 +78,7 @@ JA_STYLE_SIGNAL_CATEGORIES = ("比喩動詞", "英語の直訳構文", "空疎�
 INSTRUCTION_BODY_SHA256 = {
     "web-instructions/chatgpt.md": "56c9e4242b176484e82342bcdf83cbffc5ced60d2fb57c094de10d053fb605d3",
     "web-instructions/gemini.md": "fd174653e95216f66146c4c968a3c3ee82a4af4f20393bb6775cf0cb3c327519",
-    "install/agents-block.md": "a65abcc9b87088423dd65fb0cbeecb8a5277429e887a598f2151ead8c1e3007e",
+    "install/agents-block.md": "bdc148f07a7d75f521af418ec051345281050f9e57c84e8e91bedecc62cf3fc8",
 }
 
 
@@ -310,8 +310,7 @@ class Artifacts(unittest.TestCase):
         for expected in (
             "2.0.0", "coding-agent-writing", "lintText",
             "`node`", "`deno run -A`", "`bun`",
-            "`<runtime command> <home>/.clear-writing-kit/cwk.mjs check`",
-            "Resolve `<home>`", persistent_core(ROOT),
+            "`cwk.mjs check`", persistent_core(ROOT),
         ):
             self.assertIn(expected, block)
         self.assertNotRegex(block, r"[A-Za-z]:[/\\]")
@@ -353,6 +352,19 @@ class Artifacts(unittest.TestCase):
 
     def test_committed_agents_block_matches_generated_content(self):
         self.assertEqual((ROOT / "install/agents-block.md").read_text(encoding="utf-8"), render_agents_block())
+
+    def test_agents_block_ccync_contract(self):
+        committed = (ROOT / "install/agents-block.md").read_bytes()
+        with tempfile.TemporaryDirectory() as d:
+            target = Path(d) / "agents-block.md"
+            cmd = [sys.executable, str(ROOT / "scripts/generate-agents-block.py"), "--output", str(target)]
+            subprocess.run(cmd, check=True, capture_output=True)
+            self.assertEqual(target.read_bytes(), committed)
+        block = committed.decode("utf-8")
+        self.assertEqual(block, render_agents_block())
+        self.assertNotIn(".clear-writing-kit", block)
+        self.assertLess(len(committed), AGENTS_BLOCK_BUDGET)
+        self.assertEqual(AGENTS_BLOCK_BUDGET, 2048)
 
     def test_repository_branding_preserves_distinct_skill_names(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")

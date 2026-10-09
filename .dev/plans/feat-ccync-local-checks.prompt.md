@@ -98,12 +98,12 @@ None.
 ## Status
 
 Workflow: IMPLEMENT
-Step: 1 of 5
+Step: 2 of 5
 Last activity: 2026-10-10. T-01 converged at 71f9028 (test retry 1 PASS, audit APPROVE)
-Next step: start T-02
-Current Task: —
-Task Base Commit: 3c68d3aed8a23e3ae4316b8c0fdabe12b8becdd6
-Task Final Commit: 71f902896d4a2fcbe7fb2604ce0e706bccd18f0d
+Next step: implement T-02
+Current Task: T-02
+Task Base Commit: 290b5dcd20b671a824614a8a4a9aa95520f418a6
+Task Final Commit: —
 Test Retry Count: 0
 Review Retry Count: 0
 
@@ -188,7 +188,7 @@ For headless execution, every covering row also requires executor log terminal s
 Run: 2026-10-09 (clock rolled to 2026-10-10 during the run)
 Mode: spec
 Browser Route: No runnable browser route (not applicable; no browser surface)
-Task Final Commit: 71f902896d4a2fcbe7fb2604ce0e706bccd18f0d (task base 3c68d3a); HEAD unchanged after the run
+Task Final Commit: — (task base 3c68d3a); HEAD unchanged after the run
 Total: 5 | Passed: 5 | Failed: 0 | Skipped: 0 (raw command outcomes; TP-05 is judged FAIL on proof adequacy, see Findings)
 
 | TP | Command | Result | Evidence |
@@ -218,7 +218,7 @@ Verdict: FAIL
 Run: 2026-10-10
 Mode: spec
 Browser Route: No runnable browser route (not applicable; no browser surface)
-Task Final Commit: 71f9028 (task range 3c68d3a..71f9028); HEAD stayed at 71f9028 during and after the run
+Task Final Commit: — (task range 3c68d3a..71f9028); HEAD stayed at 71f9028 during and after the run
 Total: 5 | Passed: 5 | Failed: 0 | Skipped: 0
 
 | TP | Command | Result | Evidence |
