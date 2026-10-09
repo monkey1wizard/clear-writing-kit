@@ -99,28 +99,30 @@ None.
 
 Workflow: IMPLEMENT
 Step: 1 of 5
-Last activity: 2026-10-09. Prompt refreshed from approved source plan
-Next step: start T-01
-Current Task: T-01
+Last activity: 2026-10-10. T-01 converged at 71f9028 (test retry 1 PASS, audit APPROVE)
+Next step: start T-02
+Current Task: —
 Task Base Commit: 3c68d3aed8a23e3ae4316b8c0fdabe12b8becdd6
-Task Final Commit: c0a5d15d61f687e26fa7fbd7ddc17766958ac60e
-Test Retry Count: 1
+Task Final Commit: 71f902896d4a2fcbe7fb2604ce0e706bccd18f0d
+Test Retry Count: 0
 Review Retry Count: 0
 
 ### Deviations
 
 | Step | Plan Said | Actually Did | Why |
 | --- | --- | --- | --- |
-| Preflight | Task bullets `- [ ] T-NN: ...` | Changed the separator to `- [ ] T-NN — ...` | `pipeline-preflight` check `tasks-well-formed` failed on the colon form. Task text is unchanged. |
+| Preflight | Task bullets `- [ ] T-NN: ...` | Changed the separator to `- [ ] T-NN — ...` | `pipeline-preflight` check `tasks-well-formed` failed on the colon form. Task text is unchanged. The source plan received the same separator change at T-01 convergence. |
 | T-01 test onward | Phases route through `config.json#executorRouting` (codex coder, agy tester/auditor) | T-01 implement ran on codex. T-01 test and every later implement, fix, test, and audit phase run as Claude subagents (`gal:golem-implementer`, `gal:golem-tester`, `gal:golem-auditor`). | Owner authorized non-standard routing on 2026-10-09. Same runtime as the orchestrator, so Verification Independence: DEGRADED_SAME_RUNTIME. |
 
 ### Handoff Notes
 
 Prompt refreshed after final architecture verdict APPROVE, human approval, and passing planning and refining receipts. Existing execution state was preserved. No implementation task has started.
 
+- T-01 audit FINDING-001 (medium, non-blocking): ccync 0.1.5 renders the Claude host vector as `powershell -NoProfile -Command "... & 'node' '<cache>/dist/cwk.mjs' 'mcp'"`. Codex, Copilot, and agy render `node` plus `[<cache>/dist/cwk.mjs, mcp]`, and opencode renders `[node, <cache>/dist/cwk.mjs, mcp]`. OA-02 expects a direct `node` vector in every native config, so the Claude row will not match as written. T-04 must document the Claude launcher as ccync-owned behavior. The owner decides whether OA-02 accepts it. FINDING-002 to FINDING-004 are low and open.
+
 ## Tasks
 
-- [ ] T-01 — Add the ccync-only MCP declaration and executable contract.
+- [x] T-01 — Add the ccync-only MCP declaration and executable contract. *(71f9028)*
   - **Files**: `mcp.json`, `tests/test_artifacts.py`, `writing/test/checkers.test.cjs`, `writing/integration/ccync-projection.test.cjs`.
   - **Dependencies**: None.
   - **Change**: Declare only `clear-writing-kit-textlint` with `node` and `${PLUGIN_ROOT}/dist/cwk.mjs mcp`. Add guards that forbid root `plugin.json`, root `.mcp.json`, and MCP declarations in both compatibility manifests. Reuse the MCP client for stdio tool-list and three-language probes. Add a named ccync CLI integration test outside `writing/test/*.test.cjs`. Use a fresh home for successful five-host projection and separate fresh homes with foreign vectors preseeded before ccync ownership for byte-preserving collision checks. Require explicit `CCYNC_BIN`.
@@ -186,7 +188,7 @@ For headless execution, every covering row also requires executor log terminal s
 Run: 2026-10-09 (clock rolled to 2026-10-10 during the run)
 Mode: spec
 Browser Route: No runnable browser route (not applicable; no browser surface)
-Task Final Commit: c0a5d15 (task base 3c68d3a); HEAD unchanged after the run
+Task Final Commit: 71f902896d4a2fcbe7fb2604ce0e706bccd18f0d (task base 3c68d3a); HEAD unchanged after the run
 Total: 5 | Passed: 5 | Failed: 0 | Skipped: 0 (raw command outcomes; TP-05 is judged FAIL on proof adequacy, see Findings)
 
 | TP | Command | Result | Evidence |
@@ -211,6 +213,46 @@ Verdict: FAIL
 - Codex collision path through the neutral-prefix probe. The TOML seed was not reproduced outside the committed test, which passed for all five hosts.
 - Owner Acceptance OA-01..OA-03: these need fresh host sessions and remain out of scope for T-01 automated testing.
 
+### [T-01] 2026-10-10 (retry 1)
+
+Run: 2026-10-10
+Mode: spec
+Browser Route: No runnable browser route (not applicable; no browser surface)
+Task Final Commit: 71f9028 (task range 3c68d3a..71f9028); HEAD stayed at 71f9028 during and after the run
+Total: 5 | Passed: 5 | Failed: 0 | Skipped: 0
+
+| TP | Command | Result | Evidence |
+| --- | --- | --- | --- |
+| TP-01 | `python -m unittest tests.test_artifacts.Artifacts.test_ccync_mcp_manifest_contract -v` | PASS | `python` on PATH is the WindowsApps stub. I ran the same `-m unittest` invocation with `%APPDATA%\uv\python\cpython-3.13.16-windows-x86_64-none\python.exe`: `Ran 1 test`, `OK`, exit 0. |
+| TP-02 | `python -m unittest tests.test_artifacts.Artifacts.test_ccync_mcp_native_loader_isolation -v` | PASS | Same uv CPython 3.13.16 substitution: `Ran 1 test`, `OK`, exit 0. |
+| TP-03 | `node --test --test-name-pattern "bundled MCP contract" writing/test/checkers.test.cjs` | PASS | `✔ bundled MCP contract (307.4872ms)`; tests 1, pass 1, fail 0, skipped 0; exit 0. |
+| TP-04 | `node --test --test-name-pattern "bundled MCP language probes" writing/test/checkers.test.cjs` | PASS | `✔ bundled MCP language probes (483.5976ms)`; tests 1, pass 1, fail 0, skipped 0; exit 0. The ja-JP probe is now the OA-03 text `処理は完了していません。` (checkers.test.cjs:261), which closes retry-0 Finding 2. |
+| TP-05 | `$env:CCYNC_BIN='C:\Users\leetz\bin\ccync.exe'` (ccync 0.1.5); `node --test --test-name-pattern "ccync projects local clear-writing-kit MCP" writing/integration/ccync-projection.test.cjs` | PASS | Ran the test with CCYNC_BIN set: `✔ ccync projects local clear-writing-kit MCP (8061.9267ms)`; tests 1, pass 1, fail 0, skipped 0; exit 0. Ran it again with CCYNC_BIN unset: the test fails and does not skip (`fail 1`, `skipped 0`, `AssertionError: CCYNC_BIN must name an installed ccync executable`, exit 1). The collision assertion is no longer vacuous; mutation evidence is below. Real-home `.codex/config.toml`, `.copilot/mcp-config.json`, `.gemini/config/mcp_config.json`, `%APPDATA%\opencode\opencode.json`, and the `~/.ccync` mtime have identical SHA-256 and mtime before and after the run. `~/.claude.json` changed during the run, but it contains no `clear-writing-kit-textlint` (0 occurrences). The change comes from the live Claude Code session rewriting its own state file, not from the test. |
+
+Verdict: PASS
+
+#### TP-05 non-vacuity verification (retry-0 Finding 1)
+
+Code check: the collision temp prefix is now `cwk-ccync-${host.name}-seeded-` (ccync-projection.test.cjs:149). The test now asserts `synced.status !== 0` (:159). It also requires one output line that contains `${host.name}/clear-writing-kit-textlint` and matches `/collid|collision/i` (:160-162). Neither the temp path nor the cache path can contain a `<host>/clear-writing-kit-textlint` segment. On the success path, `base` is removed from the output before the `/unresolved|unreadable|collision|collide/i` check runs (:133-134).
+
+Mutation run: I made scratch copies of the test with ROOT pinned to the repo. Each copy wraps `run()` so that it rewrites a failing `sync` result. No repo file was modified. Results with ccync 0.1.5:
+- CONTROL (identity): pass 1, exit 0. All five hosts emit a real `<host>/clear-writing-kit-textlint` collision line and fail sync.
+- A (collision lines removed): fail 1, with `claude renderer must report the claude/clear-writing-kit-textlint collision`.
+- B (sync status forced to 0): fail 1, with `claude sync must fail when a foreign registration owns clear-writing-kit-textlint`.
+- C (silent skip, status 1, output only echoes a path containing `collision`): fail 1, with `must report the ... collision`. The retry-0 vacuous pattern no longer passes.
+- D (collision line for the wrong host token): fail 1, with `must report the ... collision`.
+
+#### Findings
+
+None blocking. Two retry-0 notes still apply:
+- `tests/test_artifacts.py:137` (TP-02, informational): `r"mcp(?:servers|\.json)?"` matches the same strings as a plain `mcp` substring search.
+- The literal `python` command cannot run on this machine because of the WindowsApps stub. TP-01 and TP-02 evidence comes from uv CPython 3.13.16 running the same `-m unittest` invocation.
+
+#### Not Tested
+
+- The mutants exercised the shared collision predicate on the first host (claude) only. Collision evidence for the other four hosts comes from the unmutated CONTROL and TP-05 runs, which passed for all five hosts.
+- Owner Acceptance OA-01..OA-03 need fresh host sessions and are outside T-01 automated testing.
+
 ## Review Results
 
 ### Architecture Review
@@ -228,6 +270,68 @@ Not requested. The change has no user interface.
 ### Engineering Review
 
 CLEAR. Five atomic tasks and 18 executable probes cover declaration boundaries, real ccync rendering, MCP runtime behavior, direct-installer ownership, apply-time drift, apply-uninstall serialization, error cleanup, generated artifacts, durable documentation, and adapter regeneration. TP-10 isolates mutual exclusion and stale-lock refusal. TP-11 separately proves error-path cleanup. Missing or `NotRun` evidence fails. Planning and refining receipts passed.
+
+### [T-01] Audit 2026-10-10
+
+**Date:** 2026-10-10
+**Scope:** `git diff 3c68d3a 71f9028 -- mcp.json tests/test_artifacts.py writing/test/checkers.test.cjs writing/integration/ccync-projection.test.cjs` (HEAD `71f9028`, unchanged by this audit)
+**Findings:** 4 total: 0 critical, 0 high, 1 medium, 3 low
+
+Verdict: APPROVE
+
+Security finding: none confirmed. One low-severity defensive hardening note (FINDING-002) concerns environment isolation for future ccync versions. It is not exploitable with ccync 0.1.5.
+Protected Path finding: none. T-01 touched only `mcp.json`, `tests/test_artifacts.py`, `writing/test/checkers.test.cjs`, `writing/integration/ccync-projection.test.cjs`, and `.dev/` bookkeeping. No file under `skills/coding-agent-writing/`, `web-skills/web-answer-writing/`, `src/`, `scripts/artifacts.py`, `writing/okf.cjs`, generated outputs, or `dist/` changed.
+
+#### Summary
+
+`mcp.json` matches R2 and R4 exactly. It has one server, `clear-writing-kit-textlint`, with literal `node` and ordered args `${PLUGIN_ROOT}/dist/cwk.mjs`, `mcp`, and TP-01 enforces this with full-dict equality. The R3 guard is sound. Root `plugin.json` and `.mcp.json` are asserted absent. Both `.claude-plugin/plugin.json` and `.codex-plugin/plugin.json` are rejected on any case-insensitive `mcp` substring, which is stricter than required. TP-03 and TP-04 reuse `mcpClient`, which has a 20 s per-request timeout, so `finally { server.child.kill(); }` always runs and no child process outlives a hang. The probes cannot pass on an empty or error response because they assert `!isError`, nonempty findings, and the named `ruleId`. The ccync integration test sits outside the default glob (`writing/package.json` runs `node --test test/*.test.cjs`). It fails rather than skips when `CCYNC_BIN` is absent, spawns without a shell, uses `mkdtemp` bases removed in `finally`, and excludes `.git`, `.dev`, `node_modules`, `build`, `__pycache__`, and `.pytest_cache` from the snapshot. No tracked file is lost to that filter. Home isolation holds for ccync 0.1.5. A scan of the binary shows that it resolves state and host paths only from `USERPROFILE` and `APPDATA`, and `HOME` appears only in its cargo-install detection. An isolated probe that I ran confirmed that all five host files and the cache resolve under the temp home. Snapshot cost is about 26 MB per copy (about 25 MB is `dist/`, mostly the kuromoji dictionary), copied 6 times plus ccync cache copies, and the measured run time is about 8 s. That cost is acceptable for an opt-in integration test and is not a finding. No N+1, unbounded-load, injection, or shell-spawn issue was found.
+
+#### Open Findings
+
+**[MEDIUM] FINDING-001 (NON-BLOCKING): ccync projection test accepts any wrapper around `node`. Claude is actually rendered through a PowerShell launcher.**
+- File: `writing/integration/ccync-projection.test.cjs:79-89` (substring checks at `:81-82`)
+- Evidence: `assertResolvedVector` only checks that the stringified vector contains `node`, contains `mcp`, has no `${PLUGIN_ROOT}`, and has exactly one cache `dist/cwk.mjs` path. I ran an isolated probe in a `mkdtemp` home with ccync 0.1.5 and the same setup/add/sync steps. Codex, Copilot, and agy render `command: "node"` with args `[<cache>/dist/cwk.mjs, "mcp"]`. Opencode renders `command: ["node", <cache>/dist/cwk.mjs, "mcp"]`. Claude renders `{"command":"powershell","args":["-NoProfile","-Command","$env:PLUGIN_DATA = '…'; $env:PLUGIN_ROOT = '…'; & 'node' '…/dist/cwk.mjs' 'mcp'"]}`. The test passes on this launcher vector, and neither the test nor `## Risks` records that ccync uses this launcher.
+- Failure scenario: a future ccync that renders a launcher or a runtime fallback, for example `cmd /c node … || npx …`, for any host would still pass TP-05. R4's "no launcher or runtime fallback" property would then be lost silently at the projected host, and R8's "resolved command and arguments" evidence would not detect it. Today's Claude projection also depends on `powershell` being on the host's PATH, which is the same GUI-PATH class of risk already listed for `node`.
+- Recommended fix: assert exact per-host vectors. Use `command === "node"` and `args` deep-equal to `[payload, "mcp"]` for codex, copilot, and agy. Use `command` deep-equal to `["node", payload, "mcp"]` for opencode. Pin the Claude PowerShell form exactly, ending in `& 'node' '<payload>' 'mcp'`, and record the Claude launcher in `## Risks` or `docs/verification.md` (T-04) as ccync-owned behavior.
+- Confidence: 9/10
+
+**[LOW] FINDING-002 (NON-BLOCKING): `isolatedEnv` inherits every host-home override from the developer environment.**
+- File: `writing/integration/ccync-projection.test.cjs:26-35`
+- Evidence: the function spreads `process.env` and overrides only `HOME`, `USERPROFILE`, `APPDATA`, `LOCALAPPDATA`, and `XDG_CONFIG_HOME`. It does not override or remove `HOMEDRIVE`/`HOMEPATH`, `XDG_DATA_HOME`, `XDG_STATE_HOME`, `XDG_CACHE_HOME`, `CODEX_HOME`, `CLAUDE_CONFIG_DIR`, `COPILOT_HOME`, or `OPENCODE_CONFIG*`. ccync 0.1.5 reads none of these, and none is set on this machine, so the test is safe today.
+- Failure scenario: if a future ccync, or a host CLI that ccync spawns, honours one of these variables while a developer has it set, the test writes to the real host configuration. The test then fails because the expected temp file is missing, but only after the real configuration has already changed.
+- Recommended fix: delete the known host-home variables from the child env, or set them under `home`. Optionally assert before the first `ccync` call that no inherited variable resolves outside `base`.
+- Confidence: 8/10
+
+**[LOW] FINDING-003 (NON-BLOCKING): the R3 guard does not cover marketplace manifests.**
+- File: `tests/test_artifacts.py:134-137`
+- Evidence: the guard checks only the two `plugin.json` files. `.claude-plugin/marketplace.json` and `.agents/plugins/marketplace.json` are also plugin-loader inputs. A Claude marketplace plugin entry can carry manifest fields such as `mcpServers` inline. Both marketplace files are MCP-free today.
+- Failure scenario: an inline `mcpServers` entry added to a marketplace plugin entry would make Claude load an MCP server natively while TP-02 still passes.
+- Recommended fix: add both marketplace files to the same lowercase `mcp`-substring loop.
+- Confidence: 8/10
+
+**[LOW] FINDING-004 (NON-BLOCKING): `initializeMcp` was added, but the identical inline sequence remains.**
+- File: `writing/test/checkers.test.cjs:192-195` versus `:204-205` and `:222-223`
+- Evidence: the two pre-existing MCP tests still repeat the same `initialize` request and `notifications/initialized` write.
+- Failure scenario: a future protocol-version bump updates the helper but misses the two inline copies.
+- Recommended fix: call `initializeMcp(server)` in the two existing tests.
+- Confidence: 9/10
+
+#### Notes (outside the formal findings)
+
+- TP-03 and TP-04 launch the bundle with `process.execPath`, not the literal `node` from `mcp.json`. The literal vector is proven only by TP-01. This is acceptable under the current TP wording.
+- Two fixed-name directories, `%TEMP%\cwk-ccync-experiment` and `%TEMP%\cwk-ccync-probe`, dated 2026-10-09 23:52, are leftovers from earlier manual probes, not from the committed test, which uses `mkdtemp` and removes its directory in `finally`. They can be deleted by hand.
+- My own probe used a scratch copy of the test with `ROOT` pinned to the repo and a `mkdtemp` home. It removed its temp base and the scratch copy. No tracked file was edited.
+
+#### Remediation Tracking
+
+| Finding | Severity | Blocking | Status |
+| --- | --- | --- | --- |
+| FINDING-001 | MEDIUM | NON-BLOCKING | OPEN |
+| FINDING-002 | LOW | NON-BLOCKING | OPEN |
+| FINDING-003 | LOW | NON-BLOCKING | OPEN |
+| FINDING-004 | LOW | NON-BLOCKING | OPEN |
+
+<!-- AUDIT_REVIEW: CLEAR -->
 
 ## Debug Log
 

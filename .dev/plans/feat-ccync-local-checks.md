@@ -413,7 +413,7 @@ parsed result object 或指定的 empty diff。只有 PASS label 而沒有上述
 
 ## Tasks
 
-- [ ] T-01: 新增 ccync-only MCP 定義與 executable contract。
+- [x] T-01 — 新增 ccync-only MCP 定義與 executable contract。 *(71f9028)*
   - **Files**：`mcp.json`、`tests/test_artifacts.py`、
     `writing/test/checkers.test.cjs`、
     `writing/integration/ccync-projection.test.cjs`。
@@ -432,7 +432,7 @@ parsed result object 或指定的 empty diff。只有 PASS label 而沒有上述
     可觀察的 tool list `[lintText]`，以及具名 request 的非空 findings
     包含指定 rule ID。這些測試也必須在發布前證明實際 ccync manifest
     selection 與 placeholder expansion 會產生 5 個預期的 native vector。
-- [ ] T-02: 從產生的 agents block 刪除無效 checker fallback。
+- [ ] T-02 — 從產生的 agents block 刪除無效 checker fallback。
   - **Files**：`scripts/artifacts.py`、`install/agents-block.md`、
     `tests/test_artifacts.py`。
   - **Dependencies**：T-01。兩個 task 都會修改 `tests/test_artifacts.py`，
@@ -442,7 +442,7 @@ parsed result object 或指定的 empty diff。只有 PASS label 而沒有上述
     保持不變。
   - **Acceptance**：TP-06 通過。產生結果完全相同、不含
     `.clear-writing-kit` checker path，且實測大小小於 2,048 bytes。
-- [ ] T-03: 在 direct installer 強制執行 one-owner MCP mutation safety。
+- [ ] T-03 — 在 direct installer 強制執行 one-owner MCP mutation safety。
   - **Files**：`src/install/plan.ts`、`src/install/apply.ts`、
     `src/install/uninstall.ts`、`src/install/lock.ts`、
     `writing/test/installer-registration.test.cjs`、`dist/cwk.mjs`。
@@ -467,7 +467,7 @@ parsed result object 或指定的 empty diff。只有 PASS label 而沒有上述
     behavior、error 後釋放 lock、direct lifecycle continuity、精確 spy 與
     write count，以及可重現的 `dist/`。TP-05 透過實際 ccync projection
     證明反向安裝順序的 collision。
-- [ ] T-04: 記錄兩種 installation ownership path。
+- [ ] T-04 — 記錄兩種 installation ownership path。
   - **Files**：`README.md`、`INSTALL.md`、`docs/installer.md`、
     `docs/verification.md`、`tests/test_artifacts.py`。
   - **Dependencies**：T-01, T-02, T-03.
@@ -481,7 +481,7 @@ parsed result object 或指定的 empty diff。只有 PASS label 而沒有上述
   - **Acceptance**：TP-14 在每份相關 durable document 找到相同的
     prerequisite、owner invariant、command、lock behavior、recovery warning
     與 acceptance limit。
-- [ ] T-05: 重新索引 durable docs 並重新產生 adapter guidance。
+- [ ] T-05 — 重新索引 durable docs 並重新產生 adapter guidance。
   - **Files**：`.dev/project.md`、`AGENTS.md`。
   - **Dependencies**：T-04.
   - **Change**：在 `.dev/project.md` 重新索引變更後的 durable installation
