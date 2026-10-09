@@ -130,7 +130,8 @@ test("ccync projects local clear-writing-kit MCP", { timeout: 900000 }, () => {
     const synced = run(ccync, ["sync", "--yes"], env);
     assert.equal(synced.status, 0, synced.output);
     const output = added.output + synced.output;
-    assert.doesNotMatch(output, /unresolved|unreadable|collision/i);
+    const pathFree = [base, base.replace(/\\/g, "/")].reduce((text, prefix) => text.split(prefix).join("<tmp>"), output);
+    assert.doesNotMatch(pathFree, /unresolved|unreadable|collision|collide/i, output);
     const payloads = HOSTS.map(host => assertResolvedVector(parseHostVector(home, host), home, host.name));
     assert.equal(new Set(payloads).size, 1, "all five hosts must use the same cache payload");
     const cacheRoot = path.dirname(path.dirname(payloads[0]));
@@ -145,9 +146,9 @@ test("ccync projects local clear-writing-kit MCP", { timeout: 900000 }, () => {
   }
 
   for (const host of HOSTS) {
-    const collisionBase = fs.mkdtempSync(path.join(os.tmpdir(), `cwk-ccync-${host.name}-collision-`));
+    const seededBase = fs.mkdtempSync(path.join(os.tmpdir(), `cwk-ccync-${host.name}-seeded-`));
     try {
-      const home = path.join(collisionBase, "home");
+      const home = path.join(seededBase, "home");
       const { env, source } = setup(ccync, home);
       const foreign = seedForeign(home, host);
       const before = fs.readFileSync(foreign.file);
@@ -155,10 +156,13 @@ test("ccync projects local clear-writing-kit MCP", { timeout: 900000 }, () => {
       assert.equal(added.status, 0, added.output);
       const synced = run(ccync, ["sync", "--yes"], env);
       const output = added.output + synced.output;
-      assert.match(output, /collision|conflict|foreign|unowned/i, `${host.name} renderer must report the collision: ${output}`);
+      assert.notEqual(synced.status, 0, `${host.name} sync must fail when a foreign registration owns ${SERVER_NAME}: ${output}`);
+      const evidenceToken = `${host.name}/${SERVER_NAME}`.toLowerCase();
+      const evidence = output.split(/\r?\n/).some(line => line.toLowerCase().includes(evidenceToken) && /collid|collision/i.test(line));
+      assert.ok(evidence, `${host.name} renderer must report the ${evidenceToken} collision: ${output}`);
       assert.deepEqual(fs.readFileSync(foreign.file), before, `${host.name} foreign registration bytes must remain unchanged`);
     } finally {
-      fs.rmSync(collisionBase, { recursive: true, force: true });
+      fs.rmSync(seededBase, { recursive: true, force: true });
     }
   }
 });

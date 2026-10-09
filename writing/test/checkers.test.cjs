@@ -258,7 +258,7 @@ test("bundled MCP language probes", { timeout: 60000 }, async () => {
     const probes = [
       { language: "en-US", text: "alpha; beta", ruleId: "prose-punctuation" },
       { language: "zh-TW", text: "alpha; beta", ruleId: "prose-punctuation" },
-      { language: "ja-JP", text: "本ツールは開発者向けだ。", ruleId: "ja-document-style" },
+      { language: "ja-JP", text: "処理は完了していません。", ruleId: "ja-document-style" },
     ];
     for (const probe of probes) {
       const response = await server.request("tools/call", {

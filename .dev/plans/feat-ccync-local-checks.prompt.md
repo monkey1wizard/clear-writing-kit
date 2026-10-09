@@ -103,8 +103,8 @@ Last activity: 2026-10-09. Prompt refreshed from approved source plan
 Next step: start T-01
 Current Task: T-01
 Task Base Commit: 3c68d3aed8a23e3ae4316b8c0fdabe12b8becdd6
-Task Final Commit: —
-Test Retry Count: 0
+Task Final Commit: c0a5d15d61f687e26fa7fbd7ddc17766958ac60e
+Test Retry Count: 1
 Review Retry Count: 0
 
 ### Deviations
@@ -112,6 +112,7 @@ Review Retry Count: 0
 | Step | Plan Said | Actually Did | Why |
 | --- | --- | --- | --- |
 | Preflight | Task bullets `- [ ] T-NN: ...` | Changed the separator to `- [ ] T-NN — ...` | `pipeline-preflight` check `tasks-well-formed` failed on the colon form. Task text is unchanged. |
+| T-01 test onward | Phases route through `config.json#executorRouting` (codex coder, agy tester/auditor) | T-01 implement ran on codex. T-01 test and every later implement, fix, test, and audit phase run as Claude subagents (`gal:golem-implementer`, `gal:golem-tester`, `gal:golem-auditor`). | Owner authorized non-standard routing on 2026-10-09. Same runtime as the orchestrator, so Verification Independence: DEGRADED_SAME_RUNTIME. |
 
 ### Handoff Notes
 
@@ -180,7 +181,35 @@ For headless execution, every covering row also requires executor log terminal s
 
 ## Test Results
 
-Not started.
+### [T-01] 2026-10-09
+
+Run: 2026-10-09 (clock rolled to 2026-10-10 during the run)
+Mode: spec
+Browser Route: No runnable browser route (not applicable; no browser surface)
+Task Final Commit: c0a5d15 (task base 3c68d3a); HEAD unchanged after the run
+Total: 5 | Passed: 5 | Failed: 0 | Skipped: 0 (raw command outcomes; TP-05 is judged FAIL on proof adequacy, see Findings)
+
+| TP | Command | Result | Evidence |
+| --- | --- | --- | --- |
+| TP-01 | `python -m unittest tests.test_artifacts.Artifacts.test_ccync_mcp_manifest_contract -v` | PASS | `python` on PATH is the Microsoft Store stub ("Python was not found"). Ran the same module invocation with uv CPython 3.13.16 (`%APPDATA%\uv\python\cpython-3.13.16-windows-x86_64-none\python.exe -m unittest ...`): `test_ccync_mcp_manifest_contract ... ok`, `Ran 1 test`, `OK`. The test asserts full-dict equality, so the name, `node`, and the ordered args are exact. |
+| TP-02 | `python -m unittest tests.test_artifacts.Artifacts.test_ccync_mcp_native_loader_isolation -v` | PASS | Same interpreter substitution. `test_ccync_mcp_native_loader_isolation ... ok`, `Ran 1 test`, `OK`. Root `plugin.json` and `.mcp.json` are absent. Neither `.claude-plugin/plugin.json` nor `.codex-plugin/plugin.json` contains "mcp". |
+| TP-03 | `node --test --test-name-pattern "bundled MCP contract" writing/test/checkers.test.cjs` | PASS | `✔ bundled MCP contract (254.722ms)`; tests 1, pass 1, fail 0, skipped 0. The test deep-equals the tool names against `["lintText"]` after `initialize` and `notifications/initialized`. |
+| TP-04 | `node --test --test-name-pattern "bundled MCP language probes" writing/test/checkers.test.cjs` | PASS | `✔ bundled MCP language probes (571.7678ms)`; tests 1, pass 1, fail 0, skipped 0. Each probe asserts `!isError`, a nonempty `structuredContent.findings`, and the named `ruleId`. |
+| TP-05 | `$env:CCYNC_BIN='C:\Users\leetz\bin\ccync.exe'` (ccync 0.1.5); `node --test --test-name-pattern "ccync projects local clear-writing-kit MCP" writing/integration/ccync-projection.test.cjs` | FAIL (proof gap; command passed) | Command: `✔ ccync projects local clear-writing-kit MCP (7858.881ms)`; tests 1, pass 1, skipped 0. With CCYNC_BIN unset, the test fails rather than skips: `fail 1`, `AssertionError: CCYNC_BIN must name an installed ccync executable` at ccync-projection.test.cjs:20, exit 1. `writing/package.json:10` runs `node --test test/*.test.cjs`, so `writing/integration/` is not discovered. The real-home host files (`.claude.json`, `.codex/config.toml`, `.copilot/mcp-config.json`, `.gemini/config/mcp_config.json`, `%APPDATA%\opencode\opencode.json`) and the `~/.ccync` mtime have the same SHA-256 and mtime before and after the run. The collision assertion does not prove that a collision was reported (Finding 1). |
+
+Verdict: FAIL
+
+#### Findings
+
+1. `writing/integration/ccync-projection.test.cjs:148` and `:158` (TP-05, high): the collision-report assertion is vacuous. The collision home is created under the `mkdtemp` prefix `cwk-ccync-${host.name}-collision-`. ccync 0.1.5 echoes absolute host-file paths in its `sync` output, for example `MCP host files (may be written...)` followed by `<base>\home\.claude.json`. The pattern `/collision|conflict|foreign|unowned/i` therefore matches the temp path even when ccync reports nothing. The test also ignores the `sync` exit status (`:156`). If ccync skipped the projection silently, the foreign bytes would stay unchanged and the test would still pass. As a result, "Every collision renderer reports the collision" is not proven. Today's ccync does report the collision correctly. Probes in isolated temp homes with a neutral `neutral-` prefix showed `ccync sync --yes => status 1` and `MCP projection failed: unowned MCP entries collide with managed servers: <host>/clear-writing-kit-textlint; live entries preserved` for claude, copilot, agy, and opencode, with the foreign bytes preserved. Codex was not probed separately. Suggested fix: use a neutral temp prefix, assert `synced.status !== 0`, and match the host-specific `${host.name}/${SERVER_NAME}` collision line.
+2. `writing/test/checkers.test.cjs:261` (TP-04, low, no functional mismatch): the ja-JP probe text `本ツールは開発者向けだ。` differs from the OA-03 text `処理は完了していません。`. Both texts produce `ja-document-style` through `writing/check.cjs` and `dist/cwk.mjs check` (`--language ja-JP --genre document`). OA-03 text: `1:9 error Use a plain-form sentence in Japanese documents. Preserve negation and uncertainty ja-document-style`. Committed text: `1:11 error Use the である form ...  ja-document-style`. Aligning the test text with OA-03 would make the automated evidence match the owner probe.
+3. `tests/test_artifacts.py:137` (TP-02, informational): `r"mcp(?:servers|\.json)?"` is equivalent to a plain `mcp` substring search, so the optional group has no effect. The guard is correct for R3 ("omit `mcpServers` and MCP references"), but it is broader than its form suggests. It would also reject a benign descriptive mention of "MCP" in a manifest description. This is not a defect against the TP row.
+4. Environment note (TP-01/TP-02): `python` resolves to the WindowsApps stub on this machine, so the literal command cannot run here. The results come from the same `-m unittest` invocation under uv CPython 3.13.16.
+
+#### Not Tested
+
+- Codex collision path through the neutral-prefix probe. The TOML seed was not reproduced outside the committed test, which passed for all five hosts.
+- Owner Acceptance OA-01..OA-03: these need fresh host sessions and remain out of scope for T-01 automated testing.
 
 ## Review Results
 
