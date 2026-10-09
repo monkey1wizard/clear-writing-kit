@@ -1,9 +1,9 @@
 <!-- gal:planning-authority
 semantic-draft: .dev/plans/feat-ccync-local-checks.en.md
 planLanguage: zh-TW
-draft-hash: 7f460abba0513cf2ab3928a2bcc6f12cd2be27a446ce05699591309521de95df
-rendered-source-hash: d97198de9fcbc91782960a2d32a5914f8f21418e36fbbdfe55b90bcc77cdf00a
-prompt-hash: 36aa6f14d55395c23cd5a1c3776825f558ffa5a64ca3876338b434e2504fa371
+draft-hash: 4c165a20a11e745fce01f52e72ae157a6efa762740e1043ff07e4222768fba2f
+rendered-source-hash: fedd9cc9378a92e19e6ab403f6754e8c3992b87f02b2032851bbf3af2f99ab72
+prompt-hash: 5c52a93711074d293a8e22d087a34d375e75a210f1192ccf56431100a5fba35c
 equivalence-verdict: EQUIVALENT
 -->
 
@@ -49,10 +49,17 @@ ccync 未管理同名 server 時，直接使用 `cwk install` 必須維持目前
 - 維持目前的 compatibility-package 結構。不得新增 portable root
   `plugin.json`。兩份 compatibility manifest 都不得參照 `mcp.json`。
 - 執行 `node ${PLUGIN_ROOT}/dist/cwk.mjs mcp`。必要 runtime 是 Node.js
-  20.18 或更新版本。不得新增多 runtime launcher。
+  20.18 或更新版本。不得新增多 runtime launcher 或 fallback。Runtime
+  缺少或版本太舊時，MCP process 無法初始化。各 host 如何顯示該 process
+  failure，不在本 repo 的控制範圍內。
 - 從常駐區塊刪除無效的固定路徑 CLI fallback。不得換成另一個推測路徑。
 - 所有未擁有、無法讀取或 fingerprint 不符的同名 live MCP entry 都視為
   conflict。Planning 必須回報。Apply 必須拒絕移除或取代。
+- Direct-installer mutation 必須共用一個獨占的
+  `~/.clear-writing-kit.lock`。Apply 必須在內部 `computePlan` 前取得 lock。
+  Uninstall 必須在讀取 manifest 前取得 lock。兩個 command 都必須持有到
+  最後一次 manifest save 或 removal，並在 `finally` path 釋放。競爭中的
+  lock 或 stale lock 都必須阻擋兩個 command，且不得修改任何狀態。
 
 ## Requirements
 
@@ -66,16 +73,25 @@ ccync 未管理同名 server 時，直接使用 `cwk install` 必須維持目前
   或 root `.mcp.json`。`.claude-plugin/plugin.json` 與
   `.codex-plugin/plugin.json` 都不得宣告 `mcpServers` 或參照 MCP
   manifest。此邊界變更時，測試必須失敗。
-- [ ] R-04 Host PATH 沒有 Node.js 20.18 或更新版本時，只有該 server
-  啟動失敗，且 host 必須顯示失敗。不得新增 launcher 或靜默 runtime fallback。
+- [ ] R-04 Root `mcp.json` 必須使用 literal `node` command，不得有 launcher
+  或 runtime fallback。Host PATH 沒有 Node.js 20.18 或更新版本時，MCP
+  process 無法初始化。自動化證據必須證明精確 command vector 且沒有
+  fallback。Host 如何顯示 process failure，不是 repo 可控制的 success
+  criterion。
 - [ ] R-05 常駐指令區塊不得包含固定的 `.clear-writing-kit` 檢查器路徑，
   且必須維持在 2,048 bytes 預算內。
 - [ ] R-06 同名 MCP registration 只能有一個 owner。`cwk install` 可以建立
   不存在的 entry、重建其 manifest 擁有但已不存在的 entry，或更新 live
   fingerprint 仍與 manifest 紀錄相同的 entry。Live entry 未被擁有、
   無法讀取或與紀錄 fingerprint 不同時，必須回報 conflict，且不得修改
-  MCP。Blocking conflict 不得產生可套用的 MCP plan hash。Apply 重新計算
-  狀態後，必須拒絕先前發出的 hash。
+  MCP。Blocking conflict 不得產生可套用的 MCP plan hash。Apply 與
+  uninstall 必須共用同一把 direct-installer 獨占 lock。Apply
+  必須在內部 `computePlan` 前取得 lock。Uninstall 必須在讀取 manifest 前
+  取得 lock。兩者都必須持有到最後一次 manifest save 或 removal。競爭中的
+  lock 或 stale lock 必須在任何 payload、manifest 或 MCP 修改前拒絕兩個
+  command。Apply 重新計算變更後的狀態時，必須拒絕先前發出的 hash。
+  最後一次 mutation 前重讀時已可見的外部變更必須阻擋。
+  本計畫不宣稱能序列化忽略 lock 且在該次重讀後才寫入的 manual writer。
 - [ ] R-07 單獨使用 `cwk install` 時，Claude 與 Codex registration 的
   install、verify、upgrade 與 uninstall 仍可運作。兩種 ccync 安裝順序都
   必須在 ownership conflict 安全失敗，不得移除或接管另一個 owner 的 entry。
@@ -85,11 +101,14 @@ ccync 未管理同名 server 時，直接使用 `cwk install` 必須維持目前
   涵蓋 5 個 host renderer，並證明 projection 成功與同名 collision 會安全失敗。
   Owner acceptance 必須在 5 個 fresh host session 驗證已發布的 pin。
   Missing、unreadable、skipped、成功案例中的 collision、runtime failure 或
-  `NotRun` 都算失敗。
+  `NotRun` 都算失敗。Installer 證據也必須證明 apply 與 uninstall 共用
+  lock、contention 會拒絕且不寫入、失敗 path 會釋放已取得的 lock，並證明
+  stale lock 在明確移除前會 fail closed。
 - [ ] R-09 更新 `README.md` 的英文、繁體中文與日文安裝路徑。在
   `INSTALL.md`、`docs/installer.md` 與 `docs/verification.md`
   區分 direct installer ownership 與 ccync-managed projection。Durable docs
-  更新後才重新索引 `.dev/project.md`，再重新產生 `AGENTS.md`。
+  必須記錄 lock contention 與保守的 stale-lock recovery。Durable docs 更新後
+  才重新索引 `.dev/project.md`，再重新產生 `AGENTS.md`。
 - [ ] R-10 `AGENTS.md`、agents block 與 `dist/` 只能透過各自的既有
   產生器重新產生。Agents-block generator 與 GAL adapter renderer
   必須維持為兩條獨立 projection path。
@@ -113,24 +132,24 @@ ccync projection
 ```
 
 ```text
-cwk install plans clear-writing-kit-textlint
+cwk install apply requested
   |
-  +-- live absent ------------------------------> create
+  +-- ~/.clear-writing-kit.lock exists --------> REFUSE, no writes
   |
-  +-- manifest owns, live absent --------------> recreate
-  |
-  +-- manifest owns, live == recorded
-  |     +-- live == planned --------------------> no-op
-  |     +-- live != planned --------------------> update
-  |
-  +-- no manifest owner ------------------------> CONFLICT, no mutation
-  +-- live unreadable --------------------------> CONFLICT, no mutation
-  +-- live != recorded manifest fingerprint ---> CONFLICT, no mutation
-  |
-  +-- plan hash issued, then live state changes
+  +-- apply or uninstall acquires shared exclusive lock
         |
-        v
-      apply recomputes state -------------------> CONFLICT, no mutation
+        +-- apply: internal computePlan
+        |     +-- live absent ------------------> create or recreate
+        |     +-- owned and unchanged ----------> no-op or update
+        |     +-- unowned/unreadable/drifted ---> CONFLICT, no mutation
+        |
+        +-- final manifest + live reread
+        |     +-- evidence changed -------------> CONFLICT, no mutation
+        |     +-- evidence unchanged -----------> mutate and save
+        |
+        +-- uninstall: read manifest, verify exact ownership, remove, save
+        |
+        +-- success or failure: finally release lock
 ```
 
 ## Candidate approaches
@@ -152,8 +171,9 @@ cwk install plans clear-writing-kit-textlint
   `writing/integration/ccync-projection.test.cjs`：驗證 bundled MCP
   protocol 與實際 ccync 5 host projection。External-CLI test 位於預設
   `writing/test/*.test.cjs` suite 以外。
-- `src/install/plan.ts`、`src/install/apply.ts`：建立 MCP ownership
-  狀態模型，並拒絕不安全的 update。
+- `src/install/plan.ts`、`src/install/apply.ts`、`src/install/uninstall.ts`、
+  `src/install/lock.ts`：建立 MCP ownership 狀態模型、共用 direct-installer
+  mutation lock，並拒絕不安全的 update。
 - `writing/test/installer-registration.test.cjs`：涵蓋 ownership 狀態、
   兩種安裝順序，以及 apply-time manifest 與 live-registration drift。
 - `dist/cwk.mjs`：installer 來源變更後重新產生。
@@ -183,6 +203,11 @@ cwk install plans clear-writing-kit-textlint
   manifest-owned 且 stale、manifest-owned 但 missing、unowned same-name、
   unreadable，以及 live fingerprint 與 manifest 紀錄不同。
 - 每個 conflict 都必須確認 plan 回報衝突，apply 未執行 MCP remove 或 add。
+- Apply 與 uninstall 各自持有獨占 installer lock 時，所有競爭中的 apply
+  或 uninstall 都必須在任何 write 或 MCP command 前拒絕。預先放入 stale
+  lock 時，兩個 command 都必須 fail closed。
+- Apply 或 uninstall 取得 lock 後注入 error。每個 error path 都必須釋放
+  lock，並保留預期的 error 前狀態。
 - 涵蓋先 ccync 再 `cwk install`，以及先 `cwk install` 再 ccync。
   第二個 owner 不得接管或靜默取代。
 - 重新產生 agents block。確認產生結果完全相同、不含固定
@@ -209,20 +234,23 @@ cwk install plans clear-writing-kit-textlint
 - 未來 Claude Code 可能新增 bare `mcp.json` discovery。Plugin schema
   變更時，freshness check 必須重新驗證原生 loader 行為。
 - 從 GUI 啟動的 host 可能沒有繼承含 Node.js 20.18 或更新版本的 PATH。
-  只讓該 host 啟動失敗是刻意設計，且失敗必須可見。
+  此時 direct `node` process 無法初始化。Repo 可以驗證 command 且沒有
+  fallback，但錯誤如何呈現由各 host 負責。
 - ccync 升級會改變 cache path。移除舊 cache 前，`ccync sync` 必須將 5 個
   host registration 全部改寫到新的 pinned root。
-- Install manifest 或 host 狀態可能在 plan 與 apply 間改變。每個 operation
-  在內部 `computePlan` 完成後及第一次修改 MCP 前，apply 必須同時重讀兩者。
-  先前 step 的 persistence 不得覆寫並行發生的 manifest drift。任一項 drift
-  都必須在 MCP remove 或 add 前阻擋操作。
+- 並行的 apply 與 uninstall 可能互相覆寫 manifest state，或讓另一方的
+  registration evidence 失效。共用 lock 會將配合此協定的 direct-installer
+  mutation，從各 command 的第一次 authoritative read 到最後一次 save 或
+  removal 全程序列化。Crash 可能留下 stale lock，系統必須 fail closed。
+  文件必須要求使用者先確認沒有執行中的 `cwk install apply` 或
+  `cwk install uninstall` process，才能移除 lock。
+- Manual 或 external writer 可能忽略 installer lock。Apply 必須在第一次
+  MCP mutation 前立即重讀 manifest 與 live registration，並拒絕當時已可見的
+  變更。本計畫不保證能阻擋最後一次重讀後才競爭寫入的 writer。
 
 ## Open Questions
 
 None.
-
-OQ-01 已決定刪除無效的固定路徑 fallback。OQ-02 已決定直接使用 Node.js
-20.18 或更新版本。OQ-03 已決定回報 ownership conflict，並拒絕 MCP 修改。
 
 ## Approach
 
@@ -245,11 +273,15 @@ OQ-01 已決定刪除無效的固定路徑 fallback。OQ-02 已決定直接使�
 ### Step 2：強制執行 installer MCP ownership
 
 - **Files**：`src/install/plan.ts`、`src/install/apply.ts`、
+  `src/install/uninstall.ts`、`src/install/lock.ts`、
   `writing/test/installer-registration.test.cjs`、`dist/cwk.mjs`。
 - **What**：使用 install manifest 作為 ownership 紀錄。拒絕 unowned、
-  unreadable 與 drifted 的同名 entry。每個 operation 在內部 `computePlan`
-  完成後及第一次執行 remove 或 add 前，立即重讀 manifest entry 與 live
-  registration。每次較早的 manifest save 都必須防止覆寫並行變更。
+  unreadable 與 drifted 的同名 entry。Apply 必須在內部 `computePlan` 前
+  取得共用的 `~/.clear-writing-kit.lock`。Uninstall 必須在讀取 manifest
+  前取得同一把 lock。兩者都必須持有到最後一次 manifest save 或 removal，
+  並在成功或 error 時透過 `finally` 釋放。競爭中的 lock 或 stale lock
+  必須拒絕且不得寫入。Apply 在第一次執行 remove 或 add 前，立即重讀
+  manifest entry 與 live registration，並拒絕當時已可見的外部變更。
   保留安全的 create、recreate、upgrade、verify 與 uninstall 行為。
 - **Verify**：Ownership state 與 install-order fixture 證明 conflict
   不會修改 MCP。既有 installer verification 維持通過。
@@ -259,8 +291,9 @@ OQ-01 已決定刪除無效的固定路徑 fallback。OQ-02 已決定直接使�
 - **Files**：`README.md`、`INSTALL.md`、`docs/installer.md`、
   `docs/verification.md`、`tests/test_artifacts.py`。
 - **What**：新增三語 ccync quick path。以明確的 direct-installer 與 ccync
-  ownership path 取代 installer-only 陳述。Owner acceptance 執行前，
-  保留目前未驗證 real-home 的說明。
+  ownership path 取代 installer-only 陳述。記錄 lock contention 與保守的
+  stale-lock recovery。Owner acceptance 執行前，保留目前未驗證 real-home
+  的說明。
 - **Verify**：Documentation contract tests 通過，且不會宣稱已執行
   real-home acceptance。
 
@@ -285,20 +318,26 @@ OQ-01 已決定刪除無效的固定路徑 fallback。OQ-02 已決定直接使�
 
 ### Architecture Review
 
-2026-10-09 的隔離 adversarial review 結論為 APPROVE。
+2026-10-09 隔離複審結論為 APPROVE。
 
-- ccync-only `mcp.json` 邊界解決原生 plugin discovery race。原因是 repo
-  沒有 portable root `plugin.json`、沒有 root `.mcp.json`，且
-  compatibility manifest 沒有 MCP reference。
-- Install manifest fingerprint 是 `cwk install` 擁有同名 live entry
-  的唯一證據。Planned vector 相同但沒有 manifest 證據時，仍視為 foreign
-  並阻擋。
-- Conflict 發生時，planning 不得提供可套用的 MCP plan hash。Apply 必須
-  重新計算狀態，且不得執行 MCP remove 或 add。
-- Runtime verification 必須證明 5 個 host 的 ccync ownership、共同的
-  pinned command vector、精確的 `lintText` 工具集合，以及三語 findings。
-  Collision、skip、unresolved、unreadable、Node 版本不足、啟動失敗、
-  finding 缺失與 `NotRun` 都算失敗。
+- Root `mcp.json` 維持 ccync-only。Boundary tests 會防止 compatibility
+  package 意外啟用原生 MCP discovery。
+- Direct-installer mutation 必須同時具備相符的 manifest ownership 與 live
+  fingerprint 證據。Unowned、unreadable 與 drifted state 都會 fail closed。
+- Apply 與 uninstall 共用 `~/.clear-writing-kit.lock`。兩者都會在第一次
+  authoritative read 前取得 lock，持有到最後一次 manifest save 或 removal，
+  並透過 `finally` 在成功或 error 時釋放。
+- TP-10 涵蓋 mutual exclusion 與 stale-lock behavior。TP-11 涵蓋兩條
+  mutation path 在取得 lock 後發生 error 時的釋放行為。
+- Literal `node` command 與沒有 fallback 是 repo 可控制的 runtime contract。
+  Host-specific error presentation 維持在 scope 外。
+- T-01 至 T-05 都是 atomic rollback unit。Dependency、protected-path scope、
+  generated artifact 與 test coverage 已對齊。
+
+殘餘風險已明列。Manual writer 可以忽略 lock，crash 可能留下 stale lock，
+手動移除 active lock 也可能破壞協定。Host plugin discovery 與 ccync cache
+path 仍是外部可變介面，必須依計畫執行 boundary tests、freshness check 與
+owner acceptance。
 
 <!-- ARCH_REVIEW: CLEAR -->
 
@@ -310,7 +349,7 @@ OQ-01 已決定刪除無效的固定路徑 fallback。OQ-02 已決定直接使�
 
 未要求。本變更沒有使用者介面。
 
-### Documentation Structure Review
+### Documentation Structure Review (steward)
 
 2026-10-09 scope review 後，結論為 CLEAR。
 
@@ -318,43 +357,28 @@ OQ-01 已決定刪除無效的固定路徑 fallback。OQ-02 已決定直接使�
   ccync-managed path，或與該路徑衝突。
 - `docs/verification.md` 繼續作為未測 real-home limit 的 authoritative
   reference。只有 owner acceptance 成功後才寫入證據。
-- Durable docs 先更新，再重新索引 `.dev/project.md`，最後 render
-  `AGENTS.md`。Agents-block generator 維持獨立。
+- Durable docs 必須納入 stale-lock recovery，接著重新索引
+  `.dev/project.md`，最後 render `AGENTS.md`。Agents-block generator
+  維持獨立。
 - R-01 至 R-10 不需要新的 repository-wide structure-map mechanism。
   該工作不納入本計畫，且必須另建計畫取得核准。
 
-### Adversarial Review
-
-2026-10-09 最後一次獨立複審結論為 APPROVE。初次結論為 REVISE。
-修訂後的計畫已處理 3 輪審查提出的 7 項 finding。
-
-- 具名 ccync integration test 會透過已安裝的 CLI 讀取實際 root
-  `mcp.json`、解析 `${PLUGIN_ROOT}`，並在發布前涵蓋 5 個 host renderer
-  與 fail-closed collision。
-- Apply-time ownership check 會同時重讀 manifest entry 與 live
-  registration。獨立 drift subcase 都要求 remove 與 add 次數為 0。
-- Owner acceptance 會把 `tools/list` 判定範圍限制在
-  `clear-writing-kit-textlint` server，不使用 host-wide tool inventory。
-- 本計畫已移除無直接關聯的 structure-map 初始化。
-- Projection 的成功與 collision 案例使用不同的 fresh isolated home。
-  Collision fixture 會在 ccync commit ownership 前建立。
-- Apply-time drift fixture 會在內部 `computePlan` 完成後及第一次 MCP
-  mutation 前注入，並保留並行變更後的 manifest bytes。
-- 明確執行的 ccync integration test 位於預設 Node test glob 以外。
-  `CCYNC_BIN` 無法解析到已安裝的 executable 時，測試必須失敗。
-
 ### Engineering Review
 
-2026-10-09 在 adversarial revision 前的結論為 CLEAR。修訂後的 task 與 test
-寫回後，最終 engineering receipt 必須再次通過。
+2026-10-09 完成雙視角 review，結論為 CLEAR。
 
-- T-01 至 T-05 仍是單一概念的 atomic change。Dependency 已明列，沒有
-  verification-only task，且 diagram 與修訂後的 scope 一致。
-- TP-01 至 TP-16 提供可執行 probe、具體 result 或 diff 證據、完整 task
-  coverage，並將實際 host mutation 獨立放在 owner-only acceptance。
-- Marker 寫入前的 refining receipt 已通過所有 substantive row。唯一
-  `not-run` row 是刻意尚未寫入的 clear marker。此 write-back 後，
-  最終 receipt 必須通過。
+- Structural lens：獨立 architecture review 判定 T-01 至 T-05 都是 atomic
+  rollback unit。Dependency、protected path、generated artifact 與 diagram
+  都符合 implementation scope。各 task 的 file blast radius 依序為 4、3、
+  6、5、2。T-03 的 6 file scope 仍具內聚性，因為 plan gate、兩條 mutation
+  path、共用 lock helper、test 與 generated bundle 必須一起落地。
+- Tester lens：TP-01 至 TP-18 各自指定可執行 command、可觀察 result 或
+  empty-diff proof。TP-10 單獨驗證 mutual exclusion 與 stale-lock refusal。
+  TP-11 另外驗證 error-path cleanup。每個 task 都有自動化 coverage。實際
+  real-home mutation 只保留在 3 個明確的 owner acceptance row。
+- 寫入 marker 前的 `gal refining-check` 已通過所有 substantive row。唯一的
+  `not-run` 是刻意尚未存在的 engineering marker。寫回後，最終 receipt
+  必須通過。
 
 <!-- ENG_REVIEW: CLEAR -->
 
@@ -370,14 +394,16 @@ OQ-01 已決定刪除無效的固定路徑 fallback。OQ-02 已決定直接使�
 | TP-06 | unit | 執行 `python -m unittest tests.test_artifacts.Artifacts.test_agents_block_ccync_contract -v`。具名 test 必須執行，並證明 regenerated byte equality、不含 `.clear-writing-kit`，且大小小於 2,048 bytes。 | T-02 |
 | TP-07 | integration | 執行 `node --test --test-name-pattern "installer MCP safe transitions" writing/test/installer-registration.test.cjs`。Absent、owned-missing、owned-current、owned-stale 產生的 remove/add 次數為 0/1、0/1、0/0、1/1。 | T-03 |
 | TP-08 | integration | 執行 `node --test --test-name-pattern "installer MCP ownership conflicts" writing/test/installer-registration.test.cjs`。Unowned、unreadable、drifted 與 ccync-first 狀態都會阻擋 `cwk`，沒有可套用 hash，且 remove/add 次數為 0/0。 | T-03 |
-| TP-09 | integration | 執行 `node --test --test-name-pattern "installer apply rejects ownership evidence drift" writing/test/installer-registration.test.cjs`。Mock host 會記錄 registration-read call。Apply 的內部 `computePlan` 完成後，下一次 read 會在第一次 MCP mutation 前注入三種 subcase 之一，分別是在 disk 修改 manifest entry、在 disk 移除 manifest entry，或回傳已改變的 live registration。每個 subcase 都必須證明第二次 read 已發生、拒絕操作、避免較早的 step save 覆寫注入的 manifest bytes，且 MCP remove/add 次數維持 0/0。 | T-03 |
-| TP-10 | integration | 執行 `node --test --test-name-pattern "direct installer owned lifecycle" writing/test/installer-registration.test.cjs`。具名 Claude 與 Codex install、verify、upgrade、uninstall lifecycle test 必須通過，並保留精確 manifest fingerprint。 | T-03 |
-| TP-11 | integration | 執行 `cmd.exe /d /c npm --prefix writing run build` 兩次。第二次執行後，`git diff --exit-code -- dist` 為空。 | T-03 |
-| TP-12 | documentation | 執行 `python -m unittest tests.test_artifacts.Artifacts.test_ccync_installation_docs_contract -v`。三種 README 語言都有 ccync quick path，且三份 installation docs 說明相同 owner rule 與 pending real-home limit。 | T-04 |
-| TP-13 | documentation | 執行 `C:\Users\leetz\.cargo\bin\gal.exe render-adapters` 兩次。第二次執行後，`git diff --exit-code -- AGENTS.md` 為空，且 `.dev/project.md` 列出修訂後的 durable installation references。 | T-05 |
-| TP-14 | integration | 執行 `cmd.exe /d /c npm --prefix writing test`。保留 Node tests 零失敗的 summary。 | T-01, T-02, T-03, T-04, T-05 |
-| TP-15 | integration | 執行 `python -m unittest discover -s tests -v`。保留所有 Python test 都為 `OK` 的 summary。 | T-01, T-02, T-03, T-04, T-05 |
-| TP-16 | integration | 執行 `cmd.exe /d /c npm --prefix writing run lint`。保留零 error 的 lint summary，並回報所有 advisory warning。 | T-01, T-02, T-03, T-04, T-05 |
+| TP-09 | integration | 執行 `node --test --test-name-pattern "installer apply rejects ownership evidence drift" writing/test/installer-registration.test.cjs`。Mock host 會記錄 registration-read call。Apply 的內部 `computePlan` 完成後，下一次 read 會在第一次 MCP mutation 前注入三種 subcase 之一，分別是在 disk 修改 manifest entry、在 disk 移除 manifest entry，或回傳已改變的 live registration。每個 subcase 都必須證明第二次 read 已發生、拒絕操作、保留該次重讀前已注入的 bytes，且 MCP remove/add 次數維持 0/0。 | T-03 |
+| TP-10 | integration | 執行 `node --test --test-name-pattern "installer mutations share one ownership lock" writing/test/installer-registration.test.cjs`。Apply 持有 `~/.clear-writing-kit.lock` 時，競爭中的 apply 與 uninstall 必須在 payload、manifest 或 MCP write 前拒絕。Uninstall 持有 lock 時，競爭中的 apply 也必須拒絕。預先放入 stale lock 時，兩個 command 都必須阻擋，且不得自動移除該 lock。證據包含 lock path、result object，以及被拒絕執行的零 write count。 | T-03 |
+| TP-11 | integration | 執行 `node --test --test-name-pattern "installer ownership lock releases after failure" writing/test/installer-registration.test.cjs`。在 lock acquisition 後，分別注入一個 apply error 與一個 uninstall error。兩個 command 都必須回傳預期 error、保留預期的 error 前狀態，且不得留下 lock file。 | T-03 |
+| TP-12 | integration | 執行 `node --test --test-name-pattern "direct installer owned lifecycle" writing/test/installer-registration.test.cjs`。具名 Claude 與 Codex install、verify、upgrade、uninstall lifecycle test 必須通過，並保留精確 manifest fingerprint。 | T-03 |
+| TP-13 | integration | 執行 `cmd.exe /d /c npm --prefix writing run build` 兩次。第二次執行後，`git diff --exit-code -- dist` 為空。 | T-03 |
+| TP-14 | documentation | 執行 `python -m unittest tests.test_artifacts.Artifacts.test_ccync_installation_docs_contract -v`。三種 README 語言都有 ccync quick path。Installation docs 必須說明相同的 owner rule、lock contention、保守的 stale-lock recovery 與 pending real-home limit。 | T-04 |
+| TP-15 | documentation | 執行 `C:\Users\leetz\.cargo\bin\gal.exe render-adapters` 兩次。第二次執行後，`git diff --exit-code -- AGENTS.md` 為空，且 `.dev/project.md` 列出修訂後的 durable installation references。 | T-05 |
+| TP-16 | integration | 執行 `cmd.exe /d /c npm --prefix writing test`。保留 Node tests 零失敗的 summary。 | T-01, T-02, T-03, T-04, T-05 |
+| TP-17 | integration | 執行 `python -m unittest discover -s tests -v`。保留所有 Python test 都為 `OK` 的 summary。 | T-01, T-02, T-03, T-04, T-05 |
+| TP-18 | integration | 執行 `cmd.exe /d /c npm --prefix writing run lint`。保留零 error 的 lint summary，並回報所有 advisory warning。 | T-01, T-02, T-03, T-04, T-05 |
 
 Headless execution 時，每個 covering row 還需要 executor log terminal state
 `completed`，以及 `.dev/plans/feat-ccync-local-checks.prompt.md` 中對應的
@@ -387,7 +413,7 @@ parsed result object 或指定的 empty diff。只有 PASS label 而沒有上述
 
 ## Tasks
 
-- [ ] T-01 — 新增 ccync-only MCP 定義與 executable contract。
+- [ ] T-01: 新增 ccync-only MCP 定義與 executable contract。
   - **Files**：`mcp.json`、`tests/test_artifacts.py`、
     `writing/test/checkers.test.cjs`、
     `writing/integration/ccync-projection.test.cjs`。
@@ -406,7 +432,7 @@ parsed result object 或指定的 empty diff。只有 PASS label 而沒有上述
     可觀察的 tool list `[lintText]`，以及具名 request 的非空 findings
     包含指定 rule ID。這些測試也必須在發布前證明實際 ccync manifest
     selection 與 placeholder expansion 會產生 5 個預期的 native vector。
-- [ ] T-02 — 從產生的 agents block 刪除無效 checker fallback。
+- [ ] T-02: 從產生的 agents block 刪除無效 checker fallback。
   - **Files**：`scripts/artifacts.py`、`install/agents-block.md`、
     `tests/test_artifacts.py`。
   - **Dependencies**：T-01。兩個 task 都會修改 `tests/test_artifacts.py`，
@@ -416,43 +442,53 @@ parsed result object 或指定的 empty diff。只有 PASS label 而沒有上述
     保持不變。
   - **Acceptance**：TP-06 通過。產生結果完全相同、不含
     `.clear-writing-kit` checker path，且實測大小小於 2,048 bytes。
-- [ ] T-03 — 在 direct installer 強制執行 one-owner MCP mutation safety。
+- [ ] T-03: 在 direct installer 強制執行 one-owner MCP mutation safety。
   - **Files**：`src/install/plan.ts`、`src/install/apply.ts`、
+    `src/install/uninstall.ts`、`src/install/lock.ts`、
     `writing/test/installer-registration.test.cjs`、`dist/cwk.mjs`。
-  - **Dependencies**：None.
+  - **Dependencies**：T-01。TP-05 提供本 task acceptance 使用的反向 ccync
+    collision 證據。
   - **Change**：將相同 host、kind 與 name 的 manifest entry 作為唯一
     ownership 證據。在 `readHostState` 與 `computePlan` 實作 plan-time
     gate，並使用 manifest `cli` entry lookup。Entry absent 時可以 create。
     只有 live fingerprint 仍與紀錄 fingerprint 相同時才可 update。將
-    unowned、unreadable 與 drifted entry 轉為 blocking conflict。在
-    `applyPlan` 中，每個 operation 都在內部 `computePlan` 完成後及第一次
-    修改 MCP 前重讀 manifest entry 與 live registration。先前 step 的
-    save 不得覆寫並行發生的 manifest 變更。Manifest entry 改變或消失，
-    以及 live registration 改變時都必須拒絕修改。保留 uninstall
-    exact-match 規則，不移除 foreign entry，並重新建置 bundle。
-  - **Acceptance**：TP-07 至 TP-11 證明 create、recreate、no-op、update、
+    unowned、unreadable 與 drifted entry 轉為 blocking conflict。新增一個
+    使用 exclusive file creation 的小型共用 lock helper。`applyPlan` 必須在
+    內部 `computePlan` 前取得 lock。Uninstall 必須在讀取 manifest 前取得
+    lock。兩者都必須持有到最後一次 manifest save 或 removal，並在成功或
+    error 時透過 `finally` 釋放。競爭中的 lock 或 stale lock 必須在任何
+    write 前拒絕。Apply 必須在第一次修改 MCP 前重讀 manifest entry 與
+    live registration。重讀時已可見的 manifest entry 改變或消失，以及
+    live registration 改變，都必須拒絕修改。保留 uninstall exact-match
+    規則，不移除 foreign entry，並重新建置 bundle。
+  - **Acceptance**：TP-07 至 TP-13 證明 create、recreate、no-op、update、
     conflict、apply-time manifest drift rejection、apply-time live drift
-    rejection、direct lifecycle continuity、精確 spy count 與可重現的
-    `dist/`。TP-05 透過實際 ccync projection 證明反向安裝順序的 collision。
-- [ ] T-04 — 記錄兩種 installation ownership path。
+    rejection、apply-uninstall serialization、stale-lock fail-closed
+    behavior、error 後釋放 lock、direct lifecycle continuity、精確 spy 與
+    write count，以及可重現的 `dist/`。TP-05 透過實際 ccync projection
+    證明反向安裝順序的 collision。
+- [ ] T-04: 記錄兩種 installation ownership path。
   - **Files**：`README.md`、`INSTALL.md`、`docs/installer.md`、
     `docs/verification.md`、`tests/test_artifacts.py`。
   - **Dependencies**：T-01, T-02, T-03.
   - **Change**：新增語意相同的英文、繁體中文與日文 ccync quick path。
     區分 direct installer ownership 與 ccync projection。記錄 Node.js
-    20.18、manifest 邊界、conflict 行為，以及仍待執行的 real-home
-    acceptance，不得聲稱已執行。新增一個聚焦 artifact test，檢查必要
-    literal 與 limit。
-  - **Acceptance**：TP-12 在每份相關 durable document 找到相同的
-    prerequisite、owner invariant、command 與 acceptance limit。
-- [ ] T-05 — 重新索引 durable docs 並重新產生 adapter guidance。
+    20.18、manifest 邊界、conflict 行為、lock contention，以及保守的
+    stale-lock recovery。Recovery 前必須先確認沒有執行中的
+    `cwk install apply` 或 `cwk install uninstall` process。記錄仍待執行的
+    real-home acceptance，不得聲稱已執行。新增一個聚焦 artifact test，
+    檢查必要 literal 與 limit。
+  - **Acceptance**：TP-14 在每份相關 durable document 找到相同的
+    prerequisite、owner invariant、command、lock behavior、recovery warning
+    與 acceptance limit。
+- [ ] T-05: 重新索引 durable docs 並重新產生 adapter guidance。
   - **Files**：`.dev/project.md`、`AGENTS.md`。
   - **Dependencies**：T-04.
   - **Change**：在 `.dev/project.md` 重新索引變更後的 durable installation
     references，再執行 `C:\Users\leetz\.cargo\bin\gal.exe render-adapters`。
     不得使用 agents-block generator 產生 `AGENTS.md`。本 feature plan
     不得新增 repository-wide structure-map mechanism。
-  - **Acceptance**：TP-13 通過。Project index 包含修訂後的 references，
+  - **Acceptance**：TP-15 通過。Project index 包含修訂後的 references，
     且 `AGENTS.md` 第二次 render 的 diff 為空。
 
 ## Owner Acceptance
