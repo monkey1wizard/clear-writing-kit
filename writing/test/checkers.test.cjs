@@ -189,6 +189,10 @@ function mcpClient(args) {
   }
   return { child, request };
 }
+async function initializeMcp(server) {
+  await server.request("initialize", { protocolVersion: "2025-06-18", capabilities: {}, clientInfo: { name: "writing-check-test", version: "1" } });
+  server.child.stdin.write(JSON.stringify({ jsonrpc: "2.0", method: "notifications/initialized" }) + "\n");
+}
 for (const language of ["en-US", "zh-TW", "ja-JP"]) {
   for (const genre of ["document", "conversation"]) {
     test(language + " " + genre + " CLI and official MCP agree", { timeout: 30000 }, async () => {
@@ -232,6 +236,39 @@ test("bundled Japanese report style CLI and MCP agree", { timeout: 60000 }, asyn
         assert.doesNotMatch(cli.stdout, /ja-document-style/);
         assert.deepEqual(findings, []);
       }
+    }
+  } finally { server.child.kill(); }
+});
+
+test("bundled MCP contract", { timeout: 60000 }, async () => {
+  const bundle = path.join(path.dirname(cwd), "dist", "cwk.mjs");
+  const server = mcpClient([bundle, "mcp"]);
+  try {
+    await initializeMcp(server);
+    const result = await server.request("tools/list", {});
+    assert.deepEqual(result.tools.map(tool => tool.name), ["lintText"]);
+  } finally { server.child.kill(); }
+});
+
+test("bundled MCP language probes", { timeout: 60000 }, async () => {
+  const bundle = path.join(path.dirname(cwd), "dist", "cwk.mjs");
+  const server = mcpClient([bundle, "mcp"]);
+  try {
+    await initializeMcp(server);
+    const probes = [
+      { language: "en-US", text: "alpha; beta", ruleId: "prose-punctuation" },
+      { language: "zh-TW", text: "alpha; beta", ruleId: "prose-punctuation" },
+      { language: "ja-JP", text: "本ツールは開発者向けだ。", ruleId: "ja-document-style" },
+    ];
+    for (const probe of probes) {
+      const response = await server.request("tools/call", {
+        name: "lintText",
+        arguments: { text: probe.text, language: probe.language, genre: "document", filename: "sample.md" },
+      });
+      assert.ok(!response.isError, probe.language);
+      assert.ok(Array.isArray(response.structuredContent?.findings), probe.language);
+      assert.ok(response.structuredContent.findings.length > 0, probe.language);
+      assert.ok(response.structuredContent.findings.some(finding => finding.ruleId === probe.ruleId), probe.language);
     }
   } finally { server.child.kill(); }
 });

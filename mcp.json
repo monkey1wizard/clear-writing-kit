@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "clear-writing-kit-textlint": {
+      "command": "node",
+      "args": ["${PLUGIN_ROOT}/dist/cwk.mjs", "mcp"]
+    }
+  }
+}

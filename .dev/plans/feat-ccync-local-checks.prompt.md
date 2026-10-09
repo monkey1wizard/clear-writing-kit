@@ -97,12 +97,12 @@ None.
 
 ## Status
 
-Workflow: DRAFT
-Step: 0 of 5
+Workflow: IMPLEMENT
+Step: 1 of 5
 Last activity: 2026-10-09. Prompt refreshed from approved source plan
 Next step: start T-01
-Current Task: —
-Task Base Commit: —
+Current Task: T-01
+Task Base Commit: 3c68d3aed8a23e3ae4316b8c0fdabe12b8becdd6
 Task Final Commit: —
 Test Retry Count: 0
 Review Retry Count: 0
@@ -111,6 +111,7 @@ Review Retry Count: 0
 
 | Step | Plan Said | Actually Did | Why |
 | --- | --- | --- | --- |
+| Preflight | Task bullets `- [ ] T-NN: ...` | Changed the separator to `- [ ] T-NN — ...` | `pipeline-preflight` check `tasks-well-formed` failed on the colon form. Task text is unchanged. |
 
 ### Handoff Notes
 
@@ -118,27 +119,27 @@ Prompt refreshed after final architecture verdict APPROVE, human approval, and p
 
 ## Tasks
 
-- [ ] T-01: Add the ccync-only MCP declaration and executable contract.
+- [ ] T-01 — Add the ccync-only MCP declaration and executable contract.
   - **Files**: `mcp.json`, `tests/test_artifacts.py`, `writing/test/checkers.test.cjs`, `writing/integration/ccync-projection.test.cjs`.
   - **Dependencies**: None.
   - **Change**: Declare only `clear-writing-kit-textlint` with `node` and `${PLUGIN_ROOT}/dist/cwk.mjs mcp`. Add guards that forbid root `plugin.json`, root `.mcp.json`, and MCP declarations in both compatibility manifests. Reuse the MCP client for stdio tool-list and three-language probes. Add a named ccync CLI integration test outside `writing/test/*.test.cjs`. Use a fresh home for successful five-host projection and separate fresh homes with foreign vectors preseeded before ccync ownership for byte-preserving collision checks. Require explicit `CCYNC_BIN`.
   - **Acceptance**: TP-01 through TP-05 prove the exact vector, all four isolation guards, `[lintText]`, the three named findings, actual ccync manifest selection, placeholder expansion, five native vectors, and fail-closed collisions before publication.
-- [ ] T-02: Remove the invalid checker fallback from the generated agents block.
+- [ ] T-02 — Remove the invalid checker fallback from the generated agents block.
   - **Files**: `scripts/artifacts.py`, `install/agents-block.md`, `tests/test_artifacts.py`.
   - **Dependencies**: T-01. Both tasks modify `tests/test_artifacts.py`, so run them in order.
   - **Change**: Update the maintained generator text, regenerate the committed block, and refresh only generator-owned digest expectations. Leave runtime selection and installation guidance unchanged.
   - **Acceptance**: TP-06 proves exact generated equality, no `.clear-writing-kit` checker path, and measured size below 2,048 bytes.
-- [ ] T-03: Enforce one-owner MCP mutation safety in the direct installer.
+- [ ] T-03 — Enforce one-owner MCP mutation safety in the direct installer.
   - **Files**: `src/install/plan.ts`, `src/install/apply.ts`, `src/install/uninstall.ts`, `src/install/lock.ts`, `writing/test/installer-registration.test.cjs`, `dist/cwk.mjs`.
   - **Dependencies**: T-01. TP-05 supplies reverse-order ccync collision evidence.
   - **Change**: Use the manifest entry for the same host, kind, and name as the only ownership proof. Add the plan-time gate in `readHostState` and `computePlan`. Permit absent create and owned safe transitions only. Convert unowned, unreadable, and fingerprint-drifted entries to blocking conflicts. Add a shared exclusive-file lock helper. Apply acquires the lock before internal `computePlan`. Uninstall acquires it before reading the manifest. Both hold it through final manifest persistence and release it in `finally` on success or error. Refuse competing and stale locks before writes. Apply rereads manifest and live registration evidence immediately before the first MCP mutation and rejects changes already visible. Preserve uninstall exact-match behavior and rebuild the bundle.
   - **Acceptance**: TP-05 and TP-07 through TP-13 prove both installation orders, safe transitions, conflicts, manifest and live drift rejection, apply-uninstall serialization, stale-lock refusal, error-path release, zero unsafe mutations, direct lifecycle continuity, exact spy and write counts, and reproducible `dist/`.
-- [ ] T-04: Document the two installation ownership paths.
+- [ ] T-04 — Document the two installation ownership paths.
   - **Files**: `README.md`, `INSTALL.md`, `docs/installer.md`, `docs/verification.md`, `tests/test_artifacts.py`.
   - **Dependencies**: T-01, T-02, T-03.
   - **Change**: Add equivalent English, Traditional Chinese, and Japanese ccync quick paths. Separate direct-installer ownership from ccync projection. Document Node.js 20.18, the manifest boundary, conflict behavior, lock contention, conservative stale-lock recovery, and still-pending real-home acceptance without claiming it ran. Recovery must first confirm no `cwk install apply` or `cwk install uninstall` process is active. Add a focused artifact test.
   - **Acceptance**: TP-14 finds the same prerequisites, owner invariant, commands, lock behavior, recovery warning, and acceptance limit in every relevant durable document.
-- [ ] T-05: Re-index durable docs and regenerate adapter guidance.
+- [ ] T-05 — Re-index durable docs and regenerate adapter guidance.
   - **Files**: `.dev/project.md`, `AGENTS.md`.
   - **Dependencies**: T-04.
   - **Change**: Re-index the durable installation references in `.dev/project.md`, then run `C:\Users\leetz\.cargo\bin\gal.exe render-adapters`. Do not use the agents-block generator for `AGENTS.md` and do not introduce a repository-wide structure map.

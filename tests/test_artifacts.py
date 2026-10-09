@@ -114,6 +114,28 @@ def reference_entries() -> dict[str, tuple[str, str]]:
 
 
 class Artifacts(unittest.TestCase):
+    def test_ccync_mcp_manifest_contract(self):
+        manifest = json.loads((ROOT / "mcp.json").read_text(encoding="utf-8"))
+        self.assertEqual(
+            manifest,
+            {
+                "servers": {
+                    "clear-writing-kit-textlint": {
+                        "command": "node",
+                        "args": ["${PLUGIN_ROOT}/dist/cwk.mjs", "mcp"],
+                    }
+                }
+            },
+        )
+
+    def test_ccync_mcp_native_loader_isolation(self):
+        self.assertFalse((ROOT / "plugin.json").exists())
+        self.assertFalse((ROOT / ".mcp.json").exists())
+        for relative in (".claude-plugin/plugin.json", ".codex-plugin/plugin.json"):
+            manifest = json.loads((ROOT / relative).read_text(encoding="utf-8"))
+            serialized = json.dumps(manifest).lower()
+            self.assertNotRegex(serialized, r"mcp(?:servers|\.json)?")
+
     def test_reference_citation_contract(self):
         reference_text = read_lf(ROOT / "docs/references.md")
         groups = re.findall(r"^## (.+)$", reference_text, re.M)
