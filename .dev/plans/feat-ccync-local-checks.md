@@ -432,7 +432,7 @@ parsed result object 或指定的 empty diff。只有 PASS label 而沒有上述
     可觀察的 tool list `[lintText]`，以及具名 request 的非空 findings
     包含指定 rule ID。這些測試也必須在發布前證明實際 ccync manifest
     selection 與 placeholder expansion 會產生 5 個預期的 native vector。
-- [ ] T-02 — 從產生的 agents block 刪除無效 checker fallback。
+- [x] T-02 — 從產生的 agents block 刪除無效 checker fallback。 *(5c8a40f)*
   - **Files**：`scripts/artifacts.py`、`install/agents-block.md`、
     `tests/test_artifacts.py`。
   - **Dependencies**：T-01。兩個 task 都會修改 `tests/test_artifacts.py`，

@@ -99,11 +99,11 @@ None.
 
 Workflow: IMPLEMENT
 Step: 2 of 5
-Last activity: 2026-10-10. T-01 converged at 71f9028 (test retry 1 PASS, audit APPROVE)
-Next step: implement T-02
-Current Task: T-02
+Last activity: 2026-10-10. T-02 converged at 5c8a40f (test PASS, audit APPROVE)
+Next step: start T-03
+Current Task: —
 Task Base Commit: 290b5dcd20b671a824614a8a4a9aa95520f418a6
-Task Final Commit: —
+Task Final Commit: 5c8a40f283d345d2262c191445d8b184c55e023d
 Test Retry Count: 0
 Review Retry Count: 0
 
@@ -127,7 +127,7 @@ Prompt refreshed after final architecture verdict APPROVE, human approval, and p
   - **Dependencies**: None.
   - **Change**: Declare only `clear-writing-kit-textlint` with `node` and `${PLUGIN_ROOT}/dist/cwk.mjs mcp`. Add guards that forbid root `plugin.json`, root `.mcp.json`, and MCP declarations in both compatibility manifests. Reuse the MCP client for stdio tool-list and three-language probes. Add a named ccync CLI integration test outside `writing/test/*.test.cjs`. Use a fresh home for successful five-host projection and separate fresh homes with foreign vectors preseeded before ccync ownership for byte-preserving collision checks. Require explicit `CCYNC_BIN`.
   - **Acceptance**: TP-01 through TP-05 prove the exact vector, all four isolation guards, `[lintText]`, the three named findings, actual ccync manifest selection, placeholder expansion, five native vectors, and fail-closed collisions before publication.
-- [ ] T-02 — Remove the invalid checker fallback from the generated agents block.
+- [x] T-02 — Remove the invalid checker fallback from the generated agents block. *(5c8a40f)*
   - **Files**: `scripts/artifacts.py`, `install/agents-block.md`, `tests/test_artifacts.py`.
   - **Dependencies**: T-01. Both tasks modify `tests/test_artifacts.py`, so run them in order.
   - **Change**: Update the maintained generator text, regenerate the committed block, and refresh only generator-owned digest expectations. Leave runtime selection and installation guidance unchanged.
@@ -188,7 +188,7 @@ For headless execution, every covering row also requires executor log terminal s
 Run: 2026-10-09 (clock rolled to 2026-10-10 during the run)
 Mode: spec
 Browser Route: No runnable browser route (not applicable; no browser surface)
-Task Final Commit: — (task base 3c68d3a); HEAD unchanged after the run
+Task Final Commit: 5c8a40f283d345d2262c191445d8b184c55e023d (task base 3c68d3a); HEAD unchanged after the run
 Total: 5 | Passed: 5 | Failed: 0 | Skipped: 0 (raw command outcomes; TP-05 is judged FAIL on proof adequacy, see Findings)
 
 | TP | Command | Result | Evidence |
@@ -218,7 +218,7 @@ Verdict: FAIL
 Run: 2026-10-10
 Mode: spec
 Browser Route: No runnable browser route (not applicable; no browser surface)
-Task Final Commit: — (task range 3c68d3a..71f9028); HEAD stayed at 71f9028 during and after the run
+Task Final Commit: 5c8a40f283d345d2262c191445d8b184c55e023d (task range 3c68d3a..71f9028); HEAD stayed at 71f9028 during and after the run
 Total: 5 | Passed: 5 | Failed: 0 | Skipped: 0
 
 | TP | Command | Result | Evidence |
@@ -252,6 +252,41 @@ None blocking. Two retry-0 notes still apply:
 
 - The mutants exercised the shared collision predicate on the first host (claude) only. Collision evidence for the other four hosts comes from the unmutated CONTROL and TP-05 runs, which passed for all five hosts.
 - Owner Acceptance OA-01..OA-03 need fresh host sessions and are outside T-01 automated testing.
+
+### [T-02] 2026-10-10
+
+Run: 2026-10-10
+Mode: spec
+Browser Route: No runnable browser route (not applicable)
+Commit: 5c8a40f283d345d2262c191445d8b184c55e023d (range 290b5dc..5c8a40f)
+Interpreter: `python` on PATH is the WindowsApps stub, so every command ran with `%APPDATA%\uv\python\cpython-3.13.16-windows-x86_64-none\python.exe` (Python 3.13.16) and the same arguments.
+Total: 24 | Passed: 24 | Failed: 0 | Skipped: 0
+
+| TP | Command | Result | Evidence |
+| --- | --- | --- | --- |
+| TP-06 | `python -m unittest tests.test_artifacts.Artifacts.test_agents_block_ccync_contract -v` | PASS | `test_agents_block_ccync_contract ... ok`, `Ran 1 test in 0.108s`, `OK`. The test runs `scripts/generate-agents-block.py --output <tempdir>/agents-block.md` in a subprocess and asserts byte equality with the committed `install/agents-block.md`, equality with `render_agents_block()`, no `.clear-writing-kit`, and size < `AGENTS_BLOCK_BUDGET` (asserted == 2048). Independent check: the block is 1388 bytes (`wc -c`), and `grep -c ".clear-writing-kit"` returns 0. |
+| TP-06 (regeneration) | `python scripts/generate-agents-block.py` | PASS | `wrote C:\Code\clear-writing-kit\install\agents-block.md`, exit 0. Afterwards `git status --short -- install/agents-block.md` is empty, so regeneration is byte-identical. HEAD is still `5c8a40f`. |
+| TP-17 (partial) | `python -m unittest discover -s tests -v` | PASS | `Ran 23 tests in 1.352s`, `OK`, exit 0, with no FAIL or ERROR lines. This covers only the Python suite at T-02. The full TP-17 closeout is later. |
+
+Verdict: PASS
+
+#### Coverage of Success Criteria
+
+| Criteria | Tested? | Result | Notes |
+| --- | --- | --- | --- |
+| R5: no fixed `.clear-writing-kit` checker fallback in the generated block | Yes | PASS | 0 matches in `install/agents-block.md`. The generator source `scripts/artifacts.py:55` no longer emits the template or the `<home>` line. |
+| R5: generated block below 2,048 bytes | Yes | PASS | 1388 bytes measured independently |
+| R10: block regenerated only through its existing generator | Yes | PASS | The generator rerun produced no diff. TP-06 invokes the real generator script, not a file-to-itself comparison. |
+
+#### Not Tested
+
+- TP-16 (`npm --prefix writing test`) and TP-18 (lint) were not run in this dispatch. They are NotRun, not PASS.
+
+Findings
+
+1. Generator-exercise judgment: TP-06 does exercise the generator. `tests/test_artifacts.py:356-367` runs `scripts/generate-agents-block.py` through `subprocess` into a temp file and compares those bytes to the committed file. It does not compare a file to itself. Severity: none.
+2. Out-of-scope references to `~/.clear-writing-kit/cwk.mjs` remain (T-04 durable docs, not T-02). `README.md:105`, `README.md:205`, `README.md:305`, `docs/installer.md:61` and related lines 52/54/60/62, and `docs/verification.md:73` describe the direct `cwk install` launcher and payload. These describe installer behavior, and the direct installer still creates that path (`src/install/apply.ts:46`, `src/install/plan.ts:175`, `src/install/verify.ts:297`). None of them is a persistent-instruction fallback. No other generated instruction surface still contains `<home>` or the `.clear-writing-kit/cwk.mjs check` template. `git grep "cwk.mjs check"` matches only the block, its generator, and its test. R5 covers only the generated block. Whether the README or docs should say that ccync installs do not create this path belongs to T-04. Severity: low, out of T-02 scope.
+3. Reworded runtime sentence (`install/agents-block.md:6`): "If it is unavailable, run the installed `cwk.mjs check` command with one of these runtime commands". This is accurate because it names no path that ccync does not create. It also follows the project prose rules: no semicolons, em dashes, or parenthetical asides, and the condition comes before the action. One limitation: the sentence no longer tells the agent where `cwk.mjs` is (ccync uses `${PLUGIN_ROOT}/dist/cwk.mjs`, and direct install uses `~/.clear-writing-kit/cwk.mjs`). An agent without `lintText` must find it on its own. This is a usability gap, not an inaccuracy, and R5 accepts it by design. Severity: informational.
 
 ## Review Results
 
@@ -330,6 +365,54 @@ Protected Path finding: none. T-01 touched only `mcp.json`, `tests/test_artifact
 | FINDING-002 | LOW | NON-BLOCKING | OPEN |
 | FINDING-003 | LOW | NON-BLOCKING | OPEN |
 | FINDING-004 | LOW | NON-BLOCKING | OPEN |
+
+<!-- AUDIT_REVIEW: CLEAR -->
+
+### [T-02] Audit 2026-10-10
+
+**Date:** 2026-10-10
+**Scope:** `git diff 290b5dc 5c8a40f -- scripts/artifacts.py install/agents-block.md tests/test_artifacts.py` (HEAD `5c8a40f`, `.dev/` bookkeeping ignored)
+**Findings:** 1 total: 0 critical, 0 high, 0 medium, 1 low
+**Verdict: APPROVE**
+
+#### Summary
+
+T-02 deletes two generator lines and rewords one sentence in `scripts/artifacts.py:55`. These edits remove the fixed `<home>/.clear-writing-kit/cwk.mjs` template and the `<home>` resolution sentence. The commit regenerates `install/agents-block.md` from the generator and replaces exactly one digest in `INSTRUCTION_BODY_SHA256`. It rewrites the template assertion in `test_agents_block_contract` and adds `test_agents_block_ccync_contract` for TP-06. The change stays within the reviewed scope: R5, R10, and the T-02 files list. It does not touch runtime selection, installer code, or `dist/`. No Security finding exists. No Protected Path finding exists.
+
+#### Evidence
+
+- Full suite: `python -m unittest discover -s tests` ran 23 tests and returned `OK` with the uv CPython 3.13.16 interpreter. The suite includes the Web instruction, output-style, OKF, plugin-manifest, and agents-block equality and digest tests. No other projection is stale.
+- TP-06: `python -m unittest tests.test_artifacts.Artifacts.test_agents_block_ccync_contract -v` returned `OK`. It regenerates through `scripts/generate-agents-block.py --output`, checks byte equality, checks that `.clear-writing-kit` is absent, and checks the size against the 2,048-byte budget.
+- Block size: `install/agents-block.md` is 1,388 bytes, which is below 2,048.
+- Residual references: a grep for `.clear-writing-kit`, `<home>`, and `Resolve \`<home>\`` across `scripts/`, `install/`, `web-instructions/`, `output-styles/`, `knowledge/`, `skills/`, `AGENTS.md`, `.claude-plugin`, and `.codex-plugin` found no source matches. Only stale `__pycache__` bytecode matched.
+- Generator dead code: `render_agents_block` has no leftover home or path helper. `scripts/generate-agents-block.py` still imports only `ROOT` and `render_agents_block`.
+- `dist/` freshness: `git diff 290b5dc 5c8a40f -- dist` is empty. `dist/cwk.mjs` reads the block at runtime through `readFile(join(payloadDir, "..", "install", "agents-block.md"))`, matching `src/cli.ts:45`. A scan of the bundle found neither the old template text nor the persistent core text. No rebuild is needed.
+- Installer upgrade path: `src/install/plan.ts:225-237` calls `upsertBlock`, which finds the block by its begin and end markers (`src/install/block.ts:3`, `findBlock`). It does not compare the live block against a manifest hash before replacing it. A previously installed old block is therefore reported as action `update` and replaced. `src/install/apply.ts:133-140` then records the new block SHA-256 in the manifest. The begin marker `v=` value is unchanged, so `blockVersion` still parses it. Uninstall (`src/install/uninstall.ts:181+`, `removeBlock`) compares the live block with the manifest hash. Before an upgrade, that hash is the old block's hash. After an upgrade, it is the new block's hash. Both cases match, so the edit cannot make an old installed block look drifted or unowned.
+- Digest change: only the `install/agents-block.md` entry changed, from `a65abcc9…` to `bdc148f0…`. The ChatGPT and Gemini digests are unchanged, which matches the "generator-owned digest only" instruction in T-02.
+- Writing rules: `npm --prefix writing run lint` reported 0 errors. The new sentence has no semicolons, em dashes, or parentheses, and it states the condition before the action. Running `node dist/cwk.mjs check --language en-US --genre document install/agents-block.md` reported 0 errors and 2 warnings, which are recorded in FINDING-001.
+- Security: the edit removes a filesystem path template from agent instructions and adds no new execution path. The new test calls `subprocess.run` with a fixed argument list, `sys.executable`, and a `TemporaryDirectory` target, with no shell and no user input. No OWASP or STRIDE issue applies. Deep-performance scan: not applicable, because the change adds no runtime code.
+
+#### Open Findings
+
+**[LOW] FINDING-001 (NON-BLOCKING): write-good flags "it is" twice on the reworded line**
+- File: `install/agents-block.md:6` (source `scripts/artifacts.py:55`)
+- Evidence: the bundled checker in en-US document mode reports two `"it is" is wordy or unneeded` warnings at 6:30 and 6:50. Both come from the clause "when it is available. If it is unavailable", which already existed before T-02, so T-02 did not introduce them.
+- Failure scenario: none at runtime. The warnings are style-only and do not cause a lint error or gate failure.
+- Recommended fix: optional. The clause could read "Use the `lintText` tool if available. Otherwise, run …". Make that edit only through the generator, then refresh the digest.
+- Confidence: 9/10 (the warning output is real, and the severity is low)
+
+#### Observations (not findings)
+
+- The fallback sentence now says "the installed `cwk.mjs check` command" and gives no location. This follows R5, because ccync places the bundle under its plugin cache and not under `~/.clear-writing-kit`. Agents now have to locate the bundle themselves. The plan states this as intended, with runtime selection and installation guidance left unchanged.
+- An existing direct install keeps the old block, with its now-removed fixed path, until the user runs `cwk install plan` and `cwk install apply` again. That path still exists for direct installs, so the old block stays correct there.
+
+#### Remediation Tracking
+
+| Finding | Severity | Status |
+| --- | --- | --- |
+| FINDING-001 | LOW | OPEN (NON-BLOCKING) |
+
+Security finding: none. Protected Path finding: none. The change is confined to the reviewed T-02 scope of `scripts/artifacts.py`, the committed `install/agents-block.md` projection, and `tests/test_artifacts.py`.
 
 <!-- AUDIT_REVIEW: CLEAR -->
 
