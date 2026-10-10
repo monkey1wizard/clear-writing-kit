@@ -96,8 +96,8 @@ The `cwk install verify --agent <agent>` command tests live installer operations
 - Multi-language probes: It calls `lintText` with probe sentences in `en-US`, `zh-TW`, and `ja-JP`. Each probe must produce at least one finding. Calls are bounded by a 30-second timeout.
 - Host configuration checks: In Claude Code, it re-reads `~/.claude/settings.json` to confirm `outputStyle` equals `clear-writing-kit`.
 - Instruction block validation: It checks that exactly one instruction block exists within `<!-- clear-writing-kit:begin v=<version> -->` and `<!-- clear-writing-kit:end -->`, and verifies the block stays under 2,048 bytes.
-- Legacy conflict reporting: It checks for legacy conflicts (an `accurate-answer` skill directory, an instruction block naming `accurate-answer`, or a conflicting `outputStyle`). It reports them without deleting them.
-- Strict verdict: It returns `pass` (exit code 0) only when every check runs and passes. Any missing tool, failed probe, stale setting, oversize block, or unaddressed legacy conflict results in `incomplete` (exit code 1).
+- Conflict reporting: It lists conflicts, such as an `outputStyle` set to another value, under `Conflicts:`. It reports them without deleting them.
+- Strict verdict: It returns `pass` (exit code 0) only when every check runs and passes. Any missing tool, failed probe, stale setting, or oversize block results in `incomplete` (exit code 1).
 
 ### Host verification scope
 

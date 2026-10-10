@@ -55540,7 +55540,7 @@ var require_path_to_glob_pattern = __commonJS({
       const normalizedFilePath = path_1.default.normalize(filePath);
       return normalizedFilePath.replace(/\\/g, "/");
     }
-    var isDirectory3 = (filepath) => {
+    var isDirectory = (filepath) => {
       try {
         return fs_1.default.statSync(filepath).isDirectory();
       } catch (error62) {
@@ -55562,7 +55562,7 @@ var require_path_to_glob_pattern = __commonJS({
       return function(filePath) {
         let newPath = filePath;
         const resolvedPath = path_1.default.resolve(cwd, filePath);
-        if (isDirectory3(resolvedPath)) {
+        if (isDirectory(resolvedPath)) {
           newPath = filePath.replace(/[/\\]$/, "") + suffix;
         }
         return convertPathToPosix(newPath);
@@ -149119,7 +149119,6 @@ async function writeLauncher(launcher, version2) {
 }
 
 // ../src/install/plan.ts
-import { stat } from "node:fs/promises";
 import { basename as basename2, join as join6 } from "node:path";
 
 // ../src/install/identity.ts
@@ -149495,7 +149494,6 @@ function pickRuntime(probes) {
 // ../src/install/plan.ts
 var PLUGIN_NAME = "clear-writing-kit";
 var OUTPUT_STYLE = "clear-writing-kit";
-var LEGACY_SKILL = "accurate-answer";
 function classifyMcpOwnership(manifestFingerprint, live, plannedFingerprint) {
   if (live === "unreadable") return "unreadable";
   if (live === "absent") return manifestFingerprint === null ? "absent" : "owned-missing";
@@ -149515,13 +149513,6 @@ function manifestMcpFingerprint(manifest, hostId) {
 var fail = (kind, message2) => ({ status: "error", kind, message: message2 });
 var normalizePath = (text) => text.replace(/\\+/g, "/");
 var hostBinary = (host) => host.mcpCommands.add.split(" ")[0];
-async function isDirectory(path4) {
-  try {
-    return (await stat(path4)).isDirectory();
-  } catch {
-    return false;
-  }
-}
 function lineDiff(before, after) {
   const table = Array.from({ length: before.length + 1 }, () => new Array(after.length + 1).fill(0));
   for (let i2 = before.length - 1; i2 >= 0; i2--) {
@@ -149560,13 +149551,6 @@ function manifestDigest(manifest) {
     settings,
     completedSteps
   }));
-}
-function foreignBlocksNaming(text) {
-  const names = [];
-  for (const match2 of text.matchAll(/<!--\s*([\w.-]+):begin\b[^>]*-->([\s\S]*?)<!--\s*\1:end\s*-->/g)) {
-    if (match2[1] !== "clear-writing-kit" && match2[2].includes(LEGACY_SKILL)) names.push(match2[1]);
-  }
-  return names;
 }
 function manualSteps(host, home, env) {
   const configDirectory = host.configDirectoryEnv && env[host.configDirectoryEnv] || host.configDirectory(home);
@@ -149704,12 +149688,6 @@ async function computePlan(ctx) {
     if (current !== void 0 && current !== OUTPUT_STYLE) {
       conflicts.push({ kind: "output-style", target: settingsPath, detail: `outputStyle is ${shown(current)}, not "${OUTPUT_STYLE}".` });
     }
-  }
-  for (const directory of /* @__PURE__ */ new Set([join6(home, ".agents", "skills", LEGACY_SKILL), join6(configDirectory, "skills", LEGACY_SKILL)])) {
-    if (await isDirectory(directory)) conflicts.push({ kind: "skill", target: directory, detail: `The ${LEGACY_SKILL} skill directory exists.` });
-  }
-  for (const name of foreignBlocksNaming(instructionText)) {
-    conflicts.push({ kind: "instruction-block", target: instructionsPath, detail: `The "${name}" block names ${LEGACY_SKILL}.` });
   }
   const hostsFound = hosts.map((candidate) => ({ id: candidate.id, found: which(hostBinary(candidate), ctx.env) !== void 0 }));
   const base = { host: hostSummary, version: version2, hostsFound, runtimes: probes, runtime: runtime.value, steps, conflicts, payloadDigest, targetStates, mcpOwnership: state.mcp };
@@ -184181,7 +184159,6 @@ function formatUninstall(outcome) {
 
 // ../src/install/verify.ts
 import { spawn as spawn2 } from "node:child_process";
-import { stat as stat2 } from "node:fs/promises";
 import { basename as basename4, join as join9 } from "node:path";
 var CALL_TIMEOUT_MS = 3e4;
 var BLOCK_LIMIT_BYTES = 2048;
@@ -184195,7 +184172,6 @@ var FIXTURES = [
 var limit3 = (text) => text.length > DETAIL_LIMIT ? `${text.slice(0, DETAIL_LIMIT)}... (truncated)` : text;
 var message = (error62) => error62 instanceof Error ? error62.message : String(error62);
 var hostBinary4 = (host) => host.mcpCommands.add.split(" ")[0];
-var LEGACY_SKILL2 = "accurate-answer";
 var CMD_LIMIT_MESSAGE = "An argument contains a character that cmd.exe cannot carry unchanged.";
 var isWindows2 = () => process.platform === "win32";
 function envValue2(env, name) {
@@ -184228,30 +184204,6 @@ function startInteractive(command, args, env) {
   } catch (error62) {
     return { ok: false, error: error62 instanceof Error ? error62.message : String(error62) };
   }
-}
-async function isDirectory2(path4) {
-  try {
-    return (await stat2(path4)).isDirectory();
-  } catch {
-    return false;
-  }
-}
-function foreignBlocksNaming2(text) {
-  const names = [];
-  for (const match2 of text.matchAll(/<!--\s*([\w.-]+):begin\b[^>]*-->([\s\S]*?)<!--\s*\1:end\s*-->/g)) {
-    if (match2[1] !== "clear-writing-kit" && match2[2].includes(LEGACY_SKILL2)) names.push(match2[1]);
-  }
-  return names;
-}
-async function findLegacyConflicts(home, configDirectory, instructionsPath, instructionText) {
-  const conflicts = [];
-  for (const directory of /* @__PURE__ */ new Set([join9(home, ".agents", "skills", LEGACY_SKILL2), join9(configDirectory, "skills", LEGACY_SKILL2)])) {
-    if (await isDirectory2(directory)) conflicts.push({ kind: "skill", target: directory, detail: `The ${LEGACY_SKILL2} skill directory exists.` });
-  }
-  for (const name of foreignBlocksNaming2(instructionText)) {
-    conflicts.push({ kind: "instruction-block", target: instructionsPath, detail: `The "${name}" block names ${LEGACY_SKILL2}.` });
-  }
-  return conflicts;
 }
 var McpSession = class {
   constructor(child, timeoutMs) {
@@ -184458,19 +184410,10 @@ async function verifyInstall(ctx) {
   } else {
     notes.push(`output-style: not applicable. ${host.displayName} has no verified outputStyle setting.`);
   }
-  let instructionText;
   try {
-    instructionText = (await readText(instructionsPath))?.text;
-    checks.push(await checkBlock(instructionsPath, instructionText));
+    checks.push(await checkBlock(instructionsPath, (await readText(instructionsPath))?.text));
   } catch (error62) {
     checks.push(fail2("instruction-block", `${instructionsPath} cannot be read: ${limit3(message(error62))}`));
-  }
-  try {
-    conflicts.push(...await findLegacyConflicts(ctx.home, configDirectory, instructionsPath, instructionText ?? ""));
-    const own2 = conflicts.length;
-    checks.push(own2 ? fail2("legacy-conflicts", `${own2} legacy conflict${own2 === 1 ? "" : "s"} found. The installer keeps them.`) : pass("legacy-conflicts", "No legacy conflicts."));
-  } catch (error62) {
-    checks.push(fail2("legacy-conflicts", `The legacy check failed: ${limit3(message(error62))}`));
   }
   const complete = checks.every((check2) => check2.status === "pass");
   return { status: complete ? "pass" : "incomplete", host: { id: host.id, displayName: host.displayName }, checks, conflicts, notes };
@@ -184484,7 +184427,7 @@ function formatVerify(outcome) {
     `Clear Writing Kit install verify, host: ${outcome.host.id} (${outcome.host.displayName})`,
     ...outcome.checks.map((check2) => `[${check2.status}] ${check2.id}: ${check2.detail}`),
     ...outcome.notes,
-    "Legacy conflicts:",
+    "Conflicts:",
     ...outcome.conflicts.length ? outcome.conflicts.map((conflict) => `  [${conflict.kind}] ${conflict.target}: ${conflict.detail} The installer keeps it.`) : ["  none"]
   ];
   const open3 = outcome.checks.filter((check2) => check2.status !== "pass");

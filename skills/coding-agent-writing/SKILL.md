@@ -4,7 +4,6 @@ description: Apply writing rules in a coding-agent workspace to replies, progres
 metadata:
   toolkit: clear-writing-kit
   version: 2.0.0
-  replaces: accurate-answer
 ---
 
 # Clear Writing Kit for Coding Agents

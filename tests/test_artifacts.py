@@ -380,8 +380,9 @@ class Artifacts(unittest.TestCase):
         self.assertIn("\nname: web-answer-writing\n", outputs[WEB_SKILL / "SKILL.md"])
         for text in (core, outputs[WEB_SKILL / "SKILL.md"]):
             self.assertIn("toolkit: clear-writing-kit", text)
+        retired_skill = "-".join(("accurate", "answer"))
         for text in (*outputs.values(), render_claude()):
-            self.assertNotIn("accurate-answer", text)
+            self.assertNotIn(retired_skill, text)
 
     def test_default_style_name_changes_without_deleting_existing_style(self):
         self.assertEqual(style_generator.DEFAULT_OUTPUT, ROOT / "output-styles" / "clear-writing-kit.md")
@@ -389,7 +390,7 @@ class Artifacts(unittest.TestCase):
         self.assertEqual(style_generator.DEFAULT_OUTPUT.parent.name, "output-styles")
         with tempfile.TemporaryDirectory() as d, contextlib.redirect_stdout(io.StringIO()):
             root = Path(d)
-            old = root / "accurate-answer.md"
+            old = root / "previous-style.md"
             old.write_text("existing user style", encoding="utf-8")
             target = root / style_generator.DEFAULT_OUTPUT.name
             with patch.object(style_generator, "DEFAULT_OUTPUT", target):

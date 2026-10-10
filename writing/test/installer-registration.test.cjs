@@ -528,7 +528,7 @@ test('Space-containing homes and launcher paths are correctly parsed and verifie
 // Failure states for verify
 // ---------------------------------------------------------------------------
 
-test('Verify returns incomplete on missing dictionary, reset outputStyle, legacy conflict, and timeout', async () => {
+test('Verify returns incomplete on missing dictionary, reset outputStyle, and timeout', async () => {
   const fixture = createFixtureHome({ seedBlock: true });
   const mockServerScript = path.join(fixture.home, 'mock-server.cjs');
   createMockMcpServer(mockServerScript);
@@ -540,19 +540,13 @@ test('Verify returns incomplete on missing dictionary, reset outputStyle, legacy
   const resStyle = await installer.verifyInstall({ agent: 'claude', env: fixture.env, home: fixture.home, callTimeoutMs: 2000 });
   assert.equal(resStyle.status, 'incomplete');
   assert.ok(resStyle.checks.some(c => c.id === 'output-style' && c.status === 'fail'));
+  assert.ok(resStyle.conflicts.some(c => c.kind === 'output-style'));
+  assert.ok(!resStyle.checks.some(c => c.id === 'legacy-conflicts'));
 
   // Restore outputStyle
   fs.writeFileSync(settingsPath, JSON.stringify({ outputStyle: 'clear-writing-kit' }));
 
-  // 2. Legacy writing skill exists
-  const legacyDir = path.join(fixture.home, '.agents', 'skills', 'accurate-answer');
-  fs.mkdirSync(legacyDir, { recursive: true });
-  const resLegacy = await installer.verifyInstall({ agent: 'claude', env: fixture.env, home: fixture.home, callTimeoutMs: 2000 });
-  assert.equal(resLegacy.status, 'incomplete');
-  assert.ok(resLegacy.conflicts.some(c => c.kind === 'skill'));
-  fs.rmSync(legacyDir, { recursive: true, force: true });
-
-  // 3. MCP server hang / timeout
+  // 2. MCP server hang / timeout
   const hangScript = path.join(fixture.home, 'hang-server.cjs');
   createMockMcpServer(hangScript, { hang: true });
   fixture.setState({ mcp: { command: process.execPath, args: [hangScript] } });

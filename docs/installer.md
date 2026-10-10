@@ -105,9 +105,8 @@ The runtime payload contains no repository path dependency after installation. T
 - English, Traditional Chinese, and Japanese probes each return findings
 - exactly one bounded instruction block is present and its content matches the installed block
 - Claude Code has `outputStyle` set to `clear-writing-kit`
-- no unresolved legacy conflict prevents a complete result
 
-The command returns `pass` only when every required check runs and passes. A missing tool, stale setting, failed language probe, duplicate block, or legacy conflict produces `incomplete`. Report passed and incomplete checks separately.
+The command returns `pass` only when every required check runs and passes. A missing tool, stale setting, failed language probe, or duplicate block produces `incomplete`. Conflicts, such as a different `outputStyle` value, are listed and kept. Report passed and incomplete checks separately.
 
 ## Upgrades and multiple hosts
 

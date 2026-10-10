@@ -13,7 +13,7 @@ sources:
 generated:
   by: process:clear-writing-kit-okf
 source_path: skills/coding-agent-writing/SKILL.md
-source_sha256: 413f48a291aa4f697cc0dd917a29dd6a1d4b0ad520221089cf4bf1159bd567b8
+source_sha256: d8cdbbf0278a3ba25687bf2180632990f9f864ce57f70cdbd0fea32e09f44e35
 ---
 
 # Clear Writing Kit for Coding Agents

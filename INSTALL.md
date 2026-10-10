@@ -46,7 +46,7 @@ The runtime payload in `dist/` is pre-built and committed to the repository, so 
 ## 3. Ban on Direct Configuration Edits
 
 Never edit host configuration files directly.
-Do not manually edit or create host configuration files, settings files (such as `settings.json`), instruction files (such as `CLAUDE.md` or `AGENTS.md`), or plugin manifests. All configuration changes, plugin registrations, MCP registrations, and instruction blocks must be performed through the installer commands. Never manually edit or delete legacy conflict items or foreign blocks.
+Do not manually edit or create host configuration files, settings files (such as `settings.json`), instruction files (such as `CLAUDE.md` or `AGENTS.md`), or plugin manifests. All configuration changes, plugin registrations, MCP registrations, and instruction blocks must be performed through the installer commands. Never manually edit or delete conflicting items or foreign blocks.
 
 ## 4. Compute and Show the Installation Plan
 

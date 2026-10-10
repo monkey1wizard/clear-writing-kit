@@ -1,4 +1,3 @@
-import { stat } from "node:fs/promises";
 import { basename, join } from "node:path";
 import { hosts, type HostCapability } from "../hosts.js";
 import { findBlock, upsertBlock } from "./block.js";
@@ -12,7 +11,6 @@ import { run, which, type Env } from "./spawn.js";
 export { MCP_NAME };
 export const PLUGIN_NAME = "clear-writing-kit";
 export const OUTPUT_STYLE = "clear-writing-kit";
-const LEGACY_SKILL = "accurate-answer";
 
 export type PlanContext = {
   agent: string | undefined;
@@ -27,7 +25,7 @@ export type PlanContext = {
 export type StepId = "payload" | "plugin" | "mcp" | "block" | "output-style";
 export type PlanStep = { id: StepId; action: "create" | "update" | "none" | "blocked"; target: string; summary: string; diff: string[] };
 /** A blocking conflict leaves the plan without an applicable hash. Other conflicts are reported and kept. */
-export type Conflict = { kind: "skill" | "instruction-block" | "output-style" | "mcp-ownership"; target: string; detail: string; blocking?: boolean };
+export type Conflict = { kind: "output-style" | "mcp-ownership"; target: string; detail: string; blocking?: boolean };
 export type HostPresence = { id: string; found: boolean };
 
 /**
@@ -97,14 +95,6 @@ const fail = (kind: PlanError["kind"], message: string): PlanError => ({ status:
 const normalizePath = (text: string) => text.replace(/\\+/g, "/");
 const hostBinary = (host: HostCapability) => host.mcpCommands.add.split(" ")[0];
 
-async function isDirectory(path: string) {
-  try {
-    return (await stat(path)).isDirectory();
-  } catch {
-    return false;
-  }
-}
-
 /** Line diff by longest common subsequence. Lines carry a "- " or "+ " prefix, and unchanged lines are left out. */
 export function lineDiff(before: readonly string[], after: readonly string[]): string[] {
   const table = Array.from({ length: before.length + 1 }, () => new Array<number>(after.length + 1).fill(0));
@@ -154,14 +144,6 @@ function manifestDigest(manifest: Manifest) {
     settings,
     completedSteps
   }));
-}
-
-function foreignBlocksNaming(text: string) {
-  const names: string[] = [];
-  for (const match of text.matchAll(/<!--\s*([\w.-]+):begin\b[^>]*-->([\s\S]*?)<!--\s*\1:end\s*-->/g)) {
-    if (match[1] !== "clear-writing-kit" && match[2].includes(LEGACY_SKILL)) names.push(match[1]);
-  }
-  return names;
 }
 
 function manualSteps(host: HostCapability, home: string, env: Env) {
@@ -323,13 +305,6 @@ export async function computePlan(ctx: PlanContext): Promise<PlanOutcome> {
     if (current !== undefined && current !== OUTPUT_STYLE) {
       conflicts.push({ kind: "output-style", target: settingsPath, detail: `outputStyle is ${shown(current)}, not "${OUTPUT_STYLE}".` });
     }
-  }
-
-  for (const directory of new Set([join(home, ".agents", "skills", LEGACY_SKILL), join(configDirectory, "skills", LEGACY_SKILL)])) {
-    if (await isDirectory(directory)) conflicts.push({ kind: "skill", target: directory, detail: `The ${LEGACY_SKILL} skill directory exists.` });
-  }
-  for (const name of foreignBlocksNaming(instructionText)) {
-    conflicts.push({ kind: "instruction-block", target: instructionsPath, detail: `The "${name}" block names ${LEGACY_SKILL}.` });
   }
 
   const hostsFound = hosts.map(candidate => ({ id: candidate.id, found: which(hostBinary(candidate), ctx.env) !== undefined }));

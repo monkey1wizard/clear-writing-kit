@@ -1,5 +1,4 @@
 import { spawn, type ChildProcess } from "node:child_process";
-import { stat } from "node:fs/promises";
 import { basename, join } from "node:path";
 import type { HostCapability } from "../hosts.js";
 import { findBlock } from "./block.js";
@@ -35,7 +34,6 @@ const limit = (text: string) => (text.length > DETAIL_LIMIT ? `${text.slice(0, D
 const message = (error: unknown) => (error instanceof Error ? error.message : String(error));
 const hostBinary = (host: HostCapability) => host.mcpCommands.add.split(" ")[0];
 
-const LEGACY_SKILL = "accurate-answer";
 const CMD_LIMIT_MESSAGE = "An argument contains a character that cmd.exe cannot carry unchanged.";
 const isWindows = () => process.platform === "win32";
 
@@ -73,34 +71,6 @@ function startInteractive(command: string, args: readonly string[], env: Env): {
   } catch (error) {
     return { ok: false, error: error instanceof Error ? error.message : String(error) };
   }
-}
-
-async function isDirectory(path: string) {
-  try {
-    return (await stat(path)).isDirectory();
-  } catch {
-    return false;
-  }
-}
-
-function foreignBlocksNaming(text: string) {
-  const names: string[] = [];
-  for (const match of text.matchAll(/<!--\s*([\w.-]+):begin\b[^>]*-->([\s\S]*?)<!--\s*\1:end\s*-->/g)) {
-    if (match[1] !== "clear-writing-kit" && match[2].includes(LEGACY_SKILL)) names.push(match[1]);
-  }
-  return names;
-}
-
-/** Reports the legacy writing skill directories and the foreign instruction blocks that name it. Nothing is deleted. */
-async function findLegacyConflicts(home: string, configDirectory: string, instructionsPath: string, instructionText: string): Promise<Conflict[]> {
-  const conflicts: Conflict[] = [];
-  for (const directory of new Set([join(home, ".agents", "skills", LEGACY_SKILL), join(configDirectory, "skills", LEGACY_SKILL)])) {
-    if (await isDirectory(directory)) conflicts.push({ kind: "skill", target: directory, detail: `The ${LEGACY_SKILL} skill directory exists.` });
-  }
-  for (const name of foreignBlocksNaming(instructionText)) {
-    conflicts.push({ kind: "instruction-block", target: instructionsPath, detail: `The "${name}" block names ${LEGACY_SKILL}.` });
-  }
-  return conflicts;
 }
 
 /** One MCP stdio session: newline-delimited JSON-RPC 2.0 messages, with no client library. */
@@ -328,20 +298,10 @@ export async function verifyInstall(ctx: VerifyContext): Promise<VerifyOutcome> 
     notes.push(`output-style: not applicable. ${host.displayName} has no verified outputStyle setting.`);
   }
 
-  let instructionText: string | undefined;
   try {
-    instructionText = (await readText(instructionsPath))?.text;
-    checks.push(await checkBlock(instructionsPath, instructionText));
+    checks.push(await checkBlock(instructionsPath, (await readText(instructionsPath))?.text));
   } catch (error) {
     checks.push(fail("instruction-block", `${instructionsPath} cannot be read: ${limit(message(error))}`));
-  }
-
-  try {
-    conflicts.push(...await findLegacyConflicts(ctx.home, configDirectory, instructionsPath, instructionText ?? ""));
-    const own = conflicts.length;
-    checks.push(own ? fail("legacy-conflicts", `${own} legacy conflict${own === 1 ? "" : "s"} found. The installer keeps them.`) : pass("legacy-conflicts", "No legacy conflicts."));
-  } catch (error) {
-    checks.push(fail("legacy-conflicts", `The legacy check failed: ${limit(message(error))}`));
   }
 
   const complete = checks.every(check => check.status === "pass");
@@ -356,7 +316,7 @@ export function formatVerify(outcome: VerifyOutcome): string {
     `Clear Writing Kit install verify, host: ${outcome.host.id} (${outcome.host.displayName})`,
     ...outcome.checks.map(check => `[${check.status}] ${check.id}: ${check.detail}`),
     ...outcome.notes,
-    "Legacy conflicts:",
+    "Conflicts:",
     ...(outcome.conflicts.length ? outcome.conflicts.map(conflict => `  [${conflict.kind}] ${conflict.target}: ${conflict.detail} The installer keeps it.`) : ["  none"])
   ];
   const open = outcome.checks.filter(check => check.status !== "pass");

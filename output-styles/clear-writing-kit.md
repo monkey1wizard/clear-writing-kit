@@ -4,7 +4,7 @@ description: Coding-agent writing with local checks and en-US, zh-TW, and ja-JP 
 keep-coding-instructions: true
 ---
 
-<!-- Source SHA-256: 31354492497c660873a42fdabfe08cd87af2c359930ae3152f499161e866d560 -->
+<!-- Source SHA-256: 0003a9d12adb42e3da0654d6bf1c58dc781a8e645b097b841f4908f00880eaaf -->
 
 # Clear Writing Kit for Claude Code
 
