@@ -95,7 +95,7 @@ File updates use temporary files and atomic replacement. Backups are stored unde
 | Global instructions | `CLAUDE.md` or `AGENTS.md` in the active host configuration directory | Only the bounded `clear-writing-kit` marker block is managed |
 | Claude output style | `settings.json` and the host output-style target | Existing settings are preserved. `outputStyle` is set only after backup |
 
-The runtime payload contains no repository path dependency after installation. The MCP server exposes one tool, `lintText`, with `text`, `language`, and `genre` inputs.
+The runtime payload contains no repository path dependency after installation. At startup, `cwk.mjs` sets `KUROMOJIN_DIC_PATH` to the sibling `dict/` directory, so the Japanese tokenizer does not need the repository's `node_modules`. The MCP server exposes one tool, `lintText`, with `text`, `language`, and `genre` inputs.
 
 ## Verification
 
