@@ -100,7 +100,7 @@ None.
 Workflow: DONE
 Step: 5 of 5
 Last activity: 2026-10-10. T-05 converged at 60279f3 (test PASS, audit APPROVE)
-Next step: goal-backward verification, then /gal finalize
+Next step: owner records OA-01 to OA-03 evidence, then /gal finalize
 Current Task: —
 Task Base Commit: 462da9f24ce37818669c8b9abea39a29b128898b
 Task Final Commit: 60279f398393f362d2008e45eb4b95217ccbf1be
@@ -149,6 +149,22 @@ Prompt refreshed after final architecture verdict APPROVE, human approval, and p
   - Test Results: no
   - Review Results: no
 - Resume action: After the owner decision, apply the chosen test or spec change, run `gal boundary-check` for T-03, commit, then dispatch T-03 test and audit.
+
+#### Interrupted Phase — finalize / ACCEPTANCE
+
+- Status: OPEN
+- Mode: already-on-main
+- Merge state: not-applicable
+- Outstanding rows:
+  - OA-01: Run `ccync upgrade clear-writing-kit` and `ccync sync`. Both commands complete and sync output contains no collision, skip, unresolved placeholder, or unreadable registration.
+  - OA-02: Inspect `%USERPROFILE%\.ccync\build\mcp\projected-state.json`, `%USERPROFILE%\.claude.json`, `%USERPROFILE%\.codex\config.toml`, `%USERPROFILE%\.copilot\mcp-config.json`, `%APPDATA%\opencode\opencode.json`, and `%USERPROFILE%\.gemini\config\mcp_config.json`. State owns claude, copilot, opencode, codex, and agy. Each native config has one vector: `node`, one common pinned `dist/cwk.mjs`, `mcp`.
+  - OA-03: In all five hosts, select the `clear-writing-kit-textlint` server, run its server-scoped `tools/list`, and call the three `lintText` probes. The selected server lists only `lintText`, and the probes return `prose-punctuation`, `prose-punctuation`, and `ja-document-style`.
+- Prerequisite: `ccync show clear-writing-kit` must report a commit that contains root `mcp.json`. The implementation commits are local on `main` and not pushed, so OA-01 to OA-03 stay `NotRun` until the commits are published and pinned.
+- Known deviation for OA-02: in isolated tests, ccync 0.1.5 rendered the Claude vector as a `powershell -NoProfile -Command` launcher that runs `& 'node' '<cache>/dist/cwk.mjs' 'mcp'`. The other four hosts rendered `node` directly. The owner decides whether OA-02 accepts the Claude launcher.
+- What to check: The three OA rows in the real home after the implementation commits are published and pinned by ccync.
+- Expected result: OA-01 has no failure label, OA-02 has one common pinned `dist/cwk.mjs` vector per host and no second lint server, and OA-03 has 20 PASS cells.
+- Pass/fail rule: Each row passes only with the owner's recorded `accepted` or `waived` evidence in `#### Owner Acceptance Evidence`. Missing, skipped, or `NotRun` evidence fails.
+- Resume action: /gal finalize
 
 ## Tasks
 

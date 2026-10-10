@@ -6,7 +6,7 @@
 
 | Plan | File | Plan Phase | Last Activity |
 | --- | --- | --- | --- |
-| feat-ccync-local-checks | `.dev/plans/feat-ccync-local-checks.prompt.md` | Pipeline 執行中。T-05 已完成（`60279f3`）。next: goal-backward verification。 | 2026-10-10 |
+| feat-ccync-local-checks | `.dev/plans/feat-ccync-local-checks.prompt.md` | T-01 至 T-05 完成，goal-verified。Finalize 停在 Owner Acceptance OA-01 至 OA-03。 | 2026-10-10 |
 
 <!-- When more than one plan is active, table order is priority order. `/gal whats-next` and `/gal wrap-up` use the first non-terminal row; if all rows are terminal, they fall back to the first row. -->
 
@@ -39,7 +39,7 @@
 
 | Plan | Source Plan | Last Session | Stopped At | Next Step | Context |
 | --- | --- | --- | --- | --- | --- |
-| feat-ccync-local-checks | `.dev/plans/feat-ccync-local-checks.md` | 2026-10-10 | T-05 converged | 執行 goal-backward verification | Human approval、Architecture Review、Engineering Review、prompt-check 與 equivalence gate 均已通過。Apply 與 uninstall 共用 fail-closed lock。 |
+| feat-ccync-local-checks | `.dev/plans/feat-ccync-local-checks.md` | 2026-10-10 | finalize / ACCEPTANCE | 發布 commit 後完成 OA-01 至 OA-03，再執行 `/gal finalize` | Human approval、Architecture Review、Engineering Review、prompt-check 與 equivalence gate 均已通過。Apply 與 uninstall 共用 fail-closed lock。 |
 
 ## Session Execution Context
 
