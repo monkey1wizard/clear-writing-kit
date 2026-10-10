@@ -97,10 +97,10 @@ None.
 
 ## Status
 
-Workflow: IMPLEMENT
+Workflow: DONE
 Step: 5 of 5
 Last activity: 2026-10-10. T-05 converged at 60279f3 (test PASS, audit APPROVE)
-Next step: run goal-backward verification
+Next step: goal-backward verification, then /gal finalize
 Current Task: —
 Task Base Commit: 462da9f24ce37818669c8b9abea39a29b128898b
 Task Final Commit: 60279f398393f362d2008e45eb4b95217ccbf1be
