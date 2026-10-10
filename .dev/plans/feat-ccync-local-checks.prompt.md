@@ -99,11 +99,11 @@ None.
 
 Workflow: IMPLEMENT
 Step: 3 of 5
-Last activity: 2026-10-10. T-03 implement resumed with option A
-Next step: test T-03
-Current Task: T-03
+Last activity: 2026-10-10. T-03 converged at dc11252 (test PASS, audit APPROVE)
+Next step: start T-04
+Current Task: —
 Task Base Commit: 5deadcda11f46f81389ea7bb130720f16660d2c7
-Task Final Commit: —
+Task Final Commit: dc1125299f43857c8ff3bb18f90797cff257726a
 Test Retry Count: 0
 Review Retry Count: 0
 
@@ -143,7 +143,7 @@ Prompt refreshed after final architecture verdict APPROVE, human approval, and p
 - Workflow at interruption: IMPLEMENT
 - Durable state present:
   - Task Base Commit: 5deadcd
-  - Task Final Commit: missing
+  - Task Final Commit: dc1125299f43857c8ff3bb18f90797cff257726a
   - Worktree: dirty
   - Test Results: no
   - Review Results: no
@@ -161,7 +161,7 @@ Prompt refreshed after final architecture verdict APPROVE, human approval, and p
   - **Dependencies**: T-01. Both tasks modify `tests/test_artifacts.py`, so run them in order.
   - **Change**: Update the maintained generator text, regenerate the committed block, and refresh only generator-owned digest expectations. Leave runtime selection and installation guidance unchanged.
   - **Acceptance**: TP-06 proves exact generated equality, no `.clear-writing-kit` checker path, and measured size below 2,048 bytes.
-- [ ] T-03 — Enforce one-owner MCP mutation safety in the direct installer.
+- [x] T-03 — Enforce one-owner MCP mutation safety in the direct installer. *(dc11252)*
   - **Files**: `src/install/plan.ts`, `src/install/apply.ts`, `src/install/uninstall.ts`, `src/install/lock.ts`, `writing/test/installer-registration.test.cjs`, `writing/test/installer-ownership.test.cjs`, `dist/cwk.mjs`. The ownership test was added on 2026-10-10 because its exact-match adoption case contradicts R6.
   - **Dependencies**: T-01. TP-05 supplies reverse-order ccync collision evidence.
   - **Change**: Use the manifest entry for the same host, kind, and name as the only ownership proof. Add the plan-time gate in `readHostState` and `computePlan`. Permit absent create and owned safe transitions only. Convert unowned, unreadable, and fingerprint-drifted entries to blocking conflicts. Add a shared exclusive-file lock helper. Apply acquires the lock before internal `computePlan`. Uninstall acquires it before reading the manifest. Both hold it through final manifest persistence and release it in `finally` on success or error. Refuse competing and stale locks before writes. Apply rereads manifest and live registration evidence immediately before the first MCP mutation and rejects changes already visible. Preserve uninstall exact-match behavior and rebuild the bundle.
@@ -217,7 +217,7 @@ For headless execution, every covering row also requires executor log terminal s
 Run: 2026-10-09 (clock rolled to 2026-10-10 during the run)
 Mode: spec
 Browser Route: No runnable browser route (not applicable; no browser surface)
-Task Final Commit: — (task base 3c68d3a); HEAD unchanged after the run
+Task Final Commit: dc1125299f43857c8ff3bb18f90797cff257726a (task base 3c68d3a); HEAD unchanged after the run
 Total: 5 | Passed: 5 | Failed: 0 | Skipped: 0 (raw command outcomes; TP-05 is judged FAIL on proof adequacy, see Findings)
 
 | TP | Command | Result | Evidence |
@@ -247,7 +247,7 @@ Verdict: FAIL
 Run: 2026-10-10
 Mode: spec
 Browser Route: No runnable browser route (not applicable; no browser surface)
-Task Final Commit: — (task range 3c68d3a..71f9028); HEAD stayed at 71f9028 during and after the run
+Task Final Commit: dc1125299f43857c8ff3bb18f90797cff257726a (task range 3c68d3a..71f9028); HEAD stayed at 71f9028 during and after the run
 Total: 5 | Passed: 5 | Failed: 0 | Skipped: 0
 
 | TP | Command | Result | Evidence |
@@ -316,6 +316,28 @@ Findings
 1. Generator-exercise judgment: TP-06 does exercise the generator. `tests/test_artifacts.py:356-367` runs `scripts/generate-agents-block.py` through `subprocess` into a temp file and compares those bytes to the committed file. It does not compare a file to itself. Severity: none.
 2. Out-of-scope references to `~/.clear-writing-kit/cwk.mjs` remain (T-04 durable docs, not T-02). `README.md:105`, `README.md:205`, `README.md:305`, `docs/installer.md:61` and related lines 52/54/60/62, and `docs/verification.md:73` describe the direct `cwk install` launcher and payload. These describe installer behavior, and the direct installer still creates that path (`src/install/apply.ts:46`, `src/install/plan.ts:175`, `src/install/verify.ts:297`). None of them is a persistent-instruction fallback. No other generated instruction surface still contains `<home>` or the `.clear-writing-kit/cwk.mjs check` template. `git grep "cwk.mjs check"` matches only the block, its generator, and its test. R5 covers only the generated block. Whether the README or docs should say that ccync installs do not create this path belongs to T-04. Severity: low, out of T-02 scope.
 3. Reworded runtime sentence (`install/agents-block.md:6`): "If it is unavailable, run the installed `cwk.mjs check` command with one of these runtime commands". This is accurate because it names no path that ccync does not create. It also follows the project prose rules: no semicolons, em dashes, or parenthetical asides, and the condition comes before the action. One limitation: the sentence no longer tells the agent where `cwk.mjs` is (ccync uses `${PLUGIN_ROOT}/dist/cwk.mjs`, and direct install uses `~/.clear-writing-kit/cwk.mjs`). An agent without `lintText` must find it on its own. This is a usability gap, not an inaccuracy, and R5 accepts it by design. Severity: informational.
+
+### [T-03] 2026-10-10
+
+| TP | Command | Result | Evidence |
+| --- | --- | --- | --- |
+| TP-05 | `CCYNC_BIN=C:\Users\leetz\bin\ccync.exe; node --test --test-name-pattern "ccync projects local clear-writing-kit MCP" writing/integration/ccync-projection.test.cjs` | PASS | tests 1, pass 1, fail 0. Covers cwk-first then ccync collision (R7 order 1). |
+| TP-07 | `node --test --test-name-pattern "installer MCP safe transitions" writing/test/installer-registration.test.cjs` | PASS | tests 1, pass 1, fail 0. Counts come from the fixture spy `mutationCalls` filtered by family/verb (installer-fixtures.cjs:167), not constants. absent: create remove/add 0/1; owned-missing: create 0/1; owned-current: none 0/0; owned-stale: update 1/1. Also asserts live vector and manifest fingerprint after each step. |
+| TP-08 | `node --test --test-name-pattern "installer MCP ownership conflicts" writing/test/installer-registration.test.cjs` | PASS | tests 1, pass 1, fail 0. unowned, unreadable, drifted, ccync-first each: status=blocked, hash=null (asserted `plan.hash === null`, installer-registration.test.cjs:828), remove/add 0/0, earlier and guessed hashes rejected as mismatch, live and manifest bytes preserved, no lock left. ccync-first is R7 order 2. |
+| TP-09 | `node --test --test-name-pattern "installer apply rejects ownership evidence drift" writing/test/installer-registration.test.cjs` | PASS | tests 1, pass 1, fail 0. Drift injected after computePlan via beforeOwnershipReread; the second read is proven (`rereads.length === 1`, line 919). Manifest change, manifest removal and live change each give failed at mcp, remove/add 0/0, manifest bytes and live registration equal those seen at reread. |
+| TP-10 | `node --test --test-name-pattern "installer mutations share one ownership lock" writing/test/installer-registration.test.cjs` | PASS | tests 1, pass 1, fail 0. Apply-holding (competing apply + uninstall refused), uninstall-holding (competing apply refused), and stale lock (apply and uninstall refused, lock bytes unchanged, plan does not take lock). Refusal message names the lock path; snapshots show zero host mutation calls and unchanged manifest, launcher and live state. |
+| TP-11 | `node --test --test-name-pattern "installer ownership lock releases after failure" writing/test/installer-registration.test.cjs` | PASS | tests 1, pass 1, fail 0. Lock confirmed held at injection, then absent after the apply error (and after a thrown afterLock) and after the uninstall error; uninstall retry returns done. Zero MCP calls, manifest and live preserved. |
+| TP-12 | `node --test --test-name-pattern "direct installer owned lifecycle" writing/test/installer-registration.test.cjs` | PASS | tests 1, pass 1, fail 0. Claude and Codex: install (0/1), verify pass, upgrade owned-current (0/0), verify pass, uninstall (1/0), manifest and lock gone; exact fingerprints match. |
+| TP-13 | `cmd.exe /d /c npm --prefix writing run build` x2, each followed by `git diff --exit-code -- dist` | PASS | Both builds exit 0; `git diff --exit-code -- dist` exit 0 after each (empty diff; only an LF/CRLF warning). HEAD stayed dc11252. |
+| TP-16 (partial) | `cmd.exe /d /c npm --prefix writing test` | PASS | tests 75, pass 75, fail 0, cancelled 0, skipped 0, exit 0. Also `node --test writing/test/installer-ownership.test.cjs`: tests 8, pass 8, fail 0. |
+
+Verdict: PASS
+
+Findings
+
+None blocking. Observations:
+- R7 both orders are covered: cwk-first then ccync by TP-05; ccync-first then cwk by TP-08 "ccync-first". The ccync-first case runs only for the codex host (installer-registration.test.cjs:804-813); the claude host is covered by the generic unowned case (line 770), same code path.
+- The TP-10 stale-lock case asserts the lock bytes are unchanged and zero mutation calls, so the "never auto-removed" requirement is proven.
 
 ## Review Results
 
@@ -444,6 +466,56 @@ T-02 deletes two generator lines and rewords one sentence in `scripts/artifacts.
 Security finding: none. Protected Path finding: none. The change is confined to the reviewed T-02 scope of `scripts/artifacts.py`, the committed `install/agents-block.md` projection, and `tests/test_artifacts.py`.
 
 <!-- AUDIT_REVIEW: CLEAR -->
+
+### [T-03] Audit 2026-10-10
+
+**Date:** 2026-10-10
+**Findings:** 3 total, 0 critical, 0 high, 0 medium, 3 low (all NON-BLOCKING)
+Verdict: APPROVE
+
+#### Summary
+
+Scope: `git diff 5deadcd dc11252 -- src writing/test` (HEAD dc11252). Build reproducibility: `npm --prefix writing run build` then `git diff --exit-code -- dist` exits 0, so the committed bundle is reproducible. `npm --prefix writing test` passes (75/75). No tracked file changed; no stray lock or temp artifacts found. Security finding: none. Protected Path finding: none (src/install/ changes match the CLEAR architecture review for T-03).
+
+Checked and found sound:
+- Lock (`src/install/lock.ts`): `open(path, "wx")` is an exclusive create on Windows and POSIX. Any open failure refuses; EEXIST gives the "held" message, other codes the "unavailable" message. A failed token write removes the file this run created and refuses. Release reads the file and removes it only when it contains this run's UUID token, and never throws. Stale locks are never auto-removed. The message names only the lock path and the recovery check; the lock body holds token, command, pid, and timestamp, with no config contents. An unwritable or missing home gives a clean refusal before any write.
+- Apply: `withInstallerLock` wraps `applyLocked`, so the lock is taken before `computePlan` and every return or throw releases it in `finally`. A blocked plan returns a `mismatch` error before the hash comparison, and `hash` is null, so no hash can apply. The ownership reread sits in the `mcp` step before `mcp remove` (update) and `mcp add`. It compares manifest bytes against the last bytes this run read or wrote, the manifest MCP fingerprint, and the live registration. A mismatch returns `failed` with no MCP mutation and no further manifest save. The `owned-current` (none) action performs no MCP mutation and needs no reread.
+- Uninstall: lock acquired after host resolution and before the manifest read; the removal logic is unchanged. Host resolution and "not verified" refusals take no lock and write nothing.
+- Plan: `classifyMcpOwnership` is correct for all 7 states (absent, owned-missing, owned-current, owned-stale, unowned, unreadable, drifted). Blocked plans have `hash: null` and `status: "blocked"`. `targetStates.mcp` carries status, full live fingerprint, and manifest fingerprint, so the hash still covers the full registration vector. Unreadable reasons are fixed strings from `registration.ts` and include no host output, config contents, or secrets.
+- Backward compatibility: the manifest MCP fingerprint is written by the unchanged `mcpFingerprint(registration)`, the same hash the live read computes, so a direct install from the previous version is `owned-current` or `owned-stale`. Intentional behavior changes: `plan` now exits 1 for a blocked plan (the old code listed an unowned or different entry as an update), and an install with a missing MCP manifest entry no longer adopts the live entry. Both match R6. CLI exit codes for applied, failed, and refused are unchanged.
+- Tests: use temp fixture homes with try/finally cleanup; the lock, stale-lock, failure-release, and unowned-adoption tests are deterministic and need no real home or sleeps.
+
+#### Open Findings
+
+**[LOW] FINDING-001: Reread failure message overstates the manifest guarantee — NON-BLOCKING**
+- File: `src/install/apply.ts:258`
+- Evidence: the message says "the install manifest was not written again". Earlier steps (payload, plugin) in the same run already persisted the manifest via `persistManifest`.
+- Failure scenario: a changed live entry is detected at the `mcp` step after `payload` and `plugin` completed. The output reports `failed` with `completed: [payload, plugin]` and the manifest holds those completed records. The sentence is accurate only for the MCP record, so a reader might expect the manifest to be fully untouched.
+- Recommended fix: reword to "no MCP manifest record was written". Confidence: 8/10.
+
+**[LOW] FINDING-002: Release leaves the lock when its read fails transiently — NON-BLOCKING**
+- File: `src/install/lock.ts:55`
+- Evidence: `release` swallows any `readFile` error (for example an EBUSY/EPERM from antivirus scanning on Windows) and leaves the lock.
+- Failure scenario: apply finishes, the release read fails once, and the lock stays. The next apply or uninstall refuses and the user must follow the documented manual recovery. This is a fail-closed outcome with no data risk.
+- Recommended fix: optionally retry the read once or twice before giving up. Confidence: 8/10.
+
+**[LOW] FINDING-003: Re-export duplicates the lock names — NON-BLOCKING**
+- File: `src/install/apply.ts:13`
+- Evidence: `export { INSTALLER_LOCK_NAME, installerLockPath } from "./lock.js"` re-exports lock names from apply, which duplicates the public surface of `lock.ts`. Additionally, after each step `knownManifestText` is re-read from disk, so a foreign write between the save and the re-read is accepted as this run's own.
+- Failure scenario: no functional defect. This is a readability issue and a narrow window that sits within the plan's stated "manual writers that ignore the lock are outside the guarantee" boundary.
+- Recommended fix: import the names from `lock.js` where needed, or keep the re-export if the test harness depends on it; compute `knownManifestText` from the bytes that `saveManifest` wrote, if it can return them. Confidence: 8/10.
+
+#### Remediation Tracking
+
+| Finding | Severity | Status |
+| --- | --- | --- |
+| FINDING-001 | LOW | OPEN (non-blocking) |
+| FINDING-002 | LOW | OPEN (non-blocking) |
+| FINDING-003 | LOW | OPEN (non-blocking) |
+
+<!-- AUDIT_REVIEW: CLEAR -->
+
+Orchestrator final verification (Opus, 2026-10-10): reviewed `src/install/lock.ts`, `apply.ts`, `plan.ts`, and `uninstall.ts` in `5deadcd..dc11252`. Ownership classification, `wx` lock acquisition with token-checked release in `finally`, and the pre-mutation reread match R6 and R7. No Security or Protected Path finding. Low findings 1 to 3 stay open as non-blocking.
 
 ## Debug Log
 

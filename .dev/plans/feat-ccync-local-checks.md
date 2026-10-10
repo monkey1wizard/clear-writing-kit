@@ -442,7 +442,7 @@ parsed result object 或指定的 empty diff。只有 PASS label 而沒有上述
     保持不變。
   - **Acceptance**：TP-06 通過。產生結果完全相同、不含
     `.clear-writing-kit` checker path，且實測大小小於 2,048 bytes。
-- [ ] T-03 — 在 direct installer 強制執行 one-owner MCP mutation safety。
+- [x] T-03 — 在 direct installer 強制執行 one-owner MCP mutation safety。 *(dc11252)*
   - **Files**：`src/install/plan.ts`、`src/install/apply.ts`、
     `src/install/uninstall.ts`、`src/install/lock.ts`、
     `writing/test/installer-registration.test.cjs`、`dist/cwk.mjs`。
