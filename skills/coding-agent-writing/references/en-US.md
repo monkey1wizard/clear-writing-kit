@@ -28,5 +28,8 @@ Meaning-preserving rewrite: "If the token expires, the request may fail." Preser
 
 The full entries are in the [reference list](https://github.com/monkey1wizard/clear-writing-kit/blob/main/docs/references.md).
 
-- Short sentences and conditions before actions: this optional guidance derives from `[ASDSTE1002025]`. The limited adoption, the exclusion of the controlled vocabulary, and the decision not to claim the full standard are project choices.
-- Project-authored rules: all other content in this file, including the document and conversation rules, the modal distinctions, and the examples.
+- Short sentences and conditions before actions: this optional guidance derives from `[ASDSTE1002025]`. The official ASD-STE100 site applies condition-first order to conditions in work steps. Short sentences also derive from the Write accessible documentation page of `[GoogleDevStyle]` and the Writing tips page of `[MicrosoftStyle]`. The limited adoption, the exclusion of the controlled vocabulary, and the decision not to claim the full standard are project choices.
+- United States spelling: this rule derives from the Use US spelling page of `[MicrosoftStyle]` and the Highlights page of `[GoogleDevStyle]`.
+- Document structure: starting with the purpose and keeping one topic per paragraph derive from `[FPLG2011]` sections II and III.c.4 and `[ISO2023]` clause 5.3.5.
+- Modal distinctions: distinct use of must, may, and should derives from `[FPLG2011]` section III.a.1.iv. Keeping can distinct is a project choice.
+- Project-authored rules: all other content in this file, including action verbs and precise nouns, the conversation rules, and the examples.

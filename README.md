@@ -10,7 +10,7 @@ Writing rules, skills, and checks for en-US, zh-TW, and ja-JP.
 
 Clear Writing Kit provides writing rules for coding agents and Web assistants. Accuracy comes first, clarity second, and plain language third. The rules cover en-US, zh-TW, and ja-JP.
 
-The guidance applies the reader outcomes of ISO 24495-1. English also uses selected structural principles associated with ASD-STE100. This repository does not claim full compliance with either standard. The [reference list](docs/references.md) gives the APA 7 entry for each external source that informed a rule.
+The guidance applies the reader outcomes of ISO 24495-1. English also uses selected structural principles associated with ASD-STE100. Other rules cite the U.S. Federal Plain Language Guidelines, the Google and Microsoft style guides, the 文化審議会 guidance 公用文作成の考え方, and the JTF Japanese style guide. This repository does not claim full compliance with any of these sources. A rule without a cited source is a project choice. The [reference list](docs/references.md) gives the APA 7 entry for each external source that informed a rule. The `Sources` section of each rule file names the rules that each source supports.
 
 ### Choose the right files
 
@@ -119,7 +119,7 @@ The installer places the runtime payload in `~/.clear-writing-kit/<version>/`, c
 
 Clear Writing Kit 提供 coding agents 與 Web 助理使用的寫作規則。優先順序是準確、清楚、淺白。支援語言為 en-US、zh-TW 與 ja-JP。
 
-規則採用 ISO 24495-1 的讀者成果原則。英文另採部分 ASD-STE100 結構原則。本儲存庫不宣稱完全符合這兩項標準。規則參考的每個外部來源，都以 APA 7 格式列在[參考文獻清單](docs/references.md)。
+規則採用 ISO 24495-1 的讀者成果原則。英文另採部分 ASD-STE100 結構原則。其他規則引用美國聯邦淺白語言指引、Google 與 Microsoft 的寫作風格指南、文化審議會的「公用文作成の考え方」，以及 JTF 日文風格指南。本儲存庫不宣稱完全符合這些來源。沒有標示來源的規則，是本專案自己的決定。規則參考的每個外部來源，都以 APA 7 格式列在[參考文獻清單](docs/references.md)。每份規則檔的 `Sources` 一節，會寫明各來源支持哪些規則。
 
 ### 選擇適合的檔案
 
@@ -228,7 +228,7 @@ Claude 輸出樣式名稱與產生的檔名也改為 `clear-writing-kit`。既�
 
 Clear Writing Kitは、コーディングエージェントとWebアシスタント向けの文章規則を提供する。正確性、明確さ、平易さの順に優先する。対応言語はen-US、zh-TW、ja-JPである。
 
-ISO 24495-1の読者中心の原則を採用している。英語には、ASD-STE100の一部の構成原則も適用する。いずれの規格についても、完全準拠を表明するものではない。規則の根拠とした外部資料は、[参考文献一覧](docs/references.md)にAPA 7形式で記載している。
+ISO 24495-1の読者中心の原則を採用している。英語には、ASD-STE100の一部の構成原則も適用する。そのほかの規則は、米国連邦政府の平易な言葉のガイドライン、GoogleとMicrosoftの文章スタイルガイド、文化審議会の「公用文作成の考え方」、JTF日本語標準スタイルガイドを根拠としている。いずれの資料についても、完全準拠を表明するものではない。根拠を示していない規則は、このプロジェクトの判断である。規則の根拠とした外部資料は、[参考文献一覧](docs/references.md)にAPA 7形式で記載している。各規則ファイルの出典の節には、資料ごとに根拠とした規則を記載している。
 
 ### 使用するファイルの選択
 

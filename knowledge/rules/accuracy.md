@@ -14,7 +14,7 @@ sources:
 generated:
   by: process:clear-writing-kit-okf
 source_path: skills/coding-agent-writing/references/accuracy.md
-source_sha256: 6f84e6dfdccb3b6a5b57b88ad7947abb6bb7291949b9ffe1e3e4a0c330f0363f
+source_sha256: da883e674ec96caa31ea44548b7540c961aff2437737a293713d7fbaee17f335
 ---
 
 # Shared accuracy and clarity rules
@@ -73,8 +73,13 @@ Compare the final text with its source. Verify facts, numbers, units, deadlines,
 
 The full entries are in the [reference list](https://github.com/monkey1wizard/clear-writing-kit/blob/main/docs/references.md).
 
-- Plain language: the four reader outcomes derive from `[ISO2023]`. The priority of accuracy over plainness, the note that these are project rules, and the safety limits are project choices.
+- Plain language: the four reader outcomes derive from `[ISO2023]`. Putting the most important information first derives from `[ISO2023]` clause 5.2.2 a) and `[FPLG2011]` section II. The priority of accuracy over plainness, the note that these are project rules, and the safety limits are project choices.
+- Sentences and actors: one main idea per sentence derives from `[ISO2023]` clause 5.3.4 a) and `[FPLG2011]` section III.b.1. Naming the actor and using active voice derive from `[ISO2023]` clause 5.3.3 c), `[FPLG2011]` section III.a.1.i, the Active voice page of `[GoogleDevStyle]`, and the Verbs page of `[MicrosoftStyle]`. Keeping qualifications attached to the claim they limit is a project choice.
+- Conditions before actions: this rule derives from the Sentence structure page of `[GoogleDevStyle]`, which applies it to instructions. Applying it to all prose is a project choice. `[FPLG2011]` section III.b.4 recommends the main idea first when a condition is long.
+- Procedures and descriptions: imperative mood for procedures and indicative mood for explanations derive from the Verbs page of `[MicrosoftStyle]`.
+- Code in text: keeping code element names unchanged derives from the Code in text page of `[GoogleDevStyle]` and the Formatting developer text elements page of `[MicrosoftStyle]`.
+- Modal strength: distinct use of must, may, and should derives from `[FPLG2011]` section III.a.1.iv. Keeping can distinct and keeping real uncertainty are project choices.
 - Protected items: the addition of URLs and quotations to the items that stay unchanged was informed by `[SpeakHumanTW2026]` at commit `e180f0a`. No text was copied. The final scope is a project choice.
 - Lists and layout: the flexible use of lists, tables, and layout was informed by `[SpeakHumanTW2026]` at commit `e180f0a`. No text was copied. The final scope is a project choice.
 - Meaning check: the relative weight of each point and the function of each sentence were informed by `[Yomiyasu2026]` at commit `c2ffae6`. No text was copied. The final scope is a project choice.
-- Project-authored rules: facts and inference, modal strength, uncertainty, partial results, one main idea per sentence, conditions before actions, actors, procedures and descriptions, punctuation, the meaning check, and the examples.
+- Project-authored rules: facts and inference, uncertainty, partial results, the punctuation limits, the meaning check, and the examples. The cited style guides limit semicolons, dashes, and parentheses but do not ban them.

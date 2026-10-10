@@ -98,13 +98,15 @@ test("Japanese report-style documentation contract", () => {
     "会話の中で文書を作成する場合は、その文書部分に説明文書の規則を適用する。",
     "利用者やプロジェクトが別の文体を指定した場合は、その指定に従う。",
     "コード、識別子、コマンド、パス、URL、引用、エラーメッセージ、製品名は、そのまま維持する。",
-    "`[Bunka2022]` のⅢ－１ ウに基づく。"
+    "常体を「である」の形で書く規則は、`[Bunka2022]` のⅢ－１ ウ（建議 p.(7)、解説 p.30）に基づく。",
+    "文末に「だ」「だろう」「だった」を使わないことと、この規則を本プロジェクトの文書に限ることは、このプロジェクトの判断である。"
   ]) assert.ok(guide.includes(phrase), phrase);
   for (const phrase of [
     message,
     "| ja-document-style | ja-JP documents only |",
     "The rule applies to documents that this project writes. This rule does not cover all Japanese text. Consumer-facing manuals generally use polite forms. Conversation prose uses polite forms. An explicit user or project style takes priority. Quotations, code, and product names stay unchanged.",
     "It skips a sentence that ends with the whole word `まだ` or `ただ`.",
+    "Reporting every sentence-final だ form is a project choice.",
     "`[Bunka2022]`"
   ]) assert.ok(checks.includes(phrase), phrase);
   assert.match(read("docs/references.md"), /^- `\[Bunka2022\]` 文化審議会\. \(2022\)\. \*\[公用文作成の考え方（建議）\]\(https:\/\/www\.bunka\.go\.jp\/seisaku\/bunkashingikai\/kokugo\/hokoku\/pdf\/93651301_01\.pdf\)\*/m);

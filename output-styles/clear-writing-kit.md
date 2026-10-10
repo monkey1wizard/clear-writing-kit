@@ -4,7 +4,7 @@ description: Coding-agent writing with local checks and en-US, zh-TW, and ja-JP 
 keep-coding-instructions: true
 ---
 
-<!-- Source SHA-256: a5068b2231cfb2ca9f74a8cbf30bc3ab80a276851d228ad5ee4f55439ff5bde2 -->
+<!-- Source SHA-256: 31354492497c660873a42fdabfe08cd87af2c359930ae3152f499161e866d560 -->
 
 # Clear Writing Kit for Claude Code
 
@@ -94,11 +94,16 @@ Compare the final text with its source. Verify facts, numbers, units, deadlines,
 
 The full entries are in the [reference list](https://github.com/monkey1wizard/clear-writing-kit/blob/main/docs/references.md).
 
-- Plain language: the four reader outcomes derive from `[ISO2023]`. The priority of accuracy over plainness, the note that these are project rules, and the safety limits are project choices.
+- Plain language: the four reader outcomes derive from `[ISO2023]`. Putting the most important information first derives from `[ISO2023]` clause 5.2.2 a) and `[FPLG2011]` section II. The priority of accuracy over plainness, the note that these are project rules, and the safety limits are project choices.
+- Sentences and actors: one main idea per sentence derives from `[ISO2023]` clause 5.3.4 a) and `[FPLG2011]` section III.b.1. Naming the actor and using active voice derive from `[ISO2023]` clause 5.3.3 c), `[FPLG2011]` section III.a.1.i, the Active voice page of `[GoogleDevStyle]`, and the Verbs page of `[MicrosoftStyle]`. Keeping qualifications attached to the claim they limit is a project choice.
+- Conditions before actions: this rule derives from the Sentence structure page of `[GoogleDevStyle]`, which applies it to instructions. Applying it to all prose is a project choice. `[FPLG2011]` section III.b.4 recommends the main idea first when a condition is long.
+- Procedures and descriptions: imperative mood for procedures and indicative mood for explanations derive from the Verbs page of `[MicrosoftStyle]`.
+- Code in text: keeping code element names unchanged derives from the Code in text page of `[GoogleDevStyle]` and the Formatting developer text elements page of `[MicrosoftStyle]`.
+- Modal strength: distinct use of must, may, and should derives from `[FPLG2011]` section III.a.1.iv. Keeping can distinct and keeping real uncertainty are project choices.
 - Protected items: the addition of URLs and quotations to the items that stay unchanged was informed by `[SpeakHumanTW2026]` at commit `e180f0a`. No text was copied. The final scope is a project choice.
 - Lists and layout: the flexible use of lists, tables, and layout was informed by `[SpeakHumanTW2026]` at commit `e180f0a`. No text was copied. The final scope is a project choice.
 - Meaning check: the relative weight of each point and the function of each sentence were informed by `[Yomiyasu2026]` at commit `c2ffae6`. No text was copied. The final scope is a project choice.
-- Project-authored rules: facts and inference, modal strength, uncertainty, partial results, one main idea per sentence, conditions before actions, actors, procedures and descriptions, punctuation, the meaning check, and the examples.
+- Project-authored rules: facts and inference, uncertainty, partial results, the punctuation limits, the meaning check, and the examples. The cited style guides limit semicolons, dashes, and parentheses but do not ban them.
 
 ## Embedded en-US
 
@@ -130,8 +135,11 @@ Meaning-preserving rewrite: "If the token expires, the request may fail." Preser
 
 The full entries are in the [reference list](https://github.com/monkey1wizard/clear-writing-kit/blob/main/docs/references.md).
 
-- Short sentences and conditions before actions: this optional guidance derives from `[ASDSTE1002025]`. The limited adoption, the exclusion of the controlled vocabulary, and the decision not to claim the full standard are project choices.
-- Project-authored rules: all other content in this file, including the document and conversation rules, the modal distinctions, and the examples.
+- Short sentences and conditions before actions: this optional guidance derives from `[ASDSTE1002025]`. The official ASD-STE100 site applies condition-first order to conditions in work steps. Short sentences also derive from the Write accessible documentation page of `[GoogleDevStyle]` and the Writing tips page of `[MicrosoftStyle]`. The limited adoption, the exclusion of the controlled vocabulary, and the decision not to claim the full standard are project choices.
+- United States spelling: this rule derives from the Use US spelling page of `[MicrosoftStyle]` and the Highlights page of `[GoogleDevStyle]`.
+- Document structure: starting with the purpose and keeping one topic per paragraph derive from `[FPLG2011]` sections II and III.c.4 and `[ISO2023]` clause 5.3.5.
+- Modal distinctions: distinct use of must, may, and should derives from `[FPLG2011]` section III.a.1.iv. Keeping can distinct is a project choice.
+- Project-authored rules: all other content in this file, including action verbs and precise nouns, the conversation rules, and the examples.
 
 ## Embedded zh-TW
 
@@ -228,9 +236,12 @@ textlintの結果だけで自然さを判断しない。意味と読みやすさ
 
 完全な書誌情報は[参考文献一覧](https://github.com/monkey1wizard/clear-writing-kit/blob/main/docs/references.md)にある。
 
-- 説明文書の文体：報告書型の文書をである体で書き、文末に「だ」「だろう」「だった」を使わない規則は、`[Bunka2022]` のⅢ－１ ウに基づく。この規則を本プロジェクトの文書に限ることと、取扱説明書の扱いは、このプロジェクトの判断である。
+- 説明文書の文体：常体を「である」の形で書く規則は、`[Bunka2022]` のⅢ－１ ウ（建議 p.(7)、解説 p.30）に基づく。同書の解説は、解説・広報等では「だ」の形を使う場合もあるとしている。文末に「だ」「だろう」「だった」を使わないことと、この規則を本プロジェクトの文書に限ることは、このプロジェクトの判断である。
+- 取扱説明書：一般の利用者に向けた取扱説明書では通常は敬体を使うという記述は、`[JTF2026]` の1.1.1に基づく。
+- 見出しと箇条書き：見出しに句点を付けないことと、箇条書きの文体をそろえることは、`[JTF2026]` の1.1.2と1.1.3に基づく。
+- 構成と表記：結論を先に示すことは `[Bunka2022]` のⅢ－４ イ、略語を初出で説明することは同書のⅠ－６ ク、文を句点で終えることは `[JTF2026]` の3.1.1に基づく。
 - 定型的な言い回し：5類の分類と、言い換えを意味が変わらない場合に限る考え方は、`[Yomiyasu2026]` のコミット `c2ffae6` から着想を得た。文章は複製していない。例、適用範囲、技術用語の保護、書き手の判定に使わない制限は、このプロジェクトの判断である。
-- その他の規則：見出し、箇条書き、会話の敬体、文体指定の優先、用語と表記、意味を維持する例、最終確認は、このプロジェクトが独自に定めたものである。
+- その他の規則：手順の書き方、段落の構成、条件の位置、会話の敬体、文体指定の優先、用語の統一、英語の語順、意味を維持する例、最終確認は、このプロジェクトが独自に定めたものである。
 
 ## Embedded local-checks
 

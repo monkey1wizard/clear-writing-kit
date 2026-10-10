@@ -49,10 +49,10 @@ SOURCES_SECTIONS = {
 }
 # Citations each rule file must keep. Files may cite further keys that the reference list defines.
 REQUIRED_CITATIONS = {
-    "accuracy": {"ISO2023", "SpeakHumanTW2026", "Yomiyasu2026"},
-    "en-US": {"ASDSTE1002025"},
+    "accuracy": {"ISO2023", "SpeakHumanTW2026", "Yomiyasu2026", "FPLG2011", "GoogleDevStyle", "MicrosoftStyle"},
+    "en-US": {"ASDSTE1002025", "FPLG2011", "GoogleDevStyle", "MicrosoftStyle"},
     "zh-TW": {"SpeakHumanTW2026"},
-    "ja-JP": {"Bunka2022", "Yomiyasu2026"},
+    "ja-JP": {"Bunka2022", "Yomiyasu2026", "JTF2026"},
     "local-checks": {"Textlint1580", "TextlintRulePresetJaTechnicalWriting1202", "TextlintRuleWriteGood200", "TextlintRuleNoZeroWidthSpaces101"},
     "zhtw-checks": {"ZhtwMCP"},
 }
@@ -167,7 +167,7 @@ class Artifacts(unittest.TestCase):
                         self.assertNotIn("Version", entry, key)
                         self.assertRegex(entry, r"Retrieved [A-Z][a-z]+ \d{1,2}, \d{4}, from <https://", key)
             self.assertEqual(order, sorted(order), group)
-        for key in ("ISO2023", "ASDSTE1002025", "SpeakHumanTW2026", "Bunka2022", "Yomiyasu2026"):
+        for key in ("ISO2023", "ASDSTE1002025", "SpeakHumanTW2026", "Bunka2022", "Yomiyasu2026", "FPLG2011", "GoogleDevStyle", "MicrosoftStyle", "JTF2026"):
             self.assertEqual(entries[key][0], "Standards and guidelines", key)
         for key in ("Textlint1580", "TextlintRulePresetJaTechnicalWriting1202", "TextlintRuleWriteGood200", "TextlintRuleNoZeroWidthSpaces101", "ZhtwMCP"):
             self.assertEqual(entries[key][0], "Software", key)
