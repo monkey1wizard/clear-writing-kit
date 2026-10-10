@@ -105,13 +105,9 @@ Tests check generation, routing, failure handling, and protected content. They d
 
 Start at the [knowledge index](knowledge/index.md) to find writing rules by language, platform, and task. The generated `knowledge/` directory targets OKF v0.2. This retrieval bundle is not an installable skill package. The existing skill formats remain unchanged. Read the [OKF guide](docs/okf.md) for generation, validation, scope, and limitations. Search quality has not been benchmarked.
 
-### Migrate from accurate-answer
+### Installer files and uninstall
 
-The repository name changes from `accurate-answer` to `clear-writing-kit`. The skill names remain `coding-agent-writing` and `web-answer-writing` to identify their audiences. The original `skills/accurate-answer/` was replaced by `skills/coding-agent-writing/`. Update the selected skill through its existing installation manager, including ccync if applicable. Do not install both the original and replacement coding-agent skills.
-
-The Claude output-style name and generated filename also change to `clear-writing-kit`. Existing installations are not migrated automatically. Generate the new file, then select the new style in Claude Code. After confirming the replacement works, remove the old output style. This change does not rename your local checkout folder or the remote repository.
-
-The installer places the runtime payload in `~/.clear-writing-kit/<version>/`, creates the launcher `~/.clear-writing-kit/cwk.mjs`, registers the host plugin, registers the `clear-writing-kit-textlint` MCP server, adds an isolated instruction block to global agent instructions (`~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md`), and for Claude Code sets `outputStyle` in `~/.claude/settings.json` after creating a backup. To uninstall, run `node dist/cwk.mjs install uninstall --agent <agent>` (or with `deno run -A` or `bun`). The uninstaller removes manifest-tracked files, unregisters CLI entries matching fingerprints, removes the kit instruction block matching its hash, and deletes the payload directory. Modified files or entries are retained and reported with reasons. Retained backups can restore previous settings such as `outputStyle` or original file trailing newlines, while host marketplace entries are retained for manual removal. The [rule migration record](docs/rule-migration.md) explains where the original requirements now live. The [checker reference](docs/writing-checks.md) documents rule scope and examples.
+The installer places the runtime payload in `~/.clear-writing-kit/<version>/`, creates the launcher `~/.clear-writing-kit/cwk.mjs`, registers the host plugin, registers the `clear-writing-kit-textlint` MCP server, adds an isolated instruction block to global agent instructions (`~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md`), and for Claude Code sets `outputStyle` in `~/.claude/settings.json` after creating a backup. To uninstall, run `node dist/cwk.mjs install uninstall --agent <agent>` (or with `deno run -A` or `bun`). The uninstaller removes manifest-tracked files, unregisters CLI entries matching fingerprints, removes the kit instruction block matching its hash, and deletes the payload directory. Modified files or entries are retained and reported with reasons. Retained backups can restore previous settings such as `outputStyle` or original file trailing newlines, while host marketplace entries are retained for manual removal. The [checker reference](docs/writing-checks.md) documents rule scope and examples.
 
 ## 繁體中文
 
@@ -214,13 +210,9 @@ python -m unittest discover -s tests -v
 
 從[知識索引](knowledge/index.md)依語言、平台與任務查找寫作規則。產生的 `knowledge/` 目錄採用 OKF v0.2，供檢索使用，不是可安裝的技能套件。既有技能格式維持不變。[OKF 說明](docs/okf.md)涵蓋產生方式、驗證、範圍與限制。目前尚未測量搜尋品質是否改善。
 
-### 從 accurate-answer 遷移
+### 安裝程式的檔案與解除安裝
 
-儲存庫名稱由 `accurate-answer` 改為 `clear-writing-kit`。技能名稱維持 `coding-agent-writing` 與 `web-answer-writing`，用來區分適用對象。原本的 `skills/accurate-answer/` 已由 `skills/coding-agent-writing/` 取代。請在原有的安裝管理工具中更新技能選擇。若由 ccync 管理，請使用 ccync 調整。不要同時安裝新舊 coding-agent 技能。
-
-Claude 輸出樣式名稱與產生的檔名也改為 `clear-writing-kit`。既有安裝不會自動遷移。請先產生新檔案，再於 Claude Code 選取新樣式。確認新樣式正常後，才移除舊樣式。本次變更不會重新命名本機工作目錄或遠端儲存庫。
-
-安裝程式會將執行階段酬載安裝至 `~/.clear-writing-kit/<version>/`，建立啟動器 `~/.clear-writing-kit/cwk.mjs`，註冊宿主外掛程式，註冊 `clear-writing-kit-textlint` MCP 伺服器，在全域指示檔案（`~/.claude/CLAUDE.md` 或 `~/.codex/AGENTS.md`）加入獨立的指示區塊，並為 Claude Code 在 `~/.claude/settings.json` 設定 `outputStyle`（修改前會先備份）。若要解除安裝，請執行 `node dist/cwk.mjs install uninstall --agent <agent>`（亦可使用 `deno run -A` 或 `bun`）。解除安裝程式會移除資訊清單中雜湊相符的檔案、取消註冊指紋相符的 CLI 項目、移除雜湊相符的指示區塊，並刪除對應的酬載目錄。若檔案或項目曾被修改，則會保留並回報原因。保留的備份可用於還原原有的 `outputStyle` 或原始檔案結尾換行。市集註冊項目則保留供手動移除。[規則遷移紀錄](docs/rule-migration.md)說明原本要求的新位置。[檢查器說明](docs/writing-checks.md)列出規則範圍與範例。
+安裝程式會將執行階段酬載安裝至 `~/.clear-writing-kit/<version>/`，建立啟動器 `~/.clear-writing-kit/cwk.mjs`，註冊宿主外掛程式，註冊 `clear-writing-kit-textlint` MCP 伺服器，在全域指示檔案（`~/.claude/CLAUDE.md` 或 `~/.codex/AGENTS.md`）加入獨立的指示區塊，並為 Claude Code 在 `~/.claude/settings.json` 設定 `outputStyle`（修改前會先備份）。若要解除安裝，請執行 `node dist/cwk.mjs install uninstall --agent <agent>`（亦可使用 `deno run -A` 或 `bun`）。解除安裝程式會移除資訊清單中雜湊相符的檔案、取消註冊指紋相符的 CLI 項目、移除雜湊相符的指示區塊，並刪除對應的酬載目錄。若檔案或項目曾被修改，則會保留並回報原因。保留的備份可用於還原原有的 `outputStyle` 或原始檔案結尾換行。市集註冊項目則保留供手動移除。[檢查器說明](docs/writing-checks.md)列出規則範圍與範例。
 
 ## 日本語
 
@@ -323,10 +315,6 @@ python -m unittest discover -s tests -v
 
 [知識索引](knowledge/index.md)から、言語、プラットフォーム、用途に応じた文章規則を探せる。生成される `knowledge/` はOKF v0.2形式の検索用バンドルである。インストール用のスキルパッケージではない。既存のスキル形式は変更しない。生成方法、検証、対象範囲、制限は[OKFの説明](docs/okf.md)を参照する。検索品質の改善は未測定である。
 
-### accurate-answerからの移行
+### インストーラーのファイルとアンインストール
 
-リポジトリ名は `accurate-answer` から `clear-writing-kit` に変わる。対象を区別するため、スキル名は `coding-agent-writing` と `web-answer-writing` のままとする。従来の `skills/accurate-answer/` は、`skills/coding-agent-writing/` に置き換わっている。既存のインストール管理ツールで、使用するスキルを更新する。ccyncで管理している場合は、ccync側で変更する。新旧のコーディングエージェント用スキルを同時にインストールしない。
-
-Claudeの出力スタイル名と生成ファイル名も `clear-writing-kit` に変わる。既存のインストールは自動移行されない。新しいファイルを生成し、Claude Codeで新しいスタイルを選択する。新しいスタイルの動作を確認してから、古いスタイルを削除する。この変更では、ローカルの作業フォルダーやリモートリポジトリの名前を変更しない。
-
-インストーラーは実行時ペイロードを `~/.clear-writing-kit/<version>/` に配置し、ランチャー `~/.clear-writing-kit/cwk.mjs` を作成する。各ホストのプラグインと `clear-writing-kit-textlint` MCPサーバーを登録する。グローバル指示ファイル（`~/.claude/CLAUDE.md` または `~/.codex/AGENTS.md`）に指示ブロックを追加する。Claude Codeでは `~/.claude/settings.json` のバックアップを作成し、`outputStyle` を設定する。アンインストールするには、`node dist/cwk.mjs install uninstall --agent <agent>` を実行する（`deno run -A` または `bun` も使用可能）。アンインストーラーは、マニフェストとハッシュが一致するファイルを削除する。フィンガープリントが一致するCLI登録と、ハッシュが一致する指示ブロックやペイロードも削除する。変更されたファイルや設定は保持し、理由を報告する。以前の `outputStyle` や元の末尾改行は、保持されたバックアップから復元できる。マーケットプレイスの登録は手動削除用に保持される。[規則の移行記録](docs/rule-migration.md)に、元の要件の移行先を記載する。[検査ツールの説明](docs/writing-checks.md)には、規則の範囲と例を記載する。
+インストーラーは実行時ペイロードを `~/.clear-writing-kit/<version>/` に配置し、ランチャー `~/.clear-writing-kit/cwk.mjs` を作成する。各ホストのプラグインと `clear-writing-kit-textlint` MCPサーバーを登録する。グローバル指示ファイル（`~/.claude/CLAUDE.md` または `~/.codex/AGENTS.md`）に指示ブロックを追加する。Claude Codeでは `~/.claude/settings.json` のバックアップを作成し、`outputStyle` を設定する。アンインストールするには、`node dist/cwk.mjs install uninstall --agent <agent>` を実行する（`deno run -A` または `bun` も使用可能）。アンインストーラーは、マニフェストとハッシュが一致するファイルを削除する。フィンガープリントが一致するCLI登録と、ハッシュが一致する指示ブロックやペイロードも削除する。変更されたファイルや設定は保持し、理由を報告する。以前の `outputStyle` や元の末尾改行は、保持されたバックアップから復元できる。マーケットプレイスの登録は手動削除用に保持される。[検査ツールの説明](docs/writing-checks.md)には、規則の範囲と例を記載する。

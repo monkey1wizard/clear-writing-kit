@@ -34,15 +34,13 @@ The three zhtw-mcp informational findings identify parallel lists of protected c
 
 The OKF checks follow version 0.2 of the linked specification. Tests cover minimal concepts, unknown fields and types, malformed YAML, reserved files, missing and stale outputs, CRLF checkouts, protected literals, and standalone bundle navigation. Broken links remain acceptable to the format check. The repository publication check requires generated links to resolve. No search-ranking benchmark or external AI ingestion was run. The new Chinese README paragraph and index descriptions passed zhtw-mcp with no findings.
 
-The in-process review compared the rewrite with the original skill at `f136386`. The [migration record](rule-migration.md) identifies preserved and intentionally adjusted rules. The original Chinese tool workflow remains Chinese. Shared references are generated into the Web package, not maintained as independent copies.
+The Chinese tool workflow remains Chinese. Shared references are generated into the Web package, not maintained as independent copies.
 
 The earlier document profile required polite body text. Its passing tests did not establish the user's requested plain document style. That conclusion is withdrawn. The corrected document profile uses plain body text, plain headings, and plain or noun-phrase lists. The conversation profile retains polite body text and lists. README instructions, language guidance, and account snippets follow this project choice. Mechanical checks do not establish idiomatic Japanese. No independent proficient-reader assessment is claimed.
 
 New document-style tests first failed against the earlier configuration. Further negative cases exposed missed polite past and negative endings in the upstream classifier. The supplemental rule covers those tested cases without auto-fixing them. The final tests check actual Japanese README text and both packaged language guides. Conversation tests accept polite wording, while document tests reject it. This distinction reflects the user's project policy, not a universal rule that Japanese documents must use plain forms.
 
 No live ChatGPT or Gemini upload, global skill installation, ccync synchronization, new-agent activation, long-conversation evaluation, or message-blocking hook was tested. Neither format validation nor synthetic tests prove that a model will follow every rule. The original research specification's cross-host deployment acceptance remains outside this repository-only implementation.
-
-Repository branding and the Claude output-style name now use `clear-writing-kit`. The coding-agent and Web skill names remain distinct. The [migration record](rule-migration.md) documents the old names and the required installation changes. This repository update does not rename the local checkout folder or the remote repository.
 
 ## ccync installation verification
 
