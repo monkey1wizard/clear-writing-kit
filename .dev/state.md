@@ -6,7 +6,6 @@
 
 | Plan | File | Plan Phase | Last Activity |
 | --- | --- | --- | --- |
-| feat-ccync-local-checks | `.dev/plans/feat-ccync-local-checks.prompt.md` | T-01 至 T-05 完成，goal-verified。Finalize 停在 Owner Acceptance OA-01 至 OA-03。 | 2026-10-10 |
 
 <!-- When more than one plan is active, table order is priority order. `/gal whats-next` and `/gal wrap-up` use the first non-terminal row; if all rows are terminal, they fall back to the first row. -->
 
@@ -16,8 +15,8 @@
 
 | Date | Plan | Landing | Result |
 | --- | --- | --- | --- |
+| 2026-10-10 | feat-ccync-local-checks | `5c6cad8` | FINALIZED; goal-verified; finalize review CLEAR (full independence); OA-01 to OA-03 waived, not run |
 | 2026-10-08 | feat-ja-ai-tone-rules | `db9992c` | FINALIZED; independent test PASS; audit fix re-audited CLEAR; Japanese naturalness unreviewed |
-| 2026-10-08 | feat-ja-report-style | `0f08efb` | FINALIZED; independent test PASS; audit CLEAR; dist and projections synced |
 
 ## Follow-ups
 
@@ -25,6 +24,10 @@
 
 | Date | Origin | Finding | Route |
 | --- | --- | --- | --- |
+| 2026-10-10 | feat-ccync-local-checks T-01 and T-04 audits | `writing/integration/ccync-projection.test.cjs` checks host vectors by substring only. The exact ccync 0.1.5 vectors in `docs/verification.md`, including the Claude PowerShell launcher, come from an audit probe. | Assert exact per-host vectors in the projection test. |
+| 2026-10-10 | feat-ccync-local-checks T-05 | `gal render-adapters` removed the GAL-owned `CLAUDE.md`. Claude Code sessions in this repo may no longer load `AGENTS.md` automatically. | Owner decides whether to add a user-owned `CLAUDE.md` that imports `AGENTS.md`. |
+| 2026-10-10 | feat-ccync-local-checks T-03 audit | Low installer notes: the apply reread failure message says the manifest was not written again, `lock.ts` release does not retry a transient read error, and `apply.ts` re-exports lock names. | Fold into the next installer change. |
+| 2026-10-10 | feat-ccync-local-checks finalize | OA-01 to OA-03 were waived and never ran in a real home against a published ccync pin. | Run them after the commits are pushed and pinned. |
 
 ## Global Decisions
 
@@ -39,7 +42,6 @@
 
 | Plan | Source Plan | Last Session | Stopped At | Next Step | Context |
 | --- | --- | --- | --- | --- | --- |
-| feat-ccync-local-checks | `.dev/plans/feat-ccync-local-checks.md` | 2026-10-10 | finalize / ACCEPTANCE | 發布 commit 後完成 OA-01 至 OA-03，再執行 `/gal finalize` | Human approval、Architecture Review、Engineering Review、prompt-check 與 equivalence gate 均已通過。Apply 與 uninstall 共用 fail-closed lock。 |
 
 ## Session Execution Context
 
