@@ -134,4 +134,4 @@ Protected-path changes require recorded architectural review before implementati
 - Host CLIs and plugin formats can change independently of this repository; capability evidence must be refreshed before marking another host verified.
 - Backups are retained. Restoring an earlier `outputStyle`, marketplace registration, or non-standard trailing newline can require manual action documented in `docs/verification.md`.
 - Mechanical checks do not prove idiomatic Japanese or that every AI host will follow every writing instruction.
-- ccync projection is verified only in isolated homes with ccync 0.1.5. Owner acceptance OA-01 to OA-03 in real homes and fresh host sessions is still pending.
+- ccync projection is verified only in isolated homes with ccync 0.1.5. Owner acceptance OA-01 to OA-03 in real homes and fresh host sessions has not run. The owner waived it on 2026-10-10.

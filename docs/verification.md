@@ -46,7 +46,7 @@ Repository branding and the Claude output-style name now use `clear-writing-kit`
 
 ## ccync installation verification
 
-Date: 2026-10-10. Environment: Windows, ccync 0.1.5. This section records automated evidence for the ccync path and the direct installer ownership boundary.
+Date: 2026-10-10. Environment: Windows, ccync 0.1.5, and uv CPython 3.13.16 and 3.14.8 for the Python suite. This section records automated evidence for the ccync path and the direct installer ownership boundary.
 
 ### Automated evidence commands
 
@@ -68,7 +68,7 @@ The projection test uses one fresh isolated home for a successful five-host sync
 
 ### Per-host rendering
 
-ccync 0.1.5 rendered the following vectors in isolated tests. The `<cache>` path is ccync's pinned plugin cache.
+An isolated audit probe with ccync 0.1.5 observed the following vectors. The `<cache>` path is ccync's pinned plugin cache. The projection test checks only that each vector contains `node`, `mcp`, and one cache payload path. It does not assert these exact vectors.
 
 | Host | Rendered registration |
 | --- | --- |
@@ -84,7 +84,7 @@ Automated installer tests cover the safe MCP transitions, blocking conflicts for
 
 ### Owner acceptance limit
 
-Owner acceptance in real homes is still pending. OA-01 to OA-03 must run in fresh host sessions against the published ccync pin. They have not run, and the automated evidence above does not replace them. The repository does not claim that the published pin works in a real home until they pass.
+Owner acceptance in real homes is still pending. OA-01 to OA-03 must run in fresh host sessions against the published ccync pin. They have not run, and the automated evidence above does not replace them. The owner waived OA-01 to OA-03 when closing this plan on 2026-10-10. A waiver is not a pass. The repository does not claim that the published pin works in a real home.
 
 ## Cross-agent installer verification (2026-10-02)
 
