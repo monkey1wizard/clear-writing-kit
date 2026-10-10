@@ -6,6 +6,12 @@
 
 **Binding.** When the user invokes any GAL named workflow — `$gal-pipeline`, `$gal-finalize`, `$gal-status`, `$deep-planning`, `$refining-plan`, `$plan-to-prompt` — or expresses repo-work intent (implement, plan, finalize, review, 實作, 規劃, 跑 pipeline, finalize), your first action MUST be to load and execute the corresponding `SKILL.md` before taking any action. Generic autonomous coding, batch edits, or a summary response that bypasses the named workflow is a `named workflow obedience failure`.
 
+## Continue Work and Ask Only When Needed
+
+When an authorized step needs no user input, keep going until the requested work is complete or a required GAL gate blocks progress. Put the progress note and the concrete next action in the same update, then take that action. Do not end the turn merely to report progress or ask whether to continue.
+
+Stop and ask only when missing user input prevents progress, before destructive actions such as deleting data or force-pushing, or before modifying files outside this repository. Honor prior explicit authorization within its stated scope. Required GAL approvals, receipt gates, protected-path review, executor custody, working-hours rules, and repository constraints still apply.
+
 ## Critical Stop Rules
 
 The GAL critical runtime pack — binding stop rules for headless and interactive runs alike:
@@ -21,7 +27,7 @@ Interactive/chat work and direct golem calls honor Wrap-up Time and Hard Stop wh
 
 ## Writing Quality
 
-For human-facing messages and durable prose, preserve meaning and protected spans. Put accuracy before clarity and clarity before brevity. Do not invent missing facts; say when needed information was not provided. Do not introduce internal rule terms absent from the prompt. Avoid unneeded repetition. Explain limits in plain words; protect identifiers and project terminology. Read `plugins/gal-core/conventions/writing-quality.md` for the full neutral contract.
+For every human-facing message and durable prose, including progress, self-review the unsent draft in-process for accuracy and readability. Use an available configured checker on that draft. Write for the actual recipient and retain needed background. Ground facts in the prompt, supplied materials, or actual task tool observations. Compare each material factual assertion in the unsent draft with specific available support; remove or qualify unsupported claims. Missing completion evidence does not mean work never started. Honor artifact-only requests unless a higher-priority host instruction requires otherwise. Distinguish inference, assumptions, suggestions, placeholders, and future commitments. Preserve meaning, protected spans, and project terms. Put accuracy before clarity and clarity before brevity. Allow at most two repairs with rechecks and semantic rollback. With advisory findings only, use the last meaning-preserving draft. Required gates block on hard findings or operational failure, not advisory findings alone unless explicitly required. Disclose optional checker failure once unless availability or delivery impact changes. Do not recursively lint checker-status messages or assign a reviewer per message. Read `plugins/gal-core/conventions/writing-quality.md` when that source file exists. Otherwise read the writing-quality.md section in `~/.gal/plugins/gal/rules/gal.md` for the full neutral contract. Expand `~` to the current user home.
 
 ## Cold Start Order
 
@@ -66,7 +72,7 @@ The repository has one maintained rule source and several generated or projected
 | Rule sources | `skills/coding-agent-writing/`, `web-skills/web-answer-writing/` | Maintained accuracy and locale guidance |
 | Generated knowledge and instructions | `knowledge/`, `web-instructions/`, `install/agents-block.md`, `output-styles/` | Committed projections generated from maintained sources |
 | Checker and MCP | `src/check.ts`, `src/rules.ts`, `src/mcp.ts`, `src/cli.ts` | Profile loading, textlint execution, MCP transport, and CLI routing |
-| Installer | `src/install/`, `src/hosts.ts` | Plan, hash-bound apply, verify, uninstall, host capability and ownership tracking; durable behavior reference in `docs/installer.md` |
+| Installer | `src/install/`, `src/hosts.ts` | Plan, hash-bound apply, verify, uninstall, manifest-only MCP ownership, shared mutation lock, and host capability tracking. Durable behavior reference in `docs/installer.md` |
 | Runtime payload | `dist/` | Reproducible committed ESM bundle and Japanese dictionary |
 | Tooling and tests | `writing/`, `scripts/`, `tests/` | Build, lint, OKF publication, artifact generation, and regression coverage |
 

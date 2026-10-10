@@ -42,7 +42,7 @@ The repository has one maintained rule source and several generated or projected
 | Rule sources | `skills/coding-agent-writing/`, `web-skills/web-answer-writing/` | Maintained accuracy and locale guidance |
 | Generated knowledge and instructions | `knowledge/`, `web-instructions/`, `install/agents-block.md`, `output-styles/` | Committed projections generated from maintained sources |
 | Checker and MCP | `src/check.ts`, `src/rules.ts`, `src/mcp.ts`, `src/cli.ts` | Profile loading, textlint execution, MCP transport, and CLI routing |
-| Installer | `src/install/`, `src/hosts.ts` | Plan, hash-bound apply, verify, uninstall, host capability and ownership tracking; durable behavior reference in `docs/installer.md` |
+| Installer | `src/install/`, `src/hosts.ts` | Plan, hash-bound apply, verify, uninstall, manifest-only MCP ownership, shared mutation lock, and host capability tracking. Durable behavior reference in `docs/installer.md` |
 | Runtime payload | `dist/` | Reproducible committed ESM bundle and Japanese dictionary |
 | Tooling and tests | `writing/`, `scripts/`, `tests/` | Build, lint, OKF publication, artifact generation, and regression coverage |
 
@@ -103,9 +103,11 @@ Protected-path changes require recorded architectural review before implementati
 | Path | Type | Notes |
 | --- | --- | --- |
 | `README.md` | root | Three-language overview, artifact selection, generation, installation, and verification commands |
-| `docs/installer.md` | docs | Cross-host installation workflow, managed state, verification, upgrades, and conservative uninstall behavior |
+| `INSTALL.md` | root | Installation guide that separates ccync projection from direct-installer ownership, with lock contention and stale-lock recovery |
+| `mcp.json` | root | ccync-only MCP declaration that runs `node ${PLUGIN_ROOT}/dist/cwk.mjs mcp` |
+| `docs/installer.md` | docs | Cross-host installation workflow, MCP ownership states, blocking conflicts, the shared installer lock, stale-lock recovery, verification, upgrades, and conservative uninstall behavior |
 | `docs/writing-checks.md` | docs | Local checker commands, rule coverage, and test boundaries |
-| `docs/verification.md` | docs | Executed checks, retained findings, installer verification, ownership, and acceptance limits |
+| `docs/verification.md` | docs | Executed checks, retained findings, installer verification, ccync projection evidence, ownership, and acceptance limits |
 | `docs/okf.md` | docs | OKF scope, generation, conformance, and publication limits |
 | `docs/rule-migration.md` | docs | Migration from the predecessor rule set and intentionally changed behavior |
 | `skills/coding-agent-writing/SKILL.md` | skill | Coding-agent workflow and reference routing |
@@ -118,11 +120,13 @@ Protected-path changes require recorded architectural review before implementati
 - Claude Code and Codex are the verified automated installer hosts. Copilot, opencode, and Antigravity remain manual/unverified and automated apply refuses them.
 - Installer approval is bound to a deterministic plan hash covering payload, runtime, manifest, registration, target state, and conflicts.
 - Registration parsing distinguishes present, absent, and unreadable states. Complete ordered command arguments are fingerprinted; changed or unreadable registrations are retained.
+- The install manifest entry for the same host, kind, and name is the only MCP ownership proof. Unowned, unreadable, and fingerprint-drifted same-name entries are blocking conflicts with no plan hash and no MCP mutation. Apply and uninstall share the exclusive `~/.clear-writing-kit.lock` and refuse competing or stale locks.
+- Root `mcp.json` is ccync-only metadata. Root `plugin.json` and `.mcp.json` stay absent, and the compatibility plugin manifests declare no MCP server. The persistent instruction block names no `.clear-writing-kit` checker path.
 - Manifest schema revision 2 records per-file owners, per-host completed steps, host-specific block paths, and actual output-style targets. Legacy ownership is inferred only from concrete evidence.
 - Cross-host upgrades transfer every recorded consumer to the new shared payload. Removing one host preserves the survivor; removing the last consumer cleans exact-matching old and current versions.
 - `verify` starts the registered MCP command, lists `lintText`, and requires findings from English, Traditional Chinese, and Japanese probes. Claude verification also checks `outputStyle`.
 - The committed payload runs the installer under Node, Deno, and Bun. The Japanese profile requires the adjacent committed kuromoji dictionary directory.
-- Current repository regressions comprise 63 Node tests and 16 Python tests. Lint completes with zero errors and ten reviewed advisory `write-good` warnings.
+- Current repository regressions comprise 75 Node tests and 24 Python tests. The ccync projection test in `writing/integration/` runs only when `CCYNC_BIN` names an installed ccync executable. Lint completes with zero errors and ten reviewed advisory `write-good` warnings.
 
 ## Known Limits
 
@@ -130,3 +134,4 @@ Protected-path changes require recorded architectural review before implementati
 - Host CLIs and plugin formats can change independently of this repository; capability evidence must be refreshed before marking another host verified.
 - Backups are retained. Restoring an earlier `outputStyle`, marketplace registration, or non-standard trailing newline can require manual action documented in `docs/verification.md`.
 - Mechanical checks do not prove idiomatic Japanese or that every AI host will follow every writing instruction.
+- ccync projection is verified only in isolated homes with ccync 0.1.5. Owner acceptance OA-01 to OA-03 in real homes and fresh host sessions is still pending.

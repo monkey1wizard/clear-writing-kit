@@ -98,12 +98,12 @@ None.
 ## Status
 
 Workflow: IMPLEMENT
-Step: 4 of 5
+Step: 5 of 5
 Last activity: 2026-10-10. T-04 converged at 46d42ff (test PASS, audit APPROVE)
-Next step: start T-05
-Current Task: —
-Task Base Commit: c3d132e669d07e375a6ddada85d3416e6470caa2
-Task Final Commit: 46d42ff338604bca8ff2afcc520f47e9212c8d16
+Next step: implement T-05
+Current Task: T-05
+Task Base Commit: 462da9f24ce37818669c8b9abea39a29b128898b
+Task Final Commit: —
 Test Retry Count: 0
 Review Retry Count: 0
 
@@ -114,6 +114,7 @@ Review Retry Count: 0
 | Preflight | Task bullets `- [ ] T-NN: ...` | Changed the separator to `- [ ] T-NN — ...` | `pipeline-preflight` check `tasks-well-formed` failed on the colon form. Task text is unchanged. The source plan received the same separator change at T-01 convergence. |
 | T-01 test onward | Phases route through `config.json#executorRouting` (codex coder, agy tester/auditor) | T-01 implement ran on codex. T-01 test and every later implement, fix, test, and audit phase run as Claude subagents (`gal:golem-implementer`, `gal:golem-tester`, `gal:golem-auditor`). | Owner authorized non-standard routing on 2026-10-09. Same runtime as the orchestrator, so Verification Independence: DEGRADED_SAME_RUNTIME. |
 | T-03 implement | T-03 allowlist excluded `writing/test/installer-ownership.test.cjs` | Added it to the allowlist. Split its adoption test so a missing MCP manifest entry is blocked with `hash: null` and 0/0 MCP mutations, while file, block, and settings adoption still pass. | The old test required adopting an unowned MCP entry with an identical vector, which R6 forbids. The owner chose to continue the pipeline after option A was recommended on 2026-10-10. |
+| T-05 implement | `gal render-adapters` changes only `AGENTS.md` | The installed GAL renderer also deleted the GAL-owned `CLAUDE.md` and refreshed GAL runtime text in `AGENTS.md`. `CLAUDE.md` was added to the T-05 allowlist and the deletion is committed. | GAL now treats `AGENTS.md` as the sole adapter root and removes retired `CLAUDE.md` files with GAL ownership markers. The owner accepted the deletion on 2026-10-10. Claude Code sessions load project context only if they read `AGENTS.md`. |
 
 ### Handoff Notes
 
@@ -142,8 +143,8 @@ Prompt refreshed after final architecture verdict APPROVE, human approval, and p
 - Cause: unknown
 - Workflow at interruption: IMPLEMENT
 - Durable state present:
-  - Task Base Commit: c3d132e669d07e375a6ddada85d3416e6470caa2
-  - Task Final Commit: 46d42ff338604bca8ff2afcc520f47e9212c8d16
+  - Task Base Commit: 462da9f24ce37818669c8b9abea39a29b128898b
+  - Task Final Commit: —
   - Worktree: dirty
   - Test Results: no
   - Review Results: no
@@ -172,7 +173,7 @@ Prompt refreshed after final architecture verdict APPROVE, human approval, and p
   - **Change**: Add equivalent English, Traditional Chinese, and Japanese ccync quick paths. Separate direct-installer ownership from ccync projection. Document Node.js 20.18, the manifest boundary, conflict behavior, lock contention, conservative stale-lock recovery, and still-pending real-home acceptance without claiming it ran. Recovery must first confirm no `cwk install apply` or `cwk install uninstall` process is active. Add a focused artifact test.
   - **Acceptance**: TP-14 finds the same prerequisites, owner invariant, commands, lock behavior, recovery warning, and acceptance limit in every relevant durable document.
 - [ ] T-05 — Re-index durable docs and regenerate adapter guidance.
-  - **Files**: `.dev/project.md`, `AGENTS.md`.
+  - **Files**: `.dev/project.md`, `AGENTS.md`, `CLAUDE.md`. `CLAUDE.md` was added on 2026-10-10 because `gal render-adapters` removes the retired GAL-owned adapter.
   - **Dependencies**: T-04.
   - **Change**: Re-index the durable installation references in `.dev/project.md`, then run `C:\Users\leetz\.cargo\bin\gal.exe render-adapters`. Do not use the agents-block generator for `AGENTS.md` and do not introduce a repository-wide structure map.
   - **Acceptance**: TP-15 finds the revised references and an empty second-render diff for `AGENTS.md`.
@@ -217,7 +218,7 @@ For headless execution, every covering row also requires executor log terminal s
 Run: 2026-10-09 (clock rolled to 2026-10-10 during the run)
 Mode: spec
 Browser Route: No runnable browser route (not applicable; no browser surface)
-Task Final Commit: 46d42ff338604bca8ff2afcc520f47e9212c8d16 (task base 3c68d3a); HEAD unchanged after the run
+Task Final Commit: — (task base 3c68d3a); HEAD unchanged after the run
 Total: 5 | Passed: 5 | Failed: 0 | Skipped: 0 (raw command outcomes; TP-05 is judged FAIL on proof adequacy, see Findings)
 
 | TP | Command | Result | Evidence |
@@ -247,7 +248,7 @@ Verdict: FAIL
 Run: 2026-10-10
 Mode: spec
 Browser Route: No runnable browser route (not applicable; no browser surface)
-Task Final Commit: 46d42ff338604bca8ff2afcc520f47e9212c8d16 (task range 3c68d3a..71f9028); HEAD stayed at 71f9028 during and after the run
+Task Final Commit: — (task range 3c68d3a..71f9028); HEAD stayed at 71f9028 during and after the run
 Total: 5 | Passed: 5 | Failed: 0 | Skipped: 0
 
 | TP | Command | Result | Evidence |
