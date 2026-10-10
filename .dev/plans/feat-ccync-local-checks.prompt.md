@@ -99,11 +99,11 @@ None.
 
 Workflow: IMPLEMENT
 Step: 4 of 5
-Last activity: 2026-10-10. T-03 converged at dc11252 (test PASS, audit APPROVE)
-Next step: implement T-04
-Current Task: T-04
+Last activity: 2026-10-10. T-04 converged at 46d42ff (test PASS, audit APPROVE)
+Next step: start T-05
+Current Task: —
 Task Base Commit: c3d132e669d07e375a6ddada85d3416e6470caa2
-Task Final Commit: —
+Task Final Commit: 46d42ff338604bca8ff2afcc520f47e9212c8d16
 Test Retry Count: 0
 Review Retry Count: 0
 
@@ -143,7 +143,7 @@ Prompt refreshed after final architecture verdict APPROVE, human approval, and p
 - Workflow at interruption: IMPLEMENT
 - Durable state present:
   - Task Base Commit: c3d132e669d07e375a6ddada85d3416e6470caa2
-  - Task Final Commit: —
+  - Task Final Commit: 46d42ff338604bca8ff2afcc520f47e9212c8d16
   - Worktree: dirty
   - Test Results: no
   - Review Results: no
@@ -166,7 +166,7 @@ Prompt refreshed after final architecture verdict APPROVE, human approval, and p
   - **Dependencies**: T-01. TP-05 supplies reverse-order ccync collision evidence.
   - **Change**: Use the manifest entry for the same host, kind, and name as the only ownership proof. Add the plan-time gate in `readHostState` and `computePlan`. Permit absent create and owned safe transitions only. Convert unowned, unreadable, and fingerprint-drifted entries to blocking conflicts. Add a shared exclusive-file lock helper. Apply acquires the lock before internal `computePlan`. Uninstall acquires it before reading the manifest. Both hold it through final manifest persistence and release it in `finally` on success or error. Refuse competing and stale locks before writes. Apply rereads manifest and live registration evidence immediately before the first MCP mutation and rejects changes already visible. Preserve uninstall exact-match behavior and rebuild the bundle.
   - **Acceptance**: TP-05 and TP-07 through TP-13 prove both installation orders, safe transitions, conflicts, manifest and live drift rejection, apply-uninstall serialization, stale-lock refusal, error-path release, zero unsafe mutations, direct lifecycle continuity, exact spy and write counts, and reproducible `dist/`.
-- [ ] T-04 — Document the two installation ownership paths.
+- [x] T-04 — Document the two installation ownership paths. *(46d42ff)*
   - **Files**: `README.md`, `INSTALL.md`, `docs/installer.md`, `docs/verification.md`, `tests/test_artifacts.py`.
   - **Dependencies**: T-01, T-02, T-03.
   - **Change**: Add equivalent English, Traditional Chinese, and Japanese ccync quick paths. Separate direct-installer ownership from ccync projection. Document Node.js 20.18, the manifest boundary, conflict behavior, lock contention, conservative stale-lock recovery, and still-pending real-home acceptance without claiming it ran. Recovery must first confirm no `cwk install apply` or `cwk install uninstall` process is active. Add a focused artifact test.
@@ -217,7 +217,7 @@ For headless execution, every covering row also requires executor log terminal s
 Run: 2026-10-09 (clock rolled to 2026-10-10 during the run)
 Mode: spec
 Browser Route: No runnable browser route (not applicable; no browser surface)
-Task Final Commit: — (task base 3c68d3a); HEAD unchanged after the run
+Task Final Commit: 46d42ff338604bca8ff2afcc520f47e9212c8d16 (task base 3c68d3a); HEAD unchanged after the run
 Total: 5 | Passed: 5 | Failed: 0 | Skipped: 0 (raw command outcomes; TP-05 is judged FAIL on proof adequacy, see Findings)
 
 | TP | Command | Result | Evidence |
@@ -247,7 +247,7 @@ Verdict: FAIL
 Run: 2026-10-10
 Mode: spec
 Browser Route: No runnable browser route (not applicable; no browser surface)
-Task Final Commit: — (task range 3c68d3a..71f9028); HEAD stayed at 71f9028 during and after the run
+Task Final Commit: 46d42ff338604bca8ff2afcc520f47e9212c8d16 (task range 3c68d3a..71f9028); HEAD stayed at 71f9028 during and after the run
 Total: 5 | Passed: 5 | Failed: 0 | Skipped: 0
 
 | TP | Command | Result | Evidence |
@@ -338,6 +338,30 @@ Findings
 None blocking. Observations:
 - R7 both orders are covered: cwk-first then ccync by TP-05; ccync-first then cwk by TP-08 "ccync-first". The ccync-first case runs only for the codex host (installer-registration.test.cjs:804-813); the claude host is covered by the generic unowned case (line 770), same code path.
 - The TP-10 stale-lock case asserts the lock bytes are unchanged and zero mutation calls, so the "never auto-removed" requirement is proven.
+
+### [T-04] 2026-10-10
+
+Mode: spec | HEAD 46d42ff (range c3d132e..46d42ff). `python` is a WindowsApps stub, so Python commands ran with `%APPDATA%\uv\python\cpython-3.13.16-windows-x86_64-none\python.exe` and the same arguments.
+
+| TP | Command | Result | Evidence |
+| --- | --- | --- | --- |
+| TP-14 | `python -m unittest tests.test_artifacts.Artifacts.test_ccync_installation_docs_contract -v` | PASS | `Ran 1 test`, `OK`, exit 0 |
+| TP-16 | `cmd.exe /d /c npm --prefix writing test` | PASS | tests 75, pass 75, fail 0, cancelled 0, skipped 0, exit 0 |
+| TP-17 | `python -m unittest discover -s tests -v` | PASS | `Ran 24 tests`, `OK`, exit 0 |
+| TP-18 | `cmd.exe /d /c npm --prefix writing run lint` | PASS | `0 errors, 10 warnings`; markdownlint `0 error(s)`; exit 0. All 10 are write-good warnings ("requirement"/"objective" wordy) in skills/, web-skills/, web-instructions/, knowledge/, docs/writing-checks.md:40, scripts/templates/. None are in T-04 files (README.md, INSTALL.md, docs/installer.md, docs/verification.md, tests/test_artifacts.py). |
+
+Total: 4 | Passed: 4 | Failed: 0 | Skipped: 0
+
+Verdict: PASS
+
+Findings (independent TP-14 judgment; no blocking defect, tracked gaps are test-strength only):
+
+1. README per-language check is sound. The test splits README.md on the `## English` (README.md:7), `## 繁體中文` (:116), `## 日本語` (:225) headings, asserts exactly 3 sections, and checks each separately for `ccync add <clear-writing-kit source>`, `ccync sync`, `Node.js 20.18`, `clear-writing-kit-textlint`, `INSTALL.md`. I read all three sections (README.md:42-49, :151-158, :260-267). They are equivalent in meaning: Node 20.18+ on PATH, the two commands, one ccync-owned server projected to Claude/Codex/Copilot/opencode/agy, runs the committed `dist/cwk.mjs`, `lintText` only, no package install, no `~/.clear-writing-kit/`, use ccync or direct installer per host, see INSTALL.md.
+2. Shared-content checks: owner rule (INSTALL.md:15 area, docs/installer.md:14 area), lock path, and the recovery sentence naming both `cwk install apply` and `cwk install uninstall` are asserted in all required docs, and present in all three. The pending real-home acceptance limit is asserted and present in docs/verification.md:85-87 (the only place it applies).
+3. Gap (low): the test never asserts the Node.js 20.18 prerequisite in INSTALL.md, docs/installer.md, or docs/verification.md. It is present in INSTALL.md:11 and docs/verification.md:79, but docs/installer.md has no ccync Node prerequisite (its only 20.18 mention, line 51, concerns the direct installer runtime). Removal from INSTALL.md or verification.md would go undetected.
+4. Gap (low): the `ccync add` / `ccync sync` commands are asserted only in README sections. INSTALL.md:9 and docs/installer.md:10 contain them but the test checks only the generic string "ccync" there; docs/verification.md has no `ccync add`/`ccync sync` quick path (it documents automated evidence commands instead).
+5. Gap (low): lock-contention behavior ("refuse before any write", "never removes the lock") is not asserted by string; only the lock path and recovery sentence are. Content is present at INSTALL.md:21 and docs/installer.md:26-30.
+6. Cosmetic: the new test is added after a two-blank-line gap inside class `Artifacts` (tests/test_artifacts.py ~line 517-520); no lint/test impact.
 
 ## Review Results
 
@@ -516,6 +540,54 @@ Checked and found sound:
 <!-- AUDIT_REVIEW: CLEAR -->
 
 Orchestrator final verification (Opus, 2026-10-10): reviewed `src/install/lock.ts`, `apply.ts`, `plan.ts`, and `uninstall.ts` in `5deadcd..dc11252`. Ownership classification, `wx` lock acquisition with token-checked release in `finally`, and the pre-mutation reread match R6 and R7. No Security or Protected Path finding. Low findings 1 to 3 stay open as non-blocking.
+
+### [T-04] Audit 2026-10-10
+
+Verdict: APPROVE
+
+Scope: `git diff c3d132e 46d42ff -- README.md INSTALL.md docs tests` (HEAD 46d42ff, unchanged). Read-only audit. No tracked file edited.
+
+Security finding: none. Protected Path finding: none. The diff touches no file under `src/install/`, `src/hosts.ts`, `src/check.ts`, `src/rules.ts`, `src/mcp.ts`, `scripts/artifacts.py`, `writing/okf.cjs`, or `dist/`. It adds no host configuration content, secret, or credential. Examples use only the placeholder `<clear-writing-kit source>` and the public lock path.
+
+#### Behavioral claims verified against source
+
+- Lock path `~/.clear-writing-kit.lock`: `src/install/lock.ts` (`INSTALLER_LOCK_NAME = ".clear-writing-kit.lock"`, `join(home, ...)`). Correct.
+- Apply takes the lock before computing its plan: `src/install/apply.ts:107` (`withInstallerLock`) precedes `computePlan` at `:114`. Correct.
+- Uninstall takes the lock before reading the manifest: `src/install/uninstall.ts:98` precedes `readManifest` at `:105`. Correct.
+- Release in `finally`, including failure: `lock.ts` `withInstallerLock`. Correct.
+- Competing or stale lock refuses before any write and the installer never removes a foreign lock: `lock.ts` `acquireInstallerLock` (exclusive `wx` create) and `lockRefusalMessage`. Correct. The recovery wording matches the code message, including the "confirm that no `cwk install apply` or `cwk install uninstall` process is active" check before deletion.
+- `plan` does not take the lock: `src/cli.ts:71-73` calls `computePlan` directly. Correct.
+- `plan` exits 1 on a blocked plan and prints no hash: `src/cli.ts:73` (`outcome.status === "ready" ? 0 : 1`), `plan.ts:337` (`hash: null`), `plan.ts:372` ("No plan hash"). Correct.
+- MCP transition table (absent/none create, owned-missing recreate, owned-current none, owned-stale update, else blocked): `plan.ts:~255-263`. Correct. Blocking set is unowned, unreadable, drifted: `plan.ts:192-203`. Correct.
+- Final reread before the first MCP mutation compares manifest and live registration and stops without MCP change: `apply.ts:246-259`. Correct.
+- Direct installer supports Claude and Codex only (`--agent <claude|codex>` in `docs/installer.md`). Consistent with the new text.
+- `mcp.json` holds literal `node` with args `${PLUGIN_ROOT}/dist/cwk.mjs`, `mcp`. Correct.
+- `npm --prefix writing test` does not discover the integration file: `writing/package.json:10` globs `test/*.test.cjs`. Correct. The test asserts `CCYNC_BIN` and never skips. Correct.
+- Success home and per-host collision homes: matches the structure of `ccync-projection.test.cjs`. Correct.
+- No claim that owner acceptance ran. `docs/verification.md` states OA-01 to OA-03 have not run and that the repository does not claim the pin works in a real home. Correct.
+- Stale-lock recovery tells the reader to confirm no `cwk install apply` or `cwk install uninstall` process is active before deleting: present in INSTALL.md, docs/installer.md, docs/verification.md.
+- README: the three sections carry the same facts (Node.js 20.18+ on PATH, two commands, one ccync-owned server, five hosts, committed bundle, `lintText` only, no package install, no `~/.clear-writing-kit/`, one path per host, pointer to INSTALL.md). Traditional Chinese uses natural Taiwan wording and "宿主" as in the rest of the README. Japanese uses である style.
+- English prose: no semicolons, em dashes, or parenthetical asides found in the added English text. must/should/may are used distinctly.
+
+#### Findings
+
+**NON-BLOCKING, MEDIUM: per-host rendering table cites tests that do not assert those exact vectors.**
+- File: `docs/verification.md:~70-78` (the "Per-host rendering" section: "ccync 0.1.5 rendered the following vectors in isolated tests").
+- Evidence: `writing/integration/ccync-projection.test.cjs:79-89` (`assertResolvedVector`) checks only that the stringified vector contains `node` and `mcp`, has no `${PLUGIN_ROOT}`, and has exactly one cache `dist/cwk.mjs` path. It never asserts `command === "node"`, the exact args, the opencode vector shape, or the Claude PowerShell launcher (`grep -i powershell` on the test returns nothing). The table's source is the T-01 audit probe (plan FINDING-001), which matches the table content, so the claims are true for ccync 0.1.5 as observed but not as regression-protected evidence.
+- Impact: the sentence implies committed automated evidence for exact vectors. A future ccync that adds a launcher or fallback would still pass the test while the docs read as verified.
+- Recommended fix: either reword to "observed in an isolated probe with ccync 0.1.5", or tighten `assertResolvedVector` to the exact per-host vectors (T-01 FINDING-001 fix). The scope to ccync 0.1.5 is already stated, so the claim does not overreach beyond the version.
+
+**NON-BLOCKING, LOW: INSTALL.md states ccync collision behavior without a version scope.**
+- File: `INSTALL.md` (the "Both orders fail safely" list), "ccync reports the collision and keeps the existing entry."
+- Evidence: the committed test proves this only for foreign entries on ccync 0.1.5, seeded before sync. The cwk-first order is not exercised against a real cwk-created entry.
+- Recommended fix: add "ccync 0.1.5" or soften to "in ccync 0.1.5 testing". `docs/installer.md` has the same sentence.
+
+**NON-BLOCKING, LOW: doc contract test coverage gaps (carried from the tester entry).**
+- File: `tests/test_artifacts.py:520-544`.
+- Evidence: the test does not assert the Node.js 20.18 prerequisite in INSTALL.md or verification.md, nor lock-refusal wording. Removal of those sentences would pass.
+- Recommended fix: optional extra `assertIn` checks.
+
+No BLOCKING finding. No factually wrong behavioral claim was found in durable docs.
 
 ## Debug Log
 

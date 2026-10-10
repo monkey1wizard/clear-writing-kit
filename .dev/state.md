@@ -6,7 +6,7 @@
 
 | Plan | File | Plan Phase | Last Activity |
 | --- | --- | --- | --- |
-| feat-ccync-local-checks | `.dev/plans/feat-ccync-local-checks.prompt.md` | Pipeline 執行中。T-03 已完成（`dc11252`）。next: T-04。 | 2026-10-10 |
+| feat-ccync-local-checks | `.dev/plans/feat-ccync-local-checks.prompt.md` | Pipeline 執行中。T-04 已完成（`46d42ff`）。next: T-05。 | 2026-10-10 |
 
 <!-- When more than one plan is active, table order is priority order. `/gal whats-next` and `/gal wrap-up` use the first non-terminal row; if all rows are terminal, they fall back to the first row. -->
 
@@ -39,7 +39,7 @@
 
 | Plan | Source Plan | Last Session | Stopped At | Next Step | Context |
 | --- | --- | --- | --- | --- | --- |
-| feat-ccync-local-checks | `.dev/plans/feat-ccync-local-checks.md` | 2026-10-10 | T-03 converged | 執行 T-04 | Human approval、Architecture Review、Engineering Review、prompt-check 與 equivalence gate 均已通過。Apply 與 uninstall 共用 fail-closed lock。 |
+| feat-ccync-local-checks | `.dev/plans/feat-ccync-local-checks.md` | 2026-10-10 | T-04 converged | 執行 T-05 | Human approval、Architecture Review、Engineering Review、prompt-check 與 equivalence gate 均已通過。Apply 與 uninstall 共用 fail-closed lock。 |
 
 ## Session Execution Context
 

@@ -467,7 +467,7 @@ parsed result object 或指定的 empty diff。只有 PASS label 而沒有上述
     behavior、error 後釋放 lock、direct lifecycle continuity、精確 spy 與
     write count，以及可重現的 `dist/`。TP-05 透過實際 ccync projection
     證明反向安裝順序的 collision。
-- [ ] T-04 — 記錄兩種 installation ownership path。
+- [x] T-04 — 記錄兩種 installation ownership path。 *(46d42ff)*
   - **Files**：`README.md`、`INSTALL.md`、`docs/installer.md`、
     `docs/verification.md`、`tests/test_artifacts.py`。
   - **Dependencies**：T-01, T-02, T-03.
