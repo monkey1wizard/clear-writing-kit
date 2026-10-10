@@ -99,11 +99,11 @@ None.
 
 Workflow: IMPLEMENT
 Step: 5 of 5
-Last activity: 2026-10-10. T-04 converged at 46d42ff (test PASS, audit APPROVE)
-Next step: implement T-05
-Current Task: T-05
+Last activity: 2026-10-10. T-05 converged at 60279f3 (test PASS, audit APPROVE)
+Next step: run goal-backward verification
+Current Task: —
 Task Base Commit: 462da9f24ce37818669c8b9abea39a29b128898b
-Task Final Commit: —
+Task Final Commit: 60279f398393f362d2008e45eb4b95217ccbf1be
 Test Retry Count: 0
 Review Retry Count: 0
 
@@ -144,7 +144,7 @@ Prompt refreshed after final architecture verdict APPROVE, human approval, and p
 - Workflow at interruption: IMPLEMENT
 - Durable state present:
   - Task Base Commit: 462da9f24ce37818669c8b9abea39a29b128898b
-  - Task Final Commit: —
+  - Task Final Commit: 60279f398393f362d2008e45eb4b95217ccbf1be
   - Worktree: dirty
   - Test Results: no
   - Review Results: no
@@ -172,7 +172,7 @@ Prompt refreshed after final architecture verdict APPROVE, human approval, and p
   - **Dependencies**: T-01, T-02, T-03.
   - **Change**: Add equivalent English, Traditional Chinese, and Japanese ccync quick paths. Separate direct-installer ownership from ccync projection. Document Node.js 20.18, the manifest boundary, conflict behavior, lock contention, conservative stale-lock recovery, and still-pending real-home acceptance without claiming it ran. Recovery must first confirm no `cwk install apply` or `cwk install uninstall` process is active. Add a focused artifact test.
   - **Acceptance**: TP-14 finds the same prerequisites, owner invariant, commands, lock behavior, recovery warning, and acceptance limit in every relevant durable document.
-- [ ] T-05 — Re-index durable docs and regenerate adapter guidance.
+- [x] T-05 — Re-index durable docs and regenerate adapter guidance. *(60279f3)*
   - **Files**: `.dev/project.md`, `AGENTS.md`, `CLAUDE.md`. `CLAUDE.md` was added on 2026-10-10 because `gal render-adapters` removes the retired GAL-owned adapter.
   - **Dependencies**: T-04.
   - **Change**: Re-index the durable installation references in `.dev/project.md`, then run `C:\Users\leetz\.cargo\bin\gal.exe render-adapters`. Do not use the agents-block generator for `AGENTS.md` and do not introduce a repository-wide structure map.
@@ -218,7 +218,7 @@ For headless execution, every covering row also requires executor log terminal s
 Run: 2026-10-09 (clock rolled to 2026-10-10 during the run)
 Mode: spec
 Browser Route: No runnable browser route (not applicable; no browser surface)
-Task Final Commit: — (task base 3c68d3a); HEAD unchanged after the run
+Task Final Commit: 60279f398393f362d2008e45eb4b95217ccbf1be (task base 3c68d3a); HEAD unchanged after the run
 Total: 5 | Passed: 5 | Failed: 0 | Skipped: 0 (raw command outcomes; TP-05 is judged FAIL on proof adequacy, see Findings)
 
 | TP | Command | Result | Evidence |
@@ -248,7 +248,7 @@ Verdict: FAIL
 Run: 2026-10-10
 Mode: spec
 Browser Route: No runnable browser route (not applicable; no browser surface)
-Task Final Commit: — (task range 3c68d3a..71f9028); HEAD stayed at 71f9028 during and after the run
+Task Final Commit: 60279f398393f362d2008e45eb4b95217ccbf1be (task range 3c68d3a..71f9028); HEAD stayed at 71f9028 during and after the run
 Total: 5 | Passed: 5 | Failed: 0 | Skipped: 0
 
 | TP | Command | Result | Evidence |
@@ -363,6 +363,23 @@ Findings (independent TP-14 judgment; no blocking defect, tracked gaps are test-
 4. Gap (low): the `ccync add` / `ccync sync` commands are asserted only in README sections. INSTALL.md:9 and docs/installer.md:10 contain them but the test checks only the generic string "ccync" there; docs/verification.md has no `ccync add`/`ccync sync` quick path (it documents automated evidence commands instead).
 5. Gap (low): lock-contention behavior ("refuse before any write", "never removes the lock") is not asserted by string; only the lock path and recovery sentence are. Content is present at INSTALL.md:21 and docs/installer.md:26-30.
 6. Cosmetic: the new test is added after a two-blank-line gap inside class `Artifacts` (tests/test_artifacts.py ~line 517-520); no lint/test impact.
+
+### [T-05] 2026-10-10
+
+| TP | Command | Result | Evidence |
+| --- | --- | --- | --- |
+| TP-15 | `gal.exe render-adapters` x2, then `git diff --exit-code -- AGENTS.md` | PASS | Both renders exit 0 ("Unchanged: AGENTS.md"); diff exit 0. `.dev/project.md` (diff 462da9f..60279f3) names `INSTALL.md`, `mcp.json`, `docs/installer.md` (MCP ownership states, shared lock, stale-lock recovery), `docs/verification.md` (ccync projection evidence), the ownership-and-lock fact (manifest-only MCP ownership proof, `~/.clear-writing-kit.lock`), and the pending-acceptance limit (OA-01 to OA-03). `AGENTS.md` carries the revised Installer row (manifest-only MCP ownership, shared mutation lock). No structure-map file tracked (`git ls-files` match: none). `CLAUDE.md` absent (deletion per T-05 Deviations). HEAD 60279f3; only the prompt file shows modified. |
+| TP-16 | `cmd.exe /d /c npm --prefix writing test` | PASS | tests 75, pass 75, fail 0, cancelled 0, skipped 0, exit 0 |
+| TP-17 | `python -m unittest discover -s tests -v` (run with `%APPDATA%\uv\python\cpython-3.13.16-windows-x86_64-none\python.exe` because PATH `python` is a WindowsApps stub; same arguments) | PASS | `Ran 24 tests`, `OK`, exit 0 |
+| TP-18 | `cmd.exe /d /c npm --prefix writing run lint` | PASS | `0 errors, 10 warnings` (write-good "requirement"/"objective" wordy in skills/ and web-skills/ accuracy.md:36, web-instructions/chatgpt.md:12, gemini.md:13, knowledge/rules/accuracy.md:55, knowledge/usage/chatgpt.md:28, gemini.md:29, docs/writing-checks.md:40, scripts/templates/chatgpt.txt:3, gemini.txt:2); markdownlint 0 errors; exit 0 |
+
+Fact check of `.dev/project.md`: "75 Node tests and 24 Python tests" matches TP-16 (75) and TP-17 (24); "zero errors and ten reviewed advisory write-good warnings" matches TP-18 (0 errors, 10 warnings).
+
+Verdict: PASS
+
+Findings
+
+None
 
 ## Review Results
 
@@ -589,6 +606,53 @@ Security finding: none. Protected Path finding: none. The diff touches no file u
 - Recommended fix: optional extra `assertIn` checks.
 
 No BLOCKING finding. No factually wrong behavioral claim was found in durable docs.
+
+### [T-05] Audit 2026-10-10
+
+Verdict: APPROVE
+
+Scope: `git diff 462da9f 60279f3 -- .dev/project.md AGENTS.md CLAUDE.md`, HEAD `60279f3`. Read-only apart from the renderer re-run.
+
+Findings: 3 total, 0 blocking, 3 non-blocking (0 critical, 0 high, 0 medium, 3 low/info).
+Security finding: none. Protected Path finding: none. The diff touches no protected path. `.dev/project.md`, `AGENTS.md`, and `CLAUDE.md` are not on the protected list.
+
+#### Checks
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| `mcp.json` content | PASS | Server `clear-writing-kit-textlint`, command `node`, args `${PLUGIN_ROOT}/dist/cwk.mjs mcp`. Matches the `.dev/project.md` row. |
+| Root `plugin.json` and `.mcp.json` absent | PASS | Both missing at HEAD. |
+| Ownership rule | PASS | `src/install/plan.ts:34-59`: the manifest entry is the only proof. `classifyMcpOwnership` returns `unowned` with no manifest entry and `drifted` when the live fingerprint differs. |
+| Lock path | PASS | `src/install/lock.ts:6` sets `.clear-writing-kit.lock` in the home directory. Exclusive create refuses held or stale locks, and the message names apply and uninstall. |
+| Node test count | PASS | `npm --prefix writing test` run here: 75 tests, 75 pass, 0 fail, 0 skipped. |
+| Python test count | NOT RE-RUN | `python` is only a Windows Store stub in this shell. The claim of 24 rests on the T-05 TP-17 test receipt. |
+| `CCYNC_BIN` gating | PASS, imprecise | `writing/integration/ccync-projection.test.cjs:19-22` requires an absolute, existing `CCYNC_BIN`. The file is not under the `npm test` glob `test/*.test.cjs`, so the 75 count excludes it. `docs/verification.md:56` shows the explicit run command. |
+| OA limit | PASS | OA-01 to OA-03 are pending in the plan. ccync 0.1.5 matches `docs/verification.md:49`. |
+| Renderer re-run | PASS | `gal.exe render-adapters` exits 0 with "Unchanged: AGENTS.md". `git diff --exit-code -- AGENTS.md` exits 0. `git status` shows only the plan prompt modified. HEAD stays `60279f3`. |
+| AGENTS.md matches `.dev/project.md` | PASS | The Installer row text is identical in both files. |
+| New GAL runtime text from renderer | PASS | The "Continue Work and Ask Only When Needed" section and the longer Writing Quality paragraph are generated text. A re-render is a no-op, so they are not hand edits. |
+| English prose style in edited lines | PASS | The added lines have no semicolons, em dashes, en dashes, or parenthetical asides. The old row's semicolon was replaced. |
+| Secrets | PASS | None in the diff. |
+
+#### Open Findings
+
+**[LOW] FINDING-001 (NON-BLOCKING, info): deleting `CLAUDE.md` drops automatic project context in Claude Code**
+- File: `CLAUDE.md` (deleted, was lines 1-11); `AGENTS.md`
+- Scenario: Claude Code loads `CLAUDE.md` and does not load `AGENTS.md` on its own. The deleted file was a thin `@AGENTS.md` import. In this repo, new Claude Code sessions therefore start without the GAL rules, Cold Start Order, and project constraints unless the agent or user reads `AGENTS.md`. The Deviations row records this, and the owner accepted it on 2026-10-10. This receipt reports it as information only.
+- Recommended fix: none required. If Claude Code context matters, the owner can add a hand-written `CLAUDE.md` that imports `AGENTS.md` without GAL ownership markers, or accept the change.
+- Confidence: 10/10
+
+**[LOW] FINDING-002 (NON-BLOCKING): ".dev/project.md:127" wording on the integration test**
+- File: `.dev/project.md:127`
+- Scenario: The line says the ccync projection test "runs only when `CCYNC_BIN` names an installed ccync executable". The test is outside `npm test`. When `CCYNC_BIN` is unset, an explicit run fails an assertion and does not skip. A reader may expect `npm test` to skip it.
+- Recommended fix: say that it is run explicitly and needs `CCYNC_BIN`.
+- Confidence: 8/10
+
+**[LOW] FINDING-003 (NON-BLOCKING): Python count unverified in this audit**
+- File: `.dev/project.md:127`
+- Scenario: "24 Python tests" could not be re-run here. The audit relies on the TP-17 receipt.
+- Recommended fix: none. A later gate can re-check it.
+- Confidence: 8/10
 
 ## Debug Log
 

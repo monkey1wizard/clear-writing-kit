@@ -481,7 +481,7 @@ parsed result object 或指定的 empty diff。只有 PASS label 而沒有上述
   - **Acceptance**：TP-14 在每份相關 durable document 找到相同的
     prerequisite、owner invariant、command、lock behavior、recovery warning
     與 acceptance limit。
-- [ ] T-05 — 重新索引 durable docs 並重新產生 adapter guidance。
+- [x] T-05 — 重新索引 durable docs 並重新產生 adapter guidance。 *(60279f3)*
   - **Files**：`.dev/project.md`、`AGENTS.md`。
   - **Dependencies**：T-04.
   - **Change**：在 `.dev/project.md` 重新索引變更後的 durable installation
