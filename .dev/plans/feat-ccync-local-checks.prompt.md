@@ -100,7 +100,7 @@ None.
 Workflow: DONE
 Step: 5 of 5
 Last activity: 2026-10-10. T-05 converged at 60279f3 (test PASS, audit APPROVE)
-Next step: owner records OA-01 to OA-03 evidence, then /gal finalize
+Next step: /gal finalize precondition gate
 Current Task: —
 Task Base Commit: 462da9f24ce37818669c8b9abea39a29b128898b
 Task Final Commit: 60279f398393f362d2008e45eb4b95217ccbf1be
@@ -152,7 +152,7 @@ Prompt refreshed after final architecture verdict APPROVE, human approval, and p
 
 #### Interrupted Phase — finalize / ACCEPTANCE
 
-- Status: OPEN
+- Status: RESOLVED
 - Mode: already-on-main
 - Merge state: not-applicable
 - Outstanding rows:
@@ -165,6 +165,14 @@ Prompt refreshed after final architecture verdict APPROVE, human approval, and p
 - Expected result: OA-01 has no failure label, OA-02 has one common pinned `dist/cwk.mjs` vector per host and no second lint server, and OA-03 has 20 PASS cells.
 - Pass/fail rule: Each row passes only with the owner's recorded `accepted` or `waived` evidence in `#### Owner Acceptance Evidence`. Missing, skipped, or `NotRun` evidence fails.
 - Resume action: /gal finalize
+
+#### Owner Acceptance Evidence
+
+| ID | Outcome | Owner evidence | Target binding |
+| --- | --- | --- | --- |
+| OA-01 | waived | Owner on 2026-10-10: "直接 /gal:gal-finalize 這些 OA都不是你能處理的" | OA-01 real-home `ccync upgrade clear-writing-kit` and `ccync sync` run. Not executed. The implementation commits are not published or pinned. |
+| OA-02 | waived | Owner on 2026-10-10: "直接 /gal:gal-finalize 這些 OA都不是你能處理的" | OA-02 inspection of the five real native configs and the projected state. Not executed. The Claude PowerShell launcher deviation stays unaccepted and undecided. |
+| OA-03 | waived | Owner on 2026-10-10: "直接 /gal:gal-finalize 這些 OA都不是你能處理的" | OA-03 5 by 4 host-session matrix. Not executed. No cell is reported as PASS. |
 
 ## Tasks
 
