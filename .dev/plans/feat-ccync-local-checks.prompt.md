@@ -98,12 +98,12 @@ None.
 ## Status
 
 Workflow: IMPLEMENT
-Step: 3 of 5
+Step: 4 of 5
 Last activity: 2026-10-10. T-03 converged at dc11252 (test PASS, audit APPROVE)
-Next step: start T-04
-Current Task: —
-Task Base Commit: 5deadcda11f46f81389ea7bb130720f16660d2c7
-Task Final Commit: dc1125299f43857c8ff3bb18f90797cff257726a
+Next step: implement T-04
+Current Task: T-04
+Task Base Commit: c3d132e669d07e375a6ddada85d3416e6470caa2
+Task Final Commit: —
 Test Retry Count: 0
 Review Retry Count: 0
 
@@ -142,8 +142,8 @@ Prompt refreshed after final architecture verdict APPROVE, human approval, and p
 - Cause: unknown
 - Workflow at interruption: IMPLEMENT
 - Durable state present:
-  - Task Base Commit: 5deadcd
-  - Task Final Commit: dc1125299f43857c8ff3bb18f90797cff257726a
+  - Task Base Commit: c3d132e669d07e375a6ddada85d3416e6470caa2
+  - Task Final Commit: —
   - Worktree: dirty
   - Test Results: no
   - Review Results: no
@@ -217,7 +217,7 @@ For headless execution, every covering row also requires executor log terminal s
 Run: 2026-10-09 (clock rolled to 2026-10-10 during the run)
 Mode: spec
 Browser Route: No runnable browser route (not applicable; no browser surface)
-Task Final Commit: dc1125299f43857c8ff3bb18f90797cff257726a (task base 3c68d3a); HEAD unchanged after the run
+Task Final Commit: — (task base 3c68d3a); HEAD unchanged after the run
 Total: 5 | Passed: 5 | Failed: 0 | Skipped: 0 (raw command outcomes; TP-05 is judged FAIL on proof adequacy, see Findings)
 
 | TP | Command | Result | Evidence |
@@ -247,7 +247,7 @@ Verdict: FAIL
 Run: 2026-10-10
 Mode: spec
 Browser Route: No runnable browser route (not applicable; no browser surface)
-Task Final Commit: dc1125299f43857c8ff3bb18f90797cff257726a (task range 3c68d3a..71f9028); HEAD stayed at 71f9028 during and after the run
+Task Final Commit: — (task range 3c68d3a..71f9028); HEAD stayed at 71f9028 during and after the run
 Total: 5 | Passed: 5 | Failed: 0 | Skipped: 0
 
 | TP | Command | Result | Evidence |

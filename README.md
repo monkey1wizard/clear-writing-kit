@@ -39,6 +39,15 @@ The Web skill includes manual review steps for sessions without writing tools. A
 
 Requirements: Python 3.10 or newer for generation, plus Node.js 20.18 or newer and npm for local writing checks. Run these commands from the repository root.
 
+Install with ccync: Node.js 20.18 or newer must be on PATH. Run these commands:
+
+```powershell
+ccync add <clear-writing-kit source>
+ccync sync
+```
+
+`ccync sync` projects one ccync-owned MCP server, `clear-writing-kit-textlint`, into Claude, Codex, Copilot, opencode, and agy. The server runs the committed `dist/cwk.mjs` bundle from ccync's plugin cache and exposes only `lintText`. This path needs no package installation and does not create `~/.clear-writing-kit/`. Use either ccync or the direct installer below for each host, not both. Read [INSTALL.md](INSTALL.md) for ownership and recovery details.
+
 Install the coding-agent plugin and MCP server:
 
 ```powershell
@@ -139,6 +148,15 @@ coding agents 必須先探索可用的寫作工具，才能判斷工具是否不
 
 產生器需要 Python 3.10 以上版本。本機文字檢查需要 Node.js 20.18 以上版本及 npm。請在儲存庫根目錄執行以下命令。
 
+使用 ccync 安裝：PATH 中必須有 Node.js 20.18 以上版本。請執行以下命令：
+
+```powershell
+ccync add <clear-writing-kit source>
+ccync sync
+```
+
+`ccync sync` 會將 ccync 擁有的單一 MCP 伺服器 `clear-writing-kit-textlint` 投射到 Claude、Codex、Copilot、opencode 與 agy。此伺服器執行 ccync 外掛程式快取中已提交的 `dist/cwk.mjs` 打包檔，只提供 `lintText`。這條路徑不需要安裝套件，也不會建立 `~/.clear-writing-kit/`。每個宿主請擇一使用 ccync 或下方的直接安裝程式，不要兩者並用。擁有權與復原細節請參閱 [INSTALL.md](INSTALL.md)。
+
 安裝 coding-agent 外掛程式與 MCP 伺服器：
 
 ```powershell
@@ -238,6 +256,15 @@ Webの会話で検査ツールが使えない場合は、文章を手動で確�
 ### ファイルの生成と利用
 
 生成処理にはPython 3.10以降が必要である。ローカルの文章検査には、Node.js 20.18以降とnpmが必要である。次のコマンドは、リポジトリのルートで実行する。
+
+ccyncでインストールする。PATHにNode.js 20.18以降が必要である。次のコマンドを実行する。
+
+```powershell
+ccync add <clear-writing-kit source>
+ccync sync
+```
+
+`ccync sync` は、ccyncが所有するMCPサーバー `clear-writing-kit-textlint` を1つ作る。このサーバーは、Claude、Codex、Copilot、opencode、agyに反映される。このサーバーは、ccyncのプラグインキャッシュにあるコミット済みの `dist/cwk.mjs` を実行し、`lintText` だけを公開する。この方法ではパッケージのインストールが不要であり、`~/.clear-writing-kit/` も作成しない。各ホストでは、ccyncか下記の直接インストーラーのどちらか一方を使う。所有権と復旧の詳細は [INSTALL.md](INSTALL.md) を参照する。
 
 コーディングエージェント用のプラグインとMCPサーバーをインストールする。
 

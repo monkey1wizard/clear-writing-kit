@@ -2,6 +2,36 @@
 
 The cross-agent installer configures Clear Writing Kit for a supported coding-agent host. It separates inspection from mutation. Run `plan`, review the complete output, and run `apply` only with the exact plan hash that the user approved.
 
+## Installation ownership
+
+Two installation paths can register the MCP server `clear-writing-kit-textlint`. Use one path for each host.
+
+- The direct installer in this document owns its registration through the install manifest. It installs to `~/.clear-writing-kit/` and registers the server through the host CLI for Claude and Codex.
+- The ccync path runs `ccync add <clear-writing-kit source>` and `ccync sync`. ccync owns a separate registration in Claude, Codex, Copilot, opencode, and agy. Root `mcp.json` declares `node` with the arguments `${PLUGIN_ROOT}/dist/cwk.mjs` and `mcp`, so the server runs the committed bundle from ccync's pinned plugin cache. The direct installer does not manage this registration, and ccync installs do not create `~/.clear-writing-kit/`.
+
+The install manifest entry for the same host, kind, and name is the only ownership proof for the direct installer. The installer allows these MCP transitions:
+
+| Live registration state | Manifest state | Result |
+| --- | --- | --- |
+| Absent | No entry | Create the registration |
+| Missing | Owned entry | Recreate the registration |
+| Current | Owned entry | No change |
+| Stale | Owned entry | Update the registration |
+
+Any other state is a blocking conflict. Examples are a same-name entry that the manifest does not record, such as one that ccync owns, an unreadable entry, or an entry whose fingerprint drifted from the manifest. For a blocking conflict, `plan` shows no plan hash and exits with code 1, and `apply` changes no MCP registration. Resolve the conflict outside the installer before you plan again. The installer never removes or adopts an entry that it does not own.
+
+Both installation orders fail safely. If you install with the direct installer first and then run `ccync sync`, ccync reports the collision and keeps the existing entry. If you install with ccync first, `cwk install plan` reports a blocking conflict. Neither tool removes or adopts the other's entry.
+
+Right before its first MCP change, `apply` rereads the manifest entry and the live registration. If either changed since `plan`, it stops without MCP changes.
+
+## Lock and stale-lock recovery
+
+`cwk install apply` and `cwk install uninstall` share the lock file `~/.clear-writing-kit.lock`. Apply takes the lock before it computes its plan. Uninstall takes the lock before it reads the manifest. Each command holds the lock through its final manifest save or removal and releases it in a `finally` block, including on failure.
+
+A competing run, or a stale lock left by a crashed run, makes both commands refuse before any write. The installer never removes the lock automatically. To recover, first confirm that no `cwk install apply` or `cwk install uninstall` process is active. Then delete the lock file and rerun the command. Do not delete the lock while either command runs.
+
+`plan` does not take the lock. The lock serializes cooperating installer runs only. A manual writer that ignores the lock after the final reread is outside the guarantee.
+
 ## Supported scope
 
 | Host ID | Automated apply | Required session identity | Managed host-specific state |

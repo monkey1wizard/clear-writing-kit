@@ -517,5 +517,30 @@ class Artifacts(unittest.TestCase):
             self.assertTrue((ROOT / target).is_file(), target)
 
 
+    def test_ccync_installation_docs_contract(self):
+        server = "clear-writing-kit-textlint"
+        text = (ROOT / "README.md").read_text(encoding="utf-8")
+        sections = re.split(r"^## (?:English|繁體中文|日本語)\n", text, flags=re.M)[1:]
+        self.assertEqual(len(sections), 3)
+        for section in sections:
+            for token in ("ccync add <clear-writing-kit source>", "ccync sync", "Node.js 20.18", server, "INSTALL.md"):
+                self.assertIn(token, section)
+        owner_rule = "The install manifest entry for the same host, kind, and name is the only ownership proof"
+        lock = "~/.clear-writing-kit.lock"
+        recovery = "confirm that no `cwk install apply` or `cwk install uninstall` process is active"
+        docs = {name: (ROOT / name).read_text(encoding="utf-8") for name in ("INSTALL.md", "docs/installer.md", "docs/verification.md")}
+        for name in ("INSTALL.md", "docs/installer.md"):
+            self.assertIn(owner_rule, docs[name], name)
+        for name, doc in docs.items():
+            self.assertIn(lock, doc, name)
+            self.assertIn(recovery, doc, name)
+            self.assertIn("ccync", doc, name)
+        for name in ("INSTALL.md", "docs/installer.md"):
+            self.assertIn(server, docs[name], name)
+        self.assertIn("Owner acceptance in real homes is still pending", docs["docs/verification.md"])
+        self.assertIn("CCYNC_BIN", docs["docs/verification.md"])
+        self.assertIn("powershell -NoProfile -Command", docs["docs/verification.md"])
+
+
 if __name__ == "__main__":
     unittest.main()

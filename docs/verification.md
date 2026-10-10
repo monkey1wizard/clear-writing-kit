@@ -44,6 +44,48 @@ No live ChatGPT or Gemini upload, global skill installation, ccync synchronizati
 
 Repository branding and the Claude output-style name now use `clear-writing-kit`. The coding-agent and Web skill names remain distinct. The [migration record](rule-migration.md) documents the old names and the required installation changes. This repository update does not rename the local checkout folder or the remote repository.
 
+## ccync installation verification
+
+Date: 2026-10-10. Environment: Windows, ccync 0.1.5. This section records automated evidence for the ccync path and the direct installer ownership boundary.
+
+### Automated evidence commands
+
+Set `CCYNC_BIN` to the absolute path of the installed ccync executable, then run the projection test. The test fails when `CCYNC_BIN` is missing or invalid, and it never skips.
+
+```text
+node --test --test-name-pattern "ccync projects local clear-writing-kit MCP" writing/integration/ccync-projection.test.cjs
+```
+
+The default `npm --prefix writing test` suite does not discover this file. Run the repository suites separately:
+
+```text
+cmd.exe /d /c npm --prefix writing test
+python -m unittest discover -s tests -v
+cmd.exe /d /c npm --prefix writing run lint
+```
+
+The projection test uses one fresh isolated home for a successful five-host sync. Separate fresh homes preseed a foreign same-name entry before ccync owns the name, and each collision must be reported with the foreign bytes preserved.
+
+### Per-host rendering
+
+ccync 0.1.5 rendered the following vectors in isolated tests. The `<cache>` path is ccync's pinned plugin cache.
+
+| Host | Rendered registration |
+| --- | --- |
+| Codex, Copilot, agy | Command `node` with arguments `<cache>/dist/cwk.mjs` and `mcp` |
+| opencode | Command vector `node`, `<cache>/dist/cwk.mjs`, `mcp` |
+| Claude | A `powershell -NoProfile -Command` launcher that sets plugin environment variables and runs `& 'node' '<cache>/dist/cwk.mjs' 'mcp'` |
+
+The Claude launcher is ccync-owned behavior, so Claude also needs PowerShell on PATH. The root `mcp.json` itself holds only literal `node` and has no launcher or runtime fallback. If Node.js 20.18 or later is not on the host's PATH, the MCP process cannot start. GUI-launched hosts may not inherit that PATH, and the host owns how it shows the error.
+
+### Ownership and lock evidence
+
+Automated installer tests cover the safe MCP transitions, blocking conflicts for unowned, unreadable, and drifted entries, manifest and live-registration changes between plan and apply, apply-uninstall lock contention, stale-lock refusal, and lock release on failure. The ownership rule, the shared lock `~/.clear-writing-kit.lock`, and recovery are documented in the [installer guide](installer.md). Before deleting a lock file, confirm that no `cwk install apply` or `cwk install uninstall` process is active.
+
+### Owner acceptance limit
+
+Owner acceptance in real homes is still pending. OA-01 to OA-03 must run in fresh host sessions against the published ccync pin. They have not run, and the automated evidence above does not replace them. The repository does not claim that the published pin works in a real home until they pass.
+
 ## Cross-agent installer verification (2026-10-02)
 
 Date: 2026-10-02. Environment: Windows, Node.js 25.2.1, Deno 2.9.7, Bun 1.3.12.
