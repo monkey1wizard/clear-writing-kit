@@ -2,17 +2,33 @@ import { basename, dirname, join } from "node:path";
 import { hosts, type HostCapability } from "../hosts.js";
 import { findBlock, upsertBlock } from "./block.js";
 import { backup, readText, sha256, writeTextAtomic } from "./fsutil.js";
-import { readManifest, saveManifest, type Manifest, type ManifestBlockRecord, type ManifestSettingsRecord } from "./manifest.js";
+import { withInstallerLock } from "./lock.js";
+import { emptyManifest, manifestPath, parseManifest, saveManifest, type Manifest, type ManifestBlockRecord, type ManifestSettingsRecord } from "./manifest.js";
 import { copyPayload, writeLauncher } from "./payload.js";
-import { computePlan, MCP_NAME, OUTPUT_STYLE, PLUGIN_NAME, type Plan, type PlanContext, type PlanError, type StepId } from "./plan.js";
+import { computePlan, manifestMcpFingerprint, MCP_NAME, OUTPUT_STYLE, PLUGIN_NAME, readLiveMcpEvidence, type McpOwnershipEvidence, type Plan, type PlanContext, type PlanError, type StepId } from "./plan.js";
 import { setOutputStyle } from "./settings.js";
 import { run, which } from "./spawn.js";
+
+export { INSTALLER_LOCK_NAME, installerLockPath } from "./lock.js";
 
 export type ApplyOutcome =
   | { status: "applied"; completed: StepId[]; unchanged: StepId[]; backups: string[] }
   | { status: "failed"; step: StepId; output: string; completed: StepId[] }
-  | { status: "refused"; message: string }
+  | { status: "refused"; message: string; lockPath?: string }
   | PlanError;
+
+/** Evidence that apply read again right before its first MCP mutation. */
+export type OwnershipReread = { manifestFingerprint: string | null; manifestPresent: boolean; manifestUnchanged: boolean; live: string };
+
+/** Optional hooks for isolated tests. The CLI passes none. */
+export type ApplyOptions = {
+  /** Runs after the lock is acquired and before the internal plan is computed. */
+  afterLock?: () => void | Promise<void>;
+  /** Runs after the internal plan is computed and before apply rereads ownership evidence for its first MCP mutation. */
+  beforeOwnershipReread?: () => void | Promise<void>;
+  /** Receives the evidence from that reread. */
+  onOwnershipReread?: (evidence: OwnershipReread) => void;
+};
 
 const OUTPUT_LIMIT = 2000;
 const limit = (text: string) => (text.length > OUTPUT_LIMIT ? `${text.slice(0, OUTPUT_LIMIT)}... (truncated)` : text);
@@ -67,11 +83,41 @@ async function runHost(binary: string, args: string[], env: PlanContext["env"], 
   }
 }
 
-/** Recomputes the plan, and when its hash matches, applies each step that is not current. */
-export async function applyPlan(ctx: PlanContext, planHash: string): Promise<ApplyOutcome> {
+/** Reads the manifest text and parsed value together, so apply can detect any later change to the bytes. */
+async function readManifestSnapshot(home: string) {
+  const file = await readText(manifestPath(home));
+  return { text: file?.text ?? null, parsed: file ? parseManifest(file.text) : undefined };
+}
+
+/** Names the first difference between the evidence the plan used and the evidence read again. Undefined means unchanged. */
+function ownershipChange(planned: McpOwnershipEvidence, reread: OwnershipReread) {
+  if (!reread.manifestUnchanged) {
+    return reread.manifestPresent ? "The install manifest changed after the plan was computed." : "The install manifest was removed after the plan was computed.";
+  }
+  if (reread.manifestFingerprint !== planned.manifestFingerprint) return "The install manifest entry for the MCP registration changed after the plan was computed.";
+  if (reread.live !== planned.live) return `The live ${MCP_NAME} registration changed after the plan was computed.`;
+  return undefined;
+}
+
+/**
+ * Takes the shared installer lock, recomputes the plan, and when its hash matches, applies each step that is not current.
+ * The lock is held through the final manifest save and released on success or error.
+ */
+export async function applyPlan(ctx: PlanContext, planHash: string, options: ApplyOptions = {}): Promise<ApplyOutcome> {
+  return withInstallerLock(ctx.home, "apply", async () => {
+    await options.afterLock?.();
+    return applyLocked(ctx, planHash, options);
+  });
+}
+
+async function applyLocked(ctx: PlanContext, planHash: string, options: ApplyOptions): Promise<ApplyOutcome> {
   const outcome = await computePlan(ctx);
   if (outcome.status === "error") return outcome;
   if (outcome.status === "manual") return { status: "refused", message: `${outcome.host.displayName} is not verified, so apply does not run for it. Follow the manual steps from plan.` };
+  if (outcome.status === "blocked") {
+    const blocking = outcome.plan.conflicts.filter(conflict => conflict.blocking).map(conflict => `${conflict.target}: ${conflict.detail}`).join(" ");
+    return { status: "error", kind: "mismatch", message: `The plan hash does not match the current state. Nothing was written. The current state has blocking conflicts, so no plan hash applies. ${blocking} Resolve the conflicts and run plan again.` };
+  }
   const plan: Plan = outcome.plan;
   if (plan.hash !== planHash) {
     const targets = plan.steps.map(step => step.target).join(", ");
@@ -82,9 +128,18 @@ export async function applyPlan(ctx: PlanContext, planHash: string): Promise<App
   const binary = host ? which(hostBinary(host), ctx.env) : undefined;
   if (!host || !binary) return { status: "refused", message: "The host command is not on PATH." };
 
-  const manifestResult = await readManifest(ctx.home);
-  if (!manifestResult.ok) return { status: "error", kind: "manifest", message: manifestResult.error };
-  const manifest: Manifest = manifestResult.value;
+  const snapshot = await readManifestSnapshot(ctx.home);
+  if (snapshot.parsed && !snapshot.parsed.ok) return { status: "error", kind: "manifest", message: snapshot.parsed.error };
+  const manifest: Manifest = snapshot.parsed?.ok ? snapshot.parsed.value : emptyManifest();
+  if (manifestMcpFingerprint(manifest, host.id) !== plan.mcpOwnership.manifestFingerprint) {
+    return { status: "error", kind: "mismatch", message: "The install manifest entry for the MCP registration changed after the plan was computed. Nothing was written. Run plan again." };
+  }
+  /** Manifest bytes as this run last read or wrote them. Any other value at the reread means another writer changed the manifest. */
+  let knownManifestText = snapshot.text;
+  const persistManifest = async () => {
+    await saveManifest(ctx.home, manifest);
+    knownManifestText = (await readText(manifestPath(ctx.home)))?.text ?? null;
+  };
   let writes: Writes;
   try {
     writes = await prepareWrites(host, plan, ctx);
@@ -188,6 +243,21 @@ export async function applyPlan(ctx: PlanContext, planHash: string): Promise<App
         const entry = { host: host.id, kind: "plugin", name: PLUGIN_NAME, fingerprint: pluginFingerprint(host.id) };
         upsertBy(manifest.cli, entry, item => item.host === entry.host && item.kind === entry.kind && item.name === entry.name);
       } else if (step.id === "mcp") {
+        // Final ownership check: read the manifest entry and the live registration again right before the first MCP mutation.
+        await options.beforeOwnershipReread?.();
+        const reread = await readManifestSnapshot(ctx.home);
+        const rereadManifest = reread.parsed?.ok ? reread.parsed.value : undefined;
+        const evidence: OwnershipReread = {
+          manifestPresent: reread.text !== null,
+          manifestUnchanged: reread.text === knownManifestText,
+          manifestFingerprint: rereadManifest ? manifestMcpFingerprint(rereadManifest, host.id) : null,
+          live: (await readLiveMcpEvidence(host, ctx.env, writes.launcher)).live
+        };
+        options.onOwnershipReread?.(evidence);
+        const changed = ownershipChange(plan.mcpOwnership, evidence);
+        if (changed) {
+          return { status: "failed", step: "mcp", output: `${changed} The MCP registration was not changed, and the install manifest was not written again. Run plan again.`, completed };
+        }
         const scope = host.id === "claude" ? ["--scope", "user"] : [];
         if (step.action === "update") await runHost(binary, ["mcp", "remove", MCP_NAME, ...scope], ctx.env, true);
         await runHost(binary, ["mcp", "add", ...scope, MCP_NAME, "--", ...writes.registration], ctx.env);
@@ -208,7 +278,7 @@ export async function applyPlan(ctx: PlanContext, planHash: string): Promise<App
       }
       if (!manifest.completedSteps[host.id]) manifest.completedSteps[host.id] = [];
       if (!manifest.completedSteps[host.id].includes(step.id)) manifest.completedSteps[host.id].push(step.id);
-      await saveManifest(ctx.home, manifest);
+      await persistManifest();
       completed.push(step.id);
     } catch (error) {
       return { status: "failed", step: step.id, output: limit(error instanceof Error ? error.message : String(error)), completed };
@@ -216,7 +286,7 @@ export async function applyPlan(ctx: PlanContext, planHash: string): Promise<App
   }
 
   if (metadataChanged) {
-    await saveManifest(ctx.home, manifest);
+    await persistManifest();
   }
 
   return { status: "applied", completed, unchanged, backups };

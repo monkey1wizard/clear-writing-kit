@@ -4264,7 +4264,7 @@ var require_lodash = __commonJS({
           }
           return mapped.length && mapped[0] === arrays[0] ? baseIntersection(mapped, undefined2, comparator) : [];
         });
-        function join10(array2, separator) {
+        function join11(array2, separator) {
           return array2 == null ? "" : nativeJoin.call(array2, separator);
         }
         function last(array2) {
@@ -6188,7 +6188,7 @@ var require_lodash = __commonJS({
         lodash.isUndefined = isUndefined;
         lodash.isWeakMap = isWeakMap;
         lodash.isWeakSet = isWeakSet;
-        lodash.join = join10;
+        lodash.join = join11;
         lodash.kebabCase = kebabCase;
         lodash.last = last;
         lodash.lastIndexOf = lastIndexOf;
@@ -19707,7 +19707,7 @@ var require_Obj = __commonJS({
 var require_Str = __commonJS({
   "node_modules/prelude-ls/lib/Str.js"(exports, module) {
     var split;
-    var join10;
+    var join11;
     var lines;
     var unlines;
     var words;
@@ -19722,7 +19722,7 @@ var require_Str = __commonJS({
     split = curry$(function(sep, str) {
       return str.split(sep);
     });
-    join10 = curry$(function(sep, xs) {
+    join11 = curry$(function(sep, xs) {
       return xs.join(sep);
     });
     lines = function(str) {
@@ -19781,7 +19781,7 @@ var require_Str = __commonJS({
     };
     module.exports = {
       split,
-      join: join10,
+      join: join11,
       lines,
       unlines,
       words,
@@ -21040,10 +21040,10 @@ var require_parse_string = __commonJS({
         }
       }
       function consumeList(tokens, arg$, hasDelimiters) {
-        var open2, close, result, untilTest;
-        open2 = arg$[0], close = arg$[1];
+        var open3, close, result, untilTest;
+        open3 = arg$[0], close = arg$[1];
         if (hasDelimiters) {
-          consumeOp(tokens, open2);
+          consumeOp(tokens, open3);
         }
         result = [];
         untilTest = "," + (hasDelimiters ? close : "");
@@ -22417,9 +22417,9 @@ var require_picocolors = __commonJS({
     var argv = p.argv || [];
     var env = p.env || {};
     var isColorSupported = !(!!env.NO_COLOR || argv.includes("--no-color")) && (!!env.FORCE_COLOR || argv.includes("--color") || p.platform === "win32" || (p.stdout || {}).isTTY && env.TERM !== "dumb" || !!env.CI);
-    var formatter = (open2, close, replace = open2) => (input2) => {
-      let string4 = "" + input2, index = string4.indexOf(close, open2.length);
-      return ~index ? open2 + replaceClose(string4, close, replace, index) + close : open2 + string4 + close;
+    var formatter = (open3, close, replace = open3) => (input2) => {
+      let string4 = "" + input2, index = string4.indexOf(close, open3.length);
+      return ~index ? open3 + replaceClose(string4, close, replace, index) + close : open3 + string4 + close;
     };
     var replaceClose = (string4, close, replace, index) => {
       let result = "", cursor = 0;
@@ -31876,7 +31876,7 @@ var require_rc_config_loader = __commonJS({
       const extensions = Object.keys(loaderByExt);
       while (extensions.length) {
         const ext = extensions.shift();
-        const configLocation = join10(parts, configFileName + ext);
+        const configLocation = join11(parts, configFileName + ext);
         if (!fs_1.default.existsSync(configLocation)) {
           continue;
         }
@@ -31905,9 +31905,9 @@ var require_rc_config_loader = __commonJS({
         }
       }
       if (packageJSON) {
-        const pkgJSONLoc = join10(parts, "package.json");
+        const pkgJSONLoc = join11(parts, "package.json");
         if (fs_1.default.existsSync(pkgJSONLoc)) {
-          const pkgJSON = json5_1.default.parse(readFile3(pkgJSONLoc));
+          const pkgJSON = json5_1.default.parse(readFile4(pkgJSONLoc));
           if (pkgJSON[packageJSONFieldName]) {
             return {
               config: pkgJSON[packageJSONFieldName],
@@ -31924,7 +31924,7 @@ var require_rc_config_loader = __commonJS({
     function splitPath(x) {
       return path_1.default.resolve(x || "").split(path_1.default.sep);
     }
-    function join10(parts, filename) {
+    function join11(parts, filename) {
       return path_1.default.resolve(parts.join(path_1.default.sep) + path_1.default.sep, filename);
     }
     function loadJSConfigFile(filePath, suppress) {
@@ -31944,7 +31944,7 @@ Error: ${error62.message}`;
     function loadJSONConfigFile(filePath, suppress) {
       debug(`Loading JSON config file: ${filePath}`);
       try {
-        return json5_1.default.parse(readFile3(filePath));
+        return json5_1.default.parse(readFile4(filePath));
       } catch (error62) {
         debug(`Error reading JSON file: ${filePath}`);
         if (!suppress) {
@@ -31954,14 +31954,14 @@ Error: ${error62.message}`;
         }
       }
     }
-    function readFile3(filePath) {
+    function readFile4(filePath) {
       return fs_1.default.readFileSync(filePath, "utf8");
     }
     function loadYAMLConfigFile(filePath, suppress) {
       debug(`Loading YAML config file: ${filePath}`);
       const yaml = require_js_yaml2();
       try {
-        return yaml.load(readFile3(filePath)) || {};
+        return yaml.load(readFile4(filePath)) || {};
       } catch (error62) {
         debug(`Error reading YAML file: ${filePath}`);
         if (!suppress) {
@@ -39627,30 +39627,30 @@ var require_micromark_extension_gfm_strikethrough = __commonJS({
         var index = -1;
         var strikethrough;
         var text;
-        var open2;
+        var open3;
         var nextEvents;
         while (++index < events.length) {
           if (events[index][0] === "enter" && events[index][1].type === "strikethroughSequenceTemporary" && events[index][1]._close) {
-            open2 = index;
-            while (open2--) {
-              if (events[open2][0] === "exit" && events[open2][1].type === "strikethroughSequenceTemporary" && events[open2][1]._open && // If the sizes are the same:
-              events[index][1].end.offset - events[index][1].start.offset === events[open2][1].end.offset - events[open2][1].start.offset) {
+            open3 = index;
+            while (open3--) {
+              if (events[open3][0] === "exit" && events[open3][1].type === "strikethroughSequenceTemporary" && events[open3][1]._open && // If the sizes are the same:
+              events[index][1].end.offset - events[index][1].start.offset === events[open3][1].end.offset - events[open3][1].start.offset) {
                 events[index][1].type = "strikethroughSequence";
-                events[open2][1].type = "strikethroughSequence";
+                events[open3][1].type = "strikethroughSequence";
                 strikethrough = {
                   type: "strikethrough",
-                  start: shallow(events[open2][1].start),
+                  start: shallow(events[open3][1].start),
                   end: shallow(events[index][1].end)
                 };
                 text = {
                   type: "strikethroughText",
-                  start: shallow(events[open2][1].end),
+                  start: shallow(events[open3][1].end),
                   end: shallow(events[index][1].start)
                 };
                 nextEvents = [
                   ["enter", strikethrough, context],
-                  ["enter", events[open2][1], context],
-                  ["exit", events[open2][1], context],
+                  ["enter", events[open3][1], context],
+                  ["exit", events[open3][1], context],
                   ["enter", text, context]
                 ];
                 chunkedSplice(
@@ -39659,7 +39659,7 @@ var require_micromark_extension_gfm_strikethrough = __commonJS({
                   0,
                   resolveAll(
                     context.parser.constructs.insideSpan.null,
-                    events.slice(open2 + 1, index),
+                    events.slice(open3 + 1, index),
                     context
                   )
                 );
@@ -39669,8 +39669,8 @@ var require_micromark_extension_gfm_strikethrough = __commonJS({
                   ["exit", events[index][1], context],
                   ["exit", strikethrough, context]
                 ]);
-                chunkedSplice(events, open2 - 1, index - open2 + 3, nextEvents);
-                index = open2 + nextEvents.length - 2;
+                chunkedSplice(events, open3 - 1, index - open3 + 3, nextEvents);
+                index = open3 + nextEvents.length - 2;
                 break;
               }
             }
@@ -40272,8 +40272,8 @@ var require_syntax3 = __commonJS({
     exports.text = { 91: tasklistCheck };
     function tokenizeTasklistCheck(effects, ok2, nok) {
       var self2 = this;
-      return open2;
-      function open2(code) {
+      return open3;
+      function open3(code) {
         if (
           // Exit if not `[`.
           code !== 91 || // Exit if there’s stuff before.
@@ -42650,7 +42650,7 @@ var require_attention = __commonJS({
     };
     function resolveAllAttention(events, context) {
       var index = -1;
-      var open2;
+      var open3;
       var group;
       var text;
       var openingSequence;
@@ -42660,18 +42660,18 @@ var require_attention = __commonJS({
       var offset;
       while (++index < events.length) {
         if (events[index][0] === "enter" && events[index][1].type === "attentionSequence" && events[index][1]._close) {
-          open2 = index;
-          while (open2--) {
-            if (events[open2][0] === "exit" && events[open2][1].type === "attentionSequence" && events[open2][1]._open && // If the markers are the same:
-            context.sliceSerialize(events[open2][1]).charCodeAt(0) === context.sliceSerialize(events[index][1]).charCodeAt(0)) {
-              if ((events[open2][1]._close || events[index][1]._open) && (events[index][1].end.offset - events[index][1].start.offset) % 3 && !((events[open2][1].end.offset - events[open2][1].start.offset + events[index][1].end.offset - events[index][1].start.offset) % 3)) {
+          open3 = index;
+          while (open3--) {
+            if (events[open3][0] === "exit" && events[open3][1].type === "attentionSequence" && events[open3][1]._open && // If the markers are the same:
+            context.sliceSerialize(events[open3][1]).charCodeAt(0) === context.sliceSerialize(events[index][1]).charCodeAt(0)) {
+              if ((events[open3][1]._close || events[index][1]._open) && (events[index][1].end.offset - events[index][1].start.offset) % 3 && !((events[open3][1].end.offset - events[open3][1].start.offset + events[index][1].end.offset - events[index][1].start.offset) % 3)) {
                 continue;
               }
-              use = events[open2][1].end.offset - events[open2][1].start.offset > 1 && events[index][1].end.offset - events[index][1].start.offset > 1 ? 2 : 1;
+              use = events[open3][1].end.offset - events[open3][1].start.offset > 1 && events[index][1].end.offset - events[index][1].start.offset > 1 ? 2 : 1;
               openingSequence = {
                 type: use > 1 ? "strongSequence" : "emphasisSequence",
-                start: movePoint(shallow(events[open2][1].end), -use),
-                end: shallow(events[open2][1].end)
+                start: movePoint(shallow(events[open3][1].end), -use),
+                end: shallow(events[open3][1].end)
               };
               closingSequence = {
                 type: use > 1 ? "strongSequence" : "emphasisSequence",
@@ -42680,7 +42680,7 @@ var require_attention = __commonJS({
               };
               text = {
                 type: use > 1 ? "strongText" : "emphasisText",
-                start: shallow(events[open2][1].end),
+                start: shallow(events[open3][1].end),
                 end: shallow(events[index][1].start)
               };
               group = {
@@ -42688,13 +42688,13 @@ var require_attention = __commonJS({
                 start: shallow(openingSequence.start),
                 end: shallow(closingSequence.end)
               };
-              events[open2][1].end = shallow(openingSequence.start);
+              events[open3][1].end = shallow(openingSequence.start);
               events[index][1].start = shallow(closingSequence.end);
               nextEvents = [];
-              if (events[open2][1].end.offset - events[open2][1].start.offset) {
+              if (events[open3][1].end.offset - events[open3][1].start.offset) {
                 nextEvents = chunkedPush(nextEvents, [
-                  ["enter", events[open2][1], context],
-                  ["exit", events[open2][1], context]
+                  ["enter", events[open3][1], context],
+                  ["exit", events[open3][1], context]
                 ]);
               }
               nextEvents = chunkedPush(nextEvents, [
@@ -42707,7 +42707,7 @@ var require_attention = __commonJS({
                 nextEvents,
                 resolveAll(
                   context.parser.constructs.insideSpan.null,
-                  events.slice(open2 + 1, index),
+                  events.slice(open3 + 1, index),
                   context
                 )
               );
@@ -42726,8 +42726,8 @@ var require_attention = __commonJS({
               } else {
                 offset = 0;
               }
-              chunkedSplice(events, open2 - 1, index - open2 + 3, nextEvents);
-              index = open2 + nextEvents.length - offset - 2;
+              chunkedSplice(events, open3 - 1, index - open3 + 3, nextEvents);
+              index = open3 + nextEvents.length - offset - 2;
               break;
             }
           }
@@ -42753,7 +42753,7 @@ var require_attention = __commonJS({
       function sequence(code) {
         var token;
         var after;
-        var open2;
+        var open3;
         var close;
         if (code === marker) {
           effects.consume(code);
@@ -42761,10 +42761,10 @@ var require_attention = __commonJS({
         }
         token = effects.exit("attentionSequence");
         after = classifyCharacter(code);
-        open2 = !after || after === 2 && before;
+        open3 = !after || after === 2 && before;
         close = !before || before === 2 && after;
-        token._open = marker === 42 ? open2 : open2 && (before || !close);
-        token._close = marker === 42 ? close : close && (after || !open2);
+        token._open = marker === 42 ? open3 : open3 && (before || !close);
+        token._close = marker === 42 ? close : close && (after || !open3);
         return ok2(code);
       }
     }
@@ -42838,9 +42838,9 @@ var require_autolink = __commonJS({
         effects.consume(code);
         effects.exit("autolinkMarker");
         effects.enter("autolinkProtocol");
-        return open2;
+        return open3;
       }
-      function open2(code) {
+      function open3(code) {
         if (asciiAlpha(code)) {
           effects.consume(code);
           return schemeOrEmailAtext;
@@ -43004,9 +43004,9 @@ var require_character_escape = __commonJS({
         effects.enter("escapeMarker");
         effects.consume(code);
         effects.exit("escapeMarker");
-        return open2;
+        return open3;
       }
-      function open2(code) {
+      function open3(code) {
         if (asciiPunctuation(code)) {
           effects.enter("characterEscapeValue");
           effects.consume(code);
@@ -45311,9 +45311,9 @@ var require_character_reference = __commonJS({
         effects.enter("characterReferenceMarker");
         effects.consume(code);
         effects.exit("characterReferenceMarker");
-        return open2;
+        return open3;
       }
-      function open2(code) {
+      function open3(code) {
         if (code === 35) {
           effects.enter("characterReferenceMarkerNumeric");
           effects.consume(code);
@@ -46085,9 +46085,9 @@ var require_hard_break_escape = __commonJS({
         effects.enter("hardBreakEscape");
         effects.enter("escapeMarker");
         effects.consume(code);
-        return open2;
+        return open3;
       }
-      function open2(code) {
+      function open3(code) {
         if (markdownLineEnding(code)) {
           effects.exit("escapeMarker");
           effects.exit("hardBreakEscape");
@@ -46335,9 +46335,9 @@ var require_html_flow = __commonJS({
         effects.enter("htmlFlow");
         effects.enter("htmlFlowData");
         effects.consume(code);
-        return open2;
+        return open3;
       }
-      function open2(code) {
+      function open3(code) {
         if (code === 33) {
           effects.consume(code);
           return declarationStart;
@@ -46670,9 +46670,9 @@ var require_html_text = __commonJS({
         effects.enter("htmlText");
         effects.enter("htmlTextData");
         effects.consume(code);
-        return open2;
+        return open3;
       }
-      function open2(code) {
+      function open3(code) {
         if (code === 33) {
           effects.consume(code);
           return declarationOpen;
@@ -47028,12 +47028,12 @@ var require_label_end = __commonJS({
       var label;
       var text;
       var token;
-      var open2;
+      var open3;
       var close;
       var media;
       while (index--) {
         token = events[index][1];
-        if (open2) {
+        if (open3) {
           if (token.type === "link" || token.type === "labelLink" && token._inactive) {
             break;
           }
@@ -47042,7 +47042,7 @@ var require_label_end = __commonJS({
           }
         } else if (close) {
           if (events[index][0] === "enter" && (token.type === "labelImage" || token.type === "labelLink") && !token._balanced) {
-            open2 = index;
+            open3 = index;
             if (token.type !== "labelLink") {
               offset = 2;
               break;
@@ -47053,31 +47053,31 @@ var require_label_end = __commonJS({
         }
       }
       group = {
-        type: events[open2][1].type === "labelLink" ? "link" : "image",
-        start: shallow(events[open2][1].start),
+        type: events[open3][1].type === "labelLink" ? "link" : "image",
+        start: shallow(events[open3][1].start),
         end: shallow(events[events.length - 1][1].end)
       };
       label = {
         type: "label",
-        start: shallow(events[open2][1].start),
+        start: shallow(events[open3][1].start),
         end: shallow(events[close][1].end)
       };
       text = {
         type: "labelText",
-        start: shallow(events[open2 + offset + 2][1].end),
+        start: shallow(events[open3 + offset + 2][1].end),
         end: shallow(events[close - 2][1].start)
       };
       media = [
         ["enter", group, context],
         ["enter", label, context]
       ];
-      media = chunkedPush(media, events.slice(open2 + 1, open2 + offset + 3));
+      media = chunkedPush(media, events.slice(open3 + 1, open3 + offset + 3));
       media = chunkedPush(media, [["enter", text, context]]);
       media = chunkedPush(
         media,
         resolveAll(
           context.parser.constructs.insideSpan.null,
-          events.slice(open2 + offset + 4, close - 3),
+          events.slice(open3 + offset + 4, close - 3),
           context
         )
       );
@@ -47089,7 +47089,7 @@ var require_label_end = __commonJS({
       ]);
       media = chunkedPush(media, events.slice(close + 1));
       media = chunkedPush(media, [["exit", group, context]]);
-      chunkedSplice(events, open2, events.length, media);
+      chunkedSplice(events, open3, events.length, media);
       return events;
     }
     function tokenizeLabelEnd(effects, ok2, nok) {
@@ -47153,9 +47153,9 @@ var require_label_end = __commonJS({
         effects.enter("resourceMarker");
         effects.consume(code);
         effects.exit("resourceMarker");
-        return factoryWhitespace(effects, open2);
+        return factoryWhitespace(effects, open3);
       }
-      function open2(code) {
+      function open3(code) {
         if (code === 41) {
           return end(code);
         }
@@ -47227,9 +47227,9 @@ var require_label_end = __commonJS({
         effects.enter("referenceMarker");
         effects.consume(code);
         effects.exit("referenceMarker");
-        return open2;
+        return open3;
       }
-      function open2(code) {
+      function open3(code) {
         if (code === 93) {
           effects.enter("referenceMarker");
           effects.consume(code);
@@ -47262,9 +47262,9 @@ var require_label_start_image = __commonJS({
         effects.enter("labelImageMarker");
         effects.consume(code);
         effects.exit("labelImageMarker");
-        return open2;
+        return open3;
       }
-      function open2(code) {
+      function open3(code) {
         if (code === 91) {
           effects.enter("labelMarker");
           effects.consume(code);
@@ -48191,8 +48191,8 @@ var require_dist = __commonJS({
         return { line: d.line, column: d.column, offset: d.offset };
       }
       function opener(create, and) {
-        return open2;
-        function open2(token) {
+        return open3;
+        function open3(token) {
           enter.call(this, create(token), token);
           if (and) and.call(this, token);
         }
@@ -48216,14 +48216,14 @@ var require_dist = __commonJS({
       }
       function exit(token) {
         var node2 = this.stack.pop();
-        var open2 = this.tokenStack.pop();
-        if (!open2) {
+        var open3 = this.tokenStack.pop();
+        if (!open3) {
           throw new Error(
             "Cannot close `" + token.type + "` (" + stringifyPosition({ start: token.start, end: token.end }) + "): it\u2019s not open"
           );
-        } else if (open2.type !== token.type) {
+        } else if (open3.type !== token.type) {
           throw new Error(
-            "Cannot close `" + token.type + "` (" + stringifyPosition({ start: token.start, end: token.end }) + "): a different token (`" + open2.type + "`, " + stringifyPosition({ start: open2.start, end: open2.end }) + ") is open"
+            "Cannot close `" + token.type + "` (" + stringifyPosition({ start: token.start, end: token.end }) + "): a different token (`" + open3.type + "`, " + stringifyPosition({ start: open3.start, end: open3.end }) + ") is open"
           );
         }
         node2.position.end = point(token.end);
@@ -48890,8 +48890,8 @@ var require_from_markdown6 = __commonJS({
       return { enter, exit };
     }
     function opener(matter) {
-      return open2;
-      function open2(token) {
+      return open3;
+      function open3(token) {
         this.enter({ type: matter.type, value: "" }, token);
         this.buffer();
       }
@@ -48927,11 +48927,11 @@ var require_to_markdown6 = __commonJS({
       return { unsafe, handlers };
     }
     function handler(matter) {
-      var open2 = fence(matter, "open");
+      var open3 = fence(matter, "open");
       var close = fence(matter, "close");
       return handle;
       function handle(node2) {
-        return open2 + (node2.value ? "\n" + node2.value : "") + "\n" + close;
+        return open3 + (node2.value ? "\n" + node2.value : "") + "\n" + close;
       }
     }
     function fence(matter, prop) {
@@ -63927,13 +63927,13 @@ var require_dist9 = __commonJS({
       default: () => FileEntryDefault
     });
     module.exports = __toCommonJS(index_exports);
-    var import_node_crypto2 = __toESM3(__require("crypto"), 1);
+    var import_node_crypto3 = __toESM3(__require("crypto"), 1);
     var import_node_fs5 = __toESM3(__require("fs"), 1);
-    var import_node_path13 = __toESM3(__require("path"), 1);
+    var import_node_path14 = __toESM3(__require("path"), 1);
     var import_flat_cache = require_dist8();
     function createFromFile(filePath, useCheckSum, currentWorkingDirectory) {
-      const fname = import_node_path13.default.basename(filePath);
-      const directory = import_node_path13.default.dirname(filePath);
+      const fname = import_node_path14.default.basename(filePath);
+      const directory = import_node_path14.default.dirname(filePath);
       return create(fname, directory, useCheckSum, currentWorkingDirectory);
     }
     function create(cacheId, cacheDirectory, useCheckSum, currentWorkingDirectory) {
@@ -64062,7 +64062,7 @@ var require_dist9 = __commonJS({
        * @return {String}          content hash digest
        */
       getHash(buffer) {
-        return import_node_crypto2.default.createHash(this._hashAlgorithm).update(buffer).digest("hex");
+        return import_node_crypto3.default.createHash(this._hashAlgorithm).update(buffer).digest("hex");
       }
       /**
        * Create the key for the file path used for caching.
@@ -64091,7 +64091,7 @@ var require_dist9 = __commonJS({
        * @returns {boolean} if the file path is a relative path, false otherwise
        */
       isRelativePath(filePath) {
-        return !import_node_path13.default.isAbsolute(filePath);
+        return !import_node_path14.default.isAbsolute(filePath);
       }
       /**
        * Delete the cache file from the disk
@@ -64309,7 +64309,7 @@ var require_dist9 = __commonJS({
       getAbsolutePath(filePath, options) {
         if (this.isRelativePath(filePath)) {
           const currentWorkingDirectory = options?.currentWorkingDirectory ?? this._currentWorkingDirectory ?? process.cwd();
-          filePath = import_node_path13.default.resolve(currentWorkingDirectory, filePath);
+          filePath = import_node_path14.default.resolve(currentWorkingDirectory, filePath);
         }
         return filePath;
       }
@@ -69793,7 +69793,7 @@ var require_memoizer = __commonJS({
       return bucket;
     }
     var handoff2;
-    var open2 = [];
+    var open3 = [];
     var memo3 = {
       alloc(_inst, payload, empty) {
         const bucket = handoff2;
@@ -69802,7 +69802,7 @@ var require_memoizer = __commonJS({
         handoff2 = void 0;
         const entry = { value: empty, issues: null };
         bucket.set(payload.value, entry);
-        open2.push(entry);
+        open3.push(entry);
         return empty;
       },
       guard(inst) {
@@ -69873,10 +69873,10 @@ var require_memoizer = __commonJS({
               return payload;
             }
             handoff2 = bucket;
-            const depth = open2.length;
+            const depth = open3.length;
             const result = base(payload, ctx);
             handoff2 = void 0;
-            const entry = open2.length > depth ? open2.pop() : void 0;
+            const entry = open3.length > depth ? open3.pop() : void 0;
             if (result instanceof Promise) {
               return result.then((r) => {
                 if (entry)
@@ -103469,9 +103469,9 @@ var require_mcp_DUcCQSTW = __commonJS({
       const { bus, onerror } = options;
       const maxSubscriptions = options.maxSubscriptions ?? DEFAULT_MAX_SUBSCRIPTIONS2;
       const keepAliveMs = options.keepAliveMs ?? DEFAULT_SSE_KEEP_ALIVE_MS2;
-      const open2 = /* @__PURE__ */ new Set();
+      const open3 = /* @__PURE__ */ new Set();
       function serve(message2, signal, capabilities, serverInfo) {
-        if (open2.size >= maxSubscriptions) {
+        if (open3.size >= maxSubscriptions) {
           onerror?.(/* @__PURE__ */ new Error(`subscriptions/listen refused: subscription limit reached (${maxSubscriptions})`));
           return jsonRpcError(message2.id, -32603, "Subscription limit reached");
         }
@@ -103527,7 +103527,7 @@ data: ${JSON.stringify({
           }
           if (keepAliveTimer !== void 0) clearInterval(keepAliveTimer);
           abortCleanup?.();
-          open2.delete(teardown);
+          open3.delete(teardown);
           try {
             controller.close();
           } catch {
@@ -103547,7 +103547,7 @@ data: ${JSON.stringify({
               writeNotification(note.method, note.params);
             });
             keepAliveTimer = armSseKeepAlive2(keepAliveMs, () => writeFrame(": keepalive\n\n"));
-            open2.add(teardown);
+            open3.add(teardown);
           },
           cancel() {
             teardown(false);
@@ -103572,10 +103572,10 @@ data: ${JSON.stringify({
       return {
         serve,
         closeAll() {
-          for (const teardown of open2) teardown(true);
+          for (const teardown of open3) teardown(true);
         },
         get openCount() {
-          return open2.size;
+          return open3.size;
         }
       };
     }
@@ -145996,7 +145996,7 @@ var require_regex_not = __commonJS({
       if (opts.contains === true) {
         opts.strictNegate = false;
       }
-      var open2 = opts.strictOpen !== false ? "^" : "";
+      var open3 = opts.strictOpen !== false ? "^" : "";
       var close = opts.strictClose !== false ? "$" : "";
       var endChar = opts.endChar ? opts.endChar : "+";
       var str = pattern;
@@ -146005,7 +146005,7 @@ var require_regex_not = __commonJS({
       } else {
         str = "(?:(?!^(?:" + pattern + ")$).)" + endChar;
       }
-      var res = open2 + str + close;
+      var res = open3 + str + close;
       if (opts.safe === true && safe(res) === false) {
         throw new Error("potentially unsafe regular expression: " + res);
       }
@@ -146060,7 +146060,7 @@ var require_to_regex = __commonJS({
         opts.strictOpen = false;
         opts.strictClose = false;
       }
-      var open2 = opts.strictOpen !== false ? "^" : "";
+      var open3 = opts.strictOpen !== false ? "^" : "";
       var close = opts.strictClose !== false ? "$" : "";
       var flags = opts.flags || "";
       var regex;
@@ -146071,7 +146071,7 @@ var require_to_regex = __commonJS({
         if (opts.negate || typeof opts.strictNegate === "boolean") {
           pattern = not.create(pattern, opts);
         }
-        var str = open2 + "(?:" + pattern + ")" + close;
+        var str = open3 + "(?:" + pattern + ")" + close;
         regex = new RegExp(str, flags);
         if (opts.safe === true && safe(regex) === false) {
           throw new Error("potentially unsafe regular expression: " + regex.source);
@@ -148439,9 +148439,9 @@ var require_textlint_rule_preset_ja_technical_writing = __commonJS({
 });
 
 // ../src/cli.ts
-import { readFile as readFile2 } from "node:fs/promises";
+import { readFile as readFile3 } from "node:fs/promises";
 import { homedir } from "node:os";
-import { dirname as dirname5, join as join9 } from "node:path";
+import { dirname as dirname5, join as join10 } from "node:path";
 import { fileURLToPath as fileURLToPath3 } from "node:url";
 
 // ../src/check.ts
@@ -148630,7 +148630,7 @@ async function lintText({ text, language, genre, filename = "input.md" }) {
 }
 
 // ../src/install/apply.ts
-import { basename as basename3, dirname as dirname3, join as join6 } from "node:path";
+import { basename as basename3, dirname as dirname3, join as join7 } from "node:path";
 
 // ../src/hosts.ts
 var hosts = [
@@ -148875,8 +148875,56 @@ function removeBlock(text, expectedHash) {
   return { status: "removed", text: before + after };
 }
 
-// ../src/install/manifest.ts
+// ../src/install/lock.ts
+import { randomUUID } from "node:crypto";
+import { open, readFile as readFile2, rm as rm2 } from "node:fs/promises";
 import { join as join2 } from "node:path";
+var INSTALLER_LOCK_NAME = ".clear-writing-kit.lock";
+var installerLockPath = (home) => join2(home, INSTALLER_LOCK_NAME);
+function lockRefusalMessage(path4, reason) {
+  const cause = reason === "held" ? `The installer lock ${path4} exists. Another "cwk install apply" or "cwk install uninstall" run holds it, or an earlier run stopped without removing it.` : `The installer lock ${path4} could not be created.`;
+  return `${cause} Nothing was changed. Remove ${path4} only after you confirm that no "cwk install apply" or "cwk install uninstall" process is active, then run the command again.`;
+}
+async function acquireInstallerLock(home, command) {
+  const path4 = installerLockPath(home);
+  const token = randomUUID();
+  let handle;
+  try {
+    handle = await open(path4, "wx");
+  } catch (error62) {
+    const held = error62?.code === "EEXIST";
+    return { ok: false, refusal: { status: "refused", message: lockRefusalMessage(path4, held ? "held" : "unavailable"), lockPath: path4 } };
+  }
+  try {
+    await handle.writeFile(`${JSON.stringify({ token, command, pid: process.pid, started: (/* @__PURE__ */ new Date()).toISOString() })}
+`, "utf8");
+    await handle.close();
+  } catch {
+    await handle.close().catch(() => void 0);
+    await rm2(path4, { force: true }).catch(() => void 0);
+    return { ok: false, refusal: { status: "refused", message: lockRefusalMessage(path4, "unavailable"), lockPath: path4 } };
+  }
+  const release = async () => {
+    try {
+      const text = await readFile2(path4, "utf8");
+      if (text.includes(token)) await rm2(path4, { force: true });
+    } catch {
+    }
+  };
+  return { ok: true, lock: { path: path4, release } };
+}
+async function withInstallerLock(home, command, work) {
+  const acquired = await acquireInstallerLock(home, command);
+  if (!acquired.ok) return acquired.refusal;
+  try {
+    return await work();
+  } finally {
+    await acquired.lock.release();
+  }
+}
+
+// ../src/install/manifest.ts
+import { join as join3 } from "node:path";
 var CURRENT_SCHEMA_REVISION = 2;
 var LEGACY_OWNER = "legacy";
 var emptyManifest = () => ({
@@ -148888,7 +148936,7 @@ var emptyManifest = () => ({
   settings: [],
   completedSteps: {}
 });
-var manifestPath = (home) => join2(home, ".clear-writing-kit", "install-manifest.json");
+var manifestPath = (home) => join3(home, ".clear-writing-kit", "install-manifest.json");
 var isObject = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
 var isString = (value) => typeof value === "string";
 var isStringArray = (value) => Array.isArray(value) && value.every(isString);
@@ -149039,27 +149087,27 @@ async function saveManifest(home, manifest) {
 }
 
 // ../src/install/payload.ts
-import { copyFile as copyFile2, mkdir as mkdir2, rm as rm2 } from "node:fs/promises";
-import { dirname as dirname2, join as join3 } from "node:path";
+import { copyFile as copyFile2, mkdir as mkdir2, rm as rm3 } from "node:fs/promises";
+import { dirname as dirname2, join as join4 } from "node:path";
 async function copyPayload(payloadDir, versionDirectory) {
   const staging = `${versionDirectory}.${process.pid}.${Date.now()}.tmp`;
   try {
-    await rm2(staging, { recursive: true, force: true });
+    await rm3(staging, { recursive: true, force: true });
     await mkdir2(staging, { recursive: true });
     for (const file2 of await listFiles(payloadDir)) {
-      const destination = join3(staging, file2);
+      const destination = join4(staging, file2);
       await mkdir2(dirname2(destination), { recursive: true });
-      await copyFile2(join3(payloadDir, file2), destination);
+      await copyFile2(join4(payloadDir, file2), destination);
     }
-    await rm2(versionDirectory, { recursive: true, force: true });
+    await rm3(versionDirectory, { recursive: true, force: true });
     await renameWithRetry(staging, versionDirectory);
   } catch (error62) {
-    await rm2(staging, { recursive: true, force: true });
+    await rm3(staging, { recursive: true, force: true });
     throw error62;
   }
   const installed = [];
   for (const file2 of (await listFiles(versionDirectory)).sort()) {
-    installed.push({ path: join3(versionDirectory, file2), sha256: await sha256File(join3(versionDirectory, file2)) });
+    installed.push({ path: join4(versionDirectory, file2), sha256: await sha256File(join4(versionDirectory, file2)) });
   }
   return installed;
 }
@@ -149072,7 +149120,7 @@ async function writeLauncher(launcher, version2) {
 
 // ../src/install/plan.ts
 import { stat } from "node:fs/promises";
-import { basename as basename2, join as join5 } from "node:path";
+import { basename as basename2, join as join6 } from "node:path";
 
 // ../src/install/identity.ts
 function present(env, name) {
@@ -149099,7 +149147,7 @@ function resolveHost(agentArg, env) {
 // ../src/install/spawn.ts
 import { spawn } from "node:child_process";
 import { statSync } from "node:fs";
-import { delimiter, extname, isAbsolute, join as join4, resolve } from "node:path";
+import { delimiter, extname, isAbsolute, join as join5, resolve } from "node:path";
 var isWindows = () => process.platform === "win32";
 function envValue(env, name) {
   if (!isWindows()) return env[name];
@@ -149121,7 +149169,7 @@ function which(name, env = process.env) {
   const directories = /[\\/]/.test(name) ? [""] : (envValue(env, "PATH") ?? "").split(delimiter).map((directory) => directory.replace(/^"|"$/g, "")).filter(Boolean);
   for (const directory of directories) {
     for (const candidate of names) {
-      const path4 = directory ? join4(directory, candidate) : candidate;
+      const path4 = directory ? join5(directory, candidate) : candidate;
       if (isFile(path4)) return isAbsolute(path4) ? path4 : resolve(path4);
     }
   }
@@ -149448,6 +149496,22 @@ function pickRuntime(probes) {
 var PLUGIN_NAME = "clear-writing-kit";
 var OUTPUT_STYLE = "clear-writing-kit";
 var LEGACY_SKILL = "accurate-answer";
+function classifyMcpOwnership(manifestFingerprint, live, plannedFingerprint) {
+  if (live === "unreadable") return "unreadable";
+  if (live === "absent") return manifestFingerprint === null ? "absent" : "owned-missing";
+  if (manifestFingerprint === null) return "unowned";
+  if (live !== manifestFingerprint) return "drifted";
+  return live === plannedFingerprint ? "owned-current" : "owned-stale";
+}
+async function readLiveMcpEvidence(host, env, launcher) {
+  const result = await readRegistration(host, env, { launcher });
+  if (result.status === "unreadable") return { live: "unreadable", reason: result.reason };
+  if (result.status === "absent") return { live: "absent" };
+  return { live: result.fingerprint };
+}
+function manifestMcpFingerprint(manifest, hostId) {
+  return manifest.cli.find((entry) => entry.host === hostId && entry.kind === "mcp" && entry.name === MCP_NAME)?.fingerprint ?? null;
+}
 var fail = (kind, message2) => ({ status: "error", kind, message: message2 });
 var normalizePath = (text) => text.replace(/\\+/g, "/");
 var hostBinary = (host) => host.mcpCommands.add.split(" ")[0];
@@ -149509,32 +149573,33 @@ function manualSteps(host, home, env) {
   return [
     `Plugin: ${host.pluginCommands.install}, with the clear-writing-kit plugin from this repository.`,
     `MCP: ${host.mcpCommands.add}, registering ${MCP_NAME} with the launcher command from INSTALL.md.`,
-    `Instruction block: add the contents of install/agents-block.md to ${join5(configDirectory, basename2(host.globalInstructionsFile(home)))}.`,
+    `Instruction block: add the contents of install/agents-block.md to ${join6(configDirectory, basename2(host.globalInstructionsFile(home)))}.`,
     `${host.displayName} is not verified, so \`install apply\` refuses to run for it.`
   ];
 }
-async function readHostState(host, env, launcher, runtime) {
+async function readHostState(host, env, launcher, runtime, manifest) {
   const binary = which(hostBinary(host), env);
   if (!binary) return fail("state", `The ${host.displayName} command "${hostBinary(host)}" is not on PATH, so its plugin and MCP state cannot be read.`);
   const plugins = await run(binary, ["plugin", "list"], { env });
   if (plugins.code !== 0) return fail("state", `"${hostBinary(host)} plugin list" failed with exit code ${plugins.code}.`);
   const plugin = new RegExp(`(^|[^\\w-])${PLUGIN_NAME}(?![\\w-])`, "m").test(plugins.stdout) ? "installed" : "absent";
-  const mcpResult = await readRegistration(host, env, { launcher });
-  if (mcpResult.status === "unreadable") {
-    return fail("state", `The MCP registration for ${MCP_NAME} could not be read: ${mcpResult.reason}`);
-  }
-  if (mcpResult.status === "absent") {
-    return { plugin, mcp: { status: "absent" } };
-  }
+  const { live, reason } = await readLiveMcpEvidence(host, env, launcher);
+  const manifestFingerprint = manifestMcpFingerprint(manifest, host.id);
   const plannedFingerprint = registrationFingerprint({ command: runtime.command, args: [...runtime.args, launcher, "mcp"] });
-  const isCurrent = mcpResult.fingerprint === plannedFingerprint;
-  return {
-    plugin,
-    mcp: {
-      status: isCurrent ? "current" : "different",
-      fingerprint: mcpResult.fingerprint
-    }
-  };
+  const status = classifyMcpOwnership(manifestFingerprint, live, plannedFingerprint);
+  return { plugin, mcp: { status, manifestFingerprint, live }, unreadableReason: reason };
+}
+function ownershipConflictDetail(state) {
+  switch (state.mcp.status) {
+    case "unowned":
+      return `A registration named ${MCP_NAME} exists, and the install manifest does not record it. Another tool or the user owns it.`;
+    case "unreadable":
+      return `The registration named ${MCP_NAME} could not be read safely: ${state.unreadableReason ?? "unknown reason"}`;
+    case "drifted":
+      return `The registration named ${MCP_NAME} no longer matches the fingerprint in the install manifest. It was changed after install.`;
+    default:
+      return void 0;
+  }
 }
 async function computePlan(ctx) {
   const resolved = resolveHost(ctx.agent, ctx.env);
@@ -149552,12 +149617,12 @@ async function computePlan(ctx) {
   const payloadDigest = await digestTree(ctx.payloadDir);
   if (!payloadDigest) return fail("state", "The payload directory is missing.");
   const home = ctx.home;
-  const kitDirectory = join5(home, ".clear-writing-kit");
-  const versionDirectory = join5(kitDirectory, version2);
-  const launcher = join5(kitDirectory, "cwk.mjs");
+  const kitDirectory = join6(home, ".clear-writing-kit");
+  const versionDirectory = join6(kitDirectory, version2);
+  const launcher = join6(kitDirectory, "cwk.mjs");
   const configDirectory = host.configDirectoryEnv && ctx.env[host.configDirectoryEnv] || host.configDirectory(home);
-  const instructionsPath = join5(configDirectory, basename2(host.globalInstructionsFile(home)));
-  const state = await readHostState(host, ctx.env, launcher, runtime.value);
+  const instructionsPath = join6(configDirectory, basename2(host.globalInstructionsFile(home)));
+  const state = await readHostState(host, ctx.env, launcher, runtime.value, manifest.value);
   if ("status" in state) return state;
   const steps = [];
   const targetStates = {};
@@ -149581,14 +149646,17 @@ async function computePlan(ctx) {
     diff: state.plugin === "installed" ? [] : [`+ plugin ${PLUGIN_NAME}`]
   });
   const registration = [runtime.value.command, ...runtime.value.args, launcher, "mcp"];
-  targetStates.mcp = state.mcp.status === "absent" ? "absent" : `${state.mcp.status}:${state.mcp.fingerprint}`;
+  const mcpStatus = state.mcp.status;
+  const mcpAction = mcpStatus === "absent" || mcpStatus === "owned-missing" ? "create" : mcpStatus === "owned-current" ? "none" : mcpStatus === "owned-stale" ? "update" : "blocked";
+  const mcpConflict = ownershipConflictDetail(state);
+  targetStates.mcp = `${mcpStatus}:${state.mcp.live}:${state.mcp.manifestFingerprint ?? "unrecorded"}`;
   steps.push({
     id: "mcp",
-    action: state.mcp.status === "current" ? "none" : state.mcp.status === "absent" ? "create" : "update",
+    action: mcpAction,
     target: `${host.id} mcp ${MCP_NAME}`,
-    summary: `Register ${MCP_NAME} through "${hostBinary(host)} mcp".`,
-    diff: state.mcp.status === "current" ? [] : [
-      ...state.mcp.status === "different" ? [`- mcp ${MCP_NAME} (existing entry does not match)`] : [],
+    summary: mcpAction === "blocked" ? `Leave ${MCP_NAME} unchanged. The installer does not own the current registration.` : mcpStatus === "owned-missing" ? `Register ${MCP_NAME} again through "${hostBinary(host)} mcp". The install manifest records it, and the host no longer has it.` : `Register ${MCP_NAME} through "${hostBinary(host)} mcp".`,
+    diff: mcpAction === "none" || mcpAction === "blocked" ? [] : [
+      ...mcpAction === "update" ? [`- mcp ${MCP_NAME} (installer-owned entry from an earlier install)`] : [],
       `+ mcp ${MCP_NAME}: ${registration.join(" ")}`
     ]
   });
@@ -149611,8 +149679,9 @@ async function computePlan(ctx) {
     diff: lineDiff(oldBlock ? oldBlock.text.split(/\r?\n/) : [], newBlock ? newBlock.text.split(/\r?\n/) : [])
   });
   const conflicts = [];
+  if (mcpConflict) conflicts.push({ kind: "mcp-ownership", target: `${host.id} mcp ${MCP_NAME}`, detail: mcpConflict, blocking: true });
   if (host.outputStyleSupport === "yes") {
-    const settingsPath = join5(configDirectory, "settings.json");
+    const settingsPath = join6(configDirectory, "settings.json");
     const settings = await readText(settingsPath);
     let current;
     if (settings) {
@@ -149636,12 +149705,15 @@ async function computePlan(ctx) {
       conflicts.push({ kind: "output-style", target: settingsPath, detail: `outputStyle is ${shown(current)}, not "${OUTPUT_STYLE}".` });
     }
   }
-  for (const directory of /* @__PURE__ */ new Set([join5(home, ".agents", "skills", LEGACY_SKILL), join5(configDirectory, "skills", LEGACY_SKILL)])) {
+  for (const directory of /* @__PURE__ */ new Set([join6(home, ".agents", "skills", LEGACY_SKILL), join6(configDirectory, "skills", LEGACY_SKILL)])) {
     if (await isDirectory(directory)) conflicts.push({ kind: "skill", target: directory, detail: `The ${LEGACY_SKILL} skill directory exists.` });
   }
   for (const name of foreignBlocksNaming(instructionText)) {
     conflicts.push({ kind: "instruction-block", target: instructionsPath, detail: `The "${name}" block names ${LEGACY_SKILL}.` });
   }
+  const hostsFound = hosts.map((candidate) => ({ id: candidate.id, found: which(hostBinary(candidate), ctx.env) !== void 0 }));
+  const base = { host: hostSummary, version: version2, hostsFound, runtimes: probes, runtime: runtime.value, steps, conflicts, payloadDigest, targetStates, mcpOwnership: state.mcp };
+  if (conflicts.some((conflict) => conflict.blocking)) return { status: "blocked", plan: { ...base, hash: null } };
   const hash2 = sha256(JSON.stringify({
     installerVersion: version2,
     payloadDigest,
@@ -149651,8 +149723,7 @@ async function computePlan(ctx) {
     targets: steps.map((step) => ({ id: step.id, action: step.action, target: step.target, state: targetStates[step.id] })),
     conflicts: conflicts.map((conflict) => ({ kind: conflict.kind, target: conflict.target }))
   }));
-  const hostsFound = hosts.map((candidate) => ({ id: candidate.id, found: which(hostBinary(candidate), ctx.env) !== void 0 }));
-  return { status: "ready", plan: { host: hostSummary, version: version2, hostsFound, runtimes: probes, runtime: runtime.value, steps, conflicts, payloadDigest, targetStates, hash: hash2 } };
+  return { status: "ready", plan: { ...base, hash: hash2 } };
 }
 function formatPlan(outcome) {
   if (outcome.status === "error") return `Error: ${outcome.message}
@@ -149669,14 +149740,15 @@ No plan hash.
     "Runtimes:",
     ...plan.runtimes.map((probe2) => `  ${probe2.kind}: ${probe2.qualifies ? `${probe2.version} at ${probe2.path}` : probe2.reason}${probe2.kind === plan.runtime.kind ? " (selected)" : ""}`),
     "Conflicts:",
-    ...plan.conflicts.length ? plan.conflicts.map((conflict) => `  [${conflict.kind}] ${conflict.target}: ${conflict.detail} The installer keeps it.`) : ["  none"],
+    ...plan.conflicts.length ? plan.conflicts.map((conflict) => `  [${conflict.kind}] ${conflict.target}: ${conflict.detail} ${conflict.blocking ? "Blocking. The installer does not remove, replace, or adopt it." : "The installer keeps it."}`) : ["  none"],
     "Steps:"
   ];
   plan.steps.forEach((step, index) => {
     lines.push(step.action === "none" ? `${index + 1}. ${step.id}: none. Already current.` : `${index + 1}. ${step.id}: ${step.action}. ${step.summary}`);
     for (const line of step.diff) lines.push(`     ${line}`);
   });
-  lines.push(`Plan hash: ${plan.hash}`, "");
+  if (outcome.status === "blocked") lines.push("No plan hash. Resolve the blocking conflicts, then run plan again.", "");
+  else lines.push(`Plan hash: ${plan.hash}`, "");
   return lines.join("\n");
 }
 
@@ -149712,9 +149784,9 @@ function endOfValue(text, from) {
   return index;
 }
 function topLevelMembers(text) {
-  const open2 = skipSpace(text, 0);
+  const open3 = skipSpace(text, 0);
   const members2 = [];
-  let index = skipSpace(text, open2 + 1);
+  let index = skipSpace(text, open3 + 1);
   while (text[index] !== "}") {
     const keyStart = index;
     const keyEnd = endOfString(text, index);
@@ -149725,7 +149797,7 @@ function topLevelMembers(text) {
     index = skipSpace(text, valueEnd);
     if (text[index] === ",") index = skipSpace(text, index + 1);
   }
-  return { members: members2, open: open2, close: index };
+  return { members: members2, open: open3, close: index };
 }
 async function setOutputStyle(path4, value, backupDir) {
   const encoded = JSON.stringify(value);
@@ -149745,13 +149817,13 @@ async function setOutputStyle(path4, value, backupDir) {
   }
   if (typeof data !== "object" || data === null || Array.isArray(data)) throw new Error(`${path4} does not hold a JSON object.`);
   const oldValue = data.outputStyle;
-  const { members: members2, open: open2, close } = topLevelMembers(file2.text);
+  const { members: members2, open: open3, close } = topLevelMembers(file2.text);
   const existing = members2.filter((member) => member.key === "outputStyle").pop();
   let next;
   if (existing) {
     next = file2.text.slice(0, existing.valueStart) + encoded + file2.text.slice(existing.valueEnd);
   } else if (members2.length === 0) {
-    next = `${file2.text.slice(0, open2 + 1)}${file2.eol}  "outputStyle": ${encoded}${file2.eol}${file2.text.slice(close)}`;
+    next = `${file2.text.slice(0, open3 + 1)}${file2.eol}  "outputStyle": ${encoded}${file2.eol}${file2.text.slice(close)}`;
   } else {
     const last = members2[members2.length - 1];
     const lineStart = file2.text.lastIndexOf("\n", last.keyStart) + 1;
@@ -149777,19 +149849,19 @@ function upsertBy(items, entry, same) {
 }
 var hostBinary2 = (host) => host.mcpCommands.add.split(" ")[0];
 async function prepareWrites(host, plan, ctx) {
-  const kitDirectory = join6(ctx.home, ".clear-writing-kit");
-  const launcher = join6(kitDirectory, "cwk.mjs");
+  const kitDirectory = join7(ctx.home, ".clear-writing-kit");
+  const launcher = join7(kitDirectory, "cwk.mjs");
   const configDirectory = host.configDirectoryEnv && ctx.env[host.configDirectoryEnv] || host.configDirectory(ctx.home);
-  const instructionsPath = join6(configDirectory, basename3(host.globalInstructionsFile(ctx.home)));
+  const instructionsPath = join7(configDirectory, basename3(host.globalInstructionsFile(ctx.home)));
   const instructions = await readText(instructionsPath);
   return {
     kitDirectory,
-    versionDirectory: join6(kitDirectory, plan.version),
+    versionDirectory: join7(kitDirectory, plan.version),
     launcher,
     instructionsPath,
     instructionsText: upsertBlock(instructions?.text ?? "", ctx.blockText).text,
     instructionsBom: instructions?.bom ?? false,
-    settingsPath: host.outputStyleSupport === "yes" ? join6(configDirectory, "settings.json") : void 0,
+    settingsPath: host.outputStyleSupport === "yes" ? join7(configDirectory, "settings.json") : void 0,
     registration: [plan.runtime.command, ...plan.runtime.args, launcher, "mcp"]
   };
 }
@@ -149799,10 +149871,32 @@ async function runHost(binary, args, env, tolerate) {
     throw new Error(limit(`"${args.slice(0, 2).join(" ")}" exited with code ${result.code}.`));
   }
 }
-async function applyPlan(ctx, planHash) {
+async function readManifestSnapshot(home) {
+  const file2 = await readText(manifestPath(home));
+  return { text: file2?.text ?? null, parsed: file2 ? parseManifest(file2.text) : void 0 };
+}
+function ownershipChange(planned, reread) {
+  if (!reread.manifestUnchanged) {
+    return reread.manifestPresent ? "The install manifest changed after the plan was computed." : "The install manifest was removed after the plan was computed.";
+  }
+  if (reread.manifestFingerprint !== planned.manifestFingerprint) return "The install manifest entry for the MCP registration changed after the plan was computed.";
+  if (reread.live !== planned.live) return `The live ${MCP_NAME} registration changed after the plan was computed.`;
+  return void 0;
+}
+async function applyPlan(ctx, planHash, options = {}) {
+  return withInstallerLock(ctx.home, "apply", async () => {
+    await options.afterLock?.();
+    return applyLocked(ctx, planHash, options);
+  });
+}
+async function applyLocked(ctx, planHash, options) {
   const outcome = await computePlan(ctx);
   if (outcome.status === "error") return outcome;
   if (outcome.status === "manual") return { status: "refused", message: `${outcome.host.displayName} is not verified, so apply does not run for it. Follow the manual steps from plan.` };
+  if (outcome.status === "blocked") {
+    const blocking = outcome.plan.conflicts.filter((conflict) => conflict.blocking).map((conflict) => `${conflict.target}: ${conflict.detail}`).join(" ");
+    return { status: "error", kind: "mismatch", message: `The plan hash does not match the current state. Nothing was written. The current state has blocking conflicts, so no plan hash applies. ${blocking} Resolve the conflicts and run plan again.` };
+  }
   const plan = outcome.plan;
   if (plan.hash !== planHash) {
     const targets = plan.steps.map((step) => step.target).join(", ");
@@ -149811,16 +149905,24 @@ async function applyPlan(ctx, planHash) {
   const host = hosts.find((candidate) => candidate.id === plan.host.id);
   const binary = host ? which(hostBinary2(host), ctx.env) : void 0;
   if (!host || !binary) return { status: "refused", message: "The host command is not on PATH." };
-  const manifestResult = await readManifest(ctx.home);
-  if (!manifestResult.ok) return { status: "error", kind: "manifest", message: manifestResult.error };
-  const manifest = manifestResult.value;
+  const snapshot = await readManifestSnapshot(ctx.home);
+  if (snapshot.parsed && !snapshot.parsed.ok) return { status: "error", kind: "manifest", message: snapshot.parsed.error };
+  const manifest = snapshot.parsed?.ok ? snapshot.parsed.value : emptyManifest();
+  if (manifestMcpFingerprint(manifest, host.id) !== plan.mcpOwnership.manifestFingerprint) {
+    return { status: "error", kind: "mismatch", message: "The install manifest entry for the MCP registration changed after the plan was computed. Nothing was written. Run plan again." };
+  }
+  let knownManifestText = snapshot.text;
+  const persistManifest = async () => {
+    await saveManifest(ctx.home, manifest);
+    knownManifestText = (await readText(manifestPath(ctx.home)))?.text ?? null;
+  };
   let writes;
   try {
     writes = await prepareWrites(host, plan, ctx);
   } catch (error62) {
     return { status: "error", kind: "block", message: error62 instanceof Error ? error62.message : String(error62) };
   }
-  const backupDir = join6(writes.kitDirectory, "backups", (/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-"));
+  const backupDir = join7(writes.kitDirectory, "backups", (/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-"));
   const backups = [];
   const completed = [];
   const unchanged = [];
@@ -149913,6 +150015,20 @@ async function applyPlan(ctx, planHash) {
         const entry = { host: host.id, kind: "plugin", name: PLUGIN_NAME, fingerprint: pluginFingerprint(host.id) };
         upsertBy(manifest.cli, entry, (item) => item.host === entry.host && item.kind === entry.kind && item.name === entry.name);
       } else if (step.id === "mcp") {
+        await options.beforeOwnershipReread?.();
+        const reread = await readManifestSnapshot(ctx.home);
+        const rereadManifest = reread.parsed?.ok ? reread.parsed.value : void 0;
+        const evidence = {
+          manifestPresent: reread.text !== null,
+          manifestUnchanged: reread.text === knownManifestText,
+          manifestFingerprint: rereadManifest ? manifestMcpFingerprint(rereadManifest, host.id) : null,
+          live: (await readLiveMcpEvidence(host, ctx.env, writes.launcher)).live
+        };
+        options.onOwnershipReread?.(evidence);
+        const changed = ownershipChange(plan.mcpOwnership, evidence);
+        if (changed) {
+          return { status: "failed", step: "mcp", output: `${changed} The MCP registration was not changed, and the install manifest was not written again. Run plan again.`, completed };
+        }
         const scope = host.id === "claude" ? ["--scope", "user"] : [];
         if (step.action === "update") await runHost(binary, ["mcp", "remove", MCP_NAME, ...scope], ctx.env, true);
         await runHost(binary, ["mcp", "add", ...scope, MCP_NAME, "--", ...writes.registration], ctx.env);
@@ -149933,14 +150049,14 @@ async function applyPlan(ctx, planHash) {
       }
       if (!manifest.completedSteps[host.id]) manifest.completedSteps[host.id] = [];
       if (!manifest.completedSteps[host.id].includes(step.id)) manifest.completedSteps[host.id].push(step.id);
-      await saveManifest(ctx.home, manifest);
+      await persistManifest();
       completed.push(step.id);
     } catch (error62) {
       return { status: "failed", step: step.id, output: limit(error62 instanceof Error ? error62.message : String(error62)), completed };
     }
   }
   if (metadataChanged) {
-    await saveManifest(ctx.home, manifest);
+    await persistManifest();
   }
   return { status: "applied", completed, unchanged, backups };
 }
@@ -155192,7 +155308,7 @@ function bucketFor(state, inst) {
   return bucket;
 }
 var handoff;
-var open = [];
+var open2 = [];
 var memo = {
   alloc(_inst, payload, empty) {
     const bucket = handoff;
@@ -155201,7 +155317,7 @@ var memo = {
     handoff = void 0;
     const entry = { value: empty, issues: null };
     bucket.set(payload.value, entry);
-    open.push(entry);
+    open2.push(entry);
     return empty;
   },
   guard(inst) {
@@ -155272,10 +155388,10 @@ var memo = {
           return payload;
         }
         handoff = bucket;
-        const depth = open.length;
+        const depth = open2.length;
         const result = base(payload, ctx);
         handoff = void 0;
-        const entry = open.length > depth ? open.pop() : void 0;
+        const entry = open2.length > depth ? open2.pop() : void 0;
         if (result instanceof Promise) {
           return result.then((r) => {
             if (entry)
@@ -183736,8 +183852,8 @@ async function runMcpServer() {
 }
 
 // ../src/install/uninstall.ts
-import { readdir as readdir2, rm as rm3, rmdir } from "node:fs/promises";
-import { dirname as dirname4, isAbsolute as isAbsolute2, join as join7, relative } from "node:path";
+import { readdir as readdir2, rm as rm4, rmdir } from "node:fs/promises";
+import { dirname as dirname4, isAbsolute as isAbsolute2, join as join8, relative } from "node:path";
 var OUTPUT_LIMIT2 = 2e3;
 var limit2 = (text) => text.length > OUTPUT_LIMIT2 ? `${text.slice(0, OUTPUT_LIMIT2)}... (truncated)` : text;
 var hostBinary3 = (host) => host.mcpCommands.add.split(" ")[0];
@@ -183767,7 +183883,7 @@ async function clearOutputStyle(path4, value, backupDir) {
   const current = data.outputStyle;
   if (current === void 0) return { result: "absent" };
   if (current !== value) return { result: "different" };
-  const { members: members2, open: open2, close } = topLevelMembers(file2.text);
+  const { members: members2, open: open3, close } = topLevelMembers(file2.text);
   const index = members2.map((member) => member.key).lastIndexOf("outputStyle");
   let next;
   if (members2.length === 1) {
@@ -183776,10 +183892,10 @@ async function clearOutputStyle(path4, value, backupDir) {
 }
 `) {
       const copy2 = await backup(path4, backupDir);
-      await rm3(path4, { force: true });
+      await rm4(path4, { force: true });
       return { result: "file-removed", backup: copy2 };
     }
-    next = file2.text.slice(0, open2 + 1) + file2.text.slice(close);
+    next = file2.text.slice(0, open3 + 1) + file2.text.slice(close);
   } else if (index < members2.length - 1) {
     next = file2.text.slice(0, members2[index].keyStart) + file2.text.slice(members2[index + 1].keyStart);
   } else {
@@ -183790,16 +183906,22 @@ async function clearOutputStyle(path4, value, backupDir) {
   await writeTextAtomic(path4, next, { bom: file2.bom });
   return { result: "cleared", backup: copy };
 }
-async function uninstall(ctx) {
+async function uninstall(ctx, options = {}) {
   const resolved = resolveHost(ctx.agent, ctx.env);
   if (!resolved.ok) return { status: "error", kind: resolved.error.startsWith("Host mismatch") ? "mismatch" : "usage", message: resolved.error };
   const host = resolved.value;
   if (!host.verified) return { status: "refused", message: `${host.displayName} is not verified, so the installer never installed for it and uninstall does not run.` };
+  return withInstallerLock(ctx.home, "uninstall", async () => {
+    await options.afterLock?.();
+    return uninstallLocked(ctx, host);
+  });
+}
+async function uninstallLocked(ctx, host) {
   const manifestResult = await readManifest(ctx.home);
   if (!manifestResult.ok) return { status: "error", kind: "manifest", message: manifestResult.error };
   const manifest = manifestResult.value;
-  const kitDirectory = join7(ctx.home, ".clear-writing-kit");
-  const backupDir = join7(kitDirectory, "backups", (/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-"));
+  const kitDirectory = join8(ctx.home, ".clear-writing-kit");
+  const backupDir = join8(kitDirectory, "backups", (/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-"));
   const removed = [];
   const kept = [];
   const failed = [];
@@ -183844,7 +183966,7 @@ async function uninstall(ctx) {
           keep(`The MCP name is not ${MCP_NAME}.`);
           continue;
         }
-        const launcher = join7(kitDirectory, "cwk.mjs");
+        const launcher = join8(kitDirectory, "cwk.mjs");
         const readResult = await readRegistration(host, ctx.env, { launcher });
         if (readResult.status === "unreadable") {
           keep("The current MCP entry could not be read safely. It was kept.");
@@ -183915,7 +184037,7 @@ async function uninstall(ctx) {
       }
       const copy = await backup(path4, backupDir);
       if (copy) backups.push(copy);
-      if (result.text === "") await rm3(path4, { force: true });
+      if (result.text === "") await rm4(path4, { force: true });
       else await writeTextAtomic(path4, result.text, { bom: file2.bom });
       removed.push({ target: `${path4} (block)`, detail: result.text === "" ? "Removed. The file held nothing else, so it was deleted." : "Removed. Text outside the block is unchanged." });
     } catch (error62) {
@@ -183945,7 +184067,7 @@ async function uninstall(ctx) {
   }
   const configDirectory = host.configDirectoryEnv && ctx.env[host.configDirectoryEnv] || host.configDirectory(ctx.home);
   if (!manifest.settings.some((s) => s.host === host.id) && host.outputStyleSupport === "yes" && (manifest.completedSteps[host.id]?.includes("output-style") || Array.isArray(manifest.completedSteps) && manifest.completedSteps.includes("output-style"))) {
-    const settingsPath = join7(configDirectory, "settings.json");
+    const settingsPath = join8(configDirectory, "settings.json");
     try {
       const { result, backup: copy } = await clearOutputStyle(settingsPath, OUTPUT_STYLE, backupDir);
       if (copy) backups.push(copy);
@@ -184019,7 +184141,7 @@ async function uninstall(ctx) {
           keep("The file was changed after install. Its hash no longer matches.");
           continue;
         }
-        await rm3(entry.path, { force: true });
+        await rm4(entry.path, { force: true });
         removedFiles.push(entry.path);
         removed.push({ target: entry.path, detail: "Removed. Its hash matched the manifest." });
       } catch (error62) {
@@ -184032,7 +184154,7 @@ async function uninstall(ctx) {
   if (anyLeft) {
     await saveManifest(ctx.home, remaining);
   } else {
-    await rm3(manifestPath(ctx.home), { force: true });
+    await rm4(manifestPath(ctx.home), { force: true });
     try {
       if ((await readdir2(kitDirectory)).length === 0) await rmdir(kitDirectory);
     } catch {
@@ -184060,7 +184182,7 @@ function formatUninstall(outcome) {
 // ../src/install/verify.ts
 import { spawn as spawn2 } from "node:child_process";
 import { stat as stat2 } from "node:fs/promises";
-import { basename as basename4, join as join8 } from "node:path";
+import { basename as basename4, join as join9 } from "node:path";
 var CALL_TIMEOUT_MS = 3e4;
 var BLOCK_LIMIT_BYTES = 2048;
 var DETAIL_LIMIT = 300;
@@ -184123,7 +184245,7 @@ function foreignBlocksNaming2(text) {
 }
 async function findLegacyConflicts(home, configDirectory, instructionsPath, instructionText) {
   const conflicts = [];
-  for (const directory of /* @__PURE__ */ new Set([join8(home, ".agents", "skills", LEGACY_SKILL2), join8(configDirectory, "skills", LEGACY_SKILL2)])) {
+  for (const directory of /* @__PURE__ */ new Set([join9(home, ".agents", "skills", LEGACY_SKILL2), join9(configDirectory, "skills", LEGACY_SKILL2)])) {
     if (await isDirectory2(directory)) conflicts.push({ kind: "skill", target: directory, detail: `The ${LEGACY_SKILL2} skill directory exists.` });
   }
   for (const name of foreignBlocksNaming2(instructionText)) {
@@ -184305,9 +184427,9 @@ async function verifyInstall(ctx) {
   const host = resolved.value;
   if (!host.verified) return { status: "refused", message: `${host.displayName} is not verified, so verify does not run for it.` };
   const timeoutMs = ctx.callTimeoutMs ?? CALL_TIMEOUT_MS;
-  const launcher = join8(ctx.home, ".clear-writing-kit", "cwk.mjs");
+  const launcher = join9(ctx.home, ".clear-writing-kit", "cwk.mjs");
   const configDirectory = host.configDirectoryEnv && ctx.env[host.configDirectoryEnv] || host.configDirectory(ctx.home);
-  const instructionsPath = join8(configDirectory, basename4(host.globalInstructionsFile(ctx.home)));
+  const instructionsPath = join9(configDirectory, basename4(host.globalInstructionsFile(ctx.home)));
   const notes = [];
   const checks = [];
   const conflicts = [];
@@ -184330,7 +184452,7 @@ async function verifyInstall(ctx) {
   if (registration) checks.push(...await checkServer(registration, ctx.env, timeoutMs));
   else for (const id of serverIds) checks.push(skipped(id, "The registered command was not read."));
   if (host.outputStyleSupport === "yes") {
-    const style = await checkOutputStyle(join8(configDirectory, "settings.json"));
+    const style = await checkOutputStyle(join9(configDirectory, "settings.json"));
     checks.push(style.check);
     if (style.conflict) conflicts.push(style.conflict);
   } else {
@@ -184365,8 +184487,8 @@ function formatVerify(outcome) {
     "Legacy conflicts:",
     ...outcome.conflicts.length ? outcome.conflicts.map((conflict) => `  [${conflict.kind}] ${conflict.target}: ${conflict.detail} The installer keeps it.`) : ["  none"]
   ];
-  const open2 = outcome.checks.filter((check2) => check2.status !== "pass");
-  lines.push(outcome.status === "pass" ? "Result: pass. Every check ran and passed." : `Result: incomplete. Not passed: ${open2.map((check2) => `${check2.id} (${check2.status})`).join(", ")}.`, "");
+  const open3 = outcome.checks.filter((check2) => check2.status !== "pass");
+  lines.push(outcome.status === "pass" ? "Result: pass. Every check ran and passed." : `Result: incomplete. Not passed: ${open3.map((check2) => `${check2.id} (${check2.status})`).join(", ")}.`, "");
   return lines.join("\n");
 }
 
@@ -184403,7 +184525,7 @@ ${installUsage}`);
   const payloadDir = dirname5(fileURLToPath3(import.meta.url));
   let blockText;
   try {
-    blockText = await readFile2(join9(payloadDir, "..", "install", "agents-block.md"), "utf8");
+    blockText = await readFile3(join10(payloadDir, "..", "install", "agents-block.md"), "utf8");
   } catch {
     process.stderr.write("Cannot read install/agents-block.md next to the payload. Run the installer from the repository checkout.\n");
     return 1;
@@ -184469,7 +184591,7 @@ async function main() {
     return;
   }
   if (!args.length) throw new Error("Provide --stdin or at least one file path");
-  const texts = await Promise.all(args.map(async (filename) => ({ filename, text: await readFile2(filename, "utf8") })));
+  const texts = await Promise.all(args.map(async (filename) => ({ filename, text: await readFile3(filename, "utf8") })));
   let failed = false;
   for (const item of texts) {
     const { result, output: output2 } = await lintText({ ...item, language, genre });

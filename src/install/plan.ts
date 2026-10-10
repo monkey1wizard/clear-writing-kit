@@ -25,9 +25,52 @@ export type PlanContext = {
 };
 
 export type StepId = "payload" | "plugin" | "mcp" | "block" | "output-style";
-export type PlanStep = { id: StepId; action: "create" | "update" | "none"; target: string; summary: string; diff: string[] };
-export type Conflict = { kind: "skill" | "instruction-block" | "output-style"; target: string; detail: string };
+export type PlanStep = { id: StepId; action: "create" | "update" | "none" | "blocked"; target: string; summary: string; diff: string[] };
+/** A blocking conflict leaves the plan without an applicable hash. Other conflicts are reported and kept. */
+export type Conflict = { kind: "skill" | "instruction-block" | "output-style" | "mcp-ownership"; target: string; detail: string; blocking?: boolean };
 export type HostPresence = { id: string; found: boolean };
+
+/**
+ * Ownership state of the same-name MCP registration on the selected host.
+ * The install manifest entry for the same host, kind, and name is the only ownership proof.
+ * absent: no live entry and no manifest entry. Create.
+ * owned-missing: manifest entry, no live entry. Recreate.
+ * owned-current: live fingerprint equals the manifest fingerprint and the planned registration. No change.
+ * owned-stale: live fingerprint equals the manifest fingerprint, and the planned registration differs. Update.
+ * unowned, unreadable, drifted: blocking conflicts. The installer does not remove, add, or adopt the entry.
+ */
+export type McpOwnershipStatus = "absent" | "owned-missing" | "owned-current" | "owned-stale" | "unowned" | "unreadable" | "drifted";
+
+/** Ownership evidence that the plan was computed from. Apply compares it again right before the first MCP mutation. */
+export type McpOwnershipEvidence = {
+  status: McpOwnershipStatus;
+  /** Fingerprint in the install manifest entry for this host, kind, and name, or null when no entry exists. */
+  manifestFingerprint: string | null;
+  /** Live registration: "absent", "unreadable", or the fingerprint of the complete command vector. */
+  live: string;
+};
+
+/** Classifies ownership from the manifest entry, the live registration, and the planned registration fingerprint. */
+export function classifyMcpOwnership(manifestFingerprint: string | null, live: string, plannedFingerprint: string): McpOwnershipStatus {
+  if (live === "unreadable") return "unreadable";
+  if (live === "absent") return manifestFingerprint === null ? "absent" : "owned-missing";
+  if (manifestFingerprint === null) return "unowned";
+  if (live !== manifestFingerprint) return "drifted";
+  return live === plannedFingerprint ? "owned-current" : "owned-stale";
+}
+
+/** Reads the live registration as one evidence string: "absent", "unreadable", or the fingerprint. */
+export async function readLiveMcpEvidence(host: HostCapability, env: Env, launcher: string): Promise<{ live: string; reason?: string }> {
+  const result = await readRegistration(host, env, { launcher });
+  if (result.status === "unreadable") return { live: "unreadable", reason: result.reason };
+  if (result.status === "absent") return { live: "absent" };
+  return { live: result.fingerprint };
+}
+
+/** Returns the manifest fingerprint for this host's MCP entry, or null when the manifest does not record one. */
+export function manifestMcpFingerprint(manifest: Manifest, hostId: string): string | null {
+  return manifest.cli.find(entry => entry.host === hostId && entry.kind === "mcp" && entry.name === MCP_NAME)?.fingerprint ?? null;
+}
 export type Plan = {
   host: { id: string; displayName: string };
   version: string;
@@ -39,11 +82,14 @@ export type Plan = {
   payloadDigest: string;
   /** Normalized state of each target, keyed by step id. Apply compares these to name a changed target. */
   targetStates: Record<StepId, string>;
-  hash: string;
+  mcpOwnership: McpOwnershipEvidence;
+  /** Null when a blocking conflict exists. Apply never accepts a blocked plan. */
+  hash: string | null;
 };
 export type PlanError = { status: "error"; kind: "usage" | "mismatch" | "runtime" | "manifest" | "state" | "block"; message: string };
 export type PlanOutcome =
-  | { status: "ready"; plan: Plan }
+  | { status: "ready"; plan: Plan & { hash: string } }
+  | { status: "blocked"; plan: Plan & { hash: null } }
   | { status: "manual"; host: { id: string; displayName: string }; manualSteps: string[] }
   | PlanError;
 
@@ -128,28 +174,32 @@ function manualSteps(host: HostCapability, home: string, env: Env) {
   ];
 }
 
-async function readHostState(host: HostCapability, env: Env, launcher: string, runtime: Runtime): Promise<PlanError | { plugin: "absent" | "installed"; mcp: { status: "absent" | "current" | "different"; fingerprint?: string } }> {
+type HostState = { plugin: "absent" | "installed"; mcp: McpOwnershipEvidence; unreadableReason?: string };
+
+async function readHostState(host: HostCapability, env: Env, launcher: string, runtime: Runtime, manifest: Manifest): Promise<PlanError | HostState> {
   const binary = which(hostBinary(host), env);
   if (!binary) return fail("state", `The ${host.displayName} command "${hostBinary(host)}" is not on PATH, so its plugin and MCP state cannot be read.`);
   const plugins = await run(binary, ["plugin", "list"], { env });
   if (plugins.code !== 0) return fail("state", `"${hostBinary(host)} plugin list" failed with exit code ${plugins.code}.`);
   const plugin = new RegExp(`(^|[^\\w-])${PLUGIN_NAME}(?![\\w-])`, "m").test(plugins.stdout) ? "installed" : "absent";
-  const mcpResult = await readRegistration(host, env, { launcher });
-  if (mcpResult.status === "unreadable") {
-    return fail("state", `The MCP registration for ${MCP_NAME} could not be read: ${mcpResult.reason}`);
-  }
-  if (mcpResult.status === "absent") {
-    return { plugin, mcp: { status: "absent" } };
-  }
+  const { live, reason } = await readLiveMcpEvidence(host, env, launcher);
+  const manifestFingerprint = manifestMcpFingerprint(manifest, host.id);
   const plannedFingerprint = registrationFingerprint({ command: runtime.command, args: [...runtime.args, launcher, "mcp"] });
-  const isCurrent = mcpResult.fingerprint === plannedFingerprint;
-  return {
-    plugin,
-    mcp: {
-      status: isCurrent ? "current" : "different",
-      fingerprint: mcpResult.fingerprint
-    }
-  };
+  const status = classifyMcpOwnership(manifestFingerprint, live, plannedFingerprint);
+  return { plugin, mcp: { status, manifestFingerprint, live }, unreadableReason: reason };
+}
+
+function ownershipConflictDetail(state: HostState) {
+  switch (state.mcp.status) {
+    case "unowned":
+      return `A registration named ${MCP_NAME} exists, and the install manifest does not record it. Another tool or the user owns it.`;
+    case "unreadable":
+      return `The registration named ${MCP_NAME} could not be read safely: ${state.unreadableReason ?? "unknown reason"}`;
+    case "drifted":
+      return `The registration named ${MCP_NAME} no longer matches the fingerprint in the install manifest. It was changed after install.`;
+    default:
+      return undefined;
+  }
 }
 
 export async function computePlan(ctx: PlanContext): Promise<PlanOutcome> {
@@ -178,7 +228,7 @@ export async function computePlan(ctx: PlanContext): Promise<PlanOutcome> {
   const configDirectory = (host.configDirectoryEnv && ctx.env[host.configDirectoryEnv]) || host.configDirectory(home);
   const instructionsPath = join(configDirectory, basename(host.globalInstructionsFile(home)));
 
-  const state = await readHostState(host, ctx.env, launcher, runtime.value);
+  const state = await readHostState(host, ctx.env, launcher, runtime.value, manifest.value);
   if ("status" in state) return state;
 
   const steps: PlanStep[] = [];
@@ -206,14 +256,24 @@ export async function computePlan(ctx: PlanContext): Promise<PlanOutcome> {
   });
 
   const registration = [runtime.value.command, ...runtime.value.args, launcher, "mcp"];
-  targetStates.mcp = state.mcp.status === "absent" ? "absent" : `${state.mcp.status}:${state.mcp.fingerprint}`;
+  const mcpStatus = state.mcp.status;
+  const mcpAction: PlanStep["action"] = mcpStatus === "absent" || mcpStatus === "owned-missing" ? "create"
+    : mcpStatus === "owned-current" ? "none"
+      : mcpStatus === "owned-stale" ? "update"
+        : "blocked";
+  const mcpConflict = ownershipConflictDetail(state);
+  targetStates.mcp = `${mcpStatus}:${state.mcp.live}:${state.mcp.manifestFingerprint ?? "unrecorded"}`;
   steps.push({
     id: "mcp",
-    action: state.mcp.status === "current" ? "none" : state.mcp.status === "absent" ? "create" : "update",
+    action: mcpAction,
     target: `${host.id} mcp ${MCP_NAME}`,
-    summary: `Register ${MCP_NAME} through "${hostBinary(host)} mcp".`,
-    diff: state.mcp.status === "current" ? [] : [
-      ...(state.mcp.status === "different" ? [`- mcp ${MCP_NAME} (existing entry does not match)`] : []),
+    summary: mcpAction === "blocked"
+      ? `Leave ${MCP_NAME} unchanged. The installer does not own the current registration.`
+      : mcpStatus === "owned-missing"
+        ? `Register ${MCP_NAME} again through "${hostBinary(host)} mcp". The install manifest records it, and the host no longer has it.`
+        : `Register ${MCP_NAME} through "${hostBinary(host)} mcp".`,
+    diff: mcpAction === "none" || mcpAction === "blocked" ? [] : [
+      ...(mcpAction === "update" ? [`- mcp ${MCP_NAME} (installer-owned entry from an earlier install)`] : []),
       `+ mcp ${MCP_NAME}: ${registration.join(" ")}`
     ]
   });
@@ -238,6 +298,7 @@ export async function computePlan(ctx: PlanContext): Promise<PlanOutcome> {
   });
 
   const conflicts: Conflict[] = [];
+  if (mcpConflict) conflicts.push({ kind: "mcp-ownership", target: `${host.id} mcp ${MCP_NAME}`, detail: mcpConflict, blocking: true });
   if (host.outputStyleSupport === "yes") {
     const settingsPath = join(configDirectory, "settings.json");
     const settings = await readText(settingsPath);
@@ -271,6 +332,10 @@ export async function computePlan(ctx: PlanContext): Promise<PlanOutcome> {
     conflicts.push({ kind: "instruction-block", target: instructionsPath, detail: `The "${name}" block names ${LEGACY_SKILL}.` });
   }
 
+  const hostsFound = hosts.map(candidate => ({ id: candidate.id, found: which(hostBinary(candidate), ctx.env) !== undefined }));
+  const base = { host: hostSummary, version, hostsFound, runtimes: probes, runtime: runtime.value, steps, conflicts, payloadDigest, targetStates, mcpOwnership: state.mcp };
+  if (conflicts.some(conflict => conflict.blocking)) return { status: "blocked", plan: { ...base, hash: null } };
+
   const hash = sha256(JSON.stringify({
     installerVersion: version,
     payloadDigest,
@@ -280,9 +345,7 @@ export async function computePlan(ctx: PlanContext): Promise<PlanOutcome> {
     targets: steps.map(step => ({ id: step.id, action: step.action, target: step.target, state: targetStates[step.id] })),
     conflicts: conflicts.map(conflict => ({ kind: conflict.kind, target: conflict.target }))
   }));
-
-  const hostsFound = hosts.map(candidate => ({ id: candidate.id, found: which(hostBinary(candidate), ctx.env) !== undefined }));
-  return { status: "ready", plan: { host: hostSummary, version, hostsFound, runtimes: probes, runtime: runtime.value, steps, conflicts, payloadDigest, targetStates, hash } };
+  return { status: "ready", plan: { ...base, hash } };
 }
 
 /** Renders a plan outcome as text. It prints only the kit's own block and entries, never host file contents. */
@@ -299,13 +362,14 @@ export function formatPlan(outcome: PlanOutcome): string {
     "Runtimes:",
     ...plan.runtimes.map(probe => `  ${probe.kind}: ${probe.qualifies ? `${probe.version} at ${probe.path}` : probe.reason}${probe.kind === plan.runtime.kind ? " (selected)" : ""}`),
     "Conflicts:",
-    ...(plan.conflicts.length ? plan.conflicts.map(conflict => `  [${conflict.kind}] ${conflict.target}: ${conflict.detail} The installer keeps it.`) : ["  none"]),
+    ...(plan.conflicts.length ? plan.conflicts.map(conflict => `  [${conflict.kind}] ${conflict.target}: ${conflict.detail} ${conflict.blocking ? "Blocking. The installer does not remove, replace, or adopt it." : "The installer keeps it."}`) : ["  none"]),
     "Steps:"
   ];
   plan.steps.forEach((step, index) => {
     lines.push(step.action === "none" ? `${index + 1}. ${step.id}: none. Already current.` : `${index + 1}. ${step.id}: ${step.action}. ${step.summary}`);
     for (const line of step.diff) lines.push(`     ${line}`);
   });
-  lines.push(`Plan hash: ${plan.hash}`, "");
+  if (outcome.status === "blocked") lines.push("No plan hash. Resolve the blocking conflicts, then run plan again.", "");
+  else lines.push(`Plan hash: ${plan.hash}`, "");
   return lines.join("\n");
 }

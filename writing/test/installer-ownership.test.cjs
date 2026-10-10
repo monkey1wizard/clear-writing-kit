@@ -129,6 +129,36 @@ test('both install orders and first-uninstall choices preserve the surviving hos
   }
 });
 
+test('exact current MCP registration without a manifest entry blocks adoption', async () => {
+  const fixture = makeDualFixture();
+  try {
+    const claude = context(fixture, 'claude');
+    const codex = context(fixture, 'codex');
+    await install(claude);
+    await install(codex);
+
+    const manifestPath = installer.manifestPath(fixture.home);
+    const stripped = readManifest(fixture.home);
+    stripped.cli = stripped.cli.filter(entry => !(entry.host === 'codex' && entry.kind === 'mcp'));
+    fs.writeFileSync(manifestPath, `${JSON.stringify(stripped, null, 2)}\n`);
+    const manifestBefore = fs.readFileSync(manifestPath);
+    const liveBefore = fixture.getState().mcpByHost.codex;
+    fixture.setState(state => ({ ...state, mutationCalls: [] }));
+
+    const planned = await installer.computePlan(codex);
+    assert.equal(planned.status, 'blocked');
+    assert.equal(planned.plan.hash, null);
+    assert.equal(planned.plan.steps.find(step => step.id === 'mcp')?.action, 'blocked');
+    const refused = await installer.applyPlan(codex, 'f'.repeat(64));
+    assert.notEqual(refused.status, 'applied');
+    assert.equal(fixture.getState().mutationCalls.length, 0);
+    assert.deepEqual(fixture.getState().mcpByHost.codex, liveBefore);
+    assert.deepEqual(fs.readFileSync(manifestPath), manifestBefore);
+  } finally {
+    fixture.cleanup();
+  }
+});
+
 test('exact current artifacts adopt missing host metadata without rewriting bytes', async () => {
   const fixture = makeDualFixture();
   try {
@@ -140,7 +170,7 @@ test('exact current artifacts adopt missing host metadata without rewriting byte
     const manifestPath = installer.manifestPath(fixture.home);
     const stripped = readManifest(fixture.home);
     stripped.files = stripped.files.map(file => ({ ...file, owners: file.owners.filter(owner => owner !== 'codex') }));
-    stripped.cli = stripped.cli.filter(entry => entry.host !== 'codex');
+    stripped.cli = stripped.cli.filter(entry => entry.host !== 'codex' || entry.kind === 'mcp');
     stripped.blocks = stripped.blocks.filter(record => record.host !== 'codex');
     delete stripped.completedSteps.codex;
     fs.writeFileSync(manifestPath, `${JSON.stringify(stripped, null, 2)}\n`);

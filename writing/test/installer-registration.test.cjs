@@ -216,36 +216,38 @@ test('Complete argument add/remove/reorder/change invalidates plan approval', as
   assert.equal(plan0.status, 'ready');
   const hash0 = plan0.plan.hash;
 
+  // Each live vector is recorded as installer-owned, so the plan stays applicable and its hash must track the complete vector.
+  const ownedPlan = async args => {
+    const registration = { command: 'node', args };
+    fixture.setState({ mcp: registration });
+    await installer.saveManifest(fixture.home, {
+      ...installer.emptyManifest(),
+      cli: [{ host: 'claude', kind: 'mcp', name: installer.MCP_NAME, fingerprint: installer.registrationFingerprint(registration) }]
+    });
+    const outcome = await installer.computePlan(baseContext);
+    assert.equal(outcome.status, 'ready');
+    assert.equal(outcome.plan.mcpOwnership.status, 'owned-stale');
+    return outcome.plan.hash;
+  };
+
   // 1. Baseline with standard args [launcher, "mcp"]
-  fixture.setState({ mcp: { command: 'node', args: [launcher, 'mcp'] } });
-  const planStandard = await installer.computePlan(baseContext);
-  assert.equal(planStandard.status, 'ready');
-  const hashStandard = planStandard.plan.hash;
+  const hashStandard = await ownedPlan([launcher, 'mcp']);
   assert.notEqual(hashStandard, hash0);
 
   // 2. Argument added: [launcher, "mcp", "--extra"]
-  fixture.setState({ mcp: { command: 'node', args: [launcher, 'mcp', '--extra'] } });
-  const planAdded = await installer.computePlan(baseContext);
-  assert.equal(planAdded.status, 'ready');
-  assert.notEqual(planAdded.plan.hash, hashStandard, 'Added argument must change plan hash');
-
+  assert.notEqual(await ownedPlan([launcher, 'mcp', '--extra']), hashStandard, 'Added argument must change plan hash');
   // 3. Argument removed: [launcher]
-  fixture.setState({ mcp: { command: 'node', args: [launcher] } });
-  const planRemoved = await installer.computePlan(baseContext);
-  assert.equal(planRemoved.status, 'ready');
-  assert.notEqual(planRemoved.plan.hash, hashStandard, 'Removed argument must change plan hash');
-
+  assert.notEqual(await ownedPlan([launcher]), hashStandard, 'Removed argument must change plan hash');
   // 4. Argument reordered: ["mcp", launcher]
-  fixture.setState({ mcp: { command: 'node', args: ['mcp', launcher] } });
-  const planReordered = await installer.computePlan(baseContext);
-  assert.equal(planReordered.status, 'ready');
-  assert.notEqual(planReordered.plan.hash, hashStandard, 'Reordered argument must change plan hash');
-
+  assert.notEqual(await ownedPlan(['mcp', launcher]), hashStandard, 'Reordered argument must change plan hash');
   // 5. Argument changed: ["C:/other/cwk.mjs", "mcp"]
-  fixture.setState({ mcp: { command: 'node', args: ['C:/other/cwk.mjs', 'mcp'] } });
-  const planChanged = await installer.computePlan(baseContext);
-  assert.equal(planChanged.status, 'ready');
-  assert.notEqual(planChanged.plan.hash, hashStandard, 'Changed argument must change plan hash');
+  assert.notEqual(await ownedPlan(['C:/other/cwk.mjs', 'mcp']), hashStandard, 'Changed argument must change plan hash');
+
+  // Without a manifest entry the same live vector is unowned and the plan has no applicable hash.
+  fs.rmSync(installer.manifestPath(fixture.home), { force: true });
+  const unowned = await installer.computePlan(baseContext);
+  assert.equal(unowned.status, 'blocked');
+  assert.equal(unowned.plan.hash, null);
 
   fixture.cleanup();
 });
@@ -648,4 +650,504 @@ test('Fresh build produces zero diff against committed dist/', async () => {
   });
   assert.equal(diffRes.code, 0);
   assert.equal(diffRes.stdout.trim(), '', 'Fresh build must produce 0 diff in dist/');
+});
+
+// ---------------------------------------------------------------------------
+// One-owner MCP mutation safety
+// ---------------------------------------------------------------------------
+
+const MCP = installer.MCP_NAME;
+const FOREIGN_VECTOR = { command: 'node', args: ['C:/foreign/owner/server.js', 'mcp'] };
+const CCYNC_VECTOR = { command: 'node', args: ['C:/Users/fixture/.ccync/cache/clear-writing-kit/0123abcd/dist/cwk.mjs', 'mcp'] };
+
+function ownershipContext(fixture, agent = 'claude', extra = {}) {
+  return { agent, env: fixture.env, home: fixture.home, payloadDir: path.join(repoRoot, 'dist'), blockText: fixture.blockText, ...extra };
+}
+
+function mcpCounts(fixture) {
+  const calls = fixture.getState().mutationCalls.filter(call => call.family === 'mcp');
+  return { remove: calls.filter(call => call.verb === 'remove').length, add: calls.filter(call => call.verb === 'add').length };
+}
+
+function resetCalls(fixture) {
+  fixture.setState(state => ({ ...state, mutationCalls: [] }));
+}
+
+function liveMcp(fixture, host) {
+  const state = fixture.getState();
+  return state.mcpByHost ? state.mcpByHost[host] : state.mcp;
+}
+
+function setLiveMcp(fixture, host, value) {
+  fixture.setState(state => (state.mcpByHost ? { ...state, mcpByHost: { ...state.mcpByHost, [host]: value } } : { ...state, mcp: value }));
+}
+
+function registrationVector(registration) {
+  return [registration.command, ...registration.args];
+}
+
+function manifestBytes(home) {
+  const file = installer.manifestPath(home);
+  return fs.existsSync(file) ? fs.readFileSync(file) : undefined;
+}
+
+function manifestMcpEntry(home, host) {
+  const file = installer.manifestPath(home);
+  if (!fs.existsSync(file)) return undefined;
+  return JSON.parse(fs.readFileSync(file, 'utf8')).cli.find(entry => entry.host === host && entry.kind === 'mcp' && entry.name === MCP);
+}
+
+async function recordOwnedEntry(home, host, registration) {
+  const current = await installer.readManifest(home);
+  assert.equal(current.ok, true);
+  const manifest = current.value;
+  manifest.cli = manifest.cli.filter(entry => !(entry.host === host && entry.kind === 'mcp' && entry.name === MCP));
+  manifest.cli.push({ host, kind: 'mcp', name: MCP, fingerprint: installer.registrationFingerprint(registration) });
+  await installer.saveManifest(home, manifest);
+}
+
+function plannedVector(plan, home) {
+  return [plan.runtime.command, ...plan.runtime.args, path.join(home, '.clear-writing-kit', 'cwk.mjs'), 'mcp'];
+}
+
+async function planAndApply(ctx, options) {
+  const planned = await installer.computePlan(ctx);
+  assert.equal(planned.status, 'ready');
+  const applied = await installer.applyPlan(ctx, planned.plan.hash, options);
+  return { planned, applied };
+}
+
+/** Sets up an owned-stale registration: live and manifest agree on an older vector, and the planned vector differs. */
+async function seedOwnedStale(fixture, host = 'claude') {
+  const launcher = path.join(fixture.home, '.clear-writing-kit', 'cwk.mjs');
+  const previous = { command: 'node', args: [launcher, 'mcp', '--previous-release'] };
+  setLiveMcp(fixture, host, previous);
+  await recordOwnedEntry(fixture.home, host, previous);
+  resetCalls(fixture);
+  return previous;
+}
+
+test('installer MCP safe transitions: absent, owned-missing, owned-current, owned-stale', async t => {
+  const fixture = createFixtureHome({ seedBlock: true });
+  try {
+    const ctx = ownershipContext(fixture);
+    const observed = [];
+    const step = async (expectedStatus, expectedAction, expectedCounts) => {
+      resetCalls(fixture);
+      const planned = await installer.computePlan(ctx);
+      assert.equal(planned.status, 'ready', `${expectedStatus} must be applicable`);
+      assert.equal(typeof planned.plan.hash, 'string');
+      assert.equal(planned.plan.mcpOwnership.status, expectedStatus);
+      assert.equal(planned.plan.steps.find(item => item.id === 'mcp').action, expectedAction);
+      assert.ok(!planned.plan.conflicts.some(conflict => conflict.blocking));
+      const rereads = [];
+      const applied = await installer.applyPlan(ctx, planned.plan.hash, { onOwnershipReread: evidence => rereads.push(evidence) });
+      assert.equal(applied.status, 'applied');
+      const counts = mcpCounts(fixture);
+      assert.deepEqual(counts, expectedCounts, `${expectedStatus} remove/add counts`);
+      assert.deepEqual(registrationVector(liveMcp(fixture, 'claude')), plannedVector(planned.plan, fixture.home));
+      assert.equal(manifestMcpEntry(fixture.home, 'claude').fingerprint, installer.registrationFingerprint(liveMcp(fixture, 'claude')));
+      // A mutation runs only after one unchanged ownership reread. A no-op step has nothing to reread for.
+      assert.equal(rereads.length, expectedAction === 'none' ? 0 : 1);
+      for (const evidence of rereads) assert.equal(evidence.manifestUnchanged, true);
+      observed.push({ state: expectedStatus, action: expectedAction, ...counts });
+    };
+
+    await step('absent', 'create', { remove: 0, add: 1 });
+    setLiveMcp(fixture, 'claude', null);
+    await step('owned-missing', 'create', { remove: 0, add: 1 });
+    await step('owned-current', 'none', { remove: 0, add: 0 });
+    await seedOwnedStale(fixture);
+    await step('owned-stale', 'update', { remove: 1, add: 1 });
+    t.diagnostic(`transitions ${JSON.stringify(observed)}`);
+  } finally {
+    fixture.cleanup();
+  }
+});
+
+test('installer MCP ownership conflicts: unowned, unreadable, drifted, ccync-first', async t => {
+  const cases = [
+    {
+      name: 'unowned',
+      agent: 'claude',
+      status: 'unowned',
+      setup: async fixture => {
+        const before = await installer.computePlan(ownershipContext(fixture));
+        setLiveMcp(fixture, 'claude', FOREIGN_VECTOR);
+        return before.plan.hash;
+      }
+    },
+    {
+      name: 'unreadable',
+      agent: 'claude',
+      status: 'unreadable',
+      setup: async fixture => {
+        const { planned, applied } = await planAndApply(ownershipContext(fixture));
+        assert.equal(applied.status, 'applied');
+        fixture.setState({ mcpMode: 'unsupported_transport' });
+        return planned.plan.hash;
+      }
+    },
+    {
+      name: 'drifted',
+      agent: 'claude',
+      status: 'drifted',
+      setup: async fixture => {
+        const { planned, applied } = await planAndApply(ownershipContext(fixture));
+        assert.equal(applied.status, 'applied');
+        const live = liveMcp(fixture, 'claude');
+        setLiveMcp(fixture, 'claude', { command: live.command, args: [...live.args, '--edited-by-user'] });
+        return planned.plan.hash;
+      }
+    },
+    {
+      name: 'ccync-first',
+      agent: 'codex',
+      status: 'unowned',
+      setup: async fixture => {
+        const before = await installer.computePlan(ownershipContext(fixture, 'codex'));
+        // ccync registered the same name first. The direct installer has no manifest entry for it.
+        setLiveMcp(fixture, 'codex', CCYNC_VECTOR);
+        return before.plan.hash;
+      }
+    }
+  ];
+
+  for (const testCase of cases) {
+    const fixture = createFixtureHome({ seedBlock: true, pluginByHost: { claude: true, codex: true }, mcpByHost: { claude: null, codex: null } });
+    try {
+      const ctx = ownershipContext(fixture, testCase.agent);
+      const earlierHash = await testCase.setup(fixture);
+      assert.equal(typeof earlierHash, 'string');
+      const liveBefore = JSON.stringify(liveMcp(fixture, testCase.agent));
+      const manifestBefore = manifestBytes(fixture.home);
+      resetCalls(fixture);
+
+      const planned = await installer.computePlan(ctx);
+      assert.equal(planned.status, 'blocked', `${testCase.name} must block`);
+      assert.equal(planned.plan.hash, null, `${testCase.name} must have no applicable hash`);
+      assert.equal(planned.plan.mcpOwnership.status, testCase.status);
+      assert.equal(planned.plan.steps.find(item => item.id === 'mcp').action, 'blocked');
+      const conflict = planned.plan.conflicts.find(item => item.kind === 'mcp-ownership');
+      assert.ok(conflict && conflict.blocking === true);
+      const text = installer.formatPlan(planned);
+      assert.match(text, /No plan hash/);
+      assert.doesNotMatch(text, /Plan hash:/);
+
+      // Neither an earlier hash nor a guessed hash can apply a blocked state.
+      for (const hash of [earlierHash, 'f'.repeat(64)]) {
+        const applied = await installer.applyPlan(ctx, hash);
+        assert.equal(applied.status, 'error');
+        assert.equal(applied.kind, 'mismatch');
+        assert.match(applied.message, /blocking conflicts/);
+      }
+      assert.deepEqual(mcpCounts(fixture), { remove: 0, add: 0 }, `${testCase.name} remove/add counts`);
+      assert.deepEqual(fixture.getState().mutationCalls, []);
+      assert.equal(JSON.stringify(liveMcp(fixture, testCase.agent)), liveBefore, `${testCase.name} live registration preserved`);
+      assert.deepEqual(manifestBytes(fixture.home), manifestBefore, `${testCase.name} manifest preserved`);
+      assert.equal(fs.existsSync(installer.installerLockPath(fixture.home)), false);
+      t.diagnostic(`${testCase.name}: status=${planned.status} hash=${planned.plan.hash} ownership=${planned.plan.mcpOwnership.status} remove/add=0/0`);
+    } finally {
+      fixture.cleanup();
+    }
+  }
+});
+
+test('installer apply rejects ownership evidence drift after computePlan', async t => {
+  const injections = [
+    {
+      name: 'manifest change',
+      inject: fixture => {
+        const file = installer.manifestPath(fixture.home);
+        const manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+        manifest.cli = manifest.cli.map(entry => (entry.kind === 'mcp' ? { ...entry, fingerprint: 'e'.repeat(64) } : entry));
+        fs.writeFileSync(file, `${JSON.stringify(manifest, null, 2)}\n`);
+      },
+      expect: /install manifest changed/,
+      check: (evidence, planned) => {
+        assert.equal(evidence.manifestPresent, true);
+        assert.equal(evidence.manifestUnchanged, false);
+        assert.equal(evidence.manifestFingerprint, 'e'.repeat(64));
+        assert.notEqual(evidence.manifestFingerprint, planned.plan.mcpOwnership.manifestFingerprint);
+      }
+    },
+    {
+      name: 'manifest removal',
+      inject: fixture => fs.rmSync(installer.manifestPath(fixture.home)),
+      expect: /install manifest was removed/,
+      check: evidence => {
+        assert.equal(evidence.manifestPresent, false);
+        assert.equal(evidence.manifestFingerprint, null);
+      }
+    },
+    {
+      name: 'live registration change',
+      inject: fixture => setLiveMcp(fixture, 'claude', FOREIGN_VECTOR),
+      expect: /live clear-writing-kit-textlint registration changed/,
+      check: (evidence, planned) => {
+        assert.equal(evidence.manifestUnchanged, true);
+        assert.equal(evidence.live, installer.registrationFingerprint(FOREIGN_VECTOR));
+        assert.notEqual(evidence.live, planned.plan.mcpOwnership.live);
+      }
+    }
+  ];
+
+  for (const injection of injections) {
+    const fixture = createFixtureHome({ seedBlock: true });
+    try {
+      const ctx = ownershipContext(fixture);
+      await seedOwnedStale(fixture);
+      const planned = await installer.computePlan(ctx);
+      assert.equal(planned.status, 'ready');
+      assert.equal(planned.plan.mcpOwnership.status, 'owned-stale');
+
+      let injected = false;
+      let bytesAtReread;
+      let liveAtReread;
+      const rereads = [];
+      const outcome = await installer.applyPlan(ctx, planned.plan.hash, {
+        beforeOwnershipReread: () => {
+          injection.inject(fixture);
+          injected = true;
+          bytesAtReread = manifestBytes(fixture.home);
+          liveAtReread = JSON.stringify(liveMcp(fixture, 'claude'));
+        },
+        onOwnershipReread: evidence => rereads.push(evidence)
+      });
+
+      assert.equal(injected, true, `${injection.name}: injection ran after computePlan`);
+      assert.equal(rereads.length, 1, `${injection.name}: the second read occurred`);
+      injection.check(rereads[0], planned);
+      assert.equal(outcome.status, 'failed');
+      assert.equal(outcome.step, 'mcp');
+      assert.match(outcome.output, injection.expect);
+      assert.deepEqual(mcpCounts(fixture), { remove: 0, add: 0 }, `${injection.name} remove/add counts`);
+      assert.deepEqual(manifestBytes(fixture.home), bytesAtReread, `${injection.name}: manifest bytes visible at the reread are preserved`);
+      assert.equal(JSON.stringify(liveMcp(fixture, 'claude')), liveAtReread);
+      assert.equal(fs.existsSync(installer.installerLockPath(fixture.home)), false);
+      t.diagnostic(`${injection.name}: ${outcome.status} at ${outcome.step}; remove/add=0/0`);
+    } finally {
+      fixture.cleanup();
+    }
+  }
+});
+
+test('installer mutations share one ownership lock', async t => {
+  const fixture = createFixtureHome({ seedBlock: true });
+  try {
+    const ctx = ownershipContext(fixture);
+    const lockPath = installer.installerLockPath(fixture.home);
+    assert.equal(lockPath, path.join(fixture.home, '.clear-writing-kit.lock'));
+    t.diagnostic(`lock path: ${lockPath}`);
+
+    const first = await planAndApply(ctx);
+    assert.equal(first.applied.status, 'applied');
+    assert.equal(fs.existsSync(lockPath), false);
+    const assertRefused = (result, label) => {
+      assert.equal(result.status, 'refused', label);
+      assert.equal(result.lockPath, lockPath, label);
+      assert.ok(result.message.includes(lockPath), label);
+      assert.match(result.message, /Nothing was changed/);
+      assert.match(result.message, /no "cwk install apply" or "cwk install uninstall" process is active/);
+      t.diagnostic(`${label}: ${JSON.stringify(result)}`);
+    };
+    const snapshot = () => ({
+      manifest: manifestBytes(fixture.home),
+      launcher: fs.readFileSync(path.join(fixture.home, '.clear-writing-kit', 'cwk.mjs')),
+      live: JSON.stringify(liveMcp(fixture, 'claude')),
+      calls: fixture.getState().mutationCalls.length
+    });
+
+    // 1. Apply holds the lock: a competing apply and a competing uninstall refuse before any write.
+    setLiveMcp(fixture, 'claude', null);
+    resetCalls(fixture);
+    const missing = await installer.computePlan(ctx);
+    assert.equal(missing.plan.mcpOwnership.status, 'owned-missing');
+    let competing;
+    const holder = await installer.applyPlan(ctx, missing.plan.hash, {
+      afterLock: async () => {
+        assert.equal(fs.existsSync(lockPath), true);
+        const before = snapshot();
+        const apply = await installer.applyPlan(ctx, missing.plan.hash);
+        const remove = await installer.uninstall(ctx);
+        competing = { apply, remove, before, after: snapshot() };
+      }
+    });
+    assertRefused(competing.apply, 'apply while apply holds the lock');
+    assertRefused(competing.remove, 'uninstall while apply holds the lock');
+    assert.deepEqual(competing.after, competing.before);
+    assert.equal(competing.after.calls, 0, 'refused runs make zero host mutations');
+    assert.equal(holder.status, 'applied');
+    assert.deepEqual(mcpCounts(fixture), { remove: 0, add: 1 });
+    assert.equal(fs.existsSync(lockPath), false);
+
+    // 2. Uninstall holds the lock: a competing apply refuses before any write.
+    const current = await installer.computePlan(ctx);
+    assert.equal(current.status, 'ready');
+    resetCalls(fixture);
+    let competingApply;
+    const remover = await installer.uninstall(ctx, {
+      afterLock: async () => {
+        const before = snapshot();
+        const apply = await installer.applyPlan(ctx, current.plan.hash);
+        competingApply = { apply, before, after: snapshot() };
+      }
+    });
+    assertRefused(competingApply.apply, 'apply while uninstall holds the lock');
+    assert.deepEqual(competingApply.after, competingApply.before);
+    assert.equal(competingApply.after.calls, 0);
+    assert.equal(remover.status, 'done');
+    assert.equal(fs.existsSync(lockPath), false);
+
+    // 3. A stale lock blocks both commands and stays until it is removed by hand.
+    const reinstall = await planAndApply(ctx);
+    assert.equal(reinstall.applied.status, 'applied');
+    fs.writeFileSync(lockPath, 'left by a stopped run\n');
+    const staleBytes = fs.readFileSync(lockPath);
+    resetCalls(fixture);
+    const before = snapshot();
+    const fresh = await installer.computePlan(ctx);
+    assert.equal(fresh.status, 'ready', 'plan stays read-only and does not take the lock');
+    assertRefused(await installer.applyPlan(ctx, fresh.plan.hash), 'apply with a stale lock');
+    assertRefused(await installer.uninstall(ctx), 'uninstall with a stale lock');
+    assert.deepEqual(snapshot(), before, 'stale-lock refusals write nothing');
+    assert.equal(fixture.getState().mutationCalls.length, 0);
+    assert.deepEqual(fs.readFileSync(lockPath), staleBytes, 'the stale lock is not removed automatically');
+
+    fs.rmSync(lockPath);
+    const recovered = await installer.uninstall(ctx);
+    assert.equal(recovered.status, 'done');
+    assert.equal(fs.existsSync(lockPath), false);
+  } finally {
+    fixture.cleanup();
+  }
+});
+
+test('installer ownership lock releases after failure', async t => {
+  // Apply: an error after lock acquisition and the payload step, before the first MCP mutation.
+  const applyFixture = createFixtureHome({ seedBlock: true });
+  try {
+    const ctx = ownershipContext(applyFixture);
+    const lockPath = installer.installerLockPath(applyFixture.home);
+    const planned = await installer.computePlan(ctx);
+    resetCalls(applyFixture);
+    let lockHeld;
+    const failed = await installer.applyPlan(ctx, planned.plan.hash, {
+      beforeOwnershipReread: () => {
+        lockHeld = fs.existsSync(lockPath);
+        throw new Error('injected apply failure');
+      }
+    });
+    assert.equal(lockHeld, true);
+    assert.equal(failed.status, 'failed');
+    assert.equal(failed.step, 'mcp');
+    assert.match(failed.output, /injected apply failure/);
+    assert.deepEqual(failed.completed, ['payload']);
+    assert.equal(manifestMcpEntry(applyFixture.home, 'claude'), undefined, 'no MCP ownership recorded before the error');
+    assert.equal(liveMcp(applyFixture, 'claude'), null);
+    assert.deepEqual(mcpCounts(applyFixture), { remove: 0, add: 0 });
+    assert.equal(fs.existsSync(lockPath), false, 'apply released the lock after the error');
+
+    // An error thrown directly after acquisition propagates and also releases the lock.
+    await assert.rejects(
+      installer.applyPlan(ctx, planned.plan.hash, { afterLock: () => { throw new Error('injected apply failure after lock'); } }),
+      /injected apply failure after lock/
+    );
+    assert.equal(fs.existsSync(lockPath), false);
+    t.diagnostic(`apply: ${JSON.stringify(failed)}`);
+  } finally {
+    applyFixture.cleanup();
+  }
+
+  // Uninstall: an error after lock acquisition, before the manifest is read.
+  const uninstallFixture = createFixtureHome({ seedBlock: true });
+  try {
+    const ctx = ownershipContext(uninstallFixture);
+    const lockPath = installer.installerLockPath(uninstallFixture.home);
+    const { applied } = await planAndApply(ctx);
+    assert.equal(applied.status, 'applied');
+    const manifestBefore = manifestBytes(uninstallFixture.home);
+    const liveBefore = JSON.stringify(liveMcp(uninstallFixture, 'claude'));
+    resetCalls(uninstallFixture);
+    let lockHeld;
+    await assert.rejects(installer.uninstall(ctx, {
+      afterLock: () => {
+        lockHeld = fs.existsSync(lockPath);
+        throw new Error('injected uninstall failure');
+      }
+    }), /injected uninstall failure/);
+    assert.equal(lockHeld, true);
+    assert.deepEqual(manifestBytes(uninstallFixture.home), manifestBefore);
+    assert.equal(JSON.stringify(liveMcp(uninstallFixture, 'claude')), liveBefore);
+    assert.deepEqual(uninstallFixture.getState().mutationCalls, []);
+    assert.equal(fs.existsSync(lockPath), false, 'uninstall released the lock after the error');
+
+    const retry = await installer.uninstall(ctx);
+    assert.equal(retry.status, 'done');
+    assert.equal(fs.existsSync(lockPath), false);
+    t.diagnostic('uninstall: rejected with the injected error; lock released; retry done');
+  } finally {
+    uninstallFixture.cleanup();
+  }
+});
+
+test('direct installer owned lifecycle for Claude and Codex', async t => {
+  for (const agent of ['claude', 'codex']) {
+    const fixture = createFixtureHome({
+      pluginInstalled: false,
+      pluginByHost: { claude: false, codex: false },
+      mcpByHost: { claude: null, codex: null },
+      seedSettings: false
+    });
+    try {
+      const ctx = ownershipContext(fixture, agent);
+      const expectExactFingerprint = plan => {
+        const desired = plannedVector(plan, fixture.home);
+        const entry = manifestMcpEntry(fixture.home, agent);
+        assert.ok(entry, `${agent}: manifest records the MCP entry`);
+        assert.equal(entry.fingerprint, installer.registrationFingerprint({ command: desired[0], args: desired.slice(1) }));
+        assert.equal(entry.fingerprint, installer.registrationFingerprint(liveMcp(fixture, agent)));
+        return entry.fingerprint;
+      };
+      const verify = async label => {
+        const outcome = await installer.verifyInstall({ ...ctx, callTimeoutMs: 60000 });
+        const failedChecks = outcome.checks.filter(check => check.status !== 'pass').map(check => `${check.id}: ${check.detail}`);
+        assert.equal(outcome.status, 'pass', `${agent} ${label} verify: ${failedChecks.join('; ')}`);
+      };
+
+      // Install
+      resetCalls(fixture);
+      const installed = await planAndApply(ctx);
+      assert.equal(installed.applied.status, 'applied');
+      assert.equal(installed.planned.plan.mcpOwnership.status, 'absent');
+      assert.deepEqual(mcpCounts(fixture), { remove: 0, add: 1 });
+      const installFingerprint = expectExactFingerprint(installed.planned.plan);
+      await verify('install');
+
+      // Upgrade to a new block version: the payload moves, and the owned registration stays current.
+      const upgradedBlock = fixture.blockText.replace(/clear-writing-kit:begin v=[^ ]+/, 'clear-writing-kit:begin v=99.0.0-lifecycle');
+      const upgradeCtx = { ...ctx, blockText: upgradedBlock };
+      resetCalls(fixture);
+      const upgraded = await planAndApply(upgradeCtx);
+      assert.equal(upgraded.applied.status, 'applied');
+      assert.equal(upgraded.planned.plan.version, '99.0.0-lifecycle');
+      assert.equal(upgraded.planned.plan.mcpOwnership.status, 'owned-current');
+      assert.ok(upgraded.applied.completed.includes('payload'));
+      assert.deepEqual(mcpCounts(fixture), { remove: 0, add: 0 });
+      assert.equal(expectExactFingerprint(upgraded.planned.plan), installFingerprint);
+      await verify('upgrade');
+
+      // Uninstall removes the exact owned entry and the manifest.
+      resetCalls(fixture);
+      const removed = await installer.uninstall(upgradeCtx);
+      assert.equal(removed.status, 'done');
+      assert.deepEqual(mcpCounts(fixture), { remove: 1, add: 0 });
+      assert.ok(!liveMcp(fixture, agent), `${agent}: live registration removed`);
+      assert.equal(fs.existsSync(installer.manifestPath(fixture.home)), false);
+      assert.equal(fs.existsSync(installer.installerLockPath(fixture.home)), false);
+      t.diagnostic(`${agent}: install, verify, upgrade, verify, uninstall passed; fingerprint ${installFingerprint}`);
+    } finally {
+      fixture.cleanup();
+    }
+  }
 });

@@ -5,6 +5,7 @@ import { removeBlock } from "./block.js";
 import { pluginFingerprint } from "./apply.js";
 import { backup, readText, sha256File, writeTextAtomic } from "./fsutil.js";
 import { resolveHost } from "./identity.js";
+import { withInstallerLock } from "./lock.js";
 import { LEGACY_OWNER, manifestPath, readManifest, saveManifest, type Manifest, type ManifestFile } from "./manifest.js";
 import { OUTPUT_STYLE, PLUGIN_NAME, type PlanContext, type PlanError } from "./plan.js";
 import { MCP_NAME, readRegistration } from "./registration.js";
@@ -14,8 +15,14 @@ import { run, which } from "./spawn.js";
 export type UninstallItem = { target: string; detail: string };
 export type UninstallOutcome =
   | { status: "done" | "incomplete"; removed: UninstallItem[]; kept: UninstallItem[]; failed: UninstallItem[]; backups: string[]; notes: string[] }
-  | { status: "refused"; message: string }
+  | { status: "refused"; message: string; lockPath?: string }
   | PlanError;
+
+/** Optional hooks for isolated tests. The CLI passes none. */
+export type UninstallOptions = {
+  /** Runs after the lock is acquired and before the manifest is read. */
+  afterLock?: () => void | Promise<void>;
+};
 
 const OUTPUT_LIMIT = 2000;
 const limit = (text: string) => (text.length > OUTPUT_LIMIT ? `${text.slice(0, OUTPUT_LIMIT)}... (truncated)` : text);
@@ -81,12 +88,20 @@ async function clearOutputStyle(path: string, value: string, backupDir: string):
  * Files and the instruction block are compared by hash. CLI entries are compared by fingerprint against the current host entry.
  * Everything else is kept and reported with the reason. Backups stay.
  */
-export async function uninstall(ctx: PlanContext): Promise<UninstallOutcome> {
+export async function uninstall(ctx: PlanContext, options: UninstallOptions = {}): Promise<UninstallOutcome> {
   const resolved = resolveHost(ctx.agent, ctx.env);
   if (!resolved.ok) return { status: "error", kind: resolved.error.startsWith("Host mismatch") ? "mismatch" : "usage", message: resolved.error };
   const host = resolved.value;
   if (!host.verified) return { status: "refused", message: `${host.displayName} is not verified, so the installer never installed for it and uninstall does not run.` };
 
+  // The shared installer lock is taken before the manifest is read and held through the final manifest save or removal.
+  return withInstallerLock(ctx.home, "uninstall", async () => {
+    await options.afterLock?.();
+    return uninstallLocked(ctx, host);
+  });
+}
+
+async function uninstallLocked(ctx: PlanContext, host: HostCapability): Promise<UninstallOutcome> {
   const manifestResult = await readManifest(ctx.home);
   if (!manifestResult.ok) return { status: "error", kind: "manifest", message: manifestResult.error };
   const manifest: Manifest = manifestResult.value;

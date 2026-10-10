@@ -98,12 +98,12 @@ None.
 ## Status
 
 Workflow: IMPLEMENT
-Step: 2 of 5
-Last activity: 2026-10-10. T-02 converged at 5c8a40f (test PASS, audit APPROVE)
-Next step: start T-03
-Current Task: —
-Task Base Commit: 290b5dcd20b671a824614a8a4a9aa95520f418a6
-Task Final Commit: 5c8a40f283d345d2262c191445d8b184c55e023d
+Step: 3 of 5
+Last activity: 2026-10-10. T-03 implement resumed with option A
+Next step: test T-03
+Current Task: T-03
+Task Base Commit: 5deadcda11f46f81389ea7bb130720f16660d2c7
+Task Final Commit: —
 Test Retry Count: 0
 Review Retry Count: 0
 
@@ -113,12 +113,41 @@ Review Retry Count: 0
 | --- | --- | --- | --- |
 | Preflight | Task bullets `- [ ] T-NN: ...` | Changed the separator to `- [ ] T-NN — ...` | `pipeline-preflight` check `tasks-well-formed` failed on the colon form. Task text is unchanged. The source plan received the same separator change at T-01 convergence. |
 | T-01 test onward | Phases route through `config.json#executorRouting` (codex coder, agy tester/auditor) | T-01 implement ran on codex. T-01 test and every later implement, fix, test, and audit phase run as Claude subagents (`gal:golem-implementer`, `gal:golem-tester`, `gal:golem-auditor`). | Owner authorized non-standard routing on 2026-10-09. Same runtime as the orchestrator, so Verification Independence: DEGRADED_SAME_RUNTIME. |
+| T-03 implement | T-03 allowlist excluded `writing/test/installer-ownership.test.cjs` | Added it to the allowlist. Split its adoption test so a missing MCP manifest entry is blocked with `hash: null` and 0/0 MCP mutations, while file, block, and settings adoption still pass. | The old test required adopting an unowned MCP entry with an identical vector, which R6 forbids. The owner chose to continue the pipeline after option A was recommended on 2026-10-10. |
 
 ### Handoff Notes
 
 Prompt refreshed after final architecture verdict APPROVE, human approval, and passing planning and refining receipts. Existing execution state was preserved. No implementation task has started.
 
 - T-01 audit FINDING-001 (medium, non-blocking): ccync 0.1.5 renders the Claude host vector as `powershell -NoProfile -Command "... & 'node' '<cache>/dist/cwk.mjs' 'mcp'"`. Codex, Copilot, and agy render `node` plus `[<cache>/dist/cwk.mjs, mcp]`, and opencode renders `[node, <cache>/dist/cwk.mjs, mcp]`. OA-02 expects a direct `node` vector in every native config, so the Claude row will not match as written. T-04 must document the Claude launcher as ccync-owned behavior. The owner decides whether OA-02 accepts it. FINDING-002 to FINDING-004 are low and open.
+
+#### Human Handback — boundary-scope-decision
+
+- Status: RESOLVED
+- Reason: boundary-scope-decision
+- Task: T-03
+- Phase: IMPLEMENT
+- Producer: orchestrator, after `gal:golem-implementer` fix-free implement dispatch
+- Producer state: T-03 implement output is uncommitted in the worktree at HEAD `5deadcd`. Changed files are `src/install/lock.ts` (new), `src/install/plan.ts`, `src/install/apply.ts`, `src/install/uninstall.ts`, `writing/test/installer-registration.test.cjs`, and the rebuilt `dist/cwk.mjs`. `gal boundary-check --task T-03` passes. TP-07 through TP-12 pass one by one. TP-13 build is reproducible. Lint has 0 errors. `npm --prefix writing test` reports 74 tests, 72 pass, 2 fail. One failure is "Fresh build produces zero diff against committed dist/", which needs the rebuilt `dist/` to be committed. The other is `writing/test/installer-ownership.test.cjs:132` "exact current artifacts adopt missing host metadata without rewriting bytes". It expects a live MCP entry that has no manifest entry but equals the planned vector to be adopted (`ready`). R6 says the manifest entry is the only ownership proof, so the new plan returns `blocked`. The file is outside the T-03 allowlist and the Boundary Widening Protocol does not cover a behavior change.
+- Git HEAD: 5deadcd
+- Resolution: 2026-10-10. Owner said "continue pipeline" after option A was recommended. Option A was applied.
+- Next human step: Choose one option. Option A widens the T-03 allowlist to `writing/test/installer-ownership.test.cjs`, records a Deviation, and changes that test to expect `blocked`, `hash: null`, and 0/0 MCP mutations while it keeps the file, block, and settings adoption checks. Option B approves a spec deviation that adopts an unowned entry whose fingerprint equals the planned vector, with no MCP mutation. Option B lets `cwk` take over a ccync entry with an identical vector, which conflicts with R7. Then rerun `/gal pipeline '#file:.dev/plans/feat-ccync-local-checks.prompt.md' from T-03 stop-at T-03`. Keep the uncommitted T-03 output in place.
+- What to check: The owner decision recorded in this block and the result of `cmd.exe /d /c npm --prefix writing test` after the chosen change and the T-03 commit.
+- Expected result: The decision is recorded, and the full Node suite reports 0 failures with the T-03 commit in place.
+- Pass/fail rule: Pass only when an explicit owner choice is recorded and the full Node suite has zero failed tests. Otherwise fail.
+
+#### Interrupted Phase — T-03 / IMPLEMENT
+
+- Status: RESOLVED
+- Cause: unknown
+- Workflow at interruption: IMPLEMENT
+- Durable state present:
+  - Task Base Commit: 5deadcd
+  - Task Final Commit: missing
+  - Worktree: dirty
+  - Test Results: no
+  - Review Results: no
+- Resume action: After the owner decision, apply the chosen test or spec change, run `gal boundary-check` for T-03, commit, then dispatch T-03 test and audit.
 
 ## Tasks
 
@@ -133,7 +162,7 @@ Prompt refreshed after final architecture verdict APPROVE, human approval, and p
   - **Change**: Update the maintained generator text, regenerate the committed block, and refresh only generator-owned digest expectations. Leave runtime selection and installation guidance unchanged.
   - **Acceptance**: TP-06 proves exact generated equality, no `.clear-writing-kit` checker path, and measured size below 2,048 bytes.
 - [ ] T-03 — Enforce one-owner MCP mutation safety in the direct installer.
-  - **Files**: `src/install/plan.ts`, `src/install/apply.ts`, `src/install/uninstall.ts`, `src/install/lock.ts`, `writing/test/installer-registration.test.cjs`, `dist/cwk.mjs`.
+  - **Files**: `src/install/plan.ts`, `src/install/apply.ts`, `src/install/uninstall.ts`, `src/install/lock.ts`, `writing/test/installer-registration.test.cjs`, `writing/test/installer-ownership.test.cjs`, `dist/cwk.mjs`. The ownership test was added on 2026-10-10 because its exact-match adoption case contradicts R6.
   - **Dependencies**: T-01. TP-05 supplies reverse-order ccync collision evidence.
   - **Change**: Use the manifest entry for the same host, kind, and name as the only ownership proof. Add the plan-time gate in `readHostState` and `computePlan`. Permit absent create and owned safe transitions only. Convert unowned, unreadable, and fingerprint-drifted entries to blocking conflicts. Add a shared exclusive-file lock helper. Apply acquires the lock before internal `computePlan`. Uninstall acquires it before reading the manifest. Both hold it through final manifest persistence and release it in `finally` on success or error. Refuse competing and stale locks before writes. Apply rereads manifest and live registration evidence immediately before the first MCP mutation and rejects changes already visible. Preserve uninstall exact-match behavior and rebuild the bundle.
   - **Acceptance**: TP-05 and TP-07 through TP-13 prove both installation orders, safe transitions, conflicts, manifest and live drift rejection, apply-uninstall serialization, stale-lock refusal, error-path release, zero unsafe mutations, direct lifecycle continuity, exact spy and write counts, and reproducible `dist/`.
@@ -188,7 +217,7 @@ For headless execution, every covering row also requires executor log terminal s
 Run: 2026-10-09 (clock rolled to 2026-10-10 during the run)
 Mode: spec
 Browser Route: No runnable browser route (not applicable; no browser surface)
-Task Final Commit: 5c8a40f283d345d2262c191445d8b184c55e023d (task base 3c68d3a); HEAD unchanged after the run
+Task Final Commit: — (task base 3c68d3a); HEAD unchanged after the run
 Total: 5 | Passed: 5 | Failed: 0 | Skipped: 0 (raw command outcomes; TP-05 is judged FAIL on proof adequacy, see Findings)
 
 | TP | Command | Result | Evidence |
@@ -218,7 +247,7 @@ Verdict: FAIL
 Run: 2026-10-10
 Mode: spec
 Browser Route: No runnable browser route (not applicable; no browser surface)
-Task Final Commit: 5c8a40f283d345d2262c191445d8b184c55e023d (task range 3c68d3a..71f9028); HEAD stayed at 71f9028 during and after the run
+Task Final Commit: — (task range 3c68d3a..71f9028); HEAD stayed at 71f9028 during and after the run
 Total: 5 | Passed: 5 | Failed: 0 | Skipped: 0
 
 | TP | Command | Result | Evidence |
